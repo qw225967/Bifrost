@@ -9,6 +9,7 @@
 
 #include "port_manager.h"
 #include "setting.h"
+#include "utils.h"
 #include "uv_loop.h"
 #include <iostream>
 
@@ -20,7 +21,7 @@ uv_handle_t* PortManager::BindPort() {
   std::cout << "[port manager] BindPort befor "
             <<  Settings::configuration.rtcIp.c_str() << std::endl;
   // First normalize the IP. This may throw if invalid IP.
-  Utils::IP::NormalizeIp(Settings::configuration.rtcIp);
+  IP::NormalizeIp(Settings::configuration.rtcIp);
   std::cout << "[port manager] BindPort after "
             << Settings::configuration.rtcIp.c_str() << std::endl;
 
@@ -29,7 +30,7 @@ uv_handle_t* PortManager::BindPort() {
   uv_handle_t* uvHandle{nullptr};
   int err;
   int flags{0};
-  int family = Utils::IP::GetFamily(Settings::configuration.rtcIp);
+  int family = IP::GetFamily(Settings::configuration.rtcIp);
   switch (family) {
     case AF_INET: {
       err = uv_ip4_addr(Settings::configuration.rtcIp.c_str(), 0,
