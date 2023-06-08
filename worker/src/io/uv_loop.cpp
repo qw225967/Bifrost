@@ -24,7 +24,7 @@ void UvLoop::ClassInit() {
 
   int err = uv_loop_init(UvLoop::loop);
 
-  if (err != 0) std::cout << "[uv_loop] initialization failed" << std::endl;
+  if (err != 0) std::cout << "[uv loop] initialization failed" << std::endl;
 }
 
 void UvLoop::ClassDestroy() {
@@ -36,7 +36,7 @@ void UvLoop::ClassDestroy() {
 }
 
 void UvLoop::PrintVersion() {
-  std::cout << "[uv_loop] version:" << uv_version_string() << std::endl;
+  std::cout << "[uv loop] version:" << uv_version_string() << std::endl;
 }
 
 void UvLoop::RunLoop() { uv_run(UvLoop::loop, UV_RUN_DEFAULT); }

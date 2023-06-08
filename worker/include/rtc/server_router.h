@@ -1,45 +1,47 @@
 /*******************************************************
  * @author      : dog head
- * @date        : Created in 2023/6/7 1:57 下午
+ * @date        : Created in 2023/6/8 5:32 下午
  * @mail        : qw225967@github.com
  * @project     : worker
- * @file        : udp_router.h
+ * @file        : server_router.h
  * @description : TODO
  *******************************************************/
 
-#ifndef WORKER_UDP_ROUTER_H
-#define WORKER_UDP_ROUTER_H
+#ifndef WORKER_SERVER_ROUTER_H
+#define WORKER_SERVER_ROUTER_H
 
+#include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "port_manager.h"
 #include "udp_socket.h"
 
 namespace bifrost {
-class UdpRouter : public UdpSocket {
+class ServerRouter : public UdpSocket {
  public:
-  class UdpRouterObServer {
+  class ServerRouterObServer {
    public:
-    virtual void OnUdpRouterPacketReceived(
-        bifrost::UdpRouter* socket, const uint8_t* data, size_t len,
+    virtual void OnServerRouterPacketReceived(
+        bifrost::ServerRouter* socket, const uint8_t* data, size_t len,
         const struct sockaddr* remoteAddr) = 0;
   };
 
  protected:
-  static UdpRouter* udp_router_;
+  static ServerRouter* udp_router_;
   /* Instance methods. */
-  UdpRouter() : UdpSocket(PortManager::BindUdp()) {}
+  ServerRouter() : UdpSocket(PortManager::BindUdp()) {}
 
  public:
-  UdpRouter(UdpRouter& other) = delete;
-  void operator=(const UdpRouter&) = delete;
+  ServerRouter(ServerRouter& other) = delete;
+  void operator=(const ServerRouter&) = delete;
   /*save ssrc pointer transport*/
-  static UdpRouter* GetUdpRouter();
+  static ServerRouter* GetServerRouter();
 
  public:
-  ~UdpRouter() override;
+  ~ServerRouter() override;
 
-  /* Pure virtual methods inherited from ::UdpRouter. */
+  /* Pure virtual methods inherited from ::ServerRouter. */
  public:
   void UserOnUdpDatagramReceived(const uint8_t* data, size_t len,
                                  const struct sockaddr* addr) override;
@@ -48,13 +50,13 @@ class UdpRouter : public UdpSocket {
 
  public:
   // Passed by argument.
-  std::unordered_map<uint32_t, UdpRouterObServer*> observer_;
+  std::unordered_map<uint32_t, ServerRouterObServer*> observer_;
 
  private:
-  std::unordered_map<std::string, UdpRouterObServer*> username_map_;
-  std::unordered_map<std::string, UdpRouterObServer*> peer_map_;
+  std::unordered_map<std::string, ServerRouterObServer*> username_map_;
+  std::unordered_map<std::string, ServerRouterObServer*> peer_map_;
   std::unordered_map<std::string, std::vector<std::string>*> user_peer_map_;
 };
 }  // namespace bifrost
 
-#endif  // WORKER_UDP_ROUTER_H
+#endif  // WORKER_SERVER_ROUTER_H

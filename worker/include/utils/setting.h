@@ -22,9 +22,7 @@ class Settings {
   // Struct holding the configuration.
   struct Configuration {
     uint16_t rtcPort{9000u};
-    std::string rtcIp{"::"};
-    std::string dtlsCertificateFile;
-    std::string dtlsPrivateKeyFile;
+    std::string rtcIp{"127.0.0.1"};
   };
 
  public:
