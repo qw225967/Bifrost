@@ -10,9 +10,10 @@
 #ifndef WORKER_UDP_ROUTER_H
 #define WORKER_UDP_ROUTER_H
 
-#include "udp_socket.h"
-#include "port_manager.h"
 #include <unordered_map>
+
+#include "port_manager.h"
+#include "udp_socket.h"
 
 namespace bifrost {
 class UdpRouter : public UdpSocket {
@@ -23,12 +24,11 @@ class UdpRouter : public UdpSocket {
         bifrost::UdpRouter* socket, const uint8_t* data, size_t len,
         const struct sockaddr* remoteAddr) = 0;
   };
+
  protected:
-  static UdpRouter* udp_socket_;
+  static UdpRouter* udp_router_;
   /* Instance methods. */
-  UdpRouter() : UdpSocket(PortManager::BindUdp())
-  {
-  }
+  UdpRouter() : UdpSocket(PortManager::BindUdp()) {}
 
  public:
   UdpRouter(UdpRouter& other) = delete;

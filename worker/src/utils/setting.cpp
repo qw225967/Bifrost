@@ -10,10 +10,8 @@
 #include "setting.h"
 
 #include <cctype>  // isprint()
-#include <cerrno>
 #include <iostream>
 #include <iterator>  // std::ostream_iterator
-#include <json.hpp>
 extern "C" {
 #include <getopt.h>
 }

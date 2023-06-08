@@ -13,10 +13,10 @@
 #include "utils.h"
 
 namespace bifrost {
-UdpRouter* UdpRouter::udp_socket_ = nullptr;
+UdpRouter* UdpRouter::udp_router_ = nullptr;
 
 UdpRouter::~UdpRouter() {
-  delete udp_socket_;
+  delete udp_router_;
   PortManager::UnbindUdp(this->localIp, this->localPort);
 
   peer_map_.clear();
@@ -30,12 +30,14 @@ UdpRouter::~UdpRouter() {
   this->user_peer_map_.clear();
 }
 
+// mediasoup 的垃圾实现，做单例没做好，static直接赋值会崩在主函数之前
+// 只能在这里获取
 UdpRouter* UdpRouter::GetUdpRouter() {
-  if (udp_socket_ == nullptr) {
-    std::cout << "[setting] GetUdpRouter" << std::endl;
-    udp_socket_ = new UdpRouter();
+  if (udp_router_ == nullptr) {
+    std::cout << "[udp router] GetUdpSocket" << std::endl;
+    udp_router_ = new UdpRouter();
   }
-  return udp_socket_;
+  return udp_router_;
 }
 
 void UdpRouter::UserOnUdpDatagramReceived(const uint8_t* data, size_t len,
