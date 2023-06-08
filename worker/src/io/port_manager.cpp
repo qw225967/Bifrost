@@ -8,10 +8,12 @@
  *******************************************************/
 
 #include "port_manager.h"
+
+#include <iostream>
+
 #include "setting.h"
 #include "utils.h"
 #include "uv_loop.h"
-#include <iostream>
 
 static inline void onClose(uv_handle_t* handle) { delete handle; }
 
@@ -19,37 +21,37 @@ namespace bifrost {
 /* Class methods. */
 uv_handle_t* PortManager::BindPort() {
   std::cout << "[port manager] BindPort befor "
-            <<  Settings::configuration.rtcIp.c_str() << std::endl;
+            << Settings::server_configuration_.rtcIp.c_str() << std::endl;
   // First normalize the IP. This may throw if invalid IP.
-  IP::NormalizeIp(Settings::configuration.rtcIp);
+  IP::NormalizeIp(Settings::server_configuration_.rtcIp);
   std::cout << "[port manager] BindPort after "
-            << Settings::configuration.rtcIp.c_str() << std::endl;
+            << Settings::server_configuration_.rtcIp.c_str() << std::endl;
 
   struct sockaddr_storage
-      bindAddr;  // NOLINT(cppcoreguidelines-pro-type-member-init)
+      bind_addr;  // NOLINT(cppcoreguidelines-pro-type-member-init)
   uv_handle_t* uvHandle{nullptr};
   int err;
   int flags{0};
-  int family = IP::GetFamily(Settings::configuration.rtcIp);
+  int family = IP::GetFamily(Settings::server_configuration_.rtcIp);
   switch (family) {
     case AF_INET: {
-      err = uv_ip4_addr(Settings::configuration.rtcIp.c_str(), 0,
-                        reinterpret_cast<struct sockaddr_in*>(&bindAddr));
+      err = uv_ip4_addr(Settings::server_configuration_.rtcIp.c_str(), 0,
+                        reinterpret_cast<struct sockaddr_in*>(&bind_addr));
       std::cout << "[port manager] uv_ip4_addr" << std::endl;
       if (err != 0)
-        std::cout << "[port manager] uv_ip4_addr() failed: "
-                  << uv_strerror(err) << std::endl;
+        std::cout << "[port manager] uv_ip4_addr() failed: " << uv_strerror(err)
+                  << std::endl;
 
       break;
     }
 
     case AF_INET6: {
-      err = uv_ip6_addr(Settings::configuration.rtcIp.c_str(), 0,
-                        reinterpret_cast<struct sockaddr_in6*>(&bindAddr));
+      err = uv_ip6_addr(Settings::server_configuration_.rtcIp.c_str(), 0,
+                        reinterpret_cast<struct sockaddr_in6*>(&bind_addr));
       std::cout << "[port manager] uv_ip6_addr" << std::endl;
       if (err != 0)
-        std::cout << "[port manager] uv_ip6_addr() failed: "
-                  << uv_strerror(err) << std::endl;
+        std::cout << "[port manager] uv_ip6_addr() failed: " << uv_strerror(err)
+                  << std::endl;
 
       // Don't also bind into IPv4 when listening in IPv6.
       // flags |= UV_UDP_IPV6ONLY;
@@ -68,14 +70,14 @@ uv_handle_t* PortManager::BindPort() {
   switch (family) {
     case AF_INET:
       std::cout << "[port manager] unknown AF_INET" << std::endl;
-      (reinterpret_cast<struct sockaddr_in*>(&bindAddr))->sin_port =
-          htons(Settings::configuration.rtcPort);
+      (reinterpret_cast<struct sockaddr_in*>(&bind_addr))->sin_port =
+          htons(Settings::server_configuration_.rtcPort);
       break;
 
     case AF_INET6:
       std::cout << "[port manager] unknown AF_INET6" << std::endl;
-      (reinterpret_cast<struct sockaddr_in6*>(&bindAddr))->sin6_port =
-          htons(Settings::configuration.rtcPort);
+      (reinterpret_cast<struct sockaddr_in6*>(&bind_addr))->sin6_port =
+          htons(Settings::server_configuration_.rtcPort);
       break;
   }
 
@@ -83,7 +85,7 @@ uv_handle_t* PortManager::BindPort() {
   uv_udp_init_ex(UvLoop::GetLoop(), reinterpret_cast<uv_udp_t*>(uvHandle),
                  UV_UDP_RECVMMSG);
   uv_udp_bind(reinterpret_cast<uv_udp_t*>(uvHandle),
-              reinterpret_cast<const struct sockaddr*>(&bindAddr), flags);
+              reinterpret_cast<const struct sockaddr*>(&bind_addr), flags);
   // If it failed, close the handle and check the reason.
   // uv_close(reinterpret_cast<uv_handle_t*>(uvHandle),
   // static_cast<uv_close_cb>(onClose));

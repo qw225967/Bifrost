@@ -19,7 +19,9 @@ extern "C" {
 namespace bifrost {
 
 /* Class variables. */
-struct Settings::Configuration Settings::configuration;
+struct Settings::Configuration Settings::server_configuration_;
+std::map<std::string, Settings::Configuration>
+    Settings::client_configuration_map_;
 
 /* Class methods. */
 void Settings::SetConfiguration(int argc, char* argv[]) {
@@ -49,7 +51,7 @@ void Settings::SetConfiguration(int argc, char* argv[]) {
     switch (c) {
       case 'P': {
         try {
-          Settings::configuration.rtcPort =
+          Settings::server_configuration_.rtcPort =
               static_cast<uint16_t>(std::stoi(optarg));
         } catch (const std::exception& error) {
           std::cout << "[setting] %s" << error.what() << std::endl;
@@ -61,7 +63,7 @@ void Settings::SetConfiguration(int argc, char* argv[]) {
       case 'I': {
         try {
           stringValue = std::string(optarg);
-          Settings::configuration.rtcIp = stringValue;
+          Settings::server_configuration_.rtcIp = stringValue;
         } catch (const std::exception& error) {
           std::cout << "[setting] %s" << error.what() << std::endl;
         }

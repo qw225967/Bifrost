@@ -21,11 +21,11 @@ static uint8_t ReadBuffer[ReadBufferSize];
 
 /* Static methods for UV callbacks. */
 
-inline static void onAlloc(uv_handle_t* handle, size_t suggestedSize,
+inline static void onAlloc(uv_handle_t* handle, size_t suggested_size,
                            uv_buf_t* buf) {
   auto* socket = static_cast<UdpSocket*>(handle->data);
 
-  if (socket) socket->OnUvRecvAlloc(suggestedSize, buf);
+  if (socket) socket->OnUvRecvAlloc(suggested_size, buf);
 }
 
 inline static void onRecv(uv_udp_t* handle, ssize_t nread, const uv_buf_t* buf,
@@ -52,16 +52,16 @@ inline static void onClose(uv_handle_t* handle) { delete handle; }
 /* Instance methods. */
 
 // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
-UdpSocket::UdpSocket(uv_udp_t* uvHandle) : uvHandle(uvHandle) {
+UdpSocket::UdpSocket(uv_udp_t* uv_handle_) : uv_handle_(uv_handle_) {
   int err;
 
-  this->uvHandle->data = static_cast<void*>(this);
+  this->uv_handle_->data = static_cast<void*>(this);
 
-  err = uv_udp_recv_start(this->uvHandle, static_cast<uv_alloc_cb>(onAlloc),
+  err = uv_udp_recv_start(this->uv_handle_, static_cast<uv_alloc_cb>(onAlloc),
                           static_cast<uv_udp_recv_cb>(onRecv));
 
   if (err != 0) {
-    uv_close(reinterpret_cast<uv_handle_t*>(this->uvHandle),
+    uv_close(reinterpret_cast<uv_handle_t*>(this->uv_handle_),
              static_cast<uv_close_cb>(onClose));
 
     std::cout << "[udp_socket] uv_udp_recv_start() failed: " << uv_strerror(err)
@@ -70,7 +70,7 @@ UdpSocket::UdpSocket(uv_udp_t* uvHandle) : uvHandle(uvHandle) {
 
   // Set local address.
   if (!SetLocalAddress()) {
-    uv_close(reinterpret_cast<uv_handle_t*>(this->uvHandle),
+    uv_close(reinterpret_cast<uv_handle_t*>(this->uv_handle_),
              static_cast<uv_close_cb>(onClose));
 
     std::cout << "[udp_socket] error setting local IP and port" << std::endl;
@@ -78,43 +78,43 @@ UdpSocket::UdpSocket(uv_udp_t* uvHandle) : uvHandle(uvHandle) {
 }
 
 UdpSocket::~UdpSocket() {
-  if (!this->closed) Close();
+  if (!this->closed_) Close();
 }
 
 void UdpSocket::Close() {
-  if (this->closed) return;
+  if (this->closed_) return;
 
-  this->closed = true;
+  this->closed_ = true;
 
-  // Tell the UV handle that the UdpSocket has been closed.
-  this->uvHandle->data = nullptr;
+  // Tell the UV handle that the UdpSocket has been closed_.
+  this->uv_handle_->data = nullptr;
 
   // Don't read more.
-  int err = uv_udp_recv_stop(this->uvHandle);
+  int err = uv_udp_recv_stop(this->uv_handle_);
 
   if (err != 0)
     std::cout << "[udp_socket] uv_udp_recv_stop() failed: " << uv_strerror(err)
               << std::endl;
 
-  uv_close(reinterpret_cast<uv_handle_t*>(this->uvHandle),
+  uv_close(reinterpret_cast<uv_handle_t*>(this->uv_handle_),
            static_cast<uv_close_cb>(onClose));
 }
 
 void UdpSocket::Dump() const {
   std::cout << "[udp_socket] <UdpSocket>" << std::endl;
-  std::cout << "[udp_socket]   localIp   : " << this->localIp.c_str()
+  std::cout << "[udp_socket]   localIp   : " << this->local_ip_.c_str()
             << std::endl;
   std::cout << "[udp_socket]   localPort : "
-            << static_cast<uint16_t>(this->localPort) << std::endl;
-  std::cout << "[udp_socket]   closed    : "
-            << (!this->closed ? "open" : "closed") << std::endl;
+            << static_cast<uint16_t>(this->local_port_) << std::endl;
+  std::cout << "[udp_socket]   closed_    : "
+            << (!this->closed_ ? "open" : "closed_") << std::endl;
   std::cout << "[udp_socket] </UdpSocket>" << std::endl;
 }
 
 void UdpSocket::Send(const uint8_t* data, size_t len,
                      const struct sockaddr* addr,
                      UdpSocket::onSendCallback* cb) {
-  if (this->closed) {
+  if (this->closed_) {
     if (cb) (*cb)(false);
 
     return;
@@ -131,12 +131,12 @@ void UdpSocket::Send(const uint8_t* data, size_t len,
 
   uv_buf_t buffer =
       uv_buf_init(reinterpret_cast<char*>(const_cast<uint8_t*>(data)), len);
-  int sent = uv_udp_try_send(this->uvHandle, &buffer, 1, addr);
+  int sent = uv_udp_try_send(this->uv_handle_, &buffer, 1, addr);
 
   // Entire datagram was sent. Done.
   if (sent == static_cast<int>(len)) {
     // Update sent bytes.
-    this->sentBytes += sent;
+    this->sent_bytes_ += sent;
 
     if (cb) {
       (*cb)(true);
@@ -150,7 +150,7 @@ void UdpSocket::Send(const uint8_t* data, size_t len,
               << " of %zu bytes were sent" << len;
 
     // Update sent bytes.
-    this->sentBytes += sent;
+    this->sent_bytes_ += sent;
 
     if (cb) {
       (*cb)(false);
@@ -174,7 +174,7 @@ void UdpSocket::Send(const uint8_t* data, size_t len,
 
   buffer = uv_buf_init(reinterpret_cast<char*>(sendData->store), len);
 
-  int err = uv_udp_send(&sendData->req, this->uvHandle, &buffer, 1, addr,
+  int err = uv_udp_send(&sendData->req, this->uv_handle_, &buffer, 1, addr,
                         static_cast<uv_udp_send_cb>(onSend));
 
   if (err != 0) {
@@ -189,17 +189,17 @@ void UdpSocket::Send(const uint8_t* data, size_t len,
     delete sendData;
   } else {
     // Update sent bytes.
-    this->sentBytes += len;
+    this->sent_bytes_ += len;
   }
 }
 
 bool UdpSocket::SetLocalAddress() {
   int err;
-  int len = sizeof(this->localAddr);
+  int len = sizeof(this->local_addr_);
 
-  err = uv_udp_getsockname(this->uvHandle,
-                           reinterpret_cast<struct sockaddr*>(&this->localAddr),
-                           &len);
+  err = uv_udp_getsockname(
+      this->uv_handle_, reinterpret_cast<struct sockaddr*>(&this->local_addr_),
+      &len);
 
   if (err != 0) {
     std::cout << "[udp_socket] uv_udp_getsockname() failed: "
@@ -210,13 +210,14 @@ bool UdpSocket::SetLocalAddress() {
 
   int family;
 
-  IP::GetAddressInfo(reinterpret_cast<const struct sockaddr*>(&this->localAddr),
-                     family, this->localIp, this->localPort);
+  IP::GetAddressInfo(
+      reinterpret_cast<const struct sockaddr*>(&this->local_addr_), family,
+      this->local_ip_, this->local_port_);
 
   return true;
 }
 
-inline void UdpSocket::OnUvRecvAlloc(size_t /*suggestedSize*/, uv_buf_t* buf) {
+inline void UdpSocket::OnUvRecvAlloc(size_t /*suggested_size*/, uv_buf_t* buf) {
   // Tell UV to write into the static buffer.
   buf->base = reinterpret_cast<char*>(ReadBuffer);
   // Give UV all the buffer space.
@@ -242,7 +243,7 @@ inline void UdpSocket::OnUvRecv(ssize_t nread, const uv_buf_t* buf,
   // Data received.
   if (nread > 0) {
     // Update received bytes.
-    this->recvBytes += nread;
+    this->recv_bytes_ += nread;
 
     // Notify the subclass.
     UserOnUdpDatagramReceived(reinterpret_cast<uint8_t*>(buf->base), nread,
@@ -250,8 +251,7 @@ inline void UdpSocket::OnUvRecv(ssize_t nread, const uv_buf_t* buf,
   }
   // Some error.
   else {
-    std::cout << "[udp_socket] read error: "
-              << uv_strerror(nread) << std::endl;
+    std::cout << "[udp_socket] read error: " << uv_strerror(nread) << std::endl;
   }
 }
 

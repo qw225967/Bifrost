@@ -27,10 +27,12 @@ class Settings {
 
  public:
   static void SetConfiguration(int argc, char* argv[]);
+  static void AnalysisConfigurationFile(std::string config_path);
   static void PrintConfiguration();
 
  public:
-  static struct Configuration configuration;
+  static struct Configuration server_configuration_;
+  static std::map<std::string, Configuration> client_configuration_map_;
 };
 }  // namespace bifrost
 

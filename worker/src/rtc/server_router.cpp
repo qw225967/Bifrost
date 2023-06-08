@@ -16,7 +16,7 @@ ServerRouter* ServerRouter::udp_router_ = nullptr;
 
 ServerRouter::~ServerRouter() {
   delete udp_router_;
-  PortManager::UnbindUdp(this->localIp, this->localPort);
+  PortManager::UnbindUdp(this->local_ip_, this->local_port_);
 
   peer_map_.clear();
   username_map_.clear();
