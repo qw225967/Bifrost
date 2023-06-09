@@ -138,6 +138,8 @@ CMakeFiles/worker.dir/src/main.cpp.o
  ../include/io/udp_socket.h
  ../include/io/uv_loop.h
  ../include/rtc/server_router.h
+ ../include/utils/common.h
+ ../include/utils/setting.h
  ../third_party/libuv/include/uv.h
  ../third_party/libuv/include/uv/aix.h
  ../third_party/libuv/include/uv/bsd.h
@@ -181,6 +183,43 @@ CMakeFiles/worker.dir/src/rtc/transport.cpp.o
 CMakeFiles/worker.dir/src/utils/setting.cpp.o
  ../include/utils/common.h
  ../include/utils/setting.h
+ ../third_party/json/include/nlohmann/adl_serializer.hpp
+ ../third_party/json/include/nlohmann/byte_container_with_subtype.hpp
+ ../third_party/json/include/nlohmann/detail/conversions/from_json.hpp
+ ../third_party/json/include/nlohmann/detail/conversions/to_chars.hpp
+ ../third_party/json/include/nlohmann/detail/conversions/to_json.hpp
+ ../third_party/json/include/nlohmann/detail/exceptions.hpp
+ ../third_party/json/include/nlohmann/detail/hash.hpp
+ ../third_party/json/include/nlohmann/detail/input/binary_reader.hpp
+ ../third_party/json/include/nlohmann/detail/input/input_adapters.hpp
+ ../third_party/json/include/nlohmann/detail/input/json_sax.hpp
+ ../third_party/json/include/nlohmann/detail/input/lexer.hpp
+ ../third_party/json/include/nlohmann/detail/input/parser.hpp
+ ../third_party/json/include/nlohmann/detail/input/position_t.hpp
+ ../third_party/json/include/nlohmann/detail/iterators/internal_iterator.hpp
+ ../third_party/json/include/nlohmann/detail/iterators/iter_impl.hpp
+ ../third_party/json/include/nlohmann/detail/iterators/iteration_proxy.hpp
+ ../third_party/json/include/nlohmann/detail/iterators/iterator_traits.hpp
+ ../third_party/json/include/nlohmann/detail/iterators/json_reverse_iterator.hpp
+ ../third_party/json/include/nlohmann/detail/iterators/primitive_iterator.hpp
+ ../third_party/json/include/nlohmann/detail/json_pointer.hpp
+ ../third_party/json/include/nlohmann/detail/json_ref.hpp
+ ../third_party/json/include/nlohmann/detail/macro_scope.hpp
+ ../third_party/json/include/nlohmann/detail/macro_unscope.hpp
+ ../third_party/json/include/nlohmann/detail/meta/cpp_future.hpp
+ ../third_party/json/include/nlohmann/detail/meta/detected.hpp
+ ../third_party/json/include/nlohmann/detail/meta/is_sax.hpp
+ ../third_party/json/include/nlohmann/detail/meta/type_traits.hpp
+ ../third_party/json/include/nlohmann/detail/meta/void_t.hpp
+ ../third_party/json/include/nlohmann/detail/output/binary_writer.hpp
+ ../third_party/json/include/nlohmann/detail/output/output_adapters.hpp
+ ../third_party/json/include/nlohmann/detail/output/serializer.hpp
+ ../third_party/json/include/nlohmann/detail/value_t.hpp
+ ../third_party/json/include/nlohmann/json.hpp
+ ../third_party/json/include/nlohmann/json_fwd.hpp
+ ../third_party/json/include/nlohmann/ordered_map.hpp
+ ../third_party/json/include/nlohmann/thirdparty/hedley/hedley.hpp
+ ../third_party/json/include/nlohmann/thirdparty/hedley/hedley_undef.hpp
  /Users/admin/go/src/github.com/Bifrost/worker/src/utils/setting.cpp
 CMakeFiles/worker.dir/src/utils/utils.cpp.o
  ../include/io/uv_loop.h

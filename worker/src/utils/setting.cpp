@@ -10,8 +10,10 @@
 #include "setting.h"
 
 #include <cctype>  // isprint()
+#include <fstream>
 #include <iostream>
 #include <iterator>  // std::ostream_iterator
+#include <json.hpp>
 extern "C" {
 #include <getopt.h>
 }
@@ -80,4 +82,84 @@ void Settings::SetConfiguration(int argc, char* argv[]) {
 }
 
 void Settings::PrintConfiguration() {}
+
+void Settings::AnalysisConfigurationFile(std::string config_path) {
+  using json = nlohmann::json;
+
+  if (config_path.empty()) {
+    return;
+  }
+
+  std::ifstream json_file(config_path.c_str());
+  json config;
+  json_file >> config;
+
+  auto server_iter = config.find("ServerConfig");
+  if (server_iter == config.end()) {
+    std::cout << "[setting] server config can not find";
+  } else {
+    std::string server_ip;
+    std::string server_name;
+    uint16_t server_port;
+    // name
+    auto name_iter = server_iter->find("userName");
+    if (name_iter == server_iter->end()) {
+      std::cout << "[setting] server config can not find name";
+    } else {
+      server_name = name_iter->get<std::string>();
+    }
+
+    // ip
+    auto ip_iter = server_iter->find("rtcIp");
+    if (ip_iter == server_iter->end()) {
+      std::cout << "[setting] server config can not find ip";
+    } else {
+      server_ip = ip_iter->get<std::string>();
+    }
+
+    // port
+    auto port_iter = server_iter->find("rtcPort");
+    if (port_iter == server_iter->end()) {
+      std::cout << "[setting] server config can not find port";
+    } else {
+      server_port = port_iter->get<uint16_t>();
+    }
+
+    Configuration server_config(server_name, server_ip, server_port);
+    server_configuration_ = server_config;
+  }
+
+  for (auto client : config["ClientConfigs"]) {
+    std::string client_ip;
+    std::string client_name;
+    uint16_t client_port;
+    // name
+    auto name_iter = client.find("userName");
+    if (name_iter == client.end()) {
+      std::cout << "[setting] client config can not find name";
+    } else {
+      client_name = name_iter->get<std::string>();
+    }
+
+    // ip
+    auto ip_iter = client.find("rtcIp");
+    if (ip_iter == client.end()) {
+      std::cout << "[setting] client config can not find ip";
+    } else {
+      client_ip = ip_iter->get<std::string>();
+    }
+
+    // port
+    auto port_iter = client.find("rtcPort");
+    if (port_iter == client.end()) {
+      std::cout << "[setting] client config can not find port";
+    } else {
+      client_port = port_iter->get<uint16_t>();
+    }
+
+    Configuration client_config(client_name, client_ip, client_port);
+    client_configuration_map_[client_name] = client_config;
+  }
+}
+
 }  // namespace bifrost

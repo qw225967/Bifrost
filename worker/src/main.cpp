@@ -12,11 +12,14 @@
 
 #include "server_router.h"
 #include "uv_loop.h"
+#include "setting.h"
 
 int main() {
   bifrost::UvLoop::ClassInit();
 
   bifrost::ServerRouter::GetServerRouter();
+
+  bifrost::Settings::AnalysisConfigurationFile("../conf/config.json");
 
   bifrost::UvLoop::PrintVersion();
   bifrost::UvLoop::RunLoop();

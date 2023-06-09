@@ -1,0 +1,22 @@
+{
+  "ServerConfig": {
+    "userName": "server",
+    "rtcPort": 9000,
+    "rtcIp": "127.0.0.1"
+  },
+  "ClientConfigs": [
+    {
+      "userName": "client_1",
+      "rtcPort": 9001,
+      "rtcIp": "127.0.0.1"
+    }
+  ],
+  "ExperimentConfig": {
+    "NackExperiment": {
+    },
+    "FecExperiment": {
+    },
+    "GccExperiment": {
+    }
+  }
+}

@@ -14,6 +14,8 @@
 
 #include <string>
 
+#include "setting.h"
+
 namespace bifrost {
 class PortManager {
  private:
@@ -21,6 +23,9 @@ class PortManager {
 
  public:
   static uv_udp_t* BindUdp() { return reinterpret_cast<uv_udp_t*>(BindPort()); }
+  static uv_udp_t* BindUdp(Settings::Configuration config) {
+    return reinterpret_cast<uv_udp_t*>(BindPort(config));
+  }
   static uv_tcp_t* BindTcp(std::string& ip) {
     return reinterpret_cast<uv_tcp_t*>(Bind(Transport::TCP, ip));
   }
@@ -37,6 +42,7 @@ class PortManager {
   static std::vector<bool>& GetPorts(Transport transport,
                                      const std::string& ip);
   static uv_handle_t* BindPort();
+  static uv_handle_t* BindPort(Settings::Configuration config);
 };
 }  // namespace bifrost
 
