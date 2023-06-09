@@ -18,7 +18,8 @@
 static inline void onClose(uv_handle_t* handle) { delete handle; }
 
 namespace bifrost {
-uv_handle_t* PortManager::BindPort(Settings::Configuration config) {
+uv_handle_t* PortManager::BindPort(Settings::Configuration config,
+                                   uv_loop_t* loop) {
   std::cout << "[port manager] BindPort by config befor "
             << config.rtcIp.c_str() << std::endl;
   // First normalize the IP. This may throw if invalid IP.
@@ -31,7 +32,7 @@ uv_handle_t* PortManager::BindPort(Settings::Configuration config) {
   uv_handle_t* uvHandle{nullptr};
   int err;
   int flags{0};
-  int family = IP::GetFamily(config.rtcIp);
+  int family = IP::get_family(config.rtcIp);
   switch (family) {
     case AF_INET: {
       err = uv_ip4_addr(config.rtcIp.c_str(), 0,
@@ -81,8 +82,7 @@ uv_handle_t* PortManager::BindPort(Settings::Configuration config) {
   }
 
   uvHandle = reinterpret_cast<uv_handle_t*>(new uv_udp_t());
-  uv_udp_init_ex(UvLoop::GetLoop(), reinterpret_cast<uv_udp_t*>(uvHandle),
-                 UV_UDP_RECVMMSG);
+  uv_udp_init_ex(loop, reinterpret_cast<uv_udp_t*>(uvHandle), UV_UDP_RECVMMSG);
   uv_udp_bind(reinterpret_cast<uv_udp_t*>(uvHandle),
               reinterpret_cast<const struct sockaddr*>(&bind_addr), flags);
   // If it failed, close the handle and check the reason.
@@ -92,7 +92,7 @@ uv_handle_t* PortManager::BindPort(Settings::Configuration config) {
 }
 
 /* Class methods. */
-uv_handle_t* PortManager::BindPort() {
+uv_handle_t* PortManager::BindPort(uv_loop_t* loop) {
   std::cout << "[port manager] BindPort befor "
             << Settings::server_configuration_.rtcIp.c_str() << std::endl;
   // First normalize the IP. This may throw if invalid IP.
@@ -105,7 +105,7 @@ uv_handle_t* PortManager::BindPort() {
   uv_handle_t* uvHandle{nullptr};
   int err;
   int flags{0};
-  int family = IP::GetFamily(Settings::server_configuration_.rtcIp);
+  int family = IP::get_family(Settings::server_configuration_.rtcIp);
   switch (family) {
     case AF_INET: {
       err = uv_ip4_addr(Settings::server_configuration_.rtcIp.c_str(), 0,
@@ -155,8 +155,7 @@ uv_handle_t* PortManager::BindPort() {
   }
 
   uvHandle = reinterpret_cast<uv_handle_t*>(new uv_udp_t());
-  uv_udp_init_ex(UvLoop::GetLoop(), reinterpret_cast<uv_udp_t*>(uvHandle),
-                 UV_UDP_RECVMMSG);
+  uv_udp_init_ex(loop, reinterpret_cast<uv_udp_t*>(uvHandle), UV_UDP_RECVMMSG);
   uv_udp_bind(reinterpret_cast<uv_udp_t*>(uvHandle),
               reinterpret_cast<const struct sockaddr*>(&bind_addr), flags);
   // If it failed, close the handle and check the reason.

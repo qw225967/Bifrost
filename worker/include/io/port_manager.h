@@ -22,9 +22,11 @@ class PortManager {
   enum class Transport : uint8_t { UDP = 1, TCP };
 
  public:
-  static uv_udp_t* BindUdp() { return reinterpret_cast<uv_udp_t*>(BindPort()); }
-  static uv_udp_t* BindUdp(Settings::Configuration config) {
-    return reinterpret_cast<uv_udp_t*>(BindPort(config));
+  static uv_udp_t* BindUdp(uv_loop_t* loop) {
+    return reinterpret_cast<uv_udp_t*>(BindPort(loop));
+  }
+  static uv_udp_t* BindUdp(Settings::Configuration config, uv_loop_t* loop) {
+    return reinterpret_cast<uv_udp_t*>(BindPort(config, loop));
   }
   static uv_tcp_t* BindTcp(std::string& ip) {
     return reinterpret_cast<uv_tcp_t*>(Bind(Transport::TCP, ip));
@@ -41,8 +43,8 @@ class PortManager {
   static void Unbind(Transport transport, std::string& ip, uint16_t port);
   static std::vector<bool>& GetPorts(Transport transport,
                                      const std::string& ip);
-  static uv_handle_t* BindPort();
-  static uv_handle_t* BindPort(Settings::Configuration config);
+  static uv_handle_t* BindPort(uv_loop_t* loop);
+  static uv_handle_t* BindPort(Settings::Configuration config, uv_loop_t* loop);
 };
 }  // namespace bifrost
 

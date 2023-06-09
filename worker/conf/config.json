@@ -1,9 +1,4 @@
 {
-  "ServerConfig": {
-    "userName": "server",
-    "rtcPort": 9000,
-    "rtcIp": "127.0.0.1"
-  },
   "ClientConfigs": [
     {
       "userName": "client_1",

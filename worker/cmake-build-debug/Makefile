@@ -225,54 +225,6 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
-src/rtc/client_router.o: src/rtc/client_router.cpp.o
-.PHONY : src/rtc/client_router.o
-
-# target to build an object file
-src/rtc/client_router.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/rtc/client_router.cpp.o
-.PHONY : src/rtc/client_router.cpp.o
-
-src/rtc/client_router.i: src/rtc/client_router.cpp.i
-.PHONY : src/rtc/client_router.i
-
-# target to preprocess a source file
-src/rtc/client_router.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/rtc/client_router.cpp.i
-.PHONY : src/rtc/client_router.cpp.i
-
-src/rtc/client_router.s: src/rtc/client_router.cpp.s
-.PHONY : src/rtc/client_router.s
-
-# target to generate assembly for a file
-src/rtc/client_router.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/rtc/client_router.cpp.s
-.PHONY : src/rtc/client_router.cpp.s
-
-src/rtc/server_router.o: src/rtc/server_router.cpp.o
-.PHONY : src/rtc/server_router.o
-
-# target to build an object file
-src/rtc/server_router.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/rtc/server_router.cpp.o
-.PHONY : src/rtc/server_router.cpp.o
-
-src/rtc/server_router.i: src/rtc/server_router.cpp.i
-.PHONY : src/rtc/server_router.i
-
-# target to preprocess a source file
-src/rtc/server_router.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/rtc/server_router.cpp.i
-.PHONY : src/rtc/server_router.cpp.i
-
-src/rtc/server_router.s: src/rtc/server_router.cpp.s
-.PHONY : src/rtc/server_router.s
-
-# target to generate assembly for a file
-src/rtc/server_router.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/rtc/server_router.cpp.s
-.PHONY : src/rtc/server_router.cpp.s
-
 src/rtc/transport.o: src/rtc/transport.cpp.o
 .PHONY : src/rtc/transport.o
 
@@ -296,6 +248,30 @@ src/rtc/transport.s: src/rtc/transport.cpp.s
 src/rtc/transport.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/rtc/transport.cpp.s
 .PHONY : src/rtc/transport.cpp.s
+
+src/rtc/udp_router.o: src/rtc/udp_router.cpp.o
+.PHONY : src/rtc/udp_router.o
+
+# target to build an object file
+src/rtc/udp_router.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/rtc/udp_router.cpp.o
+.PHONY : src/rtc/udp_router.cpp.o
+
+src/rtc/udp_router.i: src/rtc/udp_router.cpp.i
+.PHONY : src/rtc/udp_router.i
+
+# target to preprocess a source file
+src/rtc/udp_router.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/rtc/udp_router.cpp.i
+.PHONY : src/rtc/udp_router.cpp.i
+
+src/rtc/udp_router.s: src/rtc/udp_router.cpp.s
+.PHONY : src/rtc/udp_router.s
+
+# target to generate assembly for a file
+src/rtc/udp_router.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/rtc/udp_router.cpp.s
+.PHONY : src/rtc/udp_router.cpp.s
 
 src/utils/setting.o: src/utils/setting.cpp.o
 .PHONY : src/utils/setting.o
@@ -366,15 +342,12 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
-	@echo "... src/rtc/client_router.o"
-	@echo "... src/rtc/client_router.i"
-	@echo "... src/rtc/client_router.s"
-	@echo "... src/rtc/server_router.o"
-	@echo "... src/rtc/server_router.i"
-	@echo "... src/rtc/server_router.s"
 	@echo "... src/rtc/transport.o"
 	@echo "... src/rtc/transport.i"
 	@echo "... src/rtc/transport.s"
+	@echo "... src/rtc/udp_router.o"
+	@echo "... src/rtc/udp_router.i"
+	@echo "... src/rtc/udp_router.s"
 	@echo "... src/utils/setting.o"
 	@echo "... src/utils/setting.i"
 	@echo "... src/utils/setting.s"

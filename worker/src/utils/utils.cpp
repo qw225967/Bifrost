@@ -83,7 +83,7 @@ void IP::NormalizeIp(std::string& ip) {
   char ipBuffer[INET6_ADDRSTRLEN] = {0};
   int err;
 
-  switch (IP::GetFamily(ip)) {
+  switch (IP::get_family(ip)) {
     case AF_INET: {
       err = uv_ip4_addr(ip.c_str(), 0,
                         reinterpret_cast<struct sockaddr_in*>(&addrStorage));

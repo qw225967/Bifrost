@@ -4,7 +4,8 @@
  * @mail        : qw225967@github.com
  * @project     : worker
  * @file        : client_server.h
- * @description : TODO
+ * @description : 这是一个可多次申请的udp路由类，当处于多接发模式时使用
+ *                该类主要用于需要独立使用socket的方式
  *******************************************************/
 
 #ifndef WORKER_CLIENT_SERVER_H
@@ -18,41 +19,37 @@
 #include "udp_socket.h"
 
 namespace bifrost {
-class ClientRouter : public UdpSocket {
+
+class UdpRouter : public UdpSocket {
  public:
-  class ClientRouterObServer {
+  class UdpRouterObServer {
    public:
-    virtual void OnClientRouterPacketReceived(
-        bifrost::ClientRouter* socket, const uint8_t* data, size_t len,
+    virtual void OnUdpRouterPacketReceived(
+        bifrost::UdpRouter* socket, const uint8_t* data, size_t len,
         const struct sockaddr* remoteAddr) = 0;
   };
+  typedef std::shared_ptr<UdpRouterObServer> UdpRouterObServerPtr;
 
- protected:
   /* Instance methods. */
-  ClientRouter() : UdpSocket(PortManager::BindUdp()) {}
+  UdpRouter(uv_loop_t* loop) : UdpSocket(PortManager::BindUdp(loop)) {}
+  UdpRouter(Settings::Configuration config, uv_loop_t* loop)
+      : UdpSocket(PortManager::BindUdp(config, loop)) {}
 
  public:
-  ClientRouter(ClientRouter& other) = delete;
-  void operator=(const ClientRouter&) = delete;
+  UdpRouter(UdpRouter& other) = delete;
+  void operator=(const UdpRouter&) = delete;
 
  public:
-  ~ClientRouter() override;
+  ~UdpRouter() override;
 
-  /* Pure virtual methods inherited from ::ClientRouter. */
+  /* Pure virtual methods inherited from ::UdpRouter. */
  public:
   void UserOnUdpDatagramReceived(const uint8_t* data, size_t len,
                                  const struct sockaddr* addr) override;
   //  RTC::RTCP::Packet* RtcpDataReceived(const uint8_t* data, size_t len);
   //  RTC::RtpPacket* RtpDataReceived(const uint8_t* data, size_t len);
-
- public:
-  // Passed by argument.
-  std::unordered_map<uint32_t, ClientRouterObServer*> observer_;
-
  private:
-  std::unordered_map<std::string, ClientRouterObServer*> username_map_;
-  std::unordered_map<std::string, ClientRouterObServer*> peer_map_;
-  std::unordered_map<std::string, std::vector<std::string>*> user_peer_map_;
+  UdpRouterObServerPtr observer;
 };
 }  // namespace bifrost
 

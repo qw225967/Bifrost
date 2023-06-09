@@ -31,10 +31,10 @@ using json = nlohmann::json;
 namespace bifrost {
 class IP {
  public:
-  static int GetFamily(const std::string& ip);
+  static int get_family(const std::string& ip);
 
-  static void GetAddressInfo(const struct sockaddr* addr, int& family,
-                             std::string& ip, uint16_t& port);
+  static void get_address_info(const struct sockaddr* addr, int& family,
+                               std::string& ip, uint16_t& port);
 
   static bool CompareAddresses(const struct sockaddr* addr1,
                                const struct sockaddr* addr2) {
@@ -110,50 +110,50 @@ class Byte {
    * Getters below get value in Host Byte Order.
    * Setters below set value in Network Byte Order.
    */
-  static uint8_t Get1Byte(const uint8_t* data, size_t i) { return data[i]; }
+  static uint8_t get_1_byte(const uint8_t* data, size_t i) { return data[i]; }
 
-  static uint16_t Get2Bytes(const uint8_t* data, size_t i) {
+  static uint16_t get_2_bytes(const uint8_t* data, size_t i) {
     return uint16_t{data[i + 1]} | uint16_t{data[i]} << 8;
   }
 
-  static uint32_t Get3Bytes(const uint8_t* data, size_t i) {
+  static uint32_t get_3_bytes(const uint8_t* data, size_t i) {
     return uint32_t{data[i + 2]} | uint32_t{data[i + 1]} << 8 |
            uint32_t{data[i]} << 16;
   }
 
-  static uint32_t Get4Bytes(const uint8_t* data, size_t i) {
+  static uint32_t get_4_bytes(const uint8_t* data, size_t i) {
     return uint32_t{data[i + 3]} | uint32_t{data[i + 2]} << 8 |
            uint32_t{data[i + 1]} << 16 | uint32_t{data[i]} << 24;
   }
 
-  static uint64_t Get8Bytes(const uint8_t* data, size_t i) {
-    return uint64_t{Byte::Get4Bytes(data, i)} << 32 |
-           Byte::Get4Bytes(data, i + 4);
+  static uint64_t get_8_bytes(const uint8_t* data, size_t i) {
+    return uint64_t{Byte::get_4_bytes(data, i)} << 32 |
+           Byte::get_4_bytes(data, i + 4);
   }
 
-  static void Set1Byte(uint8_t* data, size_t i, uint8_t value) {
+  static void set_1_byte(uint8_t* data, size_t i, uint8_t value) {
     data[i] = value;
   }
 
-  static void Set2Bytes(uint8_t* data, size_t i, uint16_t value) {
+  static void set_2_byte(uint8_t* data, size_t i, uint16_t value) {
     data[i + 1] = static_cast<uint8_t>(value);
     data[i] = static_cast<uint8_t>(value >> 8);
   }
 
-  static void Set3Bytes(uint8_t* data, size_t i, uint32_t value) {
+  static void set_3_byte(uint8_t* data, size_t i, uint32_t value) {
     data[i + 2] = static_cast<uint8_t>(value);
     data[i + 1] = static_cast<uint8_t>(value >> 8);
     data[i] = static_cast<uint8_t>(value >> 16);
   }
 
-  static void Set4Bytes(uint8_t* data, size_t i, uint32_t value) {
+  static void set_4_byte(uint8_t* data, size_t i, uint32_t value) {
     data[i + 3] = static_cast<uint8_t>(value);
     data[i + 2] = static_cast<uint8_t>(value >> 8);
     data[i + 1] = static_cast<uint8_t>(value >> 16);
     data[i] = static_cast<uint8_t>(value >> 24);
   }
 
-  static void Set8Bytes(uint8_t* data, size_t i, uint64_t value) {
+  static void set_8_byte(uint8_t* data, size_t i, uint64_t value) {
     data[i + 7] = static_cast<uint8_t>(value);
     data[i + 6] = static_cast<uint8_t>(value >> 8);
     data[i + 5] = static_cast<uint8_t>(value >> 16);
@@ -193,7 +193,7 @@ class Crypto {
   static void ClassInit();
   static void ClassDestroy();
 
-  static uint32_t GetRandomUInt(uint32_t min, uint32_t max) {
+  static uint32_t get_random_u_int(uint32_t min, uint32_t max) {
     // NOTE: This is the original, but produces very small values.
     // Crypto::seed = (214013 * Crypto::seed) + 2531011;
     // return (((Crypto::seed>>16)&0x7FFF) % (max - min + 1)) + min;
@@ -219,7 +219,7 @@ class Crypto {
     if (len > 64) len = 64;
 
     for (size_t i{0}; i < len; ++i) {
-      buffer[i] = chars[GetRandomUInt(0, sizeof(chars) - 1)];
+      buffer[i] = chars[get_random_u_int(0, sizeof(chars) - 1)];
     }
 
     return std::string(buffer, len);
@@ -236,8 +236,8 @@ class Crypto {
     return crc ^ ~0U;
   }
 
-  static const uint8_t* GetHmacShA1(const std::string& key, const uint8_t* data,
-                                    size_t len);
+  static const uint8_t* get_hmac_sh_a1(const std::string& key,
+                                       const uint8_t* data, size_t len);
 
  private:
   static uint32_t seed;

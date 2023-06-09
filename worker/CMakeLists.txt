@@ -28,11 +28,9 @@ include_directories(third_party/libuv/include/uv)
 link_directories(third_party/libuv/build)
 
 add_executable(worker
-        include/rtc/client_router.h
-        include/rtc/server_router.h
+        include/rtc/udp_router.h
         include/rtc/transport.h
-        src/rtc/client_router.cpp
-        src/rtc/server_router.cpp
+        src/rtc/udp_router.cpp
         src/rtc/transport.cpp
         include/io/port_manager.h
         include/io/udp_socket.h

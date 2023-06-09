@@ -10,19 +10,20 @@
 #include <string>
 #include <thread>
 
-#include "server_router.h"
 #include "setting.h"
+#include "static_router.h"
 #include "uv_loop.h"
 
 int main() {
   // 初始化 libuv loop
-  bifrost::UvLoop::ClassInit();
+  bifrost::UvLoop loop;
+  loop.ClassInit();
 
   // 读取配置文件
-  bifrost::Settings::AnalysisConfigurationFile("../conf/config.json");
+  bifrost::Settings::AnalysisConfigurationFile(CONFIG_FILE_PATH_STRING);
 
   // 启动事件循环
-  bifrost::UvLoop::RunLoop();
+  loop.RunLoop();
 
   return 0;
 }

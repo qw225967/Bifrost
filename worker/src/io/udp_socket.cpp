@@ -210,7 +210,7 @@ bool UdpSocket::SetLocalAddress() {
 
   int family;
 
-  IP::GetAddressInfo(
+  IP::get_address_info(
       reinterpret_cast<const struct sockaddr*>(&this->local_addr_), family,
       this->local_ip_, this->local_port_);
 

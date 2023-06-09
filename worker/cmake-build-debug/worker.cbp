@@ -125,13 +125,10 @@
 		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/include/io/uv_loop.h">
 			<Option target="worker"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/include/rtc/client_router.h">
-			<Option target="worker"/>
-		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/include/rtc/server_router.h">
-			<Option target="worker"/>
-		</Unit>
 		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/include/rtc/transport.h">
+			<Option target="worker"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/include/rtc/udp_router.h">
 			<Option target="worker"/>
 		</Unit>
 		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/include/utils/common.h">
@@ -155,13 +152,10 @@
 		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/src/main.cpp">
 			<Option target="worker"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/src/rtc/client_router.cpp">
-			<Option target="worker"/>
-		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/src/rtc/server_router.cpp">
-			<Option target="worker"/>
-		</Unit>
 		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/src/rtc/transport.cpp">
+			<Option target="worker"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/src/rtc/udp_router.cpp">
 			<Option target="worker"/>
 		</Unit>
 		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/src/utils/setting.cpp">
