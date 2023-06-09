@@ -31,11 +31,9 @@ add_executable(worker
         include/rtc/client_router.h
         include/rtc/server_router.h
         include/rtc/transport.h
-        include/rtc/rtc_server.h
         src/rtc/client_router.cpp
         src/rtc/server_router.cpp
         src/rtc/transport.cpp
-        src/rtc/rtc_server.cpp
         include/io/port_manager.h
         include/io/udp_socket.h
         include/io/uv_loop.h

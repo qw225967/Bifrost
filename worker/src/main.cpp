@@ -11,17 +11,17 @@
 #include <thread>
 
 #include "server_router.h"
-#include "uv_loop.h"
 #include "setting.h"
+#include "uv_loop.h"
 
 int main() {
+  // 初始化 libuv loop
   bifrost::UvLoop::ClassInit();
 
-  bifrost::ServerRouter::GetServerRouter();
-
+  // 读取配置文件
   bifrost::Settings::AnalysisConfigurationFile("../conf/config.json");
 
-  bifrost::UvLoop::PrintVersion();
+  // 启动事件循环
   bifrost::UvLoop::RunLoop();
 
   return 0;

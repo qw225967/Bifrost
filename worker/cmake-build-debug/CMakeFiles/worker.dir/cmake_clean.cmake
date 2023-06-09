@@ -4,7 +4,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/worker.dir/src/io/uv_loop.cpp.o"
   "CMakeFiles/worker.dir/src/main.cpp.o"
   "CMakeFiles/worker.dir/src/rtc/client_router.cpp.o"
-  "CMakeFiles/worker.dir/src/rtc/rtc_server.cpp.o"
   "CMakeFiles/worker.dir/src/rtc/server_router.cpp.o"
   "CMakeFiles/worker.dir/src/rtc/transport.cpp.o"
   "CMakeFiles/worker.dir/src/utils/setting.cpp.o"

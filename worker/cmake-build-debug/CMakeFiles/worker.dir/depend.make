@@ -156,6 +156,25 @@ CMakeFiles/worker.dir/src/main.cpp.o: \
  ../third_party/libuv/include/uv/win.h \
  ../src/main.cpp
 CMakeFiles/worker.dir/src/rtc/client_router.cpp.o: \
+ ../include/io/port_manager.h \
+ ../include/io/udp_socket.h \
+ ../include/rtc/client_router.h \
+ ../include/utils/common.h \
+ ../include/utils/setting.h \
+ ../third_party/libuv/include/uv.h \
+ ../third_party/libuv/include/uv/aix.h \
+ ../third_party/libuv/include/uv/bsd.h \
+ ../third_party/libuv/include/uv/darwin.h \
+ ../third_party/libuv/include/uv/errno.h \
+ ../third_party/libuv/include/uv/linux.h \
+ ../third_party/libuv/include/uv/os390.h \
+ ../third_party/libuv/include/uv/posix.h \
+ ../third_party/libuv/include/uv/sunos.h \
+ ../third_party/libuv/include/uv/threadpool.h \
+ ../third_party/libuv/include/uv/tree.h \
+ ../third_party/libuv/include/uv/unix.h \
+ ../third_party/libuv/include/uv/version.h \
+ ../third_party/libuv/include/uv/win.h \
  ../src/rtc/client_router.cpp
 CMakeFiles/worker.dir/src/rtc/rtc_server.cpp.o: \
  ../src/rtc/rtc_server.cpp
@@ -163,6 +182,8 @@ CMakeFiles/worker.dir/src/rtc/server_router.cpp.o: \
  ../include/io/port_manager.h \
  ../include/io/udp_socket.h \
  ../include/rtc/server_router.h \
+ ../include/utils/common.h \
+ ../include/utils/setting.h \
  ../third_party/libuv/include/uv.h \
  ../third_party/libuv/include/uv/aix.h \
  ../third_party/libuv/include/uv/bsd.h \

@@ -81,12 +81,12 @@ clean: CMakeFiles/worker.dir/clean
 CMakeFiles/worker.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11 "Built target worker"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10 "Built target worker"
 .PHONY : CMakeFiles/worker.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/worker.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles 11
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles 10
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/worker.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/worker.dir/rule

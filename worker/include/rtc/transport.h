@@ -15,12 +15,10 @@
 namespace bifrost {
 class Transport {
  public:
-  Transport(UdpRouter* router, sockaddr* addr) {}
+  Transport() {}
   ~Transport() {}
 
  private:
-  UdpRouter* udp_router_;
-  sockaddr* send_addr_;
 };
 }  // namespace bifrost
 
