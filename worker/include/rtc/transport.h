@@ -16,10 +16,12 @@
 namespace bifrost {
 typedef std::shared_ptr<UvLoop> UvLoopPtr;
 typedef std::shared_ptr<UdpRouter> UdpRouterPtr;
+typedef std::shared_ptr<sockaddr> SockAddressPtr;
 
 class Transport : UdpRouter::UdpRouterObServer {
  public:
-  Transport(Settings::Configuration config);
+  Transport(Settings::Configuration local_config,
+            Settings::Configuration remote_config);
   ~Transport();
 
   void RunLoop() { this->uv_loop_->RunLoop(); }
@@ -27,6 +29,7 @@ class Transport : UdpRouter::UdpRouterObServer {
  private:
   UvLoopPtr uv_loop_;
   UdpRouterPtr udp_router_;
+  SockAddressPtr udp_remote_address_;
 };
 }  // namespace bifrost
 

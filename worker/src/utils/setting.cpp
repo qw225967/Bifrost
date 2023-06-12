@@ -14,6 +14,8 @@
 #include <iostream>
 #include <iterator>  // std::ostream_iterator
 #include <json.hpp>
+
+#include "utils.h"
 extern "C" {
 #include <getopt.h>
 }
@@ -81,6 +83,45 @@ void Settings::SetConfiguration(int argc, char* argv[]) {
   }
 }
 
+sockaddr Settings::get_sockaddr_by_config(Configuration config) {
+  std::string ip(config.rtcIp);
+  uint16_t port(config.rtcPort);
+
+  sockaddr remote_addr;
+
+  int err;
+
+  switch (IP::get_family(ip)) {
+    case AF_INET: {
+      err = uv_ip4_addr(ip.c_str(), static_cast<int>(port),
+                        reinterpret_cast<struct sockaddr_in*>(&remote_addr));
+
+      if (err != 0)
+        std::cout << "[setting] uv_ip4_addr() failed: " << uv_strerror(err)
+                  << std::endl;
+
+      break;
+    }
+
+    case AF_INET6: {
+      err = uv_ip6_addr(ip.c_str(), static_cast<int>(port),
+                        reinterpret_cast<struct sockaddr_in6*>(&remote_addr));
+
+      if (err != 0)
+        std::cout << "[setting] uv_ip6_addr() failed: " << uv_strerror(err)
+                  << std::endl;
+
+      break;
+    }
+
+    default: {
+      std::cout << "[setting] invalid IP " << ip.c_str() << std::endl;
+    }
+  }
+
+  return remote_addr;
+}
+
 void Settings::PrintConfiguration() {}
 
 void Settings::AnalysisConfigurationFile(std::string config_path) {
@@ -129,7 +170,7 @@ void Settings::AnalysisConfigurationFile(std::string config_path) {
     server_configuration_ = server_config;
   }
 
-  for (auto client : config["ClientConfigs"]) {
+  for (auto client : config["LocalClientConfigs"]) {
     std::string client_ip;
     std::string client_name;
     uint16_t client_port;

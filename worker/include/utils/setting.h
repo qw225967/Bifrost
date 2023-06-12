@@ -35,6 +35,9 @@ class Settings {
   static void PrintConfiguration();
 
  public:
+  static sockaddr get_sockaddr_by_config(Configuration config);
+
+ public:
   static struct Configuration server_configuration_;
   static std::map<std::string, Configuration> client_configuration_map_;
 };
