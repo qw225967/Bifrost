@@ -10,18 +10,19 @@
 #ifndef WORKER_DATA_PRODUCER_H
 #define WORKER_DATA_PRODUCER_H
 
+#include "rtp_packet.h"
+#incldue "timer.h"
+#include "uv.h"
+
 namespace bifrost {
-class DataProducer {
+class DataProducer : public UvTimer {
  public:
-  DataProducer() {}
+  DataProducer(uv_loop_t* loop) : UvTimer::UvTimer() {}
   ~DataProducer() {}
 
  public:
-  RangeCreateData() {
-
-  }
-
+  RangeCreateData() {}
 };
-} // namespace bifrost
+}  // namespace bifrost
 
 #endif  // WORKER_DATA_PRODUCER_H
