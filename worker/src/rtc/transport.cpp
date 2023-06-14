@@ -32,12 +32,20 @@ Transport::Transport(Settings::Configuration &local_config,
   auto remote_addr = Settings::get_sockaddr_by_config(remote_config);
   this->udp_remote_address_ = std::make_shared<sockaddr>(remote_addr);
 #endif
+
+  // 4.create data producer
+  this->data_producer_ = std::make_shared<DataProducer>(this->uv_loop_->get_loop().get());
 }
 
 Transport::~Transport() {
   if (this->uv_loop_ != nullptr) this->uv_loop_.reset();
 
   if (this->udp_router_ != nullptr) this->udp_router_.reset();
+}
+
+void Transport::Run() {
+  this->data_producer_->RangeCreateData();
+  this->uv_loop_->RunLoop();
 }
 
 }  // namespace bifrost

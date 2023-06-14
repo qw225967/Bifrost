@@ -11,17 +11,23 @@
 #define WORKER_DATA_PRODUCER_H
 
 #include "rtp_packet.h"
-#incldue "timer.h"
-#include "uv.h"
+#include "uv_timer.h"
+#include "common.h"
 
 namespace bifrost {
-class DataProducer : public UvTimer {
+typedef std::shared_ptr<UvTimer> UvTimerPtr;
+class DataProducer : public UvTimer::Listener {
  public:
-  DataProducer(uv_loop_t* loop) : UvTimer::UvTimer() {}
-  ~DataProducer() {}
+  DataProducer(uv_loop_t* loop);
+  ~DataProducer();
+
+  void OnTimer(UvTimer *timer) override;
 
  public:
-  RangeCreateData() {}
+ void RangeCreateData();
+
+ private:
+  UvTimerPtr producer_timer;
 };
 }  // namespace bifrost
 

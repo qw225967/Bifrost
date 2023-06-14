@@ -30,8 +30,7 @@ include_directories(third_party/libuv/src/unix)
 link_directories(third_party/libuv/build)
 
 add_executable(worker
-        include/io/timer.h
-        src/io/timer.cpp
+        include/io/uv_timer.h
         include/bifrost/data_producer.h
         include/io/port_manager.h
         include/io/udp_socket.h
@@ -43,6 +42,7 @@ add_executable(worker
         include/utils/common.h
         include/utils/setting.h
         include/utils/utils.h
+        src/io/uv_timer.cpp
         src/bifrost/data_producer.cpp
         src/io/port_manager.cpp
         src/io/udp_socket.cpp

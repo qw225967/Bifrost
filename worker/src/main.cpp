@@ -11,18 +11,17 @@
 #include <thread>
 
 #include "setting.h"
-#include "uv_loop.h"
+#include "transport.h"
 
 int main() {
-  // 初始化 libuv loop
-  bifrost::UvLoop loop;
-  loop.ClassInit();
-
   // 读取配置文件
   bifrost::Settings::AnalysisConfigurationFile(CONFIG_FILE_PATH_STRING);
 
-  // 启动事件循环
-  loop.RunLoop();
+  bifrost::Transport t(
+      bifrost::Settings::server_configuration_,
+      bifrost::Settings::client_configuration_map_["remote_client_1"]);
+
+  t.Run();
 
   return 0;
 }

@@ -177,30 +177,6 @@ src/io/port_manager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/io/port_manager.cpp.s
 .PHONY : src/io/port_manager.cpp.s
 
-src/io/timer.o: src/io/timer.cpp.o
-.PHONY : src/io/timer.o
-
-# target to build an object file
-src/io/timer.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/io/timer.cpp.o
-.PHONY : src/io/timer.cpp.o
-
-src/io/timer.i: src/io/timer.cpp.i
-.PHONY : src/io/timer.i
-
-# target to preprocess a source file
-src/io/timer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/io/timer.cpp.i
-.PHONY : src/io/timer.cpp.i
-
-src/io/timer.s: src/io/timer.cpp.s
-.PHONY : src/io/timer.s
-
-# target to generate assembly for a file
-src/io/timer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/io/timer.cpp.s
-.PHONY : src/io/timer.cpp.s
-
 src/io/udp_socket.o: src/io/udp_socket.cpp.o
 .PHONY : src/io/udp_socket.o
 
@@ -248,6 +224,30 @@ src/io/uv_loop.s: src/io/uv_loop.cpp.s
 src/io/uv_loop.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/io/uv_loop.cpp.s
 .PHONY : src/io/uv_loop.cpp.s
+
+src/io/uv_timer.o: src/io/uv_timer.cpp.o
+.PHONY : src/io/uv_timer.o
+
+# target to build an object file
+src/io/uv_timer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/io/uv_timer.cpp.o
+.PHONY : src/io/uv_timer.cpp.o
+
+src/io/uv_timer.i: src/io/uv_timer.cpp.i
+.PHONY : src/io/uv_timer.i
+
+# target to preprocess a source file
+src/io/uv_timer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/io/uv_timer.cpp.i
+.PHONY : src/io/uv_timer.cpp.i
+
+src/io/uv_timer.s: src/io/uv_timer.cpp.s
+.PHONY : src/io/uv_timer.s
+
+# target to generate assembly for a file
+src/io/uv_timer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/io/uv_timer.cpp.s
+.PHONY : src/io/uv_timer.cpp.s
 
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
@@ -432,15 +432,15 @@ help:
 	@echo "... src/io/port_manager.o"
 	@echo "... src/io/port_manager.i"
 	@echo "... src/io/port_manager.s"
-	@echo "... src/io/timer.o"
-	@echo "... src/io/timer.i"
-	@echo "... src/io/timer.s"
 	@echo "... src/io/udp_socket.o"
 	@echo "... src/io/udp_socket.i"
 	@echo "... src/io/udp_socket.s"
 	@echo "... src/io/uv_loop.o"
 	@echo "... src/io/uv_loop.i"
 	@echo "... src/io/uv_loop.s"
+	@echo "... src/io/uv_timer.o"
+	@echo "... src/io/uv_timer.i"
+	@echo "... src/io/uv_timer.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

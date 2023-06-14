@@ -15,7 +15,8 @@
 #include <cstddef>     // size_t
 #include <cstdint>     // uint8_t, etc
 #include <functional>  // std::function
-#include <memory>      // std::addressof()
+#include <iostream>
+#include <memory>  // std::addressof()
 #ifdef _WIN32
 #include <winsock2.h>
 // https://stackoverflow.com/a/27443191/2085408

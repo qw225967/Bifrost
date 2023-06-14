@@ -10,9 +10,9 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_CHECK_CXX
   "/Users/admin/go/src/github.com/Bifrost/worker/src/bifrost/data_producer.cpp" "/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.o"
   "/Users/admin/go/src/github.com/Bifrost/worker/src/io/port_manager.cpp" "/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles/worker.dir/src/io/port_manager.cpp.o"
-  "/Users/admin/go/src/github.com/Bifrost/worker/src/io/timer.cpp" "/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles/worker.dir/src/io/timer.cpp.o"
   "/Users/admin/go/src/github.com/Bifrost/worker/src/io/udp_socket.cpp" "/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles/worker.dir/src/io/udp_socket.cpp.o"
   "/Users/admin/go/src/github.com/Bifrost/worker/src/io/uv_loop.cpp" "/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles/worker.dir/src/io/uv_loop.cpp.o"
+  "/Users/admin/go/src/github.com/Bifrost/worker/src/io/uv_timer.cpp" "/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles/worker.dir/src/io/uv_timer.cpp.o"
   "/Users/admin/go/src/github.com/Bifrost/worker/src/main.cpp" "/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles/worker.dir/src/main.cpp.o"
   "/Users/admin/go/src/github.com/Bifrost/worker/src/rtc/payload_descriptor.cpp" "/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles/worker.dir/src/rtc/payload_descriptor.cpp.o"
   "/Users/admin/go/src/github.com/Bifrost/worker/src/rtc/rtp_packet.cpp" "/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles/worker.dir/src/rtc/rtp_packet.cpp.o"

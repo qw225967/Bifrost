@@ -66,18 +66,18 @@ include CMakeFiles/worker.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/worker.dir/flags.make
 
-CMakeFiles/worker.dir/src/io/timer.cpp.o: CMakeFiles/worker.dir/flags.make
-CMakeFiles/worker.dir/src/io/timer.cpp.o: ../src/io/timer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/worker.dir/src/io/timer.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/io/timer.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/io/timer.cpp
+CMakeFiles/worker.dir/src/io/uv_timer.cpp.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/src/io/uv_timer.cpp.o: ../src/io/uv_timer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/worker.dir/src/io/uv_timer.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/io/uv_timer.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/io/uv_timer.cpp
 
-CMakeFiles/worker.dir/src/io/timer.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/src/io/timer.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/src/io/timer.cpp > CMakeFiles/worker.dir/src/io/timer.cpp.i
+CMakeFiles/worker.dir/src/io/uv_timer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/src/io/uv_timer.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/src/io/uv_timer.cpp > CMakeFiles/worker.dir/src/io/uv_timer.cpp.i
 
-CMakeFiles/worker.dir/src/io/timer.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/src/io/timer.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/src/io/timer.cpp -o CMakeFiles/worker.dir/src/io/timer.cpp.s
+CMakeFiles/worker.dir/src/io/uv_timer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/src/io/uv_timer.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/src/io/uv_timer.cpp -o CMakeFiles/worker.dir/src/io/uv_timer.cpp.s
 
 CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.o: ../src/bifrost/data_producer.cpp
@@ -224,7 +224,7 @@ CMakeFiles/worker.dir/src/main.cpp.s: cmake_force
 
 # Object files for target worker
 worker_OBJECTS = \
-"CMakeFiles/worker.dir/src/io/timer.cpp.o" \
+"CMakeFiles/worker.dir/src/io/uv_timer.cpp.o" \
 "CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.o" \
 "CMakeFiles/worker.dir/src/io/port_manager.cpp.o" \
 "CMakeFiles/worker.dir/src/io/udp_socket.cpp.o" \
@@ -240,7 +240,7 @@ worker_OBJECTS = \
 # External object files for target worker
 worker_EXTERNAL_OBJECTS =
 
-worker: CMakeFiles/worker.dir/src/io/timer.cpp.o
+worker: CMakeFiles/worker.dir/src/io/uv_timer.cpp.o
 worker: CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.o
 worker: CMakeFiles/worker.dir/src/io/port_manager.cpp.o
 worker: CMakeFiles/worker.dir/src/io/udp_socket.cpp.o
