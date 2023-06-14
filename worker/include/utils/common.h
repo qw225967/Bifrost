@@ -36,7 +36,10 @@ typedef SSIZE_T ssize_t;
 #endif
 
 // 使用默认端口模式
-#define USING_DEFAULT_AF_CONFIG 1
+//#define USING_DEFAULT_AF_CONFIG 1
+
+// 使用小端模式
+#define MS_LITTLE_ENDIAN 1
 
 #define CONFIG_FILE_PATH_STRING "../conf/config.json"
 

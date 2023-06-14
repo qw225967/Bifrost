@@ -14,7 +14,7 @@
 #include <iostream>
 
 namespace bifrost {
-int IP::GetFamily(const std::string& ip) {
+int IP::get_family(const std::string& ip) {
   if (ip.size() >= INET6_ADDRSTRLEN) return AF_UNSPEC;
 
   auto ipPtr = ip.c_str();
@@ -28,8 +28,8 @@ int IP::GetFamily(const std::string& ip) {
     return AF_UNSPEC;
 }
 
-void IP::GetAddressInfo(const struct sockaddr* addr, int& family,
-                        std::string& ip, uint16_t& port) {
+void IP::get_address_info(const struct sockaddr* addr, int& family,
+                          std::string& ip, uint16_t& port) {
   char ipBuffer[INET6_ADDRSTRLEN] = {0};
   int err;
 

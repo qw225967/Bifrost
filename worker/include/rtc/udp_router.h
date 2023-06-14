@@ -33,7 +33,7 @@ class UdpRouter : public UdpSocket {
   /* Instance methods. */
   UdpRouter(uv_loop_t* loop) : UdpSocket(PortManager::BindUdp(loop)) {}
   UdpRouter(Settings::Configuration config, uv_loop_t* loop)
-      : UdpSocket(PortManager::BindUdp(config, loop)) {}
+      : UdpSocket(PortManager::BindUdp(std::move(config), loop)) {}
 
  public:
   UdpRouter(UdpRouter& other) = delete;

@@ -10,8 +10,8 @@
 #include "transport.h"
 
 namespace bifrost {
-Transport::Transport(Settings::Configuration local_config,
-                     Settings::Configuration remote_config) {
+Transport::Transport(Settings::Configuration &local_config,
+                     Settings::Configuration &remote_config) {
   this->uv_loop_ = std::make_shared<UvLoop>();
 
   // 1.init loop
@@ -24,14 +24,14 @@ Transport::Transport(Settings::Configuration local_config,
       std::make_shared<UdpRouter>(this->uv_loop_->get_loop().get());
 
   //   2.2 use default model : get config by json file
-#elif
+#else
   this->udp_router_ = std::make_shared<UdpRouter>(
       local_config, this->uv_loop_->get_loop().get());
-#endif
 
   // 3.set remote address
   auto remote_addr = Settings::get_sockaddr_by_config(remote_config);
   this->udp_remote_address_ = std::make_shared<sockaddr>(remote_addr);
+#endif
 }
 
 Transport::~Transport() {

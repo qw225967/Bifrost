@@ -26,7 +26,7 @@ class PortManager {
     return reinterpret_cast<uv_udp_t*>(BindPort(loop));
   }
   static uv_udp_t* BindUdp(Settings::Configuration config, uv_loop_t* loop) {
-    return reinterpret_cast<uv_udp_t*>(BindPort(config, loop));
+    return reinterpret_cast<uv_udp_t*>(BindPort(std::move(config), loop));
   }
   static uv_tcp_t* BindTcp(std::string& ip) {
     return reinterpret_cast<uv_tcp_t*>(Bind(Transport::TCP, ip));

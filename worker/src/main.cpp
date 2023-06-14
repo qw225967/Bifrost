@@ -11,7 +11,6 @@
 #include <thread>
 
 #include "setting.h"
-#include "static_router.h"
 #include "uv_loop.h"
 
 int main() {

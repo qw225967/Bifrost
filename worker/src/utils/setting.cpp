@@ -83,7 +83,7 @@ void Settings::SetConfiguration(int argc, char* argv[]) {
   }
 }
 
-sockaddr Settings::get_sockaddr_by_config(Configuration config) {
+sockaddr Settings::get_sockaddr_by_config(Configuration& config) {
   std::string ip(config.rtcIp);
   uint16_t port(config.rtcPort);
 

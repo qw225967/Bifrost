@@ -20,8 +20,8 @@ typedef std::shared_ptr<sockaddr> SockAddressPtr;
 
 class Transport : UdpRouter::UdpRouterObServer {
  public:
-  Transport(Settings::Configuration local_config,
-            Settings::Configuration remote_config);
+  Transport(Settings::Configuration &local_config,
+            Settings::Configuration &remote_config);
   ~Transport();
 
   void RunLoop() { this->uv_loop_->RunLoop(); }

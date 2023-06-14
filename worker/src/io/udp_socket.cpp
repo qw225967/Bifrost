@@ -64,7 +64,7 @@ UdpSocket::UdpSocket(uv_udp_t* uv_handle_) : uv_handle_(uv_handle_) {
     uv_close(reinterpret_cast<uv_handle_t*>(this->uv_handle_),
              static_cast<uv_close_cb>(onClose));
 
-    std::cout << "[udp_socket] uv_udp_recv_start() failed: " << uv_strerror(err)
+    std::cout << "[udp_socket] uv_udp_recv_start failed: " << uv_strerror(err)
               << std::endl;
   }
 
@@ -93,7 +93,7 @@ void UdpSocket::Close() {
   int err = uv_udp_recv_stop(this->uv_handle_);
 
   if (err != 0)
-    std::cout << "[udp_socket] uv_udp_recv_stop() failed: " << uv_strerror(err)
+    std::cout << "[udp_socket] uv_udp_recv_stop failed: " << uv_strerror(err)
               << std::endl;
 
   uv_close(reinterpret_cast<uv_handle_t*>(this->uv_handle_),
@@ -146,7 +146,7 @@ void UdpSocket::Send(const uint8_t* data, size_t len,
 
     return;
   } else if (sent >= 0) {
-    std::cout << "[udp_socket] datagram truncated (just " << sent
+    std::cout << "[udp_socket] datagram truncated just " << sent
               << " of %zu bytes were sent" << len;
 
     // Update sent bytes.
@@ -162,7 +162,7 @@ void UdpSocket::Send(const uint8_t* data, size_t len,
   }
   // Any error but legit EAGAIN. Use uv_udp_send().
   else if (sent != UV_EAGAIN) {
-    std::cout << "[udp_socket] uv_udp_try_send() failed, trying uv_udp_send(): "
+    std::cout << "[udp_socket] uv_udp_try_send failed, trying uv_udp_send(): "
               << uv_strerror(sent) << std::endl;
   }
 
@@ -180,7 +180,7 @@ void UdpSocket::Send(const uint8_t* data, size_t len,
   if (err != 0) {
     // NOTE: uv_udp_send() returns error if a wrong INET family is given
     // (IPv6 destination on a IPv4 binded socket), so be ready.
-    std::cout << "[udp_socket] uv_udp_send() failed: " << uv_strerror(err)
+    std::cout << "[udp_socket] uv_udp_send failed: " << uv_strerror(err)
               << std::endl;
 
     if (cb) (*cb)(false);
@@ -202,8 +202,8 @@ bool UdpSocket::SetLocalAddress() {
       &len);
 
   if (err != 0) {
-    std::cout << "[udp_socket] uv_udp_getsockname() failed: "
-              << uv_strerror(err) << std::endl;
+    std::cout << "[udp_socket] uv_udp_getsockname failed: " << uv_strerror(err)
+              << std::endl;
 
     return false;
   }

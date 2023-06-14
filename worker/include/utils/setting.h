@@ -35,7 +35,7 @@ class Settings {
   static void PrintConfiguration();
 
  public:
-  static sockaddr get_sockaddr_by_config(Configuration config);
+  static sockaddr get_sockaddr_by_config(Configuration& config);
 
  public:
   static struct Configuration server_configuration_;
