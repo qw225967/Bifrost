@@ -9,25 +9,27 @@
 
 #include "data_producer.h"
 
-#include <fstream>
-
 namespace bifrost {
-DataProducer::DataProducer(uv_loop_t* loop) {
-  this->producer_timer = std::make_shared<UvTimer>(this, loop);
-  this->producer_timer->Start(1000, 1000);
+DataProducer::DataProducer() {
+#ifdef USING_LOCAL_FILE_DATA
+  data_file_.open(LOCAL_DATA_FILE_PATH_STRING, std::ios::binary);
+#endif
 }
 
-void DataProducer::RangeCreateData() {}
+RtpPacketPtr DataProducer::CreateData() {
+  uint8_t data[900];
+
+#ifdef USING_LOCAL_FILE_DATA
+  data_file_.read((char*)data, 900);
+#endif
+
+  RtpPacketPtr packet = RtpPacket::Parse(data, 900);
+  return packet;
+}
 
 DataProducer::~DataProducer() {
-  this->producer_timer->Stop();
-  this->producer_timer.reset();
+#ifdef USING_LOCAL_FILE_DATA
+  data_file_.close();
+#endif
 }
-
-void DataProducer::OnTimer(UvTimer* timer) {
-  if (timer == this->producer_timer.get()) {
-    std::cout << "[data producer] timer call" << std::endl;
-  }
-}
-
 }  // namespace bifrost

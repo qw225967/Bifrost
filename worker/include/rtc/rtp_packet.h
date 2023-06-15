@@ -134,9 +134,8 @@ class RtpPacket {
     // clang-format on
   }
 
-  static RtpPacket* Parse(const uint8_t* data, size_t len);
+  static std::shared_ptr<RtpPacket> Parse(const uint8_t* data, size_t len);
 
- private:
   RtpPacket(Header* header, HeaderExtension* headerExtension,
             const uint8_t* payload, size_t payloadLength,
             uint8_t payloadPadding, size_t size);
@@ -477,6 +476,8 @@ class RtpPacket {
   // Codecs
   std::unique_ptr<codecs::PayloadDescriptorHandler> payloadDescriptorHandler;
 };
+
+typedef std::shared_ptr<RtpPacket> RtpPacketPtr;
 }  // namespace bifrost
 
 #endif  // WORKER_RTP_PACKET_H

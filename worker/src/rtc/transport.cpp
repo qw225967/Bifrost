@@ -17,35 +17,49 @@ Transport::Transport(Settings::Configuration &local_config,
   // 1.init loop
   this->uv_loop_->ClassInit();
 
-  // 2.get config
-  //   2.1 don't use default model : just get config default
+  // 2.timer start
+  this->producer_timer =
+      std::make_shared<UvTimer>(this, this->uv_loop_->get_loop().get());
+  this->producer_timer->Start(1000, 1000);
+
+  // 3.get config
+  //   3.1 don't use default model : just get config default
 #ifdef USING_DEFAULT_AF_CONFIG
   this->udp_router_ =
       std::make_shared<UdpRouter>(this->uv_loop_->get_loop().get());
 
-  //   2.2 use default model : get config by json file
+  //   3.2 use default model : get config by json file
 #else
   this->udp_router_ = std::make_shared<UdpRouter>(
       local_config, this->uv_loop_->get_loop().get());
 
-  // 3.set remote address
+  // 4.set remote address
   auto remote_addr = Settings::get_sockaddr_by_config(remote_config);
   this->udp_remote_address_ = std::make_shared<sockaddr>(remote_addr);
 #endif
 
-  // 4.create data producer
-  this->data_producer_ = std::make_shared<DataProducer>(this->uv_loop_->get_loop().get());
+  // 5.create data producer
+  this->data_producer_ = std::make_shared<DataProducer>();
 }
 
 Transport::~Transport() {
-  if (this->uv_loop_ != nullptr) this->uv_loop_.reset();
+  this->producer_timer->Stop();
+  this->producer_timer.reset();
 
+  if (this->uv_loop_ != nullptr) this->uv_loop_.reset();
   if (this->udp_router_ != nullptr) this->udp_router_.reset();
 }
 
-void Transport::Run() {
-  this->data_producer_->RangeCreateData();
-  this->uv_loop_->RunLoop();
+void Transport::Run() { this->uv_loop_->RunLoop(); }
+
+void Transport::OnTimer(UvTimer *timer) {
+  if (timer == this->producer_timer.get()) {
+    std::cout << "[transport] timer call" << std::endl;
+
+    auto packet = this->data_producer_->CreateData();
+    udp_router_->Send(packet->GetData(), packet->GetSize(),
+                      this->udp_remote_address_.get(), nullptr);
+  }
 }
 
 }  // namespace bifrost

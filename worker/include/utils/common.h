@@ -39,9 +39,13 @@ typedef SSIZE_T ssize_t;
 // 使用默认端口模式
 //#define USING_DEFAULT_AF_CONFIG 1
 
+// 使用真实数据做测试
+#define USING_LOCAL_FILE_DATA 1
+
 // 使用小端模式
 #define MS_LITTLE_ENDIAN 1
 
 #define CONFIG_FILE_PATH_STRING "../conf/config.json"
+#define LOCAL_DATA_FILE_PATH_STRING "../source/test.h264"
 
 #endif  // WORKER_COMMON_H

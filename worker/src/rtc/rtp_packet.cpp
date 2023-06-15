@@ -17,7 +17,7 @@
 namespace bifrost {
 /* Class methods. */
 
-RtpPacket* RtpPacket::Parse(const uint8_t* data, size_t len) {
+std::shared_ptr<RtpPacket> RtpPacket::Parse(const uint8_t* data, size_t len) {
   if (!RtpPacket::IsRtp(data, len)) return nullptr;
 
   auto* ptr = const_cast<uint8_t*>(data);
@@ -117,8 +117,8 @@ RtpPacket* RtpPacket::Parse(const uint8_t* data, size_t len) {
     payloadLength -= size_t{payloadPadding};
   }
 
-  auto* packet = new RtpPacket(header, headerExtension, payload, payloadLength,
-                               payloadPadding, len);
+  std::shared_ptr<RtpPacket> packet = std::make_shared<RtpPacket>(
+      header, headerExtension, payload, payloadLength, payloadPadding, len);
 
   return packet;
 }
