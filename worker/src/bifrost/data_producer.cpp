@@ -9,15 +9,15 @@
 
 #include "data_producer.h"
 
+#include <fstream>
+
 namespace bifrost {
 DataProducer::DataProducer(uv_loop_t* loop) {
   this->producer_timer = std::make_shared<UvTimer>(this, loop);
   this->producer_timer->Start(1000, 1000);
 }
 
-void DataProducer::RangeCreateData() {
-
-}
+void DataProducer::RangeCreateData() {}
 
 DataProducer::~DataProducer() {
   this->producer_timer->Stop();
