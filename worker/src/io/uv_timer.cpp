@@ -15,7 +15,6 @@
 
 namespace bifrost {
 /* Static methods for UV callbacks. */
-
 inline static void onTimer(uv_timer_t* handle) {
   static_cast<UvTimer*>(handle->data)->OnUvTimer();
 }
@@ -23,7 +22,6 @@ inline static void onTimer(uv_timer_t* handle) {
 inline static void onClose(uv_handle_t* handle) { delete handle; }
 
 /* Instance methods. */
-
 UvTimer::UvTimer(Listener* listener, uv_loop_t* loop) : listener(listener) {
   this->uvHandle = new uv_timer_t;
   this->uvHandle->data = static_cast<void*>(this);

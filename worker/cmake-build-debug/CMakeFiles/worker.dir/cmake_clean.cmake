@@ -6,6 +6,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/worker.dir/src/io/uv_timer.cpp.o"
   "CMakeFiles/worker.dir/src/main.cpp.o"
   "CMakeFiles/worker.dir/src/rtc/rtp_packet.cpp.o"
+  "CMakeFiles/worker.dir/src/rtc/tcc_client.cpp.o"
+  "CMakeFiles/worker.dir/src/rtc/tcc_server.cpp.o"
   "CMakeFiles/worker.dir/src/rtc/transport.cpp.o"
   "CMakeFiles/worker.dir/src/rtc/udp_router.cpp.o"
   "CMakeFiles/worker.dir/src/utils/setting.cpp.o"

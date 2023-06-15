@@ -55,6 +55,10 @@ add_executable(worker
         ${SYSTEM_WRAPPERS_CC}
         ${ABSL_CC}
 
+        include/rtc/tcc_client.hpp
+        include/rtc/tcc_server.hpp
+        src/rtc/tcc_client.cpp
+        src/rtc/tcc_server.cpp
         include/io/uv_timer.h
         include/bifrost/data_producer.h
         include/io/port_manager.h

@@ -297,6 +297,54 @@ src/rtc/rtp_packet.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/rtc/rtp_packet.cpp.s
 .PHONY : src/rtc/rtp_packet.cpp.s
 
+src/rtc/tcc_client.o: src/rtc/tcc_client.cpp.o
+.PHONY : src/rtc/tcc_client.o
+
+# target to build an object file
+src/rtc/tcc_client.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/rtc/tcc_client.cpp.o
+.PHONY : src/rtc/tcc_client.cpp.o
+
+src/rtc/tcc_client.i: src/rtc/tcc_client.cpp.i
+.PHONY : src/rtc/tcc_client.i
+
+# target to preprocess a source file
+src/rtc/tcc_client.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/rtc/tcc_client.cpp.i
+.PHONY : src/rtc/tcc_client.cpp.i
+
+src/rtc/tcc_client.s: src/rtc/tcc_client.cpp.s
+.PHONY : src/rtc/tcc_client.s
+
+# target to generate assembly for a file
+src/rtc/tcc_client.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/rtc/tcc_client.cpp.s
+.PHONY : src/rtc/tcc_client.cpp.s
+
+src/rtc/tcc_server.o: src/rtc/tcc_server.cpp.o
+.PHONY : src/rtc/tcc_server.o
+
+# target to build an object file
+src/rtc/tcc_server.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/rtc/tcc_server.cpp.o
+.PHONY : src/rtc/tcc_server.cpp.o
+
+src/rtc/tcc_server.i: src/rtc/tcc_server.cpp.i
+.PHONY : src/rtc/tcc_server.i
+
+# target to preprocess a source file
+src/rtc/tcc_server.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/rtc/tcc_server.cpp.i
+.PHONY : src/rtc/tcc_server.cpp.i
+
+src/rtc/tcc_server.s: src/rtc/tcc_server.cpp.s
+.PHONY : src/rtc/tcc_server.s
+
+# target to generate assembly for a file
+src/rtc/tcc_server.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/worker.dir/build.make CMakeFiles/worker.dir/src/rtc/tcc_server.cpp.s
+.PHONY : src/rtc/tcc_server.cpp.s
+
 src/rtc/transport.o: src/rtc/transport.cpp.o
 .PHONY : src/rtc/transport.o
 
@@ -1143,6 +1191,12 @@ help:
 	@echo "... src/rtc/rtp_packet.o"
 	@echo "... src/rtc/rtp_packet.i"
 	@echo "... src/rtc/rtp_packet.s"
+	@echo "... src/rtc/tcc_client.o"
+	@echo "... src/rtc/tcc_client.i"
+	@echo "... src/rtc/tcc_client.s"
+	@echo "... src/rtc/tcc_server.o"
+	@echo "... src/rtc/tcc_server.i"
+	@echo "... src/rtc/tcc_server.s"
 	@echo "... src/rtc/transport.o"
 	@echo "... src/rtc/transport.i"
 	@echo "... src/rtc/transport.s"

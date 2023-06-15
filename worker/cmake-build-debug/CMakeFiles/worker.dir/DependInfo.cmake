@@ -15,6 +15,8 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/Users/admin/go/src/github.com/Bifrost/worker/src/io/uv_timer.cpp" "/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles/worker.dir/src/io/uv_timer.cpp.o"
   "/Users/admin/go/src/github.com/Bifrost/worker/src/main.cpp" "/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles/worker.dir/src/main.cpp.o"
   "/Users/admin/go/src/github.com/Bifrost/worker/src/rtc/rtp_packet.cpp" "/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles/worker.dir/src/rtc/rtp_packet.cpp.o"
+  "/Users/admin/go/src/github.com/Bifrost/worker/src/rtc/tcc_client.cpp" "/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles/worker.dir/src/rtc/tcc_client.cpp.o"
+  "/Users/admin/go/src/github.com/Bifrost/worker/src/rtc/tcc_server.cpp" "/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles/worker.dir/src/rtc/tcc_server.cpp.o"
   "/Users/admin/go/src/github.com/Bifrost/worker/src/rtc/transport.cpp" "/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles/worker.dir/src/rtc/transport.cpp.o"
   "/Users/admin/go/src/github.com/Bifrost/worker/src/rtc/udp_router.cpp" "/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles/worker.dir/src/rtc/udp_router.cpp.o"
   "/Users/admin/go/src/github.com/Bifrost/worker/src/utils/setting.cpp" "/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles/worker.dir/src/utils/setting.cpp.o"

@@ -456,9 +456,35 @@ CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/fie
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc.s"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc.s
 
+CMakeFiles/worker.dir/src/rtc/tcc_client.cpp.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/src/rtc/tcc_client.cpp.o: ../src/rtc/tcc_client.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/worker.dir/src/rtc/tcc_client.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/rtc/tcc_client.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/rtc/tcc_client.cpp
+
+CMakeFiles/worker.dir/src/rtc/tcc_client.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/src/rtc/tcc_client.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/src/rtc/tcc_client.cpp > CMakeFiles/worker.dir/src/rtc/tcc_client.cpp.i
+
+CMakeFiles/worker.dir/src/rtc/tcc_client.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/src/rtc/tcc_client.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/src/rtc/tcc_client.cpp -o CMakeFiles/worker.dir/src/rtc/tcc_client.cpp.s
+
+CMakeFiles/worker.dir/src/rtc/tcc_server.cpp.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/src/rtc/tcc_server.cpp.o: ../src/rtc/tcc_server.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/worker.dir/src/rtc/tcc_server.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/rtc/tcc_server.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/rtc/tcc_server.cpp
+
+CMakeFiles/worker.dir/src/rtc/tcc_server.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/src/rtc/tcc_server.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/src/rtc/tcc_server.cpp > CMakeFiles/worker.dir/src/rtc/tcc_server.cpp.i
+
+CMakeFiles/worker.dir/src/rtc/tcc_server.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/src/rtc/tcc_server.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/src/rtc/tcc_server.cpp -o CMakeFiles/worker.dir/src/rtc/tcc_server.cpp.s
+
 CMakeFiles/worker.dir/src/io/uv_timer.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/io/uv_timer.cpp.o: ../src/io/uv_timer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/worker.dir/src/io/uv_timer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/worker.dir/src/io/uv_timer.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/io/uv_timer.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/io/uv_timer.cpp
 
 CMakeFiles/worker.dir/src/io/uv_timer.cpp.i: cmake_force
@@ -471,7 +497,7 @@ CMakeFiles/worker.dir/src/io/uv_timer.cpp.s: cmake_force
 
 CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.o: ../src/bifrost/data_producer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/bifrost/data_producer.cpp
 
 CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.i: cmake_force
@@ -484,7 +510,7 @@ CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.s: cmake_force
 
 CMakeFiles/worker.dir/src/io/port_manager.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/io/port_manager.cpp.o: ../src/io/port_manager.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/worker.dir/src/io/port_manager.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building CXX object CMakeFiles/worker.dir/src/io/port_manager.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/io/port_manager.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/io/port_manager.cpp
 
 CMakeFiles/worker.dir/src/io/port_manager.cpp.i: cmake_force
@@ -497,7 +523,7 @@ CMakeFiles/worker.dir/src/io/port_manager.cpp.s: cmake_force
 
 CMakeFiles/worker.dir/src/io/udp_socket.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/io/udp_socket.cpp.o: ../src/io/udp_socket.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/worker.dir/src/io/udp_socket.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Building CXX object CMakeFiles/worker.dir/src/io/udp_socket.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/io/udp_socket.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/io/udp_socket.cpp
 
 CMakeFiles/worker.dir/src/io/udp_socket.cpp.i: cmake_force
@@ -510,7 +536,7 @@ CMakeFiles/worker.dir/src/io/udp_socket.cpp.s: cmake_force
 
 CMakeFiles/worker.dir/src/io/uv_loop.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/io/uv_loop.cpp.o: ../src/io/uv_loop.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building CXX object CMakeFiles/worker.dir/src/io/uv_loop.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_37) "Building CXX object CMakeFiles/worker.dir/src/io/uv_loop.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/io/uv_loop.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/io/uv_loop.cpp
 
 CMakeFiles/worker.dir/src/io/uv_loop.cpp.i: cmake_force
@@ -523,7 +549,7 @@ CMakeFiles/worker.dir/src/io/uv_loop.cpp.s: cmake_force
 
 CMakeFiles/worker.dir/src/rtc/rtp_packet.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/rtc/rtp_packet.cpp.o: ../src/rtc/rtp_packet.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Building CXX object CMakeFiles/worker.dir/src/rtc/rtp_packet.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_38) "Building CXX object CMakeFiles/worker.dir/src/rtc/rtp_packet.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/rtc/rtp_packet.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/rtc/rtp_packet.cpp
 
 CMakeFiles/worker.dir/src/rtc/rtp_packet.cpp.i: cmake_force
@@ -536,7 +562,7 @@ CMakeFiles/worker.dir/src/rtc/rtp_packet.cpp.s: cmake_force
 
 CMakeFiles/worker.dir/src/rtc/transport.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/rtc/transport.cpp.o: ../src/rtc/transport.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_37) "Building CXX object CMakeFiles/worker.dir/src/rtc/transport.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Building CXX object CMakeFiles/worker.dir/src/rtc/transport.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/rtc/transport.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/rtc/transport.cpp
 
 CMakeFiles/worker.dir/src/rtc/transport.cpp.i: cmake_force
@@ -549,7 +575,7 @@ CMakeFiles/worker.dir/src/rtc/transport.cpp.s: cmake_force
 
 CMakeFiles/worker.dir/src/rtc/udp_router.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/rtc/udp_router.cpp.o: ../src/rtc/udp_router.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_38) "Building CXX object CMakeFiles/worker.dir/src/rtc/udp_router.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_40) "Building CXX object CMakeFiles/worker.dir/src/rtc/udp_router.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/rtc/udp_router.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/rtc/udp_router.cpp
 
 CMakeFiles/worker.dir/src/rtc/udp_router.cpp.i: cmake_force
@@ -562,7 +588,7 @@ CMakeFiles/worker.dir/src/rtc/udp_router.cpp.s: cmake_force
 
 CMakeFiles/worker.dir/src/utils/setting.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/utils/setting.cpp.o: ../src/utils/setting.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Building CXX object CMakeFiles/worker.dir/src/utils/setting.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_41) "Building CXX object CMakeFiles/worker.dir/src/utils/setting.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/utils/setting.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/utils/setting.cpp
 
 CMakeFiles/worker.dir/src/utils/setting.cpp.i: cmake_force
@@ -575,7 +601,7 @@ CMakeFiles/worker.dir/src/utils/setting.cpp.s: cmake_force
 
 CMakeFiles/worker.dir/src/utils/utils.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/utils/utils.cpp.o: ../src/utils/utils.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_40) "Building CXX object CMakeFiles/worker.dir/src/utils/utils.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_42) "Building CXX object CMakeFiles/worker.dir/src/utils/utils.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/utils/utils.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/utils/utils.cpp
 
 CMakeFiles/worker.dir/src/utils/utils.cpp.i: cmake_force
@@ -588,7 +614,7 @@ CMakeFiles/worker.dir/src/utils/utils.cpp.s: cmake_force
 
 CMakeFiles/worker.dir/src/main.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/main.cpp.o: ../src/main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_41) "Building CXX object CMakeFiles/worker.dir/src/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_43) "Building CXX object CMakeFiles/worker.dir/src/main.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/main.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/main.cpp
 
 CMakeFiles/worker.dir/src/main.cpp.i: cmake_force
@@ -631,6 +657,8 @@ worker_OBJECTS = \
 "CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/zero_memory.cc.o" \
 "CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/clock.cc.o" \
 "CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc.o" \
+"CMakeFiles/worker.dir/src/rtc/tcc_client.cpp.o" \
+"CMakeFiles/worker.dir/src/rtc/tcc_server.cpp.o" \
 "CMakeFiles/worker.dir/src/io/uv_timer.cpp.o" \
 "CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.o" \
 "CMakeFiles/worker.dir/src/io/port_manager.cpp.o" \
@@ -676,6 +704,8 @@ worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/time_util
 worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/zero_memory.cc.o
 worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/clock.cc.o
 worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc.o
+worker: CMakeFiles/worker.dir/src/rtc/tcc_client.cpp.o
+worker: CMakeFiles/worker.dir/src/rtc/tcc_server.cpp.o
 worker: CMakeFiles/worker.dir/src/io/uv_timer.cpp.o
 worker: CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.o
 worker: CMakeFiles/worker.dir/src/io/port_manager.cpp.o
@@ -689,7 +719,7 @@ worker: CMakeFiles/worker.dir/src/utils/utils.cpp.o
 worker: CMakeFiles/worker.dir/src/main.cpp.o
 worker: CMakeFiles/worker.dir/build.make
 worker: CMakeFiles/worker.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_42) "Linking CXX executable worker"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_44) "Linking CXX executable worker"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/worker.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

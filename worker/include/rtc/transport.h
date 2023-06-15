@@ -49,6 +49,7 @@ class Transport : public UvTimer::Listener,
   UvLoopPtr uv_loop_;
   UdpRouterPtr udp_router_;
   SockAddressPtr udp_remote_address_;
+
 };
 }  // namespace bifrost
 

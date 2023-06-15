@@ -153,6 +153,12 @@
 		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/include/rtc/rtp_packet.h">
 			<Option target="worker"/>
 		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/include/rtc/tcc_client.hpp">
+			<Option target="worker"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/include/rtc/tcc_server.hpp">
+			<Option target="worker"/>
+		</Unit>
 		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/include/rtc/transport.h">
 			<Option target="worker"/>
 		</Unit>
@@ -187,6 +193,12 @@
 			<Option target="worker"/>
 		</Unit>
 		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/src/rtc/rtp_packet.cpp">
+			<Option target="worker"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/src/rtc/tcc_client.cpp">
+			<Option target="worker"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/src/rtc/tcc_server.cpp">
 			<Option target="worker"/>
 		</Unit>
 		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/src/rtc/transport.cpp">
