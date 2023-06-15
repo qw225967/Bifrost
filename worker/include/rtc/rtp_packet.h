@@ -10,6 +10,8 @@
 #ifndef WORKER_RTP_PACKET_H
 #define WORKER_RTP_PACKET_H
 
+#include <absl/container/flat_hash_map.h>
+
 #include <array>
 #include <nlohmann/json.hpp>
 #include <string>
@@ -124,13 +126,13 @@ class RtpPacket {
     auto header = const_cast<Header*>(reinterpret_cast<const Header*>(data));
 
     // clang-format off
-    return (
-        (len >= HeaderSize) &&
-        // DOC: https://tools.ietf.org/html/draft-ietf-avtcore-rfc5764-mux-fixes
-        (data[0] > 127 && data[0] < 192) &&
-        // RTP Version must be 2.
-        (header->version == 2)
-        );
+        return (
+            (len >= HeaderSize) &&
+            // DOC: https://tools.ietf.org/html/draft-ietf-avtcore-rfc5764-mux-fixes
+            (data[0] > 127 && data[0] < 192) &&
+            // RTP Version must be 2.
+            (header->version == 2)
+            );
     // clang-format on
   }
 
@@ -397,9 +399,66 @@ class RtpPacket {
     return true;
   }
 
-  bool HasExtension(uint8_t id) const {}
+  bool HasExtension(uint8_t id) const {
+    if (id == 0u) {
+      return false;
+    } else if (HasOneByteExtensions()) {
+      if (id > 14) return false;
 
-  uint8_t* GetExtension(uint8_t id, uint8_t& len) const {}
+      // `-1` because we have 14 elements total 0..13 and `id` is in the
+      // range 1..14.
+      return this->oneByteExtensions[id - 1] != nullptr;
+    } else if (HasTwoBytesExtensions()) {
+      auto it = this->mapTwoBytesExtensions.find(id);
+
+      if (it == this->mapTwoBytesExtensions.end()) return false;
+
+      auto* extension = it->second;
+
+      // In Two-Byte extensions value length may be zero. If so, return false.
+      if (extension->len == 0u) return false;
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  uint8_t* GetExtension(uint8_t id, uint8_t& len) const {
+    len = 0u;
+
+    if (id == 0u) {
+      return nullptr;
+    } else if (HasOneByteExtensions()) {
+      if (id > 14) return nullptr;
+
+      // `-1` because we have 14 elements total 0..13 and `id` is in the
+      // range 1..14.
+      auto* extension = this->oneByteExtensions[id - 1];
+
+      if (!extension) return nullptr;
+
+      // In One-Byte extensions value length 0 means 1.
+      len = extension->len + 1;
+
+      return extension->value;
+    } else if (HasTwoBytesExtensions()) {
+      auto it = this->mapTwoBytesExtensions.find(id);
+
+      if (it == this->mapTwoBytesExtensions.end()) return nullptr;
+
+      auto* extension = it->second;
+
+      len = extension->len;
+
+      // In Two-Byte extensions value length may be zero. If so, return nullptr.
+      if (extension->len == 0u) return nullptr;
+
+      return extension->value;
+    } else {
+      return nullptr;
+    }
+  }
 
   bool SetExtensionLength(uint8_t id, uint8_t len);
 
@@ -460,6 +519,7 @@ class RtpPacket {
   // (https://datatracker.ietf.org/doc/html/rfc5285#section-4.2), use
   // std::array.
   std::array<OneByteExtension*, 14> oneByteExtensions;
+  absl::flat_hash_map<uint8_t, TwoBytesExtension*> mapTwoBytesExtensions;
   uint8_t midExtensionId{0u};
   uint8_t ridExtensionId{0u};
   uint8_t rridExtensionId{0u};
@@ -476,8 +536,6 @@ class RtpPacket {
   // Codecs
   std::unique_ptr<codecs::PayloadDescriptorHandler> payloadDescriptorHandler;
 };
-
-typedef std::shared_ptr<RtpPacket> RtpPacketPtr;
 }  // namespace bifrost
 
 #endif  // WORKER_RTP_PACKET_H

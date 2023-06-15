@@ -3,33 +3,58 @@ project(worker)
 
 set(CMAKE_CXX_STANDARD 14)
 
-include_directories(include)
-include_directories(include/bifrost)
-include_directories(include/io)
-include_directories(include/rtc)
-include_directories(include/utils)
-include_directories(third_party/json)
-include_directories(third_party/json/include)
-include_directories(third_party/json/include/nlohmann)
-include_directories(third_party/json/include/nlohmann/detail)
-include_directories(third_party/json/include/nlohmann/detail/conversions)
-include_directories(third_party/json/include/nlohmann/detail/input)
-include_directories(third_party/json/include/nlohmann/detail/iterators)
-include_directories(third_party/json/include/nlohmann/detail/meta)
-include_directories(third_party/json/include/nlohmann/detail/output)
-include_directories(third_party/json/include/nlohmann/thirdparty)
-include_directories(third_party/json/include/nlohmann/thirdparty/hedley)
-include_directories(third_party/json/single_include)
-include_directories(third_party/json/single_include/nlohmann)
-include_directories(third_party/libuv/docs/code/plugin)
-include_directories(third_party/libuv/include)
-include_directories(third_party/libuv/include/uv)
-include_directories(third_party/libuv/src)
-include_directories(third_party/libuv/src/unix)
 
-link_directories(third_party/libuv/build)
+set(WEBRTC_DIR third_party/libwebrtc/libwebrtc)
+set(WEBRTC_MODULES ${WEBRTC_DIR}/modules)
+
+ADD_DEFINITIONS(-DWEBRTC_POSIX)
+
+include_directories(
+        include
+        include/bifrost
+        include/io
+        include/rtc
+        include/utils
+        third_party/json
+        third_party/json/include
+        third_party/json/include/nlohmann
+        third_party/json/include/nlohmann/detail
+        third_party/json/include/nlohmann/detail/conversions
+        third_party/json/include/nlohmann/detail/input
+        third_party/json/include/nlohmann/detail/iterators
+        third_party/json/include/nlohmann/detail/meta
+        third_party/json/include/nlohmann/detail/output
+        third_party/json/include/nlohmann/thirdparty
+        third_party/json/include/nlohmann/thirdparty/hedley
+        third_party/json/single_include
+        third_party/json/single_include/nlohmann
+        third_party/libuv/docs/code/plugin
+        third_party/libuv/include
+        third_party/libuv/include/uv
+        third_party/libuv/src
+        third_party/libuv/src/unix
+        third_party/libuv/build
+        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp
+        third_party/libwebrtc/libwebrtc/
+)
+
+aux_source_directory(third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source RTP_RTCP_SOURCE_CC)
+aux_source_directory(third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/include RTP_RTCP_INCLUDE_CC)
+aux_source_directory(third_party/libwebrtc/libwebrtc/rtc_base RTC_BASE_CC)
+aux_source_directory(third_party/libwebrtc/libwebrtc/rtc_base/numerics RTC_BASE_NUMERICS_CC)
+aux_source_directory(third_party/libwebrtc/libwebrtc/system_wrappers/source SYSTEM_WRAPPERS_CC)
+aux_source_directory(third_party/libwebrtc/deps/abseil-cpp/abseil-cpp ABSL_CC)
+aux_source_directory(third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/types ABSL_TYPE_CC)
 
 add_executable(worker
+
+        ${RTP_RTCP_INCLUDE_CC}
+        ${RTP_RTCP_SOURCE_CC}
+        ${RTC_BASE_CC}
+        ${RTC_BASE_NUMERICS_CC}
+        ${SYSTEM_WRAPPERS_CC}
+        ${ABSL_CC}
+
         include/io/uv_timer.h
         include/bifrost/data_producer.h
         include/io/port_manager.h
@@ -47,7 +72,6 @@ add_executable(worker
         src/io/port_manager.cpp
         src/io/udp_socket.cpp
         src/io/uv_loop.cpp
-        src/rtc/payload_descriptor.cpp
         src/rtc/rtp_packet.cpp
         src/rtc/transport.cpp
         src/rtc/udp_router.cpp

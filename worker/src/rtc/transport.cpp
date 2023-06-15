@@ -52,6 +52,12 @@ Transport::~Transport() {
 
 void Transport::Run() { this->uv_loop_->RunLoop(); }
 
+void Transport::OnUdpRouterPacketReceived(
+    bifrost::UdpRouter* socket, const uint8_t* data, size_t len,
+    const struct sockaddr* remoteAddr) {
+
+}
+
 void Transport::OnTimer(UvTimer *timer) {
   if (timer == this->producer_timer.get()) {
     std::cout << "[transport] timer call" << std::endl;

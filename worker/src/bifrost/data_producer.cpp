@@ -9,6 +9,9 @@
 
 #include "data_producer.h"
 
+#include "modules/rtp_rtcp/source/rtp_packet.h"
+#include "modules/rtp_rtcp/source/rtp_packet_received.h"
+
 namespace bifrost {
 DataProducer::DataProducer() {
 #ifdef USING_LOCAL_FILE_DATA
@@ -23,7 +26,16 @@ RtpPacketPtr DataProducer::CreateData() {
   data_file_.read((char*)data, 900);
 #endif
 
-  RtpPacketPtr packet = RtpPacket::Parse(data, 900);
+  // 使用webrtc中rtp包初始化方式
+  webrtc::RtpPacketReceived receive_packet(nullptr);
+  receive_packet.SetSequenceNumber(this->sequence_);
+  receive_packet.SetPayloadType(101);
+  receive_packet.SetSsrc(this->ssrc_);
+  memcpy(receive_packet.Buffer().data(), data, 900);
+  receive_packet.SetPayloadSize(900);
+
+  RtpPacketPtr packet =
+      RtpPacket::Parse(receive_packet.data(), receive_packet.size());
   return packet;
 }
 

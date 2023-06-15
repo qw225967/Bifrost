@@ -10,9 +10,9 @@
 #ifndef WORKER_TRANSPORT_H
 #define WORKER_TRANSPORT_H
 
+#include "data_producer.h"
 #include "udp_router.h"
 #include "uv_loop.h"
-#include "data_producer.h"
 #include "uv_timer.h"
 
 namespace bifrost {
@@ -22,10 +22,11 @@ typedef std::shared_ptr<UdpRouter> UdpRouterPtr;
 typedef std::shared_ptr<sockaddr> SockAddressPtr;
 typedef std::shared_ptr<DataProducer> DataProducerPtr;
 
-class Transport : public UvTimer::Listener, public UdpRouter::UdpRouterObServer {
+class Transport : public UvTimer::Listener,
+                  public UdpRouter::UdpRouterObServer {
  public:
-  Transport(Settings::Configuration &local_config,
-            Settings::Configuration &remote_config);
+  Transport(Settings::Configuration& local_config,
+            Settings::Configuration& remote_config);
   ~Transport();
 
  public:
@@ -33,11 +34,12 @@ class Transport : public UvTimer::Listener, public UdpRouter::UdpRouterObServer 
   void OnTimer(UvTimer* timer) override;
 
   // UdpRouterObServer
-  void OnUdpRouterPacketReceived(
-      bifrost::UdpRouter* socket, const uint8_t* data, size_t len,
-      const struct sockaddr* remoteAddr) override {}
+  void OnUdpRouterPacketReceived(bifrost::UdpRouter* socket,
+                                 const uint8_t* data, size_t len,
+                                 const struct sockaddr* remoteAddr) override;
 
   void Run();
+
  private:
   // send packet producer
   DataProducerPtr data_producer_;

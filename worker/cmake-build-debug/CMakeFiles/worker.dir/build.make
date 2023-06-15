@@ -66,9 +66,399 @@ include CMakeFiles/worker.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/worker.dir/flags.make
 
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/include/rtp_rtcp_defines.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/include/rtp_rtcp_defines.cc.o: ../third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/include/rtp_rtcp_defines.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/include/rtp_rtcp_defines.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/include/rtp_rtcp_defines.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/include/rtp_rtcp_defines.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/include/rtp_rtcp_defines.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/include/rtp_rtcp_defines.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/include/rtp_rtcp_defines.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/include/rtp_rtcp_defines.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/include/rtp_rtcp_defines.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/include/rtp_rtcp_defines.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/include/rtp_rtcp_defines.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/include/rtp_rtcp_defines.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_bursty.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_bursty.cc.o: ../third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_bursty.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_bursty.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_bursty.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_bursty.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_bursty.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_bursty.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_bursty.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_bursty.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_bursty.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_bursty.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_bursty.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_bursty.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_random.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_random.cc.o: ../third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_random.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_random.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_random.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_random.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_random.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_random.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_random.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_random.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_random.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_random.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_random.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_random.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_header_reader_writer.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_header_reader_writer.cc.o: ../third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_header_reader_writer.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_header_reader_writer.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_header_reader_writer.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_header_reader_writer.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_header_reader_writer.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_header_reader_writer.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_header_reader_writer.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_header_reader_writer.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_header_reader_writer.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_header_reader_writer.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_header_reader_writer.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_header_reader_writer.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_receiver.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_receiver.cc.o: ../third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_receiver.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_receiver.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_receiver.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_receiver.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_receiver.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_receiver.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_receiver.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_receiver.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_receiver.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_receiver.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_receiver.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_receiver.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction.cc.o: ../third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction_internal.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction_internal.cc.o: ../third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction_internal.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction_internal.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction_internal.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction_internal.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction_internal.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction_internal.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction_internal.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction_internal.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction_internal.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction_internal.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction_internal.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction_internal.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_dependency_descriptor_extension.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_dependency_descriptor_extension.cc.o: ../third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_dependency_descriptor_extension.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_dependency_descriptor_extension.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_dependency_descriptor_extension.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_dependency_descriptor_extension.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_dependency_descriptor_extension.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_dependency_descriptor_extension.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_dependency_descriptor_extension.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_dependency_descriptor_extension.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_dependency_descriptor_extension.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_dependency_descriptor_extension.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_dependency_descriptor_extension.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_dependency_descriptor_extension.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor.cc.o: ../third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor_extension.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor_extension.cc.o: ../third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor_extension.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor_extension.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor_extension.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor_extension.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor_extension.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor_extension.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor_extension.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor_extension.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor_extension.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor_extension.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor_extension.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor_extension.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extension_map.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extension_map.cc.o: ../third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extension_map.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extension_map.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extension_map.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extension_map.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extension_map.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extension_map.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extension_map.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extension_map.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extension_map.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extension_map.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extension_map.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extension_map.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extensions.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extensions.cc.o: ../third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extensions.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extensions.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extensions.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extensions.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extensions.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extensions.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extensions.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extensions.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extensions.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extensions.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extensions.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extensions.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet.cc.o: ../third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet_received.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet_received.cc.o: ../third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet_received.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet_received.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet_received.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet_received.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet_received.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet_received.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet_received.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet_received.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet_received.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet_received.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet_received.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet_received.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_header_reader_writer.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_header_reader_writer.cc.o: ../third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_header_reader_writer.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_header_reader_writer.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_header_reader_writer.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_header_reader_writer.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_header_reader_writer.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_header_reader_writer.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_header_reader_writer.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_header_reader_writer.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_header_reader_writer.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_header_reader_writer.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_header_reader_writer.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_header_reader_writer.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_receiver_impl.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_receiver_impl.cc.o: ../third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_receiver_impl.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_receiver_impl.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_receiver_impl.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_receiver_impl.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_receiver_impl.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_receiver_impl.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_receiver_impl.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_receiver_impl.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_receiver_impl.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_receiver_impl.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_receiver_impl.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_receiver_impl.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/checks.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/checks.cc.o: ../third_party/libwebrtc/libwebrtc/rtc_base/checks.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/checks.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/checks.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/checks.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/checks.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/checks.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/checks.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/checks.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/checks.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/checks.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/checks.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/checks.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/copy_on_write_buffer.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/copy_on_write_buffer.cc.o: ../third_party/libwebrtc/libwebrtc/rtc_base/copy_on_write_buffer.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/copy_on_write_buffer.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/copy_on_write_buffer.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/copy_on_write_buffer.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/copy_on_write_buffer.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/copy_on_write_buffer.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/copy_on_write_buffer.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/copy_on_write_buffer.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/copy_on_write_buffer.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/copy_on_write_buffer.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/copy_on_write_buffer.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/copy_on_write_buffer.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/critical_section.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/critical_section.cc.o: ../third_party/libwebrtc/libwebrtc/rtc_base/critical_section.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/critical_section.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/critical_section.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/critical_section.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/critical_section.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/critical_section.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/critical_section.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/critical_section.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/critical_section.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/critical_section.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/critical_section.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/critical_section.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/event_tracer.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/event_tracer.cc.o: ../third_party/libwebrtc/libwebrtc/rtc_base/event_tracer.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/event_tracer.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/event_tracer.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/event_tracer.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/event_tracer.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/event_tracer.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/event_tracer.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/event_tracer.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/event_tracer.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/event_tracer.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/event_tracer.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/event_tracer.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/logging.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/logging.cc.o: ../third_party/libwebrtc/libwebrtc/rtc_base/logging.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/logging.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/logging.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/logging.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/logging.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/logging.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/logging.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/logging.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/logging.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/logging.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/logging.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/logging.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/platform_thread_types.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/platform_thread_types.cc.o: ../third_party/libwebrtc/libwebrtc/rtc_base/platform_thread_types.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/platform_thread_types.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/platform_thread_types.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/platform_thread_types.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/platform_thread_types.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/platform_thread_types.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/platform_thread_types.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/platform_thread_types.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/platform_thread_types.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/platform_thread_types.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/platform_thread_types.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/platform_thread_types.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/rate_statistics.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/rate_statistics.cc.o: ../third_party/libwebrtc/libwebrtc/rtc_base/rate_statistics.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/rate_statistics.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/rate_statistics.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/rate_statistics.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/rate_statistics.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/rate_statistics.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/rate_statistics.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/rate_statistics.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/rate_statistics.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/rate_statistics.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/rate_statistics.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/rate_statistics.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_encode.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_encode.cc.o: ../third_party/libwebrtc/libwebrtc/rtc_base/string_encode.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_encode.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_encode.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/string_encode.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_encode.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_encode.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/string_encode.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_encode.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_encode.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_encode.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/string_encode.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_encode.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_to_number.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_to_number.cc.o: ../third_party/libwebrtc/libwebrtc/rtc_base/string_to_number.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_to_number.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_to_number.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/string_to_number.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_to_number.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_to_number.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/string_to_number.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_to_number.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_to_number.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_to_number.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/string_to_number.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_to_number.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_utils.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_utils.cc.o: ../third_party/libwebrtc/libwebrtc/rtc_base/string_utils.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_utils.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_utils.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/string_utils.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_utils.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_utils.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/string_utils.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_utils.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_utils.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_utils.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/string_utils.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_utils.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/time_utils.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/time_utils.cc.o: ../third_party/libwebrtc/libwebrtc/rtc_base/time_utils.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/time_utils.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/time_utils.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/time_utils.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/time_utils.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/time_utils.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/time_utils.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/time_utils.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/time_utils.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/time_utils.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/time_utils.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/time_utils.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/zero_memory.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/zero_memory.cc.o: ../third_party/libwebrtc/libwebrtc/rtc_base/zero_memory.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/zero_memory.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/zero_memory.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/zero_memory.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/zero_memory.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/zero_memory.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/zero_memory.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/zero_memory.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/zero_memory.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/zero_memory.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/rtc_base/zero_memory.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/zero_memory.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/clock.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/clock.cc.o: ../third_party/libwebrtc/libwebrtc/system_wrappers/source/clock.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/clock.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/clock.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/system_wrappers/source/clock.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/clock.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/clock.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/system_wrappers/source/clock.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/clock.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/clock.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/clock.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/system_wrappers/source/clock.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/clock.cc.s
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc.o: CMakeFiles/worker.dir/flags.make
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc.o: ../third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc.o -c /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc > CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc.i
+
+CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc -o CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc.s
+
 CMakeFiles/worker.dir/src/io/uv_timer.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/io/uv_timer.cpp.o: ../src/io/uv_timer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/worker.dir/src/io/uv_timer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/worker.dir/src/io/uv_timer.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/io/uv_timer.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/io/uv_timer.cpp
 
 CMakeFiles/worker.dir/src/io/uv_timer.cpp.i: cmake_force
@@ -81,7 +471,7 @@ CMakeFiles/worker.dir/src/io/uv_timer.cpp.s: cmake_force
 
 CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.o: ../src/bifrost/data_producer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/bifrost/data_producer.cpp
 
 CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.i: cmake_force
@@ -94,7 +484,7 @@ CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.s: cmake_force
 
 CMakeFiles/worker.dir/src/io/port_manager.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/io/port_manager.cpp.o: ../src/io/port_manager.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/worker.dir/src/io/port_manager.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/worker.dir/src/io/port_manager.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/io/port_manager.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/io/port_manager.cpp
 
 CMakeFiles/worker.dir/src/io/port_manager.cpp.i: cmake_force
@@ -107,7 +497,7 @@ CMakeFiles/worker.dir/src/io/port_manager.cpp.s: cmake_force
 
 CMakeFiles/worker.dir/src/io/udp_socket.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/io/udp_socket.cpp.o: ../src/io/udp_socket.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/worker.dir/src/io/udp_socket.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/worker.dir/src/io/udp_socket.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/io/udp_socket.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/io/udp_socket.cpp
 
 CMakeFiles/worker.dir/src/io/udp_socket.cpp.i: cmake_force
@@ -120,7 +510,7 @@ CMakeFiles/worker.dir/src/io/udp_socket.cpp.s: cmake_force
 
 CMakeFiles/worker.dir/src/io/uv_loop.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/io/uv_loop.cpp.o: ../src/io/uv_loop.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/worker.dir/src/io/uv_loop.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building CXX object CMakeFiles/worker.dir/src/io/uv_loop.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/io/uv_loop.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/io/uv_loop.cpp
 
 CMakeFiles/worker.dir/src/io/uv_loop.cpp.i: cmake_force
@@ -131,22 +521,9 @@ CMakeFiles/worker.dir/src/io/uv_loop.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/src/io/uv_loop.cpp.s"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/src/io/uv_loop.cpp -o CMakeFiles/worker.dir/src/io/uv_loop.cpp.s
 
-CMakeFiles/worker.dir/src/rtc/payload_descriptor.cpp.o: CMakeFiles/worker.dir/flags.make
-CMakeFiles/worker.dir/src/rtc/payload_descriptor.cpp.o: ../src/rtc/payload_descriptor.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/worker.dir/src/rtc/payload_descriptor.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/rtc/payload_descriptor.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/rtc/payload_descriptor.cpp
-
-CMakeFiles/worker.dir/src/rtc/payload_descriptor.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker.dir/src/rtc/payload_descriptor.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/admin/go/src/github.com/Bifrost/worker/src/rtc/payload_descriptor.cpp > CMakeFiles/worker.dir/src/rtc/payload_descriptor.cpp.i
-
-CMakeFiles/worker.dir/src/rtc/payload_descriptor.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker.dir/src/rtc/payload_descriptor.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/admin/go/src/github.com/Bifrost/worker/src/rtc/payload_descriptor.cpp -o CMakeFiles/worker.dir/src/rtc/payload_descriptor.cpp.s
-
 CMakeFiles/worker.dir/src/rtc/rtp_packet.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/rtc/rtp_packet.cpp.o: ../src/rtc/rtp_packet.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/worker.dir/src/rtc/rtp_packet.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Building CXX object CMakeFiles/worker.dir/src/rtc/rtp_packet.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/rtc/rtp_packet.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/rtc/rtp_packet.cpp
 
 CMakeFiles/worker.dir/src/rtc/rtp_packet.cpp.i: cmake_force
@@ -159,7 +536,7 @@ CMakeFiles/worker.dir/src/rtc/rtp_packet.cpp.s: cmake_force
 
 CMakeFiles/worker.dir/src/rtc/transport.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/rtc/transport.cpp.o: ../src/rtc/transport.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/worker.dir/src/rtc/transport.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_37) "Building CXX object CMakeFiles/worker.dir/src/rtc/transport.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/rtc/transport.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/rtc/transport.cpp
 
 CMakeFiles/worker.dir/src/rtc/transport.cpp.i: cmake_force
@@ -172,7 +549,7 @@ CMakeFiles/worker.dir/src/rtc/transport.cpp.s: cmake_force
 
 CMakeFiles/worker.dir/src/rtc/udp_router.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/rtc/udp_router.cpp.o: ../src/rtc/udp_router.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/worker.dir/src/rtc/udp_router.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_38) "Building CXX object CMakeFiles/worker.dir/src/rtc/udp_router.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/rtc/udp_router.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/rtc/udp_router.cpp
 
 CMakeFiles/worker.dir/src/rtc/udp_router.cpp.i: cmake_force
@@ -185,7 +562,7 @@ CMakeFiles/worker.dir/src/rtc/udp_router.cpp.s: cmake_force
 
 CMakeFiles/worker.dir/src/utils/setting.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/utils/setting.cpp.o: ../src/utils/setting.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/worker.dir/src/utils/setting.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Building CXX object CMakeFiles/worker.dir/src/utils/setting.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/utils/setting.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/utils/setting.cpp
 
 CMakeFiles/worker.dir/src/utils/setting.cpp.i: cmake_force
@@ -198,7 +575,7 @@ CMakeFiles/worker.dir/src/utils/setting.cpp.s: cmake_force
 
 CMakeFiles/worker.dir/src/utils/utils.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/utils/utils.cpp.o: ../src/utils/utils.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/worker.dir/src/utils/utils.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_40) "Building CXX object CMakeFiles/worker.dir/src/utils/utils.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/utils/utils.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/utils/utils.cpp
 
 CMakeFiles/worker.dir/src/utils/utils.cpp.i: cmake_force
@@ -211,7 +588,7 @@ CMakeFiles/worker.dir/src/utils/utils.cpp.s: cmake_force
 
 CMakeFiles/worker.dir/src/main.cpp.o: CMakeFiles/worker.dir/flags.make
 CMakeFiles/worker.dir/src/main.cpp.o: ../src/main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/worker.dir/src/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_41) "Building CXX object CMakeFiles/worker.dir/src/main.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/worker.dir/src/main.cpp.o -c /Users/admin/go/src/github.com/Bifrost/worker/src/main.cpp
 
 CMakeFiles/worker.dir/src/main.cpp.i: cmake_force
@@ -224,12 +601,41 @@ CMakeFiles/worker.dir/src/main.cpp.s: cmake_force
 
 # Object files for target worker
 worker_OBJECTS = \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/include/rtp_rtcp_defines.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_bursty.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_random.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_header_reader_writer.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_receiver.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction_internal.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_dependency_descriptor_extension.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor_extension.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extension_map.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extensions.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet_received.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_header_reader_writer.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_receiver_impl.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/checks.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/copy_on_write_buffer.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/critical_section.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/event_tracer.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/logging.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/platform_thread_types.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/rate_statistics.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_encode.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_to_number.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_utils.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/time_utils.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/zero_memory.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/clock.cc.o" \
+"CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc.o" \
 "CMakeFiles/worker.dir/src/io/uv_timer.cpp.o" \
 "CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.o" \
 "CMakeFiles/worker.dir/src/io/port_manager.cpp.o" \
 "CMakeFiles/worker.dir/src/io/udp_socket.cpp.o" \
 "CMakeFiles/worker.dir/src/io/uv_loop.cpp.o" \
-"CMakeFiles/worker.dir/src/rtc/payload_descriptor.cpp.o" \
 "CMakeFiles/worker.dir/src/rtc/rtp_packet.cpp.o" \
 "CMakeFiles/worker.dir/src/rtc/transport.cpp.o" \
 "CMakeFiles/worker.dir/src/rtc/udp_router.cpp.o" \
@@ -240,12 +646,41 @@ worker_OBJECTS = \
 # External object files for target worker
 worker_EXTERNAL_OBJECTS =
 
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/include/rtp_rtcp_defines.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_bursty.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/fec_private_tables_random.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_header_reader_writer.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_receiver.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction_internal.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_dependency_descriptor_extension.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor_extension.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extension_map.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extensions.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet_received.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_header_reader_writer.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_receiver_impl.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/checks.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/copy_on_write_buffer.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/critical_section.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/event_tracer.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/logging.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/platform_thread_types.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/rate_statistics.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_encode.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_to_number.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/string_utils.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/time_utils.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/rtc_base/zero_memory.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/clock.cc.o
+worker: CMakeFiles/worker.dir/third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc.o
 worker: CMakeFiles/worker.dir/src/io/uv_timer.cpp.o
 worker: CMakeFiles/worker.dir/src/bifrost/data_producer.cpp.o
 worker: CMakeFiles/worker.dir/src/io/port_manager.cpp.o
 worker: CMakeFiles/worker.dir/src/io/udp_socket.cpp.o
 worker: CMakeFiles/worker.dir/src/io/uv_loop.cpp.o
-worker: CMakeFiles/worker.dir/src/rtc/payload_descriptor.cpp.o
 worker: CMakeFiles/worker.dir/src/rtc/rtp_packet.cpp.o
 worker: CMakeFiles/worker.dir/src/rtc/transport.cpp.o
 worker: CMakeFiles/worker.dir/src/rtc/udp_router.cpp.o
@@ -254,7 +689,7 @@ worker: CMakeFiles/worker.dir/src/utils/utils.cpp.o
 worker: CMakeFiles/worker.dir/src/main.cpp.o
 worker: CMakeFiles/worker.dir/build.make
 worker: CMakeFiles/worker.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable worker"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/admin/go/src/github.com/Bifrost/worker/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_42) "Linking CXX executable worker"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/worker.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

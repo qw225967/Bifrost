@@ -16,6 +16,7 @@
 #include "rtp_packet.h"
 
 namespace bifrost {
+typedef std::shared_ptr<RtpPacket> RtpPacketPtr;
 class DataProducer {
  public:
   DataProducer();
@@ -26,6 +27,9 @@ class DataProducer {
 
  private:
   std::ifstream data_file_;
+
+  uint32_t ssrc_;
+  uint16_t sequence_;
 };
 }  // namespace bifrost
 
