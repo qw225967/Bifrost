@@ -61,14 +61,14 @@ void TransportCongestionControlClient::InitializeController() {
 
   this->processTimer = new UvTimer(this, uv_loop_->get_loop().get());
 
-  // clang-format off
-		this->processTimer->Start(std::min(
-			// Depends on probation being done and WebRTC-Pacer-MinPacketLimitMs field trial.
-			this->rtpTransportControllerSend->packet_sender()->TimeUntilNextProcess(),
-			// Fixed value (25ms), libwebrtc/api/transport/goog_cc_factory.cc.
-			this->controllerFactory->GetProcessInterval().ms()
-		));
-  // clang-format on
+  this->processTimer->Start(std::min(
+      // Depends on probation being done and WebRTC-Pacer-MinPacketLimitMs field
+      // trial.
+      this->rtpTransportControllerSend->packet_sender()->TimeUntilNextProcess(),
+      // Fixed value (25ms), libwebrtc/api/transport/goog_cc_factory.cc.
+      this->controllerFactory->GetProcessInterval().ms()));
+
+  this->rtpTransportControllerSend->OnNetworkAvailability(true);
 }
 
 void TransportCongestionControlClient::DestroyController() {
@@ -77,21 +77,6 @@ void TransportCongestionControlClient::DestroyController() {
 
   delete this->processTimer;
   this->processTimer = nullptr;
-}
-
-void TransportCongestionControlClient::TransportConnected() {
-  if (this->rtpTransportControllerSend == nullptr) {
-    InitializeController();
-  }
-
-  this->rtpTransportControllerSend->OnNetworkAvailability(true);
-}
-
-void TransportCongestionControlClient::TransportDisconnected() {
-  auto nowMs = ();
-
-  this->bitrates.desiredBitrate = 0u;
-  this->bitrates.effectiveDesiredBitrate = 0u;
 
   this->rtpTransportControllerSend->OnNetworkAvailability(false);
 }
@@ -185,106 +170,6 @@ void TransportCongestionControlClient::UpdatePacketLoss(double packetLoss) {
   // smarter.
   // NOLINTNEXTLINE(clang-analyzer-core.DivideZero)
   this->packetLoss = totalPacketLoss / samples;
-}
-
-void TransportCongestionControlClient::SetMaxOutgoingBitrate(
-    uint32_t maxBitrate) {
-  if (maxBitrate < MinBitrate)
-    std::cout << "[tcc client] maxOutgoingBitrate must be >= 30000bps"
-              << std::endl;
-
-  this->maxOutgoingBitrate = maxBitrate;
-
-  ApplyBitrateUpdates();
-
-  if (this->maxOutgoingBitrate > 0u) {
-    this->bitrates.availableBitrate = std::min<uint32_t>(
-        this->maxOutgoingBitrate, this->bitrates.availableBitrate);
-  }
-}
-
-void TransportCongestionControlClient::SetDesiredBitrate(
-    uint32_t desiredBitrate, bool force) {
-  auto nowMs = uv_loop_->get_time_ms_int64();
-
-  // Manage it via trending and increase it a bit to avoid immediate
-  // oscillations.
-
-  this->bitrates.desiredBitrate = desiredBitrate;
-  this->bitrates.effectiveDesiredBitrate = this->desiredBitrateTrend.GetValue();
-  this->bitrates.minBitrate = MinBitrate;
-  // NOTE: Setting 'startBitrate' to 'availableBitrate' has proven to generate
-  // more stable values.
-  this->bitrates.startBitrate =
-      std::max<uint32_t>(MinBitrate, this->bitrates.availableBitrate);
-
-  ApplyBitrateUpdates();
-}
-
-void TransportCongestionControlClient::ApplyBitrateUpdates() {
-  auto currentMaxBitrate = this->bitrates.maxBitrate;
-  uint32_t newMaxBitrate = 0;
-
-  if (this->desiredBitrateTrend.GetValue() > 0u) {
-    newMaxBitrate = std::max<uint32_t>(
-        this->initialAvailableBitrate,
-        this->desiredBitrateTrend.GetValue() * MaxBitrateIncrementFactor);
-
-    // If max bitrate requested didn't change by more than a small % keep the
-    // previous settings to avoid constant small fluctuations requiring extra
-    // probing and making the estimation less stable (requires constant
-    // redistribution of bitrate accross consumers).
-    auto maxBitrateMargin = newMaxBitrate * MaxBitrateMarginFactor;
-    if (currentMaxBitrate > newMaxBitrate - maxBitrateMargin &&
-        currentMaxBitrate < newMaxBitrate + maxBitrateMargin) {
-      newMaxBitrate = currentMaxBitrate;
-    }
-  } else {
-    newMaxBitrate = this->initialAvailableBitrate;
-  }
-
-  if (this->maxOutgoingBitrate > 0u) {
-    newMaxBitrate = std::min<uint32_t>(this->maxOutgoingBitrate, newMaxBitrate);
-  }
-
-  if (newMaxBitrate != currentMaxBitrate) {
-    this->bitrates.maxPaddingBitrate = newMaxBitrate * MaxPaddingBitrateFactor;
-    this->bitrates.maxBitrate = newMaxBitrate;
-  }
-
-  MS_DEBUG_DEV("[desiredBitrate:%" PRIu32 ", desiredBitrateTrend:%" PRIu32
-               ", startBitrate:%" PRIu32 ", minBitrate:%" PRIu32
-               ", maxBitrate:%" PRIu32 ", maxPaddingBitrate:%" PRIu32 "]",
-               this->bitrates.desiredBitrate,
-               this->desiredBitrateTrend.GetValue(),
-               this->bitrates.startBitrate, this->bitrates.minBitrate,
-               this->bitrates.maxBitrate, this->bitrates.maxPaddingBitrate);
-
-  if (this->rtpTransportControllerSend == nullptr) {
-    return;
-  }
-
-  this->rtpTransportControllerSend->SetAllocatedSendBitrateLimits(
-      this->bitrates.minBitrate, this->bitrates.maxPaddingBitrate,
-      this->bitrates.maxBitrate);
-
-  webrtc::TargetRateConstraints constraints;
-
-  constraints.at_time = webrtc::Timestamp::ms(DepLibUV::GetTimeMs());
-  constraints.min_data_rate = webrtc::DataRate::bps(this->bitrates.minBitrate);
-  constraints.max_data_rate = webrtc::DataRate::bps(this->bitrates.maxBitrate);
-  constraints.starting_rate =
-      webrtc::DataRate::bps(this->bitrates.startBitrate);
-
-  this->rtpTransportControllerSend->SetClientBitratePreferences(constraints);
-}
-
-uint32_t TransportCongestionControlClient::GetAvailableBitrate() const {
-  return this->bitrates.availableBitrate;
-}
-
-double TransportCongestionControlClient::GetPacketLoss() const {
-  return this->packetLoss;
 }
 
 void TransportCongestionControlClient::RescheduleNextAvailableBitrateEvent() {
@@ -381,7 +266,7 @@ void TransportCongestionControlClient::OnTargetTransferRate(
 
 // Called from PacedSender in order to send probation packets.
 void TransportCongestionControlClient::SendPacket(
-    RTC::RtpPacket* packet, const webrtc::PacedPacketInfo& pacingInfo) {
+    RtpPacket* packet, const webrtc::PacedPacketInfo& pacingInfo) {
   // Send the packet.
   this->listener->OnTransportCongestionControlClientSendRtpPacket(this, packet,
                                                                   pacingInfo);

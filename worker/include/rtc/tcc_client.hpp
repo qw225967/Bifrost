@@ -5,11 +5,12 @@
 #include <api/transport/network_types.h>
 #include <call/rtp_transport_controller_send.h>
 #include <modules/pacing/packet_router.h>
+
 #include <deque>
 
+#include "common.h"
 #include "rtp_packet.h"
 #include "uv_timer.h"
-#include "common.h"
 
 namespace bifrost {
 class TransportCongestionControlClient
@@ -37,8 +38,8 @@ class TransportCongestionControlClient
         TransportCongestionControlClient* tccClient,
         TransportCongestionControlClient::Bitrates& bitrates) = 0;
     virtual void OnTransportCongestionControlClientSendRtpPacket(
-        TransportCongestionControlClient* tccClient,
-        RtpPacket* packet, const webrtc::PacedPacketInfo& pacingInfo) = 0;
+        TransportCongestionControlClient* tccClient, RtpPacket* packet,
+        const webrtc::PacedPacketInfo& pacingInfo) = 0;
   };
 
  public:
@@ -49,27 +50,24 @@ class TransportCongestionControlClient
   virtual ~TransportCongestionControlClient();
 
  public:
-  void TransportConnected();
-  void TransportDisconnected();
+  const Bitrates& get_bit_rates() const { return this->bitrates; }
+  double get_packet_loss() const { return this->packetLoss; }
+  uint32_t get_available_bitrate() const {
+    return this->bitrates.availableBitrate;
+  }
+
+ public:
   void InsertPacket(webrtc::RtpPacketSendInfo& packetInfo);
   webrtc::PacedPacketInfo GetPacingInfo();
   void PacketSent(webrtc::RtpPacketSendInfo& packetInfo, int64_t nowMs);
   void ReceiveEstimatedBitrate(uint32_t bitrate);
-
   void ReceiveRtcpTransportFeedback(
       const RTC::RTCP::FeedbackRtpTransportPacket* feedback);
-  void SetDesiredBitrate(uint32_t desiredBitrate, bool force);
-  void SetMaxOutgoingBitrate(uint32_t maxBitrate);
-  const Bitrates& GetBitrates() const { return this->bitrates; }
-  uint32_t GetAvailableBitrate() const;
-  double GetPacketLoss() const;
   void RescheduleNextAvailableBitrateEvent();
 
  private:
   void MayEmitAvailableBitrateEvent(uint32_t previousAvailableBitrate);
   void UpdatePacketLoss(double packetLoss);
-  void ApplyBitrateUpdates();
-
   void InitializeController();
   void DestroyController();
 
