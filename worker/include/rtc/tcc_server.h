@@ -1,11 +1,12 @@
 #ifndef MS_RTC_TRANSPORT_CONGESTION_CONTROL_SERVER_HPP
 #define MS_RTC_TRANSPORT_CONGESTION_CONTROL_SERVER_HPP
 
-#include <libwebrtc/modules/remote_bitrate_estimator/remote_bitrate_estimator_abs_send_time.h>
+#include <modules/remote_bitrate_estimator/remote_bitrate_estimator_abs_send_time.h>
+
 #include <deque>
 
+#include "common.h"
 #include "rtp_packet.h"
-#include "common.hpp"
 #include "uv_timer.h"
 
 namespace bifrost {
@@ -19,30 +20,19 @@ class TransportCongestionControlServer
 
    public:
     virtual void OnTransportCongestionControlServerSendRtcpPacket(
-        TransportCongestionControlServer* tccServer,
-        RTCP::Packet* packet) = 0;
+        TransportCongestionControlServer* tccServer, RtcpPacket* packet) = 0;
   };
 
  public:
   TransportCongestionControlServer(
       TransportCongestionControlServer::Listener* listener,
-      size_t maxRtcpPacketLen);
+      size_t maxRtcpPacketLen, UvLoop* uv_loop);
   virtual ~TransportCongestionControlServer();
 
  public:
-  void TransportConnected();
-  void TransportDisconnected();
-  uint32_t GetAvailableBitrate() const {
-    switch (this->bweType) {
-      case RTC::BweType::REMB:
-        return this->rembServer->GetAvailableBitrate();
-
-      default:
-        return 0u;
-    }
-  }
-  double GetPacketLoss() const;
-  void IncomingPacket(uint64_t nowMs, const RTC::RtpPacket* packet);
+  uint32_t get_available_bitrate() const {}
+  double get_packet_loss() const { this->packetLoss; };
+  void IncomingPacket(uint64_t nowMs, const RtpPacket* packet);
   void SetMaxIncomingBitrate(uint32_t bitrate);
 
  private:
@@ -59,15 +49,17 @@ class TransportCongestionControlServer
 
   /* Pure virtual methods inherited from Timer::Listener. */
  public:
-  void OnTimer(Timer* timer) override;
+  void OnTimer(UvTimer* timer) override;
 
  private:
+  // uv loop
+  UvLoop* uv_loop_;
+
   // Passed by argument.
   Listener* listener{nullptr};
   // Allocated by this.
-  Timer* transportCcFeedbackSendPeriodicTimer{nullptr};
-  std::unique_ptr<RTC::RTCP::FeedbackRtpTransportPacket>
-      transportCcFeedbackPacket;
+  UvTimer* transportCcFeedbackSendPeriodicTimer{nullptr};
+  std::unique_ptr<FeedbackRtpTransportPacket> transportCcFeedbackPacket;
   webrtc::RemoteBitrateEstimatorAbsSendTime* rembServer{nullptr};
 
   // Others.

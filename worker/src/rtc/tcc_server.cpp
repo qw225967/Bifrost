@@ -1,7 +1,7 @@
 #define MS_CLASS "RTC::TransportCongestionControlServer"
 // #define MS_LOG_DEV_LEVEL 3
 
-#include "tcc_server.hpp"
+#include "tcc_server.h"
 
 #include <iterator>  // std::ostream_iterator
 #include <sstream>   // std::ostringstream
@@ -20,37 +20,21 @@ static constexpr size_t PacketLossHistogramLength{24};
 
 TransportCongestionControlServer::TransportCongestionControlServer(
     TransportCongestionControlServer::Listener* listener,
-    size_t maxRtcpPacketLen)
-    : listener(listener), bweType(bweType), maxRtcpPacketLen(maxRtcpPacketLen) {
-  MS_TRACE();
+    size_t maxRtcpPacketLen, UvLoop* uv_loop)
+    : listener(listener), maxRtcpPacketLen(maxRtcpPacketLen) {
+  this->transportCcFeedbackPacket =
+      std::make_unique<FeedbackRtpTransportPacket>(0u, 0u);
 
-  switch (this->bweType) {
-    case RTC::BweType::TRANSPORT_CC: {
-      // Create a feedback packet.
-      this->transportCcFeedbackPacket.reset(
-          new RTC::RTCP::FeedbackRtpTransportPacket(0u, 0u));
+  // Set initial packet count.
+  this->transportCcFeedbackPacket->SetFeedbackPacketCount(
+      this->transportCcFeedbackPacketCount);
 
-      // Set initial packet count.
-      this->transportCcFeedbackPacket->SetFeedbackPacketCount(
-          this->transportCcFeedbackPacketCount);
-
-      // Create the feedback send periodic timer.
-      this->transportCcFeedbackSendPeriodicTimer = new Timer(this);
-
-      break;
-    }
-
-    case RTC::BweType::REMB: {
-      this->rembServer = new webrtc::RemoteBitrateEstimatorAbsSendTime(this);
-
-      break;
-    }
-  }
+  // Create the feedback send periodic timer.
+  this->transportCcFeedbackSendPeriodicTimer =
+      new UvTimer(this, uv_loop->get_loop().get());
 }
 
 TransportCongestionControlServer::~TransportCongestionControlServer() {
-  MS_TRACE();
-
   delete this->transportCcFeedbackSendPeriodicTimer;
   this->transportCcFeedbackSendPeriodicTimer = nullptr;
 
@@ -59,136 +43,71 @@ TransportCongestionControlServer::~TransportCongestionControlServer() {
   this->rembServer = nullptr;
 }
 
-void TransportCongestionControlServer::TransportConnected() {
-  MS_TRACE();
+void TransportCongestionControlServer::IncomingPacket(uint64_t nowMs,
+                                                      const RtpPacket* packet) {
+  uint16_t wideSeqNumber;
 
-  switch (this->bweType) {
-    case RTC::BweType::TRANSPORT_CC: {
-      this->transportCcFeedbackSendPeriodicTimer->Start(
-          TransportCcFeedbackSendInterval, TransportCcFeedbackSendInterval);
+  if (!packet->ReadTransportWideCc01(wideSeqNumber)) break;
 
-      break;
-    }
+  // Update the RTCP media SSRC of the ongoing Transport-CC Feedback packet.
+  this->transportCcFeedbackSenderSsrc = 0u;
+  this->transportCcFeedbackMediaSsrc = packet->GetSsrc();
 
-    default:;
-  }
-}
+  this->transportCcFeedbackPacket->SetSenderSsrc(0u);
+  this->transportCcFeedbackPacket->SetMediaSsrc(
+      this->transportCcFeedbackMediaSsrc);
 
-void TransportCongestionControlServer::TransportDisconnected() {
-  MS_TRACE();
+  // Provide the feedback packet with the RTP packet info. If it fails,
+  // send current feedback and add the packet info to a new one.
+  auto result = this->transportCcFeedbackPacket->AddPacket(
+      wideSeqNumber, nowMs, this->maxRtcpPacketLen);
 
-  switch (this->bweType) {
-    case RTC::BweType::TRANSPORT_CC: {
-      this->transportCcFeedbackSendPeriodicTimer->Stop();
+  switch (result) {
+    case FeedbackRtpTransportPacket::AddPacketResult::SUCCESS: {
+      // If the feedback packet is full, send it now.
+      if (this->transportCcFeedbackPacket->IsFull()) {
+        std::cout << "[tcc server] transport-cc feedback packet is full, "
+                     "sending feedback now"
+                  << std::endl;
 
-      // Create a new feedback packet.
-      this->transportCcFeedbackPacket.reset(
-          new RTC::RTCP::FeedbackRtpTransportPacket(0u, 0u));
-
-      break;
-    }
-
-    default:;
-  }
-}
-
-double TransportCongestionControlServer::GetPacketLoss() const {
-  MS_TRACE();
-
-  return this->packetLoss;
-}
-
-void TransportCongestionControlServer::IncomingPacket(
-    uint64_t nowMs, const RTC::RtpPacket* packet) {
-  MS_TRACE();
-
-  switch (this->bweType) {
-    case RTC::BweType::TRANSPORT_CC: {
-      uint16_t wideSeqNumber;
-
-      if (!packet->ReadTransportWideCc01(wideSeqNumber)) break;
-
-      // Update the RTCP media SSRC of the ongoing Transport-CC Feedback packet.
-      this->transportCcFeedbackSenderSsrc = 0u;
-      this->transportCcFeedbackMediaSsrc = packet->GetSsrc();
-
-      this->transportCcFeedbackPacket->SetSenderSsrc(0u);
-      this->transportCcFeedbackPacket->SetMediaSsrc(
-          this->transportCcFeedbackMediaSsrc);
-
-      // Provide the feedback packet with the RTP packet info. If it fails,
-      // send current feedback and add the packet info to a new one.
-      auto result = this->transportCcFeedbackPacket->AddPacket(
-          wideSeqNumber, nowMs, this->maxRtcpPacketLen);
-
-      switch (result) {
-        case RTC::RTCP::FeedbackRtpTransportPacket::AddPacketResult::SUCCESS: {
-          // If the feedback packet is full, send it now.
-          if (this->transportCcFeedbackPacket->IsFull()) {
-            MS_DEBUG_DEV(
-                "transport-cc feedback packet is full, sending feedback now");
-
-            SendTransportCcFeedback();
-          }
-
-          break;
-        }
-
-        case RTC::RTCP::FeedbackRtpTransportPacket::AddPacketResult::
-            MAX_SIZE_EXCEEDED: {
-          // Send ongoing feedback packet and add the new packet info to the
-          // regenerated one.
-          SendTransportCcFeedback();
-
-          this->transportCcFeedbackPacket->AddPacket(wideSeqNumber, nowMs,
-                                                     this->maxRtcpPacketLen);
-
-          break;
-        }
-
-        case RTC::RTCP::FeedbackRtpTransportPacket::AddPacketResult::FATAL: {
-          // Create a new feedback packet.
-          this->transportCcFeedbackPacket.reset(
-              new RTC::RTCP::FeedbackRtpTransportPacket(
-                  this->transportCcFeedbackSenderSsrc,
-                  this->transportCcFeedbackMediaSsrc));
-
-          // Use current packet count.
-          // NOTE: Do not increment it since the previous ongoing feedback
-          // packet was not sent.
-          this->transportCcFeedbackPacket->SetFeedbackPacketCount(
-              this->transportCcFeedbackPacketCount);
-
-          break;
-        }
+        SendTransportCcFeedback();
       }
 
-      MaySendLimitationRembFeedback();
+      break;
+    }
+
+    case FeedbackRtpTransportPacket::AddPacketResult::MAX_SIZE_EXCEEDED: {
+      // Send ongoing feedback packet and add the new packet info to the
+      // regenerated one.
+      SendTransportCcFeedback();
+
+      this->transportCcFeedbackPacket->AddPacket(wideSeqNumber, nowMs,
+                                                 this->maxRtcpPacketLen);
 
       break;
     }
 
-    case RTC::BweType::REMB: {
-      uint32_t absSendTime;
+    case FeedbackRtpTransportPacket::AddPacketResult::FATAL: {
+      // Create a new feedback packet.
+      this->transportCcFeedbackPacket =
+          std::make_unique<FeedbackRtpTransportPacket>(
+              this->transportCcFeedbackSenderSsrc,
+              this->transportCcFeedbackMediaSsrc);
 
-      if (!packet->ReadAbsSendTime(absSendTime)) break;
-
-      // NOTE: nowMs is uint64_t but we need to "convert" it to int64_t before
-      // we give it to libwebrtc lib (althought this is implicit in the
-      // conversion so it would be converted within the method call).
-      auto nowMsInt64 = static_cast<int64_t>(nowMs);
-
-      this->rembServer->IncomingPacket(nowMsInt64, packet->GetPayloadLength(),
-                                       *packet, absSendTime);
+      // Use current packet count.
+      // NOTE: Do not increment it since the previous ongoing feedback
+      // packet was not sent.
+      this->transportCcFeedbackPacket->SetFeedbackPacketCount(
+          this->transportCcFeedbackPacketCount);
 
       break;
     }
   }
+
+  MaySendLimitationRembFeedback();
 }
 
 void TransportCongestionControlServer::SetMaxIncomingBitrate(uint32_t bitrate) {
-  MS_TRACE();
-
   auto previousMaxIncomingBitrate = this->maxIncomingBitrate;
 
   this->maxIncomingBitrate = bitrate;
@@ -202,8 +121,6 @@ void TransportCongestionControlServer::SetMaxIncomingBitrate(uint32_t bitrate) {
 }
 
 inline void TransportCongestionControlServer::SendTransportCcFeedback() {
-  MS_TRACE();
-
   if (!this->transportCcFeedbackPacket->IsSerializable()) return;
 
   auto latestWideSeqNumber =
@@ -226,10 +143,10 @@ inline void TransportCongestionControlServer::SendTransportCcFeedback() {
   this->UpdatePacketLoss(static_cast<double>(lost_packets) / expected_packets);
 
   // Create a new feedback packet.
-  this->transportCcFeedbackPacket.reset(
-      new RTC::RTCP::FeedbackRtpTransportPacket(
+  this->transportCcFeedbackPacket =
+      std::make_unique<FeedbackRtpTransportPacket>(
           this->transportCcFeedbackSenderSsrc,
-          this->transportCcFeedbackMediaSsrc));
+          this->transportCcFeedbackMediaSsrc);
 
   // Increment packet count.
   this->transportCcFeedbackPacket->SetFeedbackPacketCount(
@@ -243,46 +160,7 @@ inline void TransportCongestionControlServer::SendTransportCcFeedback() {
   }
 }
 
-inline void TransportCongestionControlServer::MaySendLimitationRembFeedback() {
-  MS_TRACE();
-
-  auto nowMs = DepLibUV::GetTimeMs();
-
-  // May fix unlimitedRembCounter.
-  if (this->unlimitedRembCounter > 0u && this->maxIncomingBitrate != 0u)
-    this->unlimitedRembCounter = 0u;
-
-  // In case this is the first unlimited REMB packet, send it fast.
-  // clang-format off
-		if (
-			(
-				(this->bweType != RTC::BweType::REMB && this->maxIncomingBitrate != 0u) ||
-				this->unlimitedRembCounter > 0u
-			) &&
-			(
-				nowMs - this->limitationRembSentAtMs > LimitationRembInterval ||
-				this->unlimitedRembCounter == UnlimitedRembNumPackets
-			)
-		)
-  // clang-format on
-  {
-    MS_DEBUG_DEV("sending limitation RTCP REMB packet [bitrate:%" PRIu32 "]",
-                 this->maxIncomingBitrate);
-
-    RTC::RTCP::FeedbackPsRembPacket packet(0u, 0u);
-
-    packet.SetBitrate(this->maxIncomingBitrate);
-    packet.Serialize(RTC::RTCP::Buffer);
-
-    // Notify the listener.
-    this->listener->OnTransportCongestionControlServerSendRtcpPacket(this,
-                                                                     &packet);
-
-    this->limitationRembSentAtMs = nowMs;
-
-    if (this->unlimitedRembCounter > 0u) this->unlimitedRembCounter--;
-  }
-}
+inline void TransportCongestionControlServer::MaySendLimitationRembFeedback() {}
 
 void TransportCongestionControlServer::UpdatePacketLoss(double packetLoss) {
   // Add the score into the histogram.
@@ -310,40 +188,9 @@ void TransportCongestionControlServer::UpdatePacketLoss(double packetLoss) {
 
 inline void TransportCongestionControlServer::OnRembServerAvailableBitrate(
     const webrtc::RemoteBitrateEstimator* /*rembServer*/,
-    const std::vector<uint32_t>& ssrcs, uint32_t availableBitrate) {
-  MS_TRACE();
+    const std::vector<uint32_t>& ssrcs, uint32_t availableBitrate) {}
 
-  // Limit announced bitrate if requested via API.
-  if (this->maxIncomingBitrate != 0u)
-    availableBitrate = std::min(availableBitrate, this->maxIncomingBitrate);
-
-#if MS_LOG_DEV_LEVEL == 3
-  std::ostringstream ssrcsStream;
-
-  if (!ssrcs.empty()) {
-    std::copy(ssrcs.begin(), ssrcs.end() - 1,
-              std::ostream_iterator<uint32_t>(ssrcsStream, ","));
-    ssrcsStream << ssrcs.back();
-  }
-
-  MS_DEBUG_DEV("sending RTCP REMB packet [bitrate:%" PRIu32 ", ssrcs:%s]",
-               availableBitrate, ssrcsStream.str().c_str());
-#endif
-
-  RTC::RTCP::FeedbackPsRembPacket packet(0u, 0u);
-
-  packet.SetBitrate(availableBitrate);
-  packet.SetSsrcs(ssrcs);
-  packet.Serialize(RTC::RTCP::Buffer);
-
-  // Notify the listener.
-  this->listener->OnTransportCongestionControlServerSendRtcpPacket(this,
-                                                                   &packet);
-}
-
-inline void TransportCongestionControlServer::OnTimer(Timer* timer) {
-  MS_TRACE();
-
+inline void TransportCongestionControlServer::OnTimer(UvTimer* timer) {
   if (timer == this->transportCcFeedbackSendPeriodicTimer)
     SendTransportCcFeedback();
 }

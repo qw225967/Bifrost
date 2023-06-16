@@ -9,6 +9,7 @@
 #include <deque>
 
 #include "common.h"
+#include "rtcp_tcc.h"
 #include "rtp_packet.h"
 #include "uv_timer.h"
 
@@ -61,8 +62,7 @@ class TransportCongestionControlClient
   webrtc::PacedPacketInfo GetPacingInfo();
   void PacketSent(webrtc::RtpPacketSendInfo& packetInfo, int64_t nowMs);
   void ReceiveEstimatedBitrate(uint32_t bitrate);
-  void ReceiveRtcpTransportFeedback(
-      const RTC::RTCP::FeedbackRtpTransportPacket* feedback);
+  void ReceiveRtcpTransportFeedback(const FeedbackRtpTransportPacket* feedback);
   void RescheduleNextAvailableBitrateEvent();
 
  private:

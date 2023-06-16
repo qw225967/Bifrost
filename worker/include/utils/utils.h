@@ -135,25 +135,25 @@ class Byte {
     data[i] = value;
   }
 
-  static void set_2_byte(uint8_t* data, size_t i, uint16_t value) {
+  static void set_2_bytes(uint8_t* data, size_t i, uint16_t value) {
     data[i + 1] = static_cast<uint8_t>(value);
     data[i] = static_cast<uint8_t>(value >> 8);
   }
 
-  static void set_3_byte(uint8_t* data, size_t i, uint32_t value) {
+  static void set_3_bytes(uint8_t* data, size_t i, uint32_t value) {
     data[i + 2] = static_cast<uint8_t>(value);
     data[i + 1] = static_cast<uint8_t>(value >> 8);
     data[i] = static_cast<uint8_t>(value >> 16);
   }
 
-  static void set_4_byte(uint8_t* data, size_t i, uint32_t value) {
+  static void set_4_bytes(uint8_t* data, size_t i, uint32_t value) {
     data[i + 3] = static_cast<uint8_t>(value);
     data[i + 2] = static_cast<uint8_t>(value >> 8);
     data[i + 1] = static_cast<uint8_t>(value >> 16);
     data[i] = static_cast<uint8_t>(value >> 24);
   }
 
-  static void set_8_byte(uint8_t* data, size_t i, uint64_t value) {
+  static void set_8_bytes(uint8_t* data, size_t i, uint64_t value) {
     data[i + 7] = static_cast<uint8_t>(value);
     data[i + 6] = static_cast<uint8_t>(value >> 8);
     data[i + 5] = static_cast<uint8_t>(value >> 16);

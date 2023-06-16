@@ -12,21 +12,21 @@
 #define CALL_RTP_TRANSPORT_CONTROLLER_SEND_H_
 
 #include "api/network_state_predictor.h"
-#include "api/transport/network_control.h"
 #include "api/transport/field_trial_based_config.h"
+#include "api/transport/network_control.h"
 // #include "call/rtp_bitrate_configurator.h"
-#include "call/rtp_transport_controller_send_interface.h"
-#include "modules/congestion_controller/rtp/control_handler.h"
-#include "modules/congestion_controller/rtp/transport_feedback_adapter.h"
-#include "rtc_base/constructor_magic.h"
-#include "modules/pacing/packet_router.h"
-#include "modules/pacing/paced_sender.h"
-
 #include <atomic>
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
+
+#include "call/rtp_transport_controller_send_interface.h"
+#include "modules/congestion_controller/rtp/control_handler.h"
+#include "modules/congestion_controller/rtp/transport_feedback_adapter.h"
+#include "modules/pacing/paced_sender.h"
+#include "modules/pacing/packet_router.h"
+#include "rtc_base/constructor_magic.h"
 
 namespace webrtc {
 
@@ -72,25 +72,25 @@ class RtpTransportControllerSend final
   // Implements RtcpBandwidthObserver interface
   void OnReceivedEstimatedBitrate(uint32_t bitrate) override;
   void OnReceivedRtcpReceiverReport(const ReportBlockList& report_blocks,
-                                    int64_t rtt,
-                                    int64_t now_ms) override;
+                                    int64_t rtt, int64_t now_ms) override;
 
   // Implements TransportFeedbackObserver interface
   void OnAddPacket(const RtpPacketSendInfo& packet_info) override;
-  void OnTransportFeedback(const RTC::RTCP::FeedbackRtpTransportPacket& feedback) override;
+  void OnTransportFeedback(
+      const bifrost::FeedbackRtpTransportPacket& feedback) override;
 
   // Implements NetworkStateEstimateObserver interface
   void OnRemoteNetworkEstimate(NetworkStateEstimate estimate) override;
 
   void Process();
 
-	void SetSendSideBandwidthMinBitrate(int minBitrate);
+  void SetSendSideBandwidthMinBitrate(int minBitrate);
 
-	void ChangeWindowSize(size_t size);
+  void ChangeWindowSize(size_t size);
 
-	void ChangeDynamicMinThreshold(double threshold);
+  void ChangeDynamicMinThreshold(double threshold);
 
-	void SetNoBitrateIncreaseInAlr(bool flag);
+  void SetNoBitrateIncreaseInAlr(bool flag);
 
  private:
   void MaybeCreateControllers();
@@ -116,7 +116,7 @@ class RtpTransportControllerSend final
 
   std::unique_ptr<CongestionControlHandler> control_handler_;
 
-  std::unique_ptr<NetworkControllerInterface> controller_ ;
+  std::unique_ptr<NetworkControllerInterface> controller_;
 
   TimeDelta process_interval_;
 
@@ -124,7 +124,7 @@ class RtpTransportControllerSend final
   Timestamp last_report_block_time_;
 
   NetworkControllerConfig initial_config_;
-	StreamsConfig streams_config_;
+  StreamsConfig streams_config_;
 
   const bool send_side_bwe_with_overhead_;
   // MS_NOTE: not used.

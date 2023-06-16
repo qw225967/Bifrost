@@ -305,7 +305,7 @@ class RtpPacket {
 
     auto absSendTime = Time::TimeMsToAbsSendTime(ms);
 
-    Byte::set_3_byte(extenValue, 0, absSendTime);
+    Byte::set_3_bytes(extenValue, 0, absSendTime);
 
     return true;
   }
@@ -329,7 +329,7 @@ class RtpPacket {
 
     if (!extenValue || extenLen != 2u) return false;
 
-    Byte::set_2_byte(extenValue, 0, wideSeqNumber);
+    Byte::set_2_bytes(extenValue, 0, wideSeqNumber);
 
     return true;
   }

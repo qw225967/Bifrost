@@ -1,7 +1,7 @@
 #define MS_CLASS "RTC::TransportCongestionControlClient"
 // #define MS_LOG_DEV_LEVEL 3
 
-#include "tcc_client.hpp"
+#include "tcc_client.h"
 
 #include <api/transport/network_types.h>  // webrtc::TargetRateConstraints
 
@@ -121,7 +121,7 @@ void TransportCongestionControlClient::ReceiveEstimatedBitrate(
 }
 
 void TransportCongestionControlClient::ReceiveRtcpTransportFeedback(
-    const RTC::RTCP::FeedbackRtpTransportPacket* feedback) {
+    const FeedbackRtpTransportPacket* feedback) {
   // Update packet loss history.
   size_t expected_packets = feedback->GetPacketStatusCount();
   size_t lost_packets = 0;
