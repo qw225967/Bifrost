@@ -11,8 +11,6 @@
 
 #include <iterator>
 
-#include "Logger.hpp"
-
 namespace bifrost {
 template <typename T>
 bool SeqManager<T>::SeqLowerThan::operator()(const T lhs, const T rhs) const {

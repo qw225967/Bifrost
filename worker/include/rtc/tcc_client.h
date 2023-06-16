@@ -30,31 +30,30 @@ class TransportCongestionControlClient
   };
 
  public:
-  class Listener {
+  class Observer {
    public:
-    virtual ~Listener() = default;
+    virtual ~Observer() = default;
 
    public:
     virtual void OnTransportCongestionControlClientBitrates(
-        TransportCongestionControlClient* tccClient,
+        TransportCongestionControlClient* tcc_client,
         TransportCongestionControlClient::Bitrates& bitrates) = 0;
     virtual void OnTransportCongestionControlClientSendRtpPacket(
-        TransportCongestionControlClient* tccClient, RtpPacket* packet,
-        const webrtc::PacedPacketInfo& pacingInfo) = 0;
+        TransportCongestionControlClient* tcc_client, RtpPacket* packet,
+        const webrtc::PacedPacketInfo& pacing_info) = 0;
   };
 
  public:
   TransportCongestionControlClient(
-      TransportCongestionControlClient::Listener* listener,
-      uint32_t initialAvailableBitrate, uint32_t maxOutgoingBitrate,
-      UvLoop* uv_loop);
+      TransportCongestionControlClient::Observer* observer,
+      uint32_t initial_available_bitrate, UvLoop* uv_loop);
   virtual ~TransportCongestionControlClient();
 
  public:
-  const Bitrates& get_bit_rates() const { return this->bitrates; }
-  double get_packet_loss() const { return this->packetLoss; }
+  const Bitrates& get_bit_rates() const { return this->bitrates_; }
+  double get_packet_loss() const { return this->packet_loss_; }
   uint32_t get_available_bitrate() const {
-    return this->bitrates.availableBitrate;
+    return this->bitrates_.availableBitrate;
   }
 
  public:
@@ -80,9 +79,12 @@ class TransportCongestionControlClient
       webrtc::TargetTransferRate targetTransferRate) override;
 
   /* Pure virtual methods inherited from webrtc::PacketRouter. */
+  void OnStartRateUpdate(webrtc::DataRate) override {}
  public:
   void SendPacket(RtpPacket* packet,
-                  const webrtc::PacedPacketInfo& pacingInfo) override;
+                  const webrtc::PacedPacketInfo& cluster_info) override;
+
+  RtpPacket* GeneratePadding(size_t target_size_bytes) override { return nullptr; }
 
   /* Pure virtual methods inherited from RTC::Timer. */
  public:
@@ -93,20 +95,20 @@ class TransportCongestionControlClient
   UvLoop* uv_loop_;
 
   // Passed by argument.
-  Listener* listener{nullptr};
+  Observer* observer_{nullptr};
   // Allocated by this.
-  webrtc::NetworkControllerFactoryInterface* controllerFactory{nullptr};
-  webrtc::RtpTransportControllerSend* rtpTransportControllerSend{nullptr};
-  UvTimer* processTimer{nullptr};
+  webrtc::NetworkControllerFactoryInterface* controller_factory_{nullptr};
+  webrtc::RtpTransportControllerSend* rtp_transport_controller_send_{nullptr};
+  UvTimer* process_timer_{nullptr};
 
   // Others.
-  uint32_t initialAvailableBitrate{0u};
-  uint32_t maxOutgoingBitrate{0u};
-  Bitrates bitrates;
-  bool availableBitrateEventCalled{false};
-  uint64_t lastAvailableBitrateEventAtMs{0u};
-  std::deque<double> packetLossHistory;
-  double packetLoss{0};
+  uint32_t initial_available_bitrate_{0u};
+  uint32_t max_outgoing_bitrate_{0u};
+  Bitrates bitrates_;
+  bool available_bitrate_event_called_{false};
+  uint64_t last_available_bitrate_event_at_ms_{0u};
+  std::deque<double> packet_loss_history_;
+  double packet_loss_{0};
 };
 }  // namespace bifrost
 

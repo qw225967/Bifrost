@@ -9,6 +9,8 @@
 
 #include "rtcp_feedback.h"
 
+#include "rtcp_tcc.h"
+
 namespace bifrost {
 /* Class methods. */
 

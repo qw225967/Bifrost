@@ -11,6 +11,14 @@
 #ifndef MODULES_REMOTE_BITRATE_ESTIMATOR_REMOTE_BITRATE_ESTIMATOR_ABS_SEND_TIME_H_
 #define MODULES_REMOTE_BITRATE_ESTIMATOR_REMOTE_BITRATE_ESTIMATOR_ABS_SEND_TIME_H_
 
+#include <stddef.h>
+#include <stdint.h>
+
+#include <list>
+#include <map>
+#include <memory>
+#include <vector>
+
 #include "api/transport/field_trial_based_config.h"
 #include "modules/remote_bitrate_estimator/aimd_rate_control.h"
 #include "modules/remote_bitrate_estimator/include/remote_bitrate_estimator.h"
@@ -19,15 +27,7 @@
 #include "modules/remote_bitrate_estimator/overuse_estimator.h"
 #include "rtc_base/constructor_magic.h"
 #include "rtc_base/rate_statistics.h"
-
-#include "RTC/RtpPacket.hpp"
-
-#include <stddef.h>
-#include <stdint.h>
-#include <list>
-#include <map>
-#include <memory>
-#include <vector>
+#include "rtp_packet.h"
 
 namespace webrtc {
 
@@ -74,8 +74,9 @@ class RemoteBitrateEstimatorAbsSendTime : public RemoteBitrateEstimator {
   RemoteBitrateEstimatorAbsSendTime(RemoteBitrateObserver* observer);
   ~RemoteBitrateEstimatorAbsSendTime();
 
-  void IncomingPacket(
-      int64_t arrivalTimeMs, size_t payloadSize, const RTC::RtpPacket& packet, uint32_t absSendTime) override;
+  void IncomingPacket(int64_t arrivalTimeMs, size_t payloadSize,
+                      const bifrost::RtpPacket& packet,
+                      uint32_t absSendTime) override;
   // This class relies on Process() being called periodically (at least once
   // every other second) for streams to be timed out properly. Therefore it
   // shouldn't be detached from the ProcessThread except if it's about to be
@@ -95,10 +96,8 @@ class RemoteBitrateEstimatorAbsSendTime : public RemoteBitrateEstimator {
 
   static void AddCluster(std::list<Cluster>* clusters, Cluster* cluster);
 
-  void IncomingPacketInfo(int64_t arrival_time_ms,
-                          uint32_t send_time_24bits,
-                          size_t payload_size,
-                          uint32_t ssrc);
+  void IncomingPacketInfo(int64_t arrival_time_ms, uint32_t send_time_24bits,
+                          size_t payload_size, uint32_t ssrc);
 
   void ComputeClusters(std::list<Cluster>* clusters) const;
 

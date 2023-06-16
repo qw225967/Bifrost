@@ -17,107 +17,110 @@ static constexpr float MaxBitrateIncrementFactor{1.35f};
 static constexpr float MaxPaddingBitrateFactor{0.85f};
 static constexpr uint64_t AvailableBitrateEventInterval{1000u};  // In ms.
 static constexpr size_t PacketLossHistogramLength{24};
+static constexpr uint32_t MaxAvailableBitrate{4096000u};
 
 /* Instance methods. */
 TransportCongestionControlClient::TransportCongestionControlClient(
-    TransportCongestionControlClient::Listener* listener,
-    uint32_t initialAvailableBitrate, uint32_t maxOutgoingBitrate,
-    UvLoop* uv_loop)
-    : listener(listener),
-      initialAvailableBitrate(
-          std::max<uint32_t>(initialAvailableBitrate, MinBitrate)),
-      maxOutgoingBitrate(maxOutgoingBitrate),
+    TransportCongestionControlClient::Observer* observer,
+    uint32_t initial_available_bitrate, UvLoop* uv_loop)
+    : observer_(observer),
+      initial_available_bitrate_(
+          std::max<uint32_t>(initial_available_bitrate, MinBitrate)),
+      max_outgoing_bitrate_(MaxAvailableBitrate),
       uv_loop_(uv_loop) {
   webrtc::GoogCcFactoryConfig config;
 
   // Provide RTCP feedback as well as Receiver Reports.
   config.feedback_only = false;
 
-  this->controllerFactory =
+  this->controller_factory_ =
       new webrtc::GoogCcNetworkControllerFactory(std::move(config));
 }
 
 TransportCongestionControlClient::~TransportCongestionControlClient() {
-  delete this->controllerFactory;
-  this->controllerFactory = nullptr;
+  delete this->controller_factory_;
+  this->controller_factory_ = nullptr;
 
   DestroyController();
 }
 
 void TransportCongestionControlClient::InitializeController() {
-  webrtc::BitrateConstraints bitrateConfig;
-  bitrateConfig.start_bitrate_bps =
-      static_cast<int>(this->initialAvailableBitrate);
+  webrtc::BitrateConstraints bitrate_config;
+  bitrate_config.start_bitrate_bps =
+      static_cast<int>(this->initial_available_bitrate_);
 
-  this->rtpTransportControllerSend = new webrtc::RtpTransportControllerSend(
-      this, nullptr, this->controllerFactory, bitrateConfig);
+  this->rtp_transport_controller_send_ = new webrtc::RtpTransportControllerSend(
+      this, nullptr, this->controller_factory_, bitrate_config);
 
-  this->rtpTransportControllerSend->RegisterTargetTransferRateObserver(this);
+  this->rtp_transport_controller_send_->RegisterTargetTransferRateObserver(
+      this);
 
   // This makes sure that periodic probing is used when the application is send
   // less bitrate than needed to measure the bandwidth estimation.  (f.e. when
   // videos are muted or using screensharing with still images)
-  this->rtpTransportControllerSend->EnablePeriodicAlrProbing(true);
+  this->rtp_transport_controller_send_->EnablePeriodicAlrProbing(true);
 
-  this->processTimer = new UvTimer(this, uv_loop_->get_loop().get());
+  this->process_timer_ = new UvTimer(this, uv_loop_->get_loop().get());
 
-  this->processTimer->Start(std::min(
+  this->process_timer_->Start(std::min(
       // Depends on probation being done and WebRTC-Pacer-MinPacketLimitMs field
       // trial.
-      this->rtpTransportControllerSend->packet_sender()->TimeUntilNextProcess(),
+      this->rtp_transport_controller_send_->packet_sender()
+          ->TimeUntilNextProcess(),
       // Fixed value (25ms), libwebrtc/api/transport/goog_cc_factory.cc.
-      this->controllerFactory->GetProcessInterval().ms()));
+      this->controller_factory_->GetProcessInterval().ms()));
 
-  this->rtpTransportControllerSend->OnNetworkAvailability(true);
+  this->rtp_transport_controller_send_->OnNetworkAvailability(true);
 }
 
 void TransportCongestionControlClient::DestroyController() {
-  delete this->rtpTransportControllerSend;
-  this->rtpTransportControllerSend = nullptr;
+  delete this->rtp_transport_controller_send_;
+  this->rtp_transport_controller_send_ = nullptr;
 
-  delete this->processTimer;
-  this->processTimer = nullptr;
+  delete this->process_timer_;
+  this->process_timer_ = nullptr;
 
-  this->rtpTransportControllerSend->OnNetworkAvailability(false);
+  this->rtp_transport_controller_send_->OnNetworkAvailability(false);
 }
 
 void TransportCongestionControlClient::InsertPacket(
     webrtc::RtpPacketSendInfo& packetInfo) {
-  if (this->rtpTransportControllerSend == nullptr) {
+  if (this->rtp_transport_controller_send_ == nullptr) {
     return;
   }
 
-  this->rtpTransportControllerSend->packet_sender()->InsertPacket(
+  this->rtp_transport_controller_send_->packet_sender()->InsertPacket(
       packetInfo.length);
-  this->rtpTransportControllerSend->OnAddPacket(packetInfo);
+  this->rtp_transport_controller_send_->OnAddPacket(packetInfo);
 }
 
 webrtc::PacedPacketInfo TransportCongestionControlClient::GetPacingInfo() {
-  if (this->rtpTransportControllerSend == nullptr) {
+  if (this->rtp_transport_controller_send_ == nullptr) {
     return {};
   }
 
-  return this->rtpTransportControllerSend->packet_sender()->GetPacingInfo();
+  return this->rtp_transport_controller_send_->packet_sender()->GetPacingInfo();
 }
 
 void TransportCongestionControlClient::PacketSent(
     webrtc::RtpPacketSendInfo& packetInfo, int64_t nowMs) {
-  if (this->rtpTransportControllerSend == nullptr) {
+  if (this->rtp_transport_controller_send_ == nullptr) {
     return;
   }
 
   // Notify the transport feedback adapter about the sent packet.
   rtc::SentPacket sentPacket(packetInfo.transport_sequence_number, nowMs);
-  this->rtpTransportControllerSend->OnSentPacket(sentPacket, packetInfo.length);
+  this->rtp_transport_controller_send_->OnSentPacket(sentPacket,
+                                                     packetInfo.length);
 }
 
 void TransportCongestionControlClient::ReceiveEstimatedBitrate(
     uint32_t bitrate) {
-  if (this->rtpTransportControllerSend == nullptr) {
+  if (this->rtp_transport_controller_send_ == nullptr) {
     return;
   }
 
-  this->rtpTransportControllerSend->OnReceivedEstimatedBitrate(bitrate);
+  this->rtp_transport_controller_send_->OnReceivedEstimatedBitrate(bitrate);
 }
 
 void TransportCongestionControlClient::ReceiveRtcpTransportFeedback(
@@ -130,19 +133,19 @@ void TransportCongestionControlClient::ReceiveRtcpTransportFeedback(
   }
   this->UpdatePacketLoss(static_cast<double>(lost_packets) / expected_packets);
 
-  if (this->rtpTransportControllerSend == nullptr) {
+  if (this->rtp_transport_controller_send_ == nullptr) {
     return;
   }
 
-  this->rtpTransportControllerSend->OnTransportFeedback(*feedback);
+  this->rtp_transport_controller_send_->OnTransportFeedback(*feedback);
 }
 
 void TransportCongestionControlClient::UpdatePacketLoss(double packetLoss) {
   // Add the score into the histogram.
-  if (this->packetLossHistory.size() == PacketLossHistogramLength)
-    this->packetLossHistory.pop_front();
+  if (this->packet_loss_history_.size() == PacketLossHistogramLength)
+    this->packet_loss_history_.pop_front();
 
-  this->packetLossHistory.push_back(packetLoss);
+  this->packet_loss_history_.push_back(packetLoss);
 
   /*
    * Scoring mechanism is a weighted average.
@@ -160,7 +163,7 @@ void TransportCongestionControlClient::UpdatePacketLoss(double packetLoss) {
   size_t samples{0};
   double totalPacketLoss{0};
 
-  for (auto packetLossEntry : this->packetLossHistory) {
+  for (auto packetLossEntry : this->packet_loss_history_) {
     weight++;
     samples += weight;
     totalPacketLoss += weight * packetLossEntry;
@@ -169,11 +172,11 @@ void TransportCongestionControlClient::UpdatePacketLoss(double packetLoss) {
   // clang-tidy "thinks" that this can lead to division by zero but we are
   // smarter.
   // NOLINTNEXTLINE(clang-analyzer-core.DivideZero)
-  this->packetLoss = totalPacketLoss / samples;
+  this->packet_loss_ = totalPacketLoss / samples;
 }
 
 void TransportCongestionControlClient::RescheduleNextAvailableBitrateEvent() {
-  this->lastAvailableBitrateEventAtMs = this->uv_loop_->get_time_ms();
+  this->last_available_bitrate_event_at_ms_ = this->uv_loop_->get_time_ms();
 }
 
 void TransportCongestionControlClient::MayEmitAvailableBitrateEvent(
@@ -184,37 +187,37 @@ void TransportCongestionControlClient::MayEmitAvailableBitrateEvent(
   // Ignore if first event.
   // NOTE: Otherwise it will make the Transport crash since this event also
   // happens during the constructor of this class.
-  if (this->lastAvailableBitrateEventAtMs == 0u) {
-    this->lastAvailableBitrateEventAtMs = nowMs;
+  if (this->last_available_bitrate_event_at_ms_ == 0u) {
+    this->last_available_bitrate_event_at_ms_ = nowMs;
 
     return;
   }
 
   // Emit if this is the first valid event.
-  if (!this->availableBitrateEventCalled) {
-    this->availableBitrateEventCalled = true;
+  if (!this->available_bitrate_event_called_) {
+    this->available_bitrate_event_called_ = true;
 
     notify = true;
   }
   // Emit event if AvailableBitrateEventInterval elapsed.
-  else if (nowMs - this->lastAvailableBitrateEventAtMs >=
+  else if (nowMs - this->last_available_bitrate_event_at_ms_ >=
            AvailableBitrateEventInterval) {
     notify = true;
   }
   // Also emit the event fast if we detect a high BWE value decrease.
-  else if (this->bitrates.availableBitrate < previousAvailableBitrate * 0.75) {
+  else if (this->bitrates_.availableBitrate < previousAvailableBitrate * 0.75) {
     std::cout << "[tcc client] high BWE value decrease detected, notifying the "
                  "listener [now:"
-              << this->bitrates.availableBitrate << ", before:%"
+              << this->bitrates_.availableBitrate << ", before:%"
               << previousAvailableBitrate << "]" << std::endl;
 
     notify = true;
   }
   // Also emit the event fast if we detect a high BWE value increase.
-  else if (this->bitrates.availableBitrate > previousAvailableBitrate * 1.50) {
+  else if (this->bitrates_.availableBitrate > previousAvailableBitrate * 1.50) {
     std::cout << "[tcc client] high BWE value increase detected, notifying the "
                  "listener [now:"
-              << this->bitrates.availableBitrate << ", before:%"
+              << this->bitrates_.availableBitrate << ", before:%"
               << previousAvailableBitrate << "]" << std::endl;
 
     notify = true;
@@ -223,12 +226,12 @@ void TransportCongestionControlClient::MayEmitAvailableBitrateEvent(
   if (notify) {
     std::cout
         << "[tcc client] notifying the listener with new available bitrate:"
-        << this->bitrates.availableBitrate << std::endl;
+        << this->bitrates_.availableBitrate << std::endl;
 
-    this->lastAvailableBitrateEventAtMs = nowMs;
+    this->last_available_bitrate_event_at_ms_ = nowMs;
 
-    this->listener->OnTransportCongestionControlClientBitrates(this,
-                                                               this->bitrates);
+    this->observer_->OnTransportCongestionControlClientBitrates(
+        this, this->bitrates_);
   }
 }
 
@@ -237,29 +240,26 @@ void TransportCongestionControlClient::OnTargetTransferRate(
   // NOTE: The same value as 'this->initialAvailableBitrate' is received
   // periodically regardless of the real available bitrate. Skip such value
   // except for the first time this event is called.
-  // clang-format off
-		if (
-			this->availableBitrateEventCalled &&
-			targetTransferRate.target_rate.bps() == this->initialAvailableBitrate
-		)
-  // clang-format on
-  {
+
+  if (this->available_bitrate_event_called_ &&
+      targetTransferRate.target_rate.bps() ==
+          this->initial_available_bitrate_) {
     return;
   }
 
-  auto previousAvailableBitrate = this->bitrates.availableBitrate;
+  auto previousAvailableBitrate = this->bitrates_.availableBitrate;
 
   // Update availableBitrate.
   // NOTE: Just in case.
   if (targetTransferRate.target_rate.bps() >
       std::numeric_limits<uint32_t>::max())
-    this->bitrates.availableBitrate = std::numeric_limits<uint32_t>::max();
+    this->bitrates_.availableBitrate = std::numeric_limits<uint32_t>::max();
   else
-    this->bitrates.availableBitrate =
+    this->bitrates_.availableBitrate =
         static_cast<uint32_t>(targetTransferRate.target_rate.bps());
 
   std::cout << "[tcc client] new available bitrate:"
-            << this->bitrates.availableBitrate << std::endl;
+            << this->bitrates_.availableBitrate << std::endl;
 
   MayEmitAvailableBitrateEvent(previousAvailableBitrate);
 }
@@ -268,28 +268,27 @@ void TransportCongestionControlClient::OnTargetTransferRate(
 void TransportCongestionControlClient::SendPacket(
     RtpPacket* packet, const webrtc::PacedPacketInfo& pacingInfo) {
   // Send the packet.
-  this->listener->OnTransportCongestionControlClientSendRtpPacket(this, packet,
-                                                                  pacingInfo);
+  this->observer_->OnTransportCongestionControlClientSendRtpPacket(this, packet,
+                                                                   pacingInfo);
 }
 
 void TransportCongestionControlClient::OnTimer(UvTimer* timer) {
-  if (timer == this->processTimer) {
+  if (timer == this->process_timer_) {
     // Time to call RtpTransportControllerSend::Process().
-    this->rtpTransportControllerSend->Process();
+    this->rtp_transport_controller_send_->Process();
 
     // Time to call PacedSender::Process().
-    this->rtpTransportControllerSend->packet_sender()->Process();
+    this->rtp_transport_controller_send_->packet_sender()->Process();
 
-    /* clang-format off */
-			this->processTimer->Start(std::min<uint64_t>(
-				// Depends on probation being done and WebRTC-Pacer-MinPacketLimitMs field trial.
-				this->rtpTransportControllerSend->packet_sender()->TimeUntilNextProcess(),
-				// Fixed value (25ms), libwebrtc/api/transport/goog_cc_factory.cc.
-				this->controllerFactory->GetProcessInterval().ms()
-			));
-    /* clang-format on */
+    this->process_timer_->Start(std::min<uint64_t>(
+        // Depends on probation being done and WebRTC-Pacer-MinPacketLimitMs
+        // field trial.
+        this->rtp_transport_controller_send_->packet_sender()
+            ->TimeUntilNextProcess(),
+        // Fixed value (25ms), libwebrtc/api/transport/goog_cc_factory.cc.
+        this->controller_factory_->GetProcessInterval().ms()));
 
-    MayEmitAvailableBitrateEvent(this->bitrates.availableBitrate);
+    MayEmitAvailableBitrateEvent(this->bitrates_.availableBitrate);
   }
 }
 }  // namespace bifrost

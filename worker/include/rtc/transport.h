@@ -11,6 +11,8 @@
 #define WORKER_TRANSPORT_H
 
 #include "data_producer.h"
+#include "tcc_client.h"
+#include "tcc_server.h"
 #include "udp_router.h"
 #include "uv_loop.h"
 #include "uv_timer.h"
@@ -21,9 +23,15 @@ typedef std::shared_ptr<UvLoop> UvLoopPtr;
 typedef std::shared_ptr<UdpRouter> UdpRouterPtr;
 typedef std::shared_ptr<sockaddr> SockAddressPtr;
 typedef std::shared_ptr<DataProducer> DataProducerPtr;
+typedef std::shared_ptr<TransportCongestionControlClient>
+    TransportCongestionControlClientPtr;
+typedef std::shared_ptr<TransportCongestionControlServer>
+    TransportCongestionControlServerPtr;
 
 class Transport : public UvTimer::Listener,
-                  public UdpRouter::UdpRouterObServer {
+                  public UdpRouter::UdpRouterObServer,
+                  public TransportCongestionControlClient::Observer,
+                  public TransportCongestionControlServer::Observer {
  public:
   Transport(Settings::Configuration& local_config,
             Settings::Configuration& remote_config);
@@ -38,9 +46,30 @@ class Transport : public UvTimer::Listener,
                                  const uint8_t* data, size_t len,
                                  const struct sockaddr* remoteAddr) override;
 
+  // TransportCongestionControlClient::Observer
+  void OnTransportCongestionControlClientBitrates(
+      TransportCongestionControlClient* tcc_client,
+      TransportCongestionControlClient::Bitrates& bitrates) override {}
+  void OnTransportCongestionControlClientSendRtpPacket(
+      TransportCongestionControlClient* tcc_client, RtpPacket* packet,
+      const webrtc::PacedPacketInfo& pacing_info) override {}
+
+  // TransportCongestionControlServer::Observer
+  void OnTransportCongestionControlServerSendRtcpPacket(
+      TransportCongestionControlServer* tccServer,
+      RtcpPacket* packet) override {}
+
   void Run();
 
  private:
+  void TccClientSendRtpPacket(RtpPacketPtr& packet);
+
+ private:
+  // tcc
+  uint16_t tcc_seq_ = 0;
+  TransportCongestionControlClientPtr tcc_client_{nullptr};
+  TransportCongestionControlServerPtr tcc_server_{nullptr};
+
   // send packet producer
   DataProducerPtr data_producer_;
 
@@ -49,7 +78,6 @@ class Transport : public UvTimer::Listener,
   UvLoopPtr uv_loop_;
   UdpRouterPtr udp_router_;
   SockAddressPtr udp_remote_address_;
-
 };
 }  // namespace bifrost
 

@@ -11,6 +11,13 @@
 #ifndef MODULES_PACING_PACED_SENDER_H_
 #define MODULES_PACING_PACED_SENDER_H_
 
+#include <absl/types/optional.h>
+#include <stddef.h>
+#include <stdint.h>
+
+#include <atomic>
+#include <memory>
+
 #include "api/transport/field_trial_based_config.h"
 #include "api/transport/network_types.h"
 #include "api/transport/webrtc_key_value_config.h"
@@ -19,14 +26,7 @@
 #include "modules/pacing/packet_router.h"
 #include "modules/rtp_rtcp/include/rtp_rtcp_defines.h"
 #include "rtc_base/experiments/field_trial_parser.h"
-
-#include "RTC/RtpPacket.hpp"
-
-#include <absl/types/optional.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <atomic>
-#include <memory>
+#include "rtp_packet.h"
 
 namespace webrtc {
 

@@ -19,9 +19,9 @@ static constexpr size_t PacketLossHistogramLength{24};
 /* Instance methods. */
 
 TransportCongestionControlServer::TransportCongestionControlServer(
-    TransportCongestionControlServer::Listener* listener,
+    TransportCongestionControlServer::Observer* observer,
     size_t maxRtcpPacketLen, UvLoop* uv_loop)
-    : listener(listener), maxRtcpPacketLen(maxRtcpPacketLen) {
+    : observer_(observer), maxRtcpPacketLen(maxRtcpPacketLen) {
   this->transportCcFeedbackPacket =
       std::make_unique<FeedbackRtpTransportPacket>(0u, 0u);
 
@@ -47,7 +47,7 @@ void TransportCongestionControlServer::IncomingPacket(uint64_t nowMs,
                                                       const RtpPacket* packet) {
   uint16_t wideSeqNumber;
 
-  if (!packet->ReadTransportWideCc01(wideSeqNumber)) break;
+  if (!packet->ReadTransportWideCc01(wideSeqNumber)) return;
 
   // Update the RTCP media SSRC of the ongoing Transport-CC Feedback packet.
   this->transportCcFeedbackSenderSsrc = 0u;
@@ -128,7 +128,7 @@ inline void TransportCongestionControlServer::SendTransportCcFeedback() {
   auto latestTimestamp = this->transportCcFeedbackPacket->GetLatestTimestamp();
 
   // Notify the listener.
-  this->listener->OnTransportCongestionControlServerSendRtcpPacket(
+  this->observer_->OnTransportCongestionControlServerSendRtcpPacket(
       this, this->transportCcFeedbackPacket.get());
 
   // Update packet loss history.

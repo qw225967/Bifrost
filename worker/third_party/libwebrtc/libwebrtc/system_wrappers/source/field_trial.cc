@@ -12,10 +12,9 @@
 
 #include "system_wrappers/source/field_trial.h"
 
-#include "Logger.hpp"
-
 #include <absl/strings/string_view.h>
 #include <stddef.h>
+
 #include <map>
 #include <string>
 
@@ -38,15 +37,13 @@ constexpr char kPersistentStringSeparator = '/';
 //  E.g. invalid config:
 //    "WebRTC-experiment1/Enabled"  (note missing / separator at the end).
 bool FieldTrialsStringIsValid(const absl::string_view trials) {
-  if (trials.empty())
-    return true;
+  if (trials.empty()) return true;
 
   size_t next_item = 0;
   std::map<absl::string_view, absl::string_view> field_trials;
   while (next_item < trials.length()) {
     size_t name_end = trials.find(kPersistentStringSeparator, next_item);
-    if (name_end == trials.npos || next_item == name_end)
-      return false;
+    if (name_end == trials.npos || next_item == name_end) return false;
     size_t group_name_end =
         trials.find(kPersistentStringSeparator, name_end + 1);
     if (group_name_end == trials.npos || name_end + 1 == group_name_end)
@@ -71,12 +68,10 @@ bool FieldTrialsStringIsValid(const absl::string_view trials) {
 }  // namespace
 
 std::string FindFullName(const std::string& name) {
-  if (trials_init_string == NULL)
-    return std::string();
+  if (trials_init_string == NULL) return std::string();
 
   std::string trials_string(trials_init_string);
-  if (trials_string.empty())
-    return std::string();
+  if (trials_string.empty()) return std::string();
 
   size_t next_item = 0;
   while (next_item < trials_string.length()) {
@@ -96,8 +91,7 @@ std::string FindFullName(const std::string& name) {
                             field_value_end - field_name_end - 1);
     next_item = field_value_end + 1;
 
-    if (name == field_name)
-      return field_value;
+    if (name == field_name) return field_value;
   }
   return std::string();
 }
@@ -105,21 +99,16 @@ std::string FindFullName(const std::string& name) {
 
 // Optionally initialize field trial from a string.
 void InitFieldTrialsFromString(const char* trials_string) {
-  MS_DEBUG_TAG(bwe, "Setting field trial string: %s", trials_string);
 #ifndef WEBRTC_EXCLUDE_FIELD_TRIAL_DEFAULT
   if (trials_string) {
     // RTC_DCHECK(FieldTrialsStringIsValid(trials_string))
-        // << "Invalid field trials string:" << trials_string;
-    MS_ASSERT(
-      FieldTrialsStringIsValid(trials_string), "invalid field trials string: '%s'", trials_string);
+    // << "Invalid field trials string:" << trials_string;
   };
 #endif  // WEBRTC_EXCLUDE_FIELD_TRIAL_DEFAULT
   trials_init_string = trials_string;
 }
 
-const char* GetFieldTrialString() {
-  return trials_init_string;
-}
+const char* GetFieldTrialString() { return trials_init_string; }
 
 }  // namespace field_trial
 }  // namespace webrtc

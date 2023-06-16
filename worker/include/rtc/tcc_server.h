@@ -14,9 +14,9 @@ class TransportCongestionControlServer
     : public webrtc::RemoteBitrateEstimator::Listener,
       public UvTimer::Listener {
  public:
-  class Listener {
+  class Observer {
    public:
-    virtual ~Listener() = default;
+    virtual ~Observer() = default;
 
    public:
     virtual void OnTransportCongestionControlServerSendRtcpPacket(
@@ -25,12 +25,12 @@ class TransportCongestionControlServer
 
  public:
   TransportCongestionControlServer(
-      TransportCongestionControlServer::Listener* listener,
+      TransportCongestionControlServer::Observer* observer,
       size_t maxRtcpPacketLen, UvLoop* uv_loop);
   virtual ~TransportCongestionControlServer();
 
  public:
-  uint32_t get_available_bitrate() const {}
+  uint32_t get_available_bitrate() const { return 0; }
   double get_packet_loss() const { this->packetLoss; };
   void IncomingPacket(uint64_t nowMs, const RtpPacket* packet);
   void SetMaxIncomingBitrate(uint32_t bitrate);
@@ -56,7 +56,7 @@ class TransportCongestionControlServer
   UvLoop* uv_loop_;
 
   // Passed by argument.
-  Listener* listener{nullptr};
+  Observer* observer_{nullptr};
   // Allocated by this.
   UvTimer* transportCcFeedbackSendPeriodicTimer{nullptr};
   std::unique_ptr<FeedbackRtpTransportPacket> transportCcFeedbackPacket;

@@ -33,9 +33,9 @@ include_directories(
         third_party/libuv/include/uv
         third_party/libuv/src
         third_party/libuv/src/unix
-        third_party/libuv/build
         third_party/libwebrtc/deps/abseil-cpp/abseil-cpp
         third_party/libwebrtc/libwebrtc/
+        third_party/libuv/build
 )
 
 aux_source_directory(third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source RTP_RTCP_SOURCE_CC)
@@ -47,7 +47,6 @@ aux_source_directory(third_party/libwebrtc/deps/abseil-cpp/abseil-cpp ABSL_CC)
 aux_source_directory(third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/types ABSL_TYPE_CC)
 
 add_executable(worker
-
         ${RTP_RTCP_INCLUDE_CC}
         ${RTP_RTCP_SOURCE_CC}
         ${RTC_BASE_CC}
@@ -131,6 +130,7 @@ add_executable(worker
         third_party/json/include/nlohmann/json.hpp
         third_party/json/include/nlohmann/json_fwd.hpp
         third_party/json/include/nlohmann/ordered_map.hpp
-        third_party/json/single_include/nlohmann/json.hpp)
+        third_party/json/single_include/nlohmann/json.hpp
+        )
 
 target_link_libraries(worker libuv.a)

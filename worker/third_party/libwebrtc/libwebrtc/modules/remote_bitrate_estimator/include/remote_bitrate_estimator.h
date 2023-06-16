@@ -17,8 +17,7 @@
 #include <vector>
 
 #include "modules/rtp_rtcp/include/rtp_rtcp_defines.h"
-
-#include "RTC/RtpPacket.hpp"
+#include "rtp_packet.h"
 
 namespace webrtc {
 namespace rtcp {
@@ -33,10 +32,9 @@ class RemoteBitrateObserver {
  public:
   // Called when a receive channel group has a new bitrate estimate for the
   // incoming streams.
-   virtual void OnRembServerAvailableBitrate(
-       const RemoteBitrateEstimator* remoteBitrateEstimator,
-       const std::vector<uint32_t>& ssrcs,
-       uint32_t availableBitrate) = 0;
+  virtual void OnRembServerAvailableBitrate(
+      const RemoteBitrateEstimator* remoteBitrateEstimator,
+      const std::vector<uint32_t>& ssrcs, uint32_t availableBitrate) = 0;
 
   virtual ~RemoteBitrateObserver() {}
 };
@@ -62,11 +60,9 @@ class RemoteBitrateEstimator {
   // remote bitrate estimate will be updated. Note that |payload_size| is the
   // packet size excluding headers.
   // Note that |arrival_time_ms| can be of an arbitrary time base.
-  virtual void IncomingPacket(
-      int64_t arrival_time_ms,
-      size_t payload_size,
-      const RTC::RtpPacket& packet,
-      uint32_t send_time_24bits) = 0;
+  virtual void IncomingPacket(int64_t arrival_time_ms, size_t payload_size,
+                              const bifrost::RtpPacket& packet,
+                              uint32_t send_time_24bits) = 0;
 
   // Removes all data for |ssrc|.
   virtual void RemoveStream(uint32_t ssrc) = 0;
@@ -82,7 +78,7 @@ class RemoteBitrateEstimator {
 
   virtual void SetMinBitrate(int min_bitrate_bps) = 0;
 
- // MS_NOTE: added method.
+  // MS_NOTE: added method.
  public:
   uint32_t GetAvailableBitrate() const;
 
@@ -98,9 +94,8 @@ inline bool RemoteBitrateEstimator::GetStats(
   return false;
 }
 
-inline uint32_t RemoteBitrateEstimator::GetAvailableBitrate() const
-{
-	return this->available_bitrate;
+inline uint32_t RemoteBitrateEstimator::GetAvailableBitrate() const {
+  return this->available_bitrate;
 }
 }  // namespace webrtc
 

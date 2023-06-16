@@ -11,14 +11,13 @@
 #ifndef MODULES_CONGESTION_CONTROLLER_RTP_TRANSPORT_FEEDBACK_ADAPTER_H_
 #define MODULES_CONGESTION_CONTROLLER_RTP_TRANSPORT_FEEDBACK_ADAPTER_H_
 
+#include <deque>
+#include <vector>
+
 #include "api/transport/network_types.h"
 #include "modules/congestion_controller/rtp/send_time_history.h"
 #include "rtc_base/network/sent_packet.h"
-
-#include "RTC/RTCP/FeedbackRtpTransport.hpp"
-
-#include <deque>
-#include <vector>
+#include "rtcp_tcc.h"
 
 namespace webrtc {
 
@@ -30,14 +29,13 @@ class TransportFeedbackAdapter {
   TransportFeedbackAdapter();
   virtual ~TransportFeedbackAdapter();
 
-  void AddPacket(const RtpPacketSendInfo& packet_info,
-                 size_t overhead_bytes,
+  void AddPacket(const RtpPacketSendInfo& packet_info, size_t overhead_bytes,
                  Timestamp creation_time);
   absl::optional<SentPacket> ProcessSentPacket(
       const rtc::SentPacket& sent_packet);
 
   absl::optional<TransportPacketsFeedback> ProcessTransportFeedback(
-      const RTC::RTCP::FeedbackRtpTransportPacket& feedback,
+      const bifrost::FeedbackRtpTransportPacket& feedback,
       Timestamp feedback_time);
 
   std::vector<PacketFeedback> GetTransportFeedbackVector() const;
@@ -45,10 +43,10 @@ class TransportFeedbackAdapter {
   DataSize GetOutstandingData() const;
 
  private:
-  void OnTransportFeedback(const RTC::RTCP::FeedbackRtpTransportPacket& feedback);
+  void OnTransportFeedback(const bifrost::FeedbackRtpTransportPacket& feedback);
 
   std::vector<PacketFeedback> GetPacketFeedbackVector(
-      const RTC::RTCP::FeedbackRtpTransportPacket& feedback,
+      const bifrost::FeedbackRtpTransportPacket& feedback,
       Timestamp feedback_time);
 
   const bool allow_duplicates_;

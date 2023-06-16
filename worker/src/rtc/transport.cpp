@@ -10,8 +10,10 @@
 #include "transport.h"
 
 namespace bifrost {
-Transport::Transport(Settings::Configuration &local_config,
-                     Settings::Configuration &remote_config) {
+const uint32_t InitialAvailableBitrate = 2000000u;
+
+Transport::Transport(Settings::Configuration& local_config,
+                     Settings::Configuration& remote_config) {
   this->uv_loop_ = std::make_shared<UvLoop>();
 
   // 1.init loop
@@ -40,6 +42,14 @@ Transport::Transport(Settings::Configuration &local_config,
 
   // 5.create data producer
   this->data_producer_ = std::make_shared<DataProducer>();
+
+  // 6.tcc client
+  this->tcc_client_ = std::make_shared<TransportCongestionControlClient>(
+      this, InitialAvailableBitrate, this->uv_loop_.get());
+
+  // 7.tcc server
+  this->tcc_server_ = std::make_shared<TransportCongestionControlServer>(
+      this, MtuSize, this->uv_loop_.get());
 }
 
 Transport::~Transport() {
@@ -48,23 +58,32 @@ Transport::~Transport() {
 
   if (this->uv_loop_ != nullptr) this->uv_loop_.reset();
   if (this->udp_router_ != nullptr) this->udp_router_.reset();
+  if (this->tcc_client_ != nullptr) this->tcc_client_.reset();
+  if (this->tcc_server_ != nullptr) this->tcc_server_.reset();
 }
 
 void Transport::Run() { this->uv_loop_->RunLoop(); }
 
-void Transport::OnUdpRouterPacketReceived(
-    bifrost::UdpRouter* socket, const uint8_t* data, size_t len,
-    const struct sockaddr* remoteAddr) {
+void Transport::TccClientSendRtpPacket(RtpPacketPtr &packet) {
 
+  packet->SetTransportWideCc01ExtensionId(15);
+  packet->UpdateTransportWideCc01(++this->tcc_seq_);
+
+  this->udp_router_->Send(packet->GetData(), packet->GetSize(),
+                    this->udp_remote_address_.get(), nullptr);
 }
 
-void Transport::OnTimer(UvTimer *timer) {
+void Transport::OnUdpRouterPacketReceived(bifrost::UdpRouter* socket,
+                                          const uint8_t* data, size_t len,
+                                          const struct sockaddr* remoteAddr) {}
+
+void Transport::OnTimer(UvTimer* timer) {
   if (timer == this->producer_timer.get()) {
     std::cout << "[transport] timer call" << std::endl;
 
     auto packet = this->data_producer_->CreateData();
-    udp_router_->Send(packet->GetData(), packet->GetSize(),
-                      this->udp_remote_address_.get(), nullptr);
+    this->TccClientSendRtpPacket(packet);
+
   }
 }
 
