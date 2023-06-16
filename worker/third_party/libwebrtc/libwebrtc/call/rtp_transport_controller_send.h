@@ -43,7 +43,8 @@ class RtpTransportControllerSend final
       PacketRouter* packet_router,
       NetworkStatePredictorFactoryInterface* predictor_factory,
       NetworkControllerFactoryInterface* controller_factory,
-      const BitrateConstraints& bitrate_config);
+      const BitrateConstraints& bitrate_config,
+      bifrost::UvLoop* loop);
   ~RtpTransportControllerSend() override;
 
   PacketRouter* packet_router() override;
@@ -102,6 +103,8 @@ class RtpTransportControllerSend final
                                           int64_t now_ms);
   void PostUpdates(NetworkControlUpdate update);
   void UpdateControlState();
+
+  bifrost::UvLoop* loop_;
 
   const FieldTrialBasedConfig trial_based_config_;
 

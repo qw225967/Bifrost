@@ -15,7 +15,6 @@
 
 #include "modules/utility/include/process_thread.h"
 #include "rtc_base/checks.h"
-#include "rtc_base/logging.h"
 #include "system_wrappers/include/field_trial.h"
 
 namespace webrtc {
@@ -36,7 +35,6 @@ int64_t GetSendNackDelay() {
       webrtc::field_trial::FindFullName("WebRTC-SendNackDelayMs").c_str(),
       nullptr, 10);
   if (delay_ms > 0 && delay_ms <= 20) {
-    RTC_LOG(LS_INFO) << "SendNackDelay is set to " << delay_ms;
     return delay_ms;
   }
   return kDefaultSendNackDelayMs;
@@ -46,8 +44,7 @@ int64_t GetSendNackDelay() {
 NackModule::NackInfo::NackInfo()
     : seq_num(0), send_at_seq_num(0), sent_at_time(-1), retries(0) {}
 
-NackModule::NackInfo::NackInfo(uint16_t seq_num,
-                               uint16_t send_at_seq_num,
+NackModule::NackInfo::NackInfo(uint16_t seq_num, uint16_t send_at_seq_num,
                                int64_t created_at_time)
     : seq_num(seq_num),
       send_at_seq_num(send_at_seq_num),
@@ -55,8 +52,7 @@ NackModule::NackInfo::NackInfo(uint16_t seq_num,
       sent_at_time(-1),
       retries(0) {}
 
-NackModule::NackModule(Clock* clock,
-                       NackSender* nack_sender,
+NackModule::NackModule(Clock* clock, NackSender* nack_sender,
                        KeyFrameRequestSender* keyframe_request_sender)
     : clock_(clock),
       nack_sender_(nack_sender),
@@ -76,8 +72,7 @@ int NackModule::OnReceivedPacket(uint16_t seq_num, bool is_keyframe) {
   return OnReceivedPacket(seq_num, is_keyframe, false);
 }
 
-int NackModule::OnReceivedPacket(uint16_t seq_num,
-                                 bool is_keyframe,
+int NackModule::OnReceivedPacket(uint16_t seq_num, bool is_keyframe,
                                  bool is_recovered) {
   rtc::CritScope lock(&crit_);
   // TODO(philipel): When the packet includes information whether it is
@@ -88,16 +83,14 @@ int NackModule::OnReceivedPacket(uint16_t seq_num,
 
   if (!initialized_) {
     newest_seq_num_ = seq_num;
-    if (is_keyframe)
-      keyframe_list_.insert(seq_num);
+    if (is_keyframe) keyframe_list_.insert(seq_num);
     initialized_ = true;
     return 0;
   }
 
   // Since the |newest_seq_num_| is a packet we have actually received we know
   // that packet has never been Nacked.
-  if (seq_num == newest_seq_num_)
-    return 0;
+  if (seq_num == newest_seq_num_) return 0;
 
   if (AheadOf(newest_seq_num_, seq_num)) {
     // An out of order packet has been received.
@@ -107,14 +100,12 @@ int NackModule::OnReceivedPacket(uint16_t seq_num,
       nacks_sent_for_packet = nack_list_it->second.retries;
       nack_list_.erase(nack_list_it);
     }
-    if (!is_retransmitted)
-      UpdateReorderingStatistics(seq_num);
+    if (!is_retransmitted) UpdateReorderingStatistics(seq_num);
     return nacks_sent_for_packet;
   }
 
   // Keep track of new keyframes.
-  if (is_keyframe)
-    keyframe_list_.insert(seq_num);
+  if (is_keyframe) keyframe_list_.insert(seq_num);
 
   // And remove old ones so we don't accumulate keyframes.
   auto it = keyframe_list_.lower_bound(seq_num - kMaxPacketAge);
@@ -237,8 +228,6 @@ void NackModule::AddPacketsToNack(uint16_t seq_num_start,
 
     if (nack_list_.size() + num_new_nacks > kMaxNackPackets) {
       nack_list_.clear();
-      RTC_LOG(LS_WARNING) << "NACK list full, clearing NACK"
-                             " list and requesting keyframe.";
       keyframe_request_sender_->RequestKeyFrame();
       return;
     }
@@ -246,8 +235,7 @@ void NackModule::AddPacketsToNack(uint16_t seq_num_start,
 
   for (uint16_t seq_num = seq_num_start; seq_num != seq_num_end; ++seq_num) {
     // Do not send nack for packets that are already recovered by FEC or RTX
-    if (recovered_list_.find(seq_num) != recovered_list_.end())
-      continue;
+    if (recovered_list_.find(seq_num) != recovered_list_.end()) continue;
     NackInfo nack_info(seq_num, seq_num + WaitNumberOfPackets(0.5),
                        clock_->TimeInMilliseconds());
     RTC_DCHECK(nack_list_.find(seq_num) == nack_list_.end());
@@ -274,8 +262,6 @@ std::vector<uint16_t> NackModule::GetNackBatch(NackFilterOptions options) {
       ++it->second.retries;
       it->second.sent_at_time = now_ms;
       if (it->second.retries >= kMaxNackRetries) {
-        RTC_LOG(LS_WARNING) << "Sequence number " << it->second.seq_num
-                            << " removed from NACK list due to max retries.";
         it = nack_list_.erase(it);
       } else {
         ++it;
@@ -294,8 +280,7 @@ void NackModule::UpdateReorderingStatistics(uint16_t seq_num) {
 }
 
 int NackModule::WaitNumberOfPackets(float probability) const {
-  if (reordering_histogram_.NumValues() == 0)
-    return 0;
+  if (reordering_histogram_.NumValues() == 0) return 0;
   return reordering_histogram_.InverseCdf(probability);
 }
 

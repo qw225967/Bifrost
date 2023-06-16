@@ -56,8 +56,7 @@ bool SetPriority(ThreadPriority priority) {
     return false;
   }
 
-  if (max_prio - min_prio <= 2)
-    return false;
+  if (max_prio - min_prio <= 2) return false;
 
   // Convert webrtc priority to system priorities:
   sched_param param;
@@ -122,21 +121,17 @@ PlatformThread& PlatformThread::operator=(PlatformThread&& rhs) {
   return *this;
 }
 
-PlatformThread::~PlatformThread() {
-  Finalize();
-}
+PlatformThread::~PlatformThread() { Finalize(); }
 
 PlatformThread PlatformThread::SpawnJoinable(
-    std::function<void()> thread_function,
-    absl::string_view name,
+    std::function<void()> thread_function, absl::string_view name,
     ThreadAttributes attributes) {
   return SpawnThread(std::move(thread_function), name, attributes,
                      /*joinable=*/true);
 }
 
 PlatformThread PlatformThread::SpawnDetached(
-    std::function<void()> thread_function,
-    absl::string_view name,
+    std::function<void()> thread_function, absl::string_view name,
     ThreadAttributes attributes) {
   return SpawnThread(std::move(thread_function), name, attributes,
                      /*joinable=*/false);
@@ -155,24 +150,19 @@ bool PlatformThread::QueueAPC(PAPCFUNC function, ULONG_PTR data) {
 #endif
 
 void PlatformThread::Finalize() {
-  if (!handle_.has_value())
-    return;
+  if (!handle_.has_value()) return;
 #if defined(WEBRTC_WIN)
-  if (joinable_)
-    WaitForSingleObject(*handle_, INFINITE);
+  if (joinable_) WaitForSingleObject(*handle_, INFINITE);
   CloseHandle(*handle_);
 #else
-  if (joinable_)
-    RTC_CHECK_EQ(0, pthread_join(*handle_, nullptr));
+  if (joinable_) RTC_CHECK_EQ(0, pthread_join(*handle_, nullptr));
 #endif
   handle_ = absl::nullopt;
 }
 
 PlatformThread PlatformThread::SpawnThread(
-    std::function<void()> thread_function,
-    absl::string_view name,
-    ThreadAttributes attributes,
-    bool joinable) {
+    std::function<void()> thread_function, absl::string_view name,
+    ThreadAttributes attributes, bool joinable) {
   RTC_DCHECK(thread_function);
   RTC_DCHECK(!name.empty());
   // TODO(tommi): Consider lowering the limit to 15 (limit on Linux).
@@ -180,7 +170,6 @@ PlatformThread PlatformThread::SpawnThread(
   auto start_thread_function_ptr =
       new std::function<void()>([thread_function = std::move(thread_function),
                                  name = std::string(name), attributes] {
-        rtc::SetCurrentThreadName(name.c_str());
         SetPriority(attributes.priority);
         thread_function();
       });

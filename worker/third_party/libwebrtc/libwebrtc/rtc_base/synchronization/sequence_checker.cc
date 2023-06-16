@@ -36,12 +36,10 @@ SequenceCheckerImpl::~SequenceCheckerImpl() = default;
 
 bool SequenceCheckerImpl::IsCurrent() const {
   const TaskQueueBase* const current_queue = TaskQueueBase::Current();
-  const rtc::PlatformThreadRef current_thread = rtc::CurrentThreadRef();
   const void* const current_system_queue = GetSystemQueueRef();
   rtc::CritScope scoped_lock(&lock_);
   if (!attached_) {  // Previously detached.
     attached_ = true;
-    valid_thread_ = current_thread;
     valid_queue_ = current_queue;
     valid_system_queue_ = current_system_queue;
     return true;

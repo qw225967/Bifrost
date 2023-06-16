@@ -12,12 +12,12 @@
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "modules/congestion_controller/goog_cc/probe_bitrate_estimator.h"
-#include "rtc_base/numerics/safe_conversions.h"
-
-#include "Logger.hpp"
 
 #include <absl/memory/memory.h>
+
 #include <algorithm>
+
+#include "rtc_base/numerics/safe_conversions.h"
 
 namespace webrtc {
 namespace {
@@ -53,9 +53,7 @@ constexpr TimeDelta kMaxProbeInterval = TimeDelta::Seconds<1>();
 
 }  // namespace
 
-ProbeBitrateEstimator::ProbeBitrateEstimator() {
-
-}
+ProbeBitrateEstimator::ProbeBitrateEstimator() {}
 
 ProbeBitrateEstimator::~ProbeBitrateEstimator() = default;
 
@@ -63,8 +61,7 @@ absl::optional<DataRate> ProbeBitrateEstimator::HandleProbeAndEstimateBitrate(
     const PacketResult& packet_feedback) {
   int cluster_id = packet_feedback.sent_packet.pacing_info.probe_cluster_id;
 
-  //RTC_DCHECK_NE(cluster_id, PacedPacketInfo::kNotAProbe);
-  MS_ASSERT(cluster_id != PacedPacketInfo::kNotAProbe, "cluster_id == kNotAProbe");
+  // RTC_DCHECK_NE(cluster_id, PacedPacketInfo::kNotAProbe);
 
   EraseOldClusters(packet_feedback.receive_time);
 
@@ -88,15 +85,9 @@ absl::optional<DataRate> ProbeBitrateEstimator::HandleProbeAndEstimateBitrate(
   cluster->num_probes += 1;
 
   // RTC_DCHECK_GT(
-      // packet_feedback.sent_packet.pacing_info.probe_cluster_min_probes, 0);
+  // packet_feedback.sent_packet.pacing_info.probe_cluster_min_probes, 0);
   // RTC_DCHECK_GT(packet_feedback.sent_packet.pacing_info.probe_cluster_min_bytes,
-                // 0);
-  MS_ASSERT(
-    packet_feedback.sent_packet.pacing_info.probe_cluster_min_probes > 0,
-    "probe_cluster_min_probes must be > 0");
-  MS_ASSERT(
-    packet_feedback.sent_packet.pacing_info.probe_cluster_min_bytes > 0,
-    "probe_cluster_min_bytes must be > 0");
+  // 0);
 
   int min_probes =
       packet_feedback.sent_packet.pacing_info.probe_cluster_min_probes *
@@ -121,7 +112,8 @@ absl::optional<DataRate> ProbeBitrateEstimator::HandleProbeAndEstimateBitrate(
   //   ToString(send_interval).c_str(),
   //   ToString(receive_interval).c_str());
 
-  // TODO: TMP WIP cerdo to avoid that send_interval or receive_interval is zero.
+  // TODO: TMP WIP cerdo to avoid that send_interval or receive_interval is
+  // zero.
   //
   // if (send_interval <= TimeDelta::Zero())
   //   send_interval = TimeDelta::ms(1u);
@@ -131,73 +123,33 @@ absl::optional<DataRate> ProbeBitrateEstimator::HandleProbeAndEstimateBitrate(
   if (send_interval <= TimeDelta::Zero() || send_interval > kMaxProbeInterval ||
       receive_interval <= TimeDelta::Zero() ||
       receive_interval > kMaxProbeInterval) {
-    MS_WARN_DEV(
-      "probing unsuccessful, invalid send/receive interval"
-      " [cluster id:%d]"
-      " [send interval:%s]"
-      " [receive interval:%s]",
-      cluster_id,
-      ToString(send_interval).c_str(),
-      ToString(receive_interval).c_str());
-
     return absl::nullopt;
   }
   // Since the |send_interval| does not include the time it takes to actually
   // send the last packet the size of the last sent packet should not be
   // included when calculating the send bitrate.
-  //RTC_DCHECK_GT(cluster->size_total, cluster->size_last_send);
+  // RTC_DCHECK_GT(cluster->size_total, cluster->size_last_send);
   DataSize send_size = cluster->size_total - cluster->size_last_send;
   DataRate send_rate = send_size / send_interval;
 
   // Since the |receive_interval| does not include the time it takes to
   // actually receive the first packet the size of the first received packet
   // should not be included when calculating the receive bitrate.
-  //RTC_DCHECK_GT(cluster->size_total, cluster->size_first_receive);
+  // RTC_DCHECK_GT(cluster->size_total, cluster->size_first_receive);
   DataSize receive_size = cluster->size_total - cluster->size_first_receive;
   DataRate receive_rate = receive_size / receive_interval;
 
   double ratio = receive_rate / send_rate;
   if (ratio > kMaxValidRatio) {
-    MS_WARN_DEV(
-      "probing unsuccessful, receive/send ratio too high"
-      " [cluster id:%d, send:%s / %s = %s]"
-      " [receive:%s / %s = %s]"
-      " [ratio:%s / %s = %f]"
-      " > kMaxValidRatio:%f]",
-      cluster_id,
-      ToString(send_size).c_str(),
-      ToString(send_interval).c_str(),
-      ToString(send_rate).c_str(),
-      ToString(receive_size).c_str(),
-      ToString(receive_interval).c_str(),
-      ToString(receive_rate).c_str(),
-      ToString(receive_rate).c_str(),
-      ToString(send_rate).c_str(),
-      ratio,
-      kMaxValidRatio);
-
     return absl::nullopt;
   }
-
-  MS_DEBUG_DEV(
-    "probing successful"
-    " [cluster id:%d]"
-    " [send:%s / %s = %s]"
-    " [receive:%s / %s = %s]",
-    cluster_id,
-    ToString(send_size).c_str(),
-    ToString(send_interval).c_str(),
-    ToString(send_rate).c_str(),
-    ToString(receive_size).c_str(),
-    ToString(receive_interval).c_str(),
-    ToString(receive_rate).c_str());
 
   DataRate res = std::min(send_rate, receive_rate);
   // If we're receiving at significantly lower bitrate than we were sending at,
   // it suggests that we've found the true capacity of the link. In this case,
   // set the target bitrate slightly lower to not immediately overuse.
   if (receive_rate < kMinRatioForUnsaturatedLink * send_rate) {
-    //RTC_DCHECK_GT(send_rate, receive_rate);
+    // RTC_DCHECK_GT(send_rate, receive_rate);
     res = kTargetUtilizationFraction * receive_rate;
   }
   last_estimate_ = res;

@@ -12,13 +12,13 @@
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "rtc_base/experiments/alr_experiment.h"
-#include "api/transport/field_trial_based_config.h"
-
-#include "Logger.hpp"
 
 #include <inttypes.h>
 #include <stdio.h>
+
 #include <string>
+
+#include "api/transport/field_trial_based_config.h"
 
 namespace webrtc {
 
@@ -48,8 +48,7 @@ AlrExperimentSettings::CreateFromFieldTrial(const char* experiment_name) {
 
 absl::optional<AlrExperimentSettings>
 AlrExperimentSettings::CreateFromFieldTrial(
-    const WebRtcKeyValueConfig& key_value_config,
-    const char* experiment_name) {
+    const WebRtcKeyValueConfig& key_value_config, const char* experiment_name) {
   absl::optional<AlrExperimentSettings> ret;
   std::string group_name = key_value_config.Lookup(experiment_name);
 
@@ -78,21 +77,7 @@ AlrExperimentSettings::CreateFromFieldTrial(
              &settings.alr_stop_budget_level_percent,
              &settings.group_id) == 6) {
     ret.emplace(settings);
-    MS_DEBUG_TAG(bwe, "Using ALR experiment settings: "
-                      "pacing factor: %f"
-                      ", max pacer queue length:%" PRIi64
-                     ", ALR bandwidth usage percent: %d"
-                     ", ALR start budget level percent: %d"
-                     ", ALR end budget level percent: %d"
-                     ", ALR experiment group ID: %d",
-                     settings.pacing_factor,
-                     settings.max_paced_queue_time,
-                     settings.alr_bandwidth_usage_percent,
-                     settings.alr_start_budget_level_percent,
-                     settings.alr_stop_budget_level_percent,
-                     settings.group_id);
   } else {
-    MS_DEBUG_TAG(bwe, "Failed to parse ALR experiment: %s", experiment_name);
   }
 
   return ret;

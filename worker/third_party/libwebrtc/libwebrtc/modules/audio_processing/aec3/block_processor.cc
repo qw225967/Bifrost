@@ -28,7 +28,6 @@
 #include "modules/audio_processing/logging/apm_data_dumper.h"
 #include "rtc_base/atomic_ops.h"
 #include "rtc_base/checks.h"
-#include "rtc_base/logging.h"
 
 namespace webrtc {
 namespace {
@@ -37,8 +36,7 @@ enum class BlockProcessorApiCall { kCapture, kRender };
 
 class BlockProcessorImpl final : public BlockProcessor {
  public:
-  BlockProcessorImpl(const EchoCanceller3Config& config,
-                     int sample_rate_hz,
+  BlockProcessorImpl(const EchoCanceller3Config& config, int sample_rate_hz,
                      std::unique_ptr<RenderDelayBuffer> render_buffer,
                      std::unique_ptr<RenderDelayController> delay_controller,
                      std::unique_ptr<EchoRemover> echo_remover);
@@ -78,8 +76,7 @@ class BlockProcessorImpl final : public BlockProcessor {
 int BlockProcessorImpl::instance_count_ = 0;
 
 BlockProcessorImpl::BlockProcessorImpl(
-    const EchoCanceller3Config& config,
-    int sample_rate_hz,
+    const EchoCanceller3Config& config, int sample_rate_hz,
     std::unique_ptr<RenderDelayBuffer> render_buffer,
     std::unique_ptr<RenderDelayController> delay_controller,
     std::unique_ptr<EchoRemover> echo_remover)
@@ -97,8 +94,7 @@ BlockProcessorImpl::BlockProcessorImpl(
 BlockProcessorImpl::~BlockProcessorImpl() = default;
 
 void BlockProcessorImpl::ProcessCapture(
-    bool echo_path_gain_change,
-    bool capture_signal_saturation,
+    bool echo_path_gain_change, bool capture_signal_saturation,
     std::vector<std::vector<float>>* capture_block) {
   RTC_DCHECK(capture_block);
   RTC_DCHECK_EQ(NumBandsForRate(sample_rate_hz_), capture_block->size());
@@ -116,8 +112,7 @@ void BlockProcessorImpl::ProcessCapture(
     if (!capture_properly_started_) {
       capture_properly_started_ = true;
       render_buffer_->Reset();
-      if (delay_controller_)
-        delay_controller_->Reset(true);
+      if (delay_controller_) delay_controller_->Reset(true);
     }
   } else {
     // If no render data has yet arrived, do not process the capture signal.
@@ -132,10 +127,7 @@ void BlockProcessorImpl::ProcessCapture(
       render_properly_started_) {
     echo_path_variability.delay_change =
         EchoPathVariability::DelayAdjustment::kBufferFlush;
-    if (delay_controller_)
-      delay_controller_->Reset(true);
-    RTC_LOG(LS_WARNING) << "Reset due to render buffer overrun at block  "
-                        << capture_call_counter_;
+    if (delay_controller_) delay_controller_->Reset(true);
   }
   render_event_ = RenderDelayBuffer::BufferingEvent::kNone;
 
@@ -146,8 +138,7 @@ void BlockProcessorImpl::ProcessCapture(
       render_buffer_->PrepareCaptureProcessing();
   // Reset the delay controller at render buffer underrun.
   if (buffer_event == RenderDelayBuffer::BufferingEvent::kRenderUnderrun) {
-    if (delay_controller_)
-      delay_controller_->Reset(false);
+    if (delay_controller_) delay_controller_->Reset(false);
   }
 
   data_dumper_->DumpWav("aec3_processblock_capture_input2", kBlockSize,
@@ -167,8 +158,6 @@ void BlockProcessorImpl::ProcessCapture(
       bool delay_change =
           render_buffer_->AlignFromDelay(estimated_delay_->delay);
       if (delay_change) {
-        RTC_LOG(LS_WARNING) << "Delay changed to " << estimated_delay_->delay
-                            << " at block " << capture_call_counter_;
         echo_path_variability.delay_change =
             EchoPathVariability::DelayAdjustment::kNewDetectedDelay;
       }
@@ -208,8 +197,7 @@ void BlockProcessorImpl::BufferRender(
                         RenderDelayBuffer::BufferingEvent::kNone);
 
   render_properly_started_ = true;
-  if (delay_controller_)
-    delay_controller_->LogRenderCall();
+  if (delay_controller_) delay_controller_->LogRenderCall();
 }
 
 void BlockProcessorImpl::UpdateEchoLeakageStatus(bool leakage_detected) {
@@ -245,8 +233,7 @@ BlockProcessor* BlockProcessor::Create(const EchoCanceller3Config& config,
 }
 
 BlockProcessor* BlockProcessor::Create(
-    const EchoCanceller3Config& config,
-    int sample_rate_hz,
+    const EchoCanceller3Config& config, int sample_rate_hz,
     std::unique_ptr<RenderDelayBuffer> render_buffer) {
   std::unique_ptr<RenderDelayController> delay_controller;
   if (!config.delay.use_external_delay_estimator) {
@@ -260,8 +247,7 @@ BlockProcessor* BlockProcessor::Create(
 }
 
 BlockProcessor* BlockProcessor::Create(
-    const EchoCanceller3Config& config,
-    int sample_rate_hz,
+    const EchoCanceller3Config& config, int sample_rate_hz,
     std::unique_ptr<RenderDelayBuffer> render_buffer,
     std::unique_ptr<RenderDelayController> delay_controller,
     std::unique_ptr<EchoRemover> echo_remover) {

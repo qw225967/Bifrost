@@ -13,7 +13,6 @@
 #include <algorithm>
 #include <cmath>
 
-#include "rtc_base/logging.h"
 #include "rtc_base/time_utils.h"
 
 namespace webrtc {
@@ -139,15 +138,6 @@ void BitrateAdjuster::UpdateBitrate(uint32_t current_time_ms) {
     // Set the adjustment if it's not already set.
     float last_adjusted_bitrate_bps = adjusted_bitrate_bps_;
     if (adjusted_bitrate_bps != last_adjusted_bitrate_bps) {
-      RTC_LOG(LS_VERBOSE) << "Adjusting encoder bitrate:"
-                          << "\n  target_bitrate:"
-                          << static_cast<uint32_t>(target_bitrate_bps)
-                          << "\n  estimated_bitrate:"
-                          << static_cast<uint32_t>(estimated_bitrate_bps)
-                          << "\n  last_adjusted_bitrate:"
-                          << static_cast<uint32_t>(last_adjusted_bitrate_bps)
-                          << "\n  adjusted_bitrate:"
-                          << static_cast<uint32_t>(adjusted_bitrate_bps);
       adjusted_bitrate_bps_ = adjusted_bitrate_bps;
     }
   }

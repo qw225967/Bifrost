@@ -12,21 +12,21 @@
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "call/rtp_transport_controller_send.h"
+
+#include <absl/memory/memory.h>
+#include <absl/types/optional.h>
+
+#include <utility>
+#include <vector>
+
 #include "api/transport/network_types.h"
 #include "api/units/data_rate.h"
 #include "api/units/time_delta.h"
 #include "api/units/timestamp.h"
-#include "system_wrappers/source/field_trial.h"
 #include "modules/congestion_controller/goog_cc/goog_cc_network_control.h"
-
-#include "DepLibUV.hpp"
-#include "Logger.hpp"
-#include "RTC/RTCP/FeedbackRtpTransport.hpp"
-
-#include <absl/memory/memory.h>
-#include <absl/types/optional.h>
-#include <utility>
-#include <vector>
+#include "rtcp_tcc.h"
+#include "system_wrappers/source/field_trial.h"
+#include "uv_loop.h"
 
 namespace webrtc {
 namespace {
@@ -34,9 +34,10 @@ static const size_t kMaxOverheadBytes = 500;
 
 TargetRateConstraints ConvertConstraints(int min_bitrate_bps,
                                          int max_bitrate_bps,
-                                         int start_bitrate_bps) {
+                                         int start_bitrate_bps,
+                                         bifrost::UvLoop* loop) {
   TargetRateConstraints msg;
-  msg.at_time = Timestamp::ms(DepLibUV::GetTimeMsInt64());
+  msg.at_time = Timestamp::ms(loop->get_time_ms_int64());
   msg.min_data_rate =
       min_bitrate_bps >= 0 ? DataRate::bps(min_bitrate_bps) : DataRate::Zero();
   msg.max_data_rate = max_bitrate_bps > 0 ? DataRate::bps(max_bitrate_bps)
@@ -46,70 +47,69 @@ TargetRateConstraints ConvertConstraints(int min_bitrate_bps,
   return msg;
 }
 
-TargetRateConstraints ConvertConstraints(const BitrateConstraints& contraints) {
+TargetRateConstraints ConvertConstraints(const BitrateConstraints& contraints,
+                                         bifrost::UvLoop* loop) {
   return ConvertConstraints(contraints.min_bitrate_bps,
                             contraints.max_bitrate_bps,
-                            contraints.start_bitrate_bps);
+                            contraints.start_bitrate_bps, loop);
 }
 }  // namespace
 
-void RtpTransportControllerSend::SetSendSideBandwidthMinBitrate(int minBitrate) {
-	controller_->SetSendSideBandwidthMinBitrate(minBitrate);
+void RtpTransportControllerSend::SetSendSideBandwidthMinBitrate(
+    int minBitrate) {
+  controller_->SetSendSideBandwidthMinBitrate(minBitrate);
 }
 
 void RtpTransportControllerSend::ChangeWindowSize(size_t size) {
-	if (controller_.get()) {
-		controller_->ChangeWindowSize(size);
-	}
+  if (controller_.get()) {
+    controller_->ChangeWindowSize(size);
+  }
 }
 
 void RtpTransportControllerSend::ChangeDynamicMinThreshold(double threshold) {
-	if (controller_.get()) {
-		controller_->ChangeDynamicMinThreshold(threshold);
-	}
+  if (controller_.get()) {
+    controller_->ChangeDynamicMinThreshold(threshold);
+  }
 }
 
 void RtpTransportControllerSend::SetNoBitrateIncreaseInAlr(bool flag) {
-	if (controller_.get()) {
-		controller_->SetNoBitrateIncreaseInAlr(flag);
-	}
+  if (controller_.get()) {
+    controller_->SetNoBitrateIncreaseInAlr(flag);
+  }
 }
 
 RtpTransportControllerSend::RtpTransportControllerSend(
     PacketRouter* packet_router,
     NetworkStatePredictorFactoryInterface* predictor_factory,
     NetworkControllerFactoryInterface* controller_factory,
-    const BitrateConstraints& bitrate_config)
+    const BitrateConstraints& bitrate_config, bifrost::UvLoop* loop)
     : packet_router_(packet_router),
       pacer_(packet_router_),
       observer_(nullptr),
+      loop_(loop),
       controller_factory_override_(controller_factory),
       process_interval_(controller_factory_override_->GetProcessInterval()),
-      last_report_block_time_(Timestamp::ms(DepLibUV::GetTimeMsInt64())),
+      last_report_block_time_(Timestamp::ms(loop->get_time_ms_int64())),
       send_side_bwe_with_overhead_(
           webrtc::field_trial::IsEnabled("WebRTC-SendSideBwe-WithOverhead")),
       transport_overhead_bytes_per_packet_(0),
       network_available_(false) {
-  initial_config_.constraints = ConvertConstraints(bitrate_config);
+  initial_config_.constraints = ConvertConstraints(bitrate_config, loop);
   initial_config_.key_value_config = &trial_based_config_;
 
   // RTC_DCHECK(bitrate_config.start_bitrate_bps > 0);
-  MS_ASSERT(bitrate_config.start_bitrate_bps > 0, "start bitrate must be > 0");
 
   pacer_.SetPacingRates(bitrate_config.start_bitrate_bps, 0);
 }
 
-RtpTransportControllerSend::~RtpTransportControllerSend() {
-}
+RtpTransportControllerSend::~RtpTransportControllerSend() {}
 
 void RtpTransportControllerSend::UpdateControlState() {
   absl::optional<TargetTransferRate> update = control_handler_->GetUpdate();
-  if (!update)
-    return;
+  if (!update) return;
 
   // We won't create control_handler_ until we have an observers.
   // RTC_DCHECK(observer_ != nullptr);
-  MS_ASSERT(observer_ != nullptr, "no observer");
 
   observer_->OnTargetTransferRate(*update);
 }
@@ -128,13 +128,10 @@ RtpTransportControllerSend::transport_feedback_observer() {
   return this;
 }
 
-PacedSender* RtpTransportControllerSend::packet_sender() {
-  return &pacer_;
-}
+PacedSender* RtpTransportControllerSend::packet_sender() { return &pacer_; }
 
 void RtpTransportControllerSend::SetAllocatedSendBitrateLimits(
-    int min_send_bitrate_bps,
-    int max_padding_bitrate_bps,
+    int min_send_bitrate_bps, int max_padding_bitrate_bps,
     int max_total_bitrate_bps) {
   streams_config_.min_total_allocated_bitrate =
       DataRate::bps(min_send_bitrate_bps);
@@ -144,8 +141,8 @@ void RtpTransportControllerSend::SetAllocatedSendBitrateLimits(
   UpdateStreamsConfig();
 }
 
-void RtpTransportControllerSend::SetClientBitratePreferences(const TargetRateConstraints& constraints)
-{
+void RtpTransportControllerSend::SetClientBitratePreferences(
+    const TargetRateConstraints& constraints) {
   controller_->OnTargetRateConstraints(constraints);
 }
 
@@ -156,24 +153,19 @@ void RtpTransportControllerSend::SetPacingFactor(float pacing_factor) {
 
 void RtpTransportControllerSend::RegisterTargetTransferRateObserver(
     TargetTransferRateObserver* observer) {
+  // RTC_DCHECK(observer_ == nullptr);
 
-    // RTC_DCHECK(observer_ == nullptr);
-    MS_ASSERT(observer_ == nullptr, "observer already set");
-
-    observer_ = observer;
-    observer_->OnStartRateUpdate(*initial_config_.constraints.starting_rate);
-    MaybeCreateControllers();
+  observer_ = observer;
+  observer_->OnStartRateUpdate(*initial_config_.constraints.starting_rate);
+  MaybeCreateControllers();
 }
 
 void RtpTransportControllerSend::OnNetworkAvailability(bool network_available) {
-  MS_DEBUG_DEV("SignalNetworkState:%s", network_available ? "Up" : "Down");
-
   NetworkAvailability msg;
-  msg.at_time = Timestamp::ms(DepLibUV::GetTimeMsInt64());
+  msg.at_time = Timestamp::ms(loop_->get_time_ms_int64());
   msg.network_available = network_available;
 
-  if (network_available_ == msg.network_available)
-    return;
+  if (network_available_ == msg.network_available) return;
   network_available_ = msg.network_available;
   if (network_available_) {
     pacer_.Resume();
@@ -192,7 +184,7 @@ RtcpBandwidthObserver* RtpTransportControllerSend::GetBandwidthObserver() {
 }
 
 void RtpTransportControllerSend::EnablePeriodicAlrProbing(bool enable) {
-	streams_config_.requests_alr_probing = enable;
+  streams_config_.requests_alr_probing = enable;
   UpdateStreamsConfig();
 }
 
@@ -200,8 +192,7 @@ void RtpTransportControllerSend::OnSentPacket(
     const rtc::SentPacket& sent_packet, size_t size) {
   absl::optional<SentPacket> packet_msg =
       transport_feedback_adapter_.ProcessSentPacket(sent_packet);
-  if (packet_msg)
-    PostUpdates(controller_->OnSentPacket(*packet_msg));
+  if (packet_msg) PostUpdates(controller_->OnSentPacket(*packet_msg));
   pacer_.UpdateOutstandingData(
       transport_feedback_adapter_.GetOutstandingData().bytes());
 }
@@ -209,23 +200,20 @@ void RtpTransportControllerSend::OnSentPacket(
 void RtpTransportControllerSend::OnTransportOverheadChanged(
     size_t transport_overhead_bytes_per_packet) {
   if (transport_overhead_bytes_per_packet >= kMaxOverheadBytes) {
-    MS_ERROR("transport overhead exceeds: %zu", kMaxOverheadBytes);
     return;
   }
 }
 
 void RtpTransportControllerSend::OnReceivedEstimatedBitrate(uint32_t bitrate) {
   RemoteBitrateReport msg;
-  msg.receive_time = Timestamp::ms(DepLibUV::GetTimeMsInt64());
+  msg.receive_time = Timestamp::ms(loop_->get_time_ms_int64());
   msg.bandwidth = DataRate::bps(bitrate);
 
   PostUpdates(controller_->OnRemoteBitrateReport(msg));
 }
 
 void RtpTransportControllerSend::OnReceivedRtcpReceiverReport(
-    const ReportBlockList& report_blocks,
-    int64_t rtt_ms,
-    int64_t now_ms) {
+    const ReportBlockList& report_blocks, int64_t rtt_ms, int64_t now_ms) {
   OnReceivedRtcpReceiverReportBlocks(report_blocks, now_ms);
 
   RoundTripTimeUpdate report;
@@ -242,14 +230,14 @@ void RtpTransportControllerSend::OnAddPacket(
       packet_info,
       send_side_bwe_with_overhead_ ? transport_overhead_bytes_per_packet_.load()
                                    : 0,
-      Timestamp::ms(DepLibUV::GetTimeMsInt64()));
+      Timestamp::ms(loop_->get_time_ms_int64()));
 }
 
 void RtpTransportControllerSend::OnTransportFeedback(
-    const RTC::RTCP::FeedbackRtpTransportPacket& feedback) {
+    const bifrost::FeedbackRtpTransportPacket& feedback) {
   absl::optional<TransportPacketsFeedback> feedback_msg =
       transport_feedback_adapter_.ProcessTransportFeedback(
-          feedback, Timestamp::ms(DepLibUV::GetTimeMsInt64()));
+          feedback, Timestamp::ms(loop_->get_time_ms_int64()));
   if (feedback_msg)
     PostUpdates(controller_->OnTransportPacketsFeedback(*feedback_msg));
   pacer_.UpdateOutstandingData(
@@ -258,29 +246,25 @@ void RtpTransportControllerSend::OnTransportFeedback(
 
 void RtpTransportControllerSend::OnRemoteNetworkEstimate(
     NetworkStateEstimate estimate) {
-  estimate.update_time = Timestamp::ms(DepLibUV::GetTimeMsInt64());
+  estimate.update_time = Timestamp::ms(loop_->get_time_ms_int64());
   controller_->OnNetworkStateEstimate(estimate);
 }
 
-void RtpTransportControllerSend::Process()
-{
-  // TODO (ibc): Must really check if we need this ugly periodic timer which is called
-  // every 5ms.
-  // NOTE: Yes, otherwise the pssss scenario does not work:
+void RtpTransportControllerSend::Process() {
+  // TODO (ibc): Must really check if we need this ugly periodic timer which is
+  // called every 5ms. NOTE: Yes, otherwise the pssss scenario does not work:
   // https://bitbucket.org/versatica/mediaproxy/issues/12/no-probation-if-no-real-media
-	UpdateControllerWithTimeInterval();
+  UpdateControllerWithTimeInterval();
 }
 
 void RtpTransportControllerSend::MaybeCreateControllers() {
   // RTC_DCHECK(!controller_);
   // RTC_DCHECK(!control_handler_);
-  MS_ASSERT(!controller_, "controller already set");
-  MS_ASSERT(!control_handler_, "controller handler already set");
 
   control_handler_ = absl::make_unique<CongestionControlHandler>();
 
   initial_config_.constraints.at_time =
-      Timestamp::ms(DepLibUV::GetTimeMsInt64());
+      Timestamp::ms(loop_->get_time_ms_int64());
 
   controller_ = controller_factory_override_->Create(initial_config_);
   process_interval_ = controller_factory_override_->GetProcessInterval();
@@ -290,18 +274,16 @@ void RtpTransportControllerSend::MaybeCreateControllers() {
 
 void RtpTransportControllerSend::UpdateControllerWithTimeInterval() {
   // RTC_DCHECK(controller_);
-  MS_ASSERT(controller_, "controller not set");
 
   ProcessInterval msg;
-  msg.at_time = Timestamp::ms(DepLibUV::GetTimeMsInt64());
+  msg.at_time = Timestamp::ms(loop_->get_time_ms_int64());
 
   PostUpdates(controller_->OnProcessInterval(msg));
 }
 
 void RtpTransportControllerSend::UpdateStreamsConfig() {
-  streams_config_.at_time = Timestamp::ms(DepLibUV::GetTimeMsInt64());
-  if (controller_)
-    PostUpdates(controller_->OnStreamsConfig(streams_config_));
+  streams_config_.at_time = Timestamp::ms(loop_->get_time_ms_int64());
+  if (controller_) PostUpdates(controller_->OnStreamsConfig(streams_config_));
 }
 
 void RtpTransportControllerSend::PostUpdates(NetworkControlUpdate update) {
@@ -330,10 +312,8 @@ void RtpTransportControllerSend::PostUpdates(NetworkControlUpdate update) {
 }
 
 void RtpTransportControllerSend::OnReceivedRtcpReceiverReportBlocks(
-    const ReportBlockList& report_blocks,
-    int64_t now_ms) {
-  if (report_blocks.empty())
-    return;
+    const ReportBlockList& report_blocks, int64_t now_ms) {
+  if (report_blocks.empty()) return;
 
   int total_packets_lost_delta = 0;
   int total_packets_delta = 0;
@@ -352,15 +332,13 @@ void RtpTransportControllerSend::OnReceivedRtcpReceiverReportBlocks(
   }
   // Can only compute delta if there has been previous blocks to compare to. If
   // not, total_packets_delta will be unchanged and there's nothing more to do.
-  if (!total_packets_delta)
-    return;
+  if (!total_packets_delta) return;
   int packets_received_delta = total_packets_delta - total_packets_lost_delta;
   // To detect lost packets, at least one packet has to be received. This check
   // is needed to avoid bandwith detection update in
   // VideoSendStreamTest.SuspendBelowMinBitrate
 
-  if (packets_received_delta < 1)
-    return;
+  if (packets_received_delta < 1) return;
   Timestamp now = Timestamp::ms(now_ms);
   TransportLossReport msg;
   msg.packets_lost_delta = total_packets_lost_delta;

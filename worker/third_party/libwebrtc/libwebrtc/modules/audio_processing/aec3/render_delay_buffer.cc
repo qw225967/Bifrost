@@ -32,7 +32,6 @@
 #include "modules/audio_processing/logging/apm_data_dumper.h"
 #include "rtc_base/atomic_ops.h"
 #include "rtc_base/checks.h"
-#include "rtc_base/logging.h"
 
 namespace webrtc {
 namespace {
@@ -121,8 +120,7 @@ RenderDelayBufferImpl::RenderDelayBufferImpl(const EchoCanceller3Config& config,
       blocks_(GetRenderDelayBufferSize(down_sampling_factor_,
                                        config.delay.num_filters,
                                        config.filter.main.length_blocks),
-              num_bands,
-              kBlockSize),
+              num_bands, kBlockSize),
       spectra_(blocks_.buffer.size(), kFftLengthBy2Plus1),
       ffts_(blocks_.buffer.size()),
       delay_(config_.delay.default_delay),
@@ -192,10 +190,6 @@ RenderDelayBuffer::BufferingEvent RenderDelayBufferImpl::Insert(
     } else {
       if (++num_api_calls_in_a_row_ > max_observed_jitter_) {
         max_observed_jitter_ = num_api_calls_in_a_row_;
-        RTC_LOG(LS_WARNING)
-            << "New max number api jitter observed at render block "
-            << render_call_counter_ << ":  " << num_api_calls_in_a_row_
-            << " blocks";
       }
     }
   }
@@ -238,10 +232,6 @@ RenderDelayBufferImpl::PrepareCaptureProcessing() {
     } else {
       if (++num_api_calls_in_a_row_ > max_observed_jitter_) {
         max_observed_jitter_ = num_api_calls_in_a_row_;
-        RTC_LOG(LS_WARNING)
-            << "New max number api jitter observed at capture block "
-            << capture_call_counter_ << ":  " << num_api_calls_in_a_row_
-            << " blocks";
       }
     }
   }
@@ -249,20 +239,15 @@ RenderDelayBufferImpl::PrepareCaptureProcessing() {
   if (DetectExcessRenderBlocks()) {
     // Too many render blocks compared to capture blocks. Risk of delay ending
     // up before the filter used by the delay estimator.
-    RTC_LOG(LS_WARNING) << "Excess render blocks detected at block "
-                        << capture_call_counter_;
     Reset();
     event = BufferingEvent::kRenderOverrun;
   } else if (RenderUnderrun()) {
     // Don't increment the read indices of the low rate buffer if there is a
     // render underrun.
-    RTC_LOG(LS_WARNING) << "Render buffer underrun detected at block "
-                        << capture_call_counter_;
     IncrementReadIndices();
     // Incrementing the buffer index without increasing the low rate buffer
     // index means that the delay is reduced by one.
-    if (delay_ && *delay_ > 0)
-      delay_ = *delay_ - 1;
+    if (delay_ && *delay_ > 0) delay_ = *delay_ - 1;
     event = BufferingEvent::kRenderUnderrun;
   } else {
     // Increment the read indices in the render buffers to point to the most
@@ -286,9 +271,6 @@ bool RenderDelayBufferImpl::AlignFromDelay(size_t delay) {
   if (!external_audio_buffer_delay_verified_after_reset_ &&
       external_audio_buffer_delay_ && delay_) {
     int difference = static_cast<int>(delay) - static_cast<int>(*delay_);
-    RTC_LOG(LS_WARNING) << "Mismatch between first estimated delay after reset "
-                           "and externally reported audio buffer delay: "
-                        << difference << " blocks";
     external_audio_buffer_delay_verified_after_reset_ = true;
   }
   if (delay_ && *delay_ == delay) {
@@ -308,9 +290,6 @@ bool RenderDelayBufferImpl::AlignFromDelay(size_t delay) {
 
 void RenderDelayBufferImpl::SetAudioBufferDelay(size_t delay_ms) {
   if (!external_audio_buffer_delay_) {
-    RTC_LOG(LS_WARNING)
-        << "Receiving a first externally reported audio buffer delay of "
-        << delay_ms << " ms.";
   }
 
   // Convert delay from milliseconds to blocks (rounded down).
@@ -340,7 +319,6 @@ int RenderDelayBufferImpl::ComputeDelay() const {
 
 // Set the read indices according to the delay.
 void RenderDelayBufferImpl::ApplyTotalDelay(int delay) {
-  RTC_LOG(LS_WARNING) << "Applying total delay of " << delay << " blocks.";
   blocks_.read = blocks_.OffsetIndex(blocks_.write, -delay);
   spectra_.read = spectra_.OffsetIndex(spectra_.write, delay);
   ffts_.read = ffts_.OffsetIndex(ffts_.write, delay);
@@ -357,8 +335,7 @@ void RenderDelayBufferImpl::AlignFromExternalDelay() {
 
 // Inserts a block into the render buffers.
 void RenderDelayBufferImpl::InsertBlock(
-    const std::vector<std::vector<float>>& block,
-    int previous_write) {
+    const std::vector<std::vector<float>>& block, int previous_write) {
   auto& b = blocks_;
   auto& lr = low_rate_;
   auto& ds = render_ds_;

@@ -71,8 +71,7 @@ CriticalSection g_log_crit;
 }  // namespace
 
 // Inefficient default implementation, override is recommended.
-void LogSink::OnLogMessage(const std::string& msg,
-                           LoggingSeverity severity,
+void LogSink::OnLogMessage(const std::string& msg, LoggingSeverity severity,
                            const char* tag) {
   OnLogMessage(tag + (": " + msg), severity);
 }
@@ -100,11 +99,8 @@ bool LogMessage::thread_, LogMessage::timestamp_;
 LogMessage::LogMessage(const char* file, int line, LoggingSeverity sev)
     : LogMessage(file, line, sev, ERRCTX_NONE, 0) {}
 
-LogMessage::LogMessage(const char* file,
-                       int line,
-                       LoggingSeverity sev,
-                       LogErrorContext err_ctx,
-                       int err)
+LogMessage::LogMessage(const char* file, int line, LoggingSeverity sev,
+                       LogErrorContext err_ctx, int err)
     : severity_(sev) {
   if (timestamp_) {
     // Use SystemTimeMillis so that even if tests use fake clocks, the timestamp
@@ -119,8 +115,6 @@ LogMessage::LogMessage(const char* file,
   }
 
   if (thread_) {
-    PlatformThreadId id = CurrentThreadId();
-    print_stream_ << "[" << id << "] ";
   }
 
   if (file != nullptr) {
@@ -134,11 +128,8 @@ LogMessage::LogMessage(const char* file,
 
   if (err_ctx != ERRCTX_NONE) {
     char tmp_buf[1024];
-    SimpleStringBuilder tmp(tmp_buf);
-    tmp.AppendFormat("[0x%08X]", err);
     switch (err_ctx) {
       case ERRCTX_ERRNO:
-        tmp << " " << strerror(err);
         break;
 #ifdef WEBRTC_WIN
       case ERRCTX_HRESULT: {
@@ -160,14 +151,11 @@ LogMessage::LogMessage(const char* file,
       default:
         break;
     }
-    extra_ = tmp.str();
   }
 }
 
 #if defined(WEBRTC_ANDROID)
-LogMessage::LogMessage(const char* file,
-                       int line,
-                       LoggingSeverity sev,
+LogMessage::LogMessage(const char* file, int line, LoggingSeverity sev,
                        const char* tag)
     : LogMessage(file, line, sev, ERRCTX_NONE, 0 /* err */) {
   tag_ = tag;
@@ -178,9 +166,7 @@ LogMessage::LogMessage(const char* file,
 // DEPRECATED. Currently only used by downstream projects that use
 // implementation details of logging.h. Work is ongoing to remove those
 // dependencies.
-LogMessage::LogMessage(const char* file,
-                       int line,
-                       LoggingSeverity sev,
+LogMessage::LogMessage(const char* file, int line, LoggingSeverity sev,
                        const std::string& tag)
     : LogMessage(file, line, sev) {
   print_stream_ << tag << ": ";
@@ -217,17 +203,11 @@ void LogMessage::AddTag(const char* tag) {
 #endif
 }
 
-rtc::StringBuilder& LogMessage::stream() {
-  return print_stream_;
-}
+rtc::StringBuilder& LogMessage::stream() { return print_stream_; }
 
-int LogMessage::GetMinLogSeverity() {
-  return g_min_sev;
-}
+int LogMessage::GetMinLogSeverity() { return g_min_sev; }
 
-LoggingSeverity LogMessage::GetLogToDebug() {
-  return g_dbg_sev;
-}
+LoggingSeverity LogMessage::GetLogToDebug() { return g_dbg_sev; }
 int64_t LogMessage::LogStartTime() {
   static const int64_t g_start = SystemTimeMillis();
   return g_start;
@@ -238,13 +218,9 @@ uint32_t LogMessage::WallClockStartTime() {
   return g_start_wallclock;
 }
 
-void LogMessage::LogThreads(bool on) {
-  thread_ = on;
-}
+void LogMessage::LogThreads(bool on) { thread_ = on; }
 
-void LogMessage::LogTimestamps(bool on) {
-  timestamp_ = on;
-}
+void LogMessage::LogTimestamps(bool on) { timestamp_ = on; }
 
 void LogMessage::LogToDebug(LoggingSeverity min_sev) {
   g_dbg_sev = min_sev;
@@ -292,8 +268,7 @@ void LogMessage::ConfigureLogging(const char* params) {
   tokenize(params, ' ', &tokens);
 
   for (const std::string& token : tokens) {
-    if (token.empty())
-      continue;
+    if (token.empty()) continue;
 
     // Logging features
     if (token == "tstamp") {
@@ -325,8 +300,7 @@ void LogMessage::ConfigureLogging(const char* params) {
     // from the command line, we'll see the output there.  Otherwise, create
     // our own console window.
     // Note: These methods fail if a console already exists, which is fine.
-    if (!AttachConsole(ATTACH_PARENT_PROCESS))
-      ::AllocConsole();
+    if (!AttachConsole(ATTACH_PARENT_PROCESS)) ::AllocConsole();
   }
 #endif  // defined(WEBRTC_WIN) && !defined(WINUWP)
 
@@ -344,8 +318,7 @@ void LogMessage::UpdateMinLogSeverity()
 }
 
 #if defined(WEBRTC_ANDROID)
-void LogMessage::OutputToDebug(const std::string& str,
-                               LoggingSeverity severity,
+void LogMessage::OutputToDebug(const std::string& str, LoggingSeverity severity,
                                const char* tag) {
 #else
 void LogMessage::OutputToDebug(const std::string& str,
@@ -437,22 +410,19 @@ void LogMessage::OutputToDebug(const std::string& str,
 
 // static
 bool LogMessage::IsNoop(LoggingSeverity severity) {
-  if (severity >= g_dbg_sev || severity >= g_min_sev)
-    return false;
+  if (severity >= g_dbg_sev || severity >= g_min_sev) return false;
 
   // TODO(tommi): We're grabbing this lock for every LogMessage instance that
   // is going to be logged. This introduces unnecessary synchronization for
   // a feature that's mostly used for testing.
   CritScope cs(&g_log_crit);
-  if (streams_.size() > 0)
-    return false;
+  if (streams_.size() > 0) return false;
 
   return true;
 }
 
 void LogMessage::FinishPrintStream() {
-  if (!extra_.empty())
-    print_stream_ << " : " << extra_;
+  if (!extra_.empty()) print_stream_ << " : " << extra_;
   print_stream_ << "\n";
 }
 

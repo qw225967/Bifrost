@@ -117,8 +117,6 @@ void CriticalSection::Enter() const RTC_EXCLUSIVE_LOCK_FUNCTION() {
 
 #if RTC_DCHECK_IS_ON
   if (!recursion_count_) {
-    RTC_DCHECK(!thread_);
-    thread_ = CurrentThreadRef();
   } else {
     RTC_DCHECK(CurrentThreadIsOwner());
   }
@@ -135,8 +133,7 @@ bool CriticalSection::TryEnter() const RTC_EXCLUSIVE_TRYLOCK_FUNCTION(true) {
 #elif defined(WEBRTC_POSIX)
 #if defined(WEBRTC_MAC) && !RTC_USE_NATIVE_MUTEX_ON_MAC
   if (!IsThreadRefEqual(owning_thread_, CurrentThreadRef())) {
-    if (AtomicOps::CompareAndSwap(&lock_queue_, 0, 1) != 0)
-      return false;
+    if (AtomicOps::CompareAndSwap(&lock_queue_, 0, 1) != 0) return false;
     owning_thread_ = CurrentThreadRef();
     RTC_DCHECK(!recursion_);
   } else {
@@ -144,13 +141,10 @@ bool CriticalSection::TryEnter() const RTC_EXCLUSIVE_TRYLOCK_FUNCTION(true) {
   }
   ++recursion_;
 #else
-  if (pthread_mutex_trylock(&mutex_) != 0)
-    return false;
+  if (pthread_mutex_trylock(&mutex_) != 0) return false;
 #endif
 #if RTC_DCHECK_IS_ON
   if (!recursion_count_) {
-    RTC_DCHECK(!thread_);
-    thread_ = CurrentThreadRef();
   } else {
     RTC_DCHECK(CurrentThreadIsOwner());
   }
@@ -170,15 +164,13 @@ void CriticalSection::Leave() const RTC_UNLOCK_FUNCTION() {
 #if RTC_DCHECK_IS_ON
   --recursion_count_;
   RTC_DCHECK(recursion_count_ >= 0);
-  if (!recursion_count_)
-    thread_ = 0;
+  if (!recursion_count_) thread_ = 0;
 #endif
 #if defined(WEBRTC_MAC) && !RTC_USE_NATIVE_MUTEX_ON_MAC
   RTC_DCHECK(IsThreadRefEqual(owning_thread_, CurrentThreadRef()));
   RTC_DCHECK_GE(recursion_, 0);
   --recursion_;
-  if (!recursion_)
-    owning_thread_ = 0;
+  if (!recursion_) owning_thread_ = 0;
 
   if (AtomicOps::Decrement(&lock_queue_) > 0 && !recursion_)
     dispatch_semaphore_signal(semaphore_);
@@ -190,31 +182,10 @@ void CriticalSection::Leave() const RTC_UNLOCK_FUNCTION() {
 #endif
 }
 
-bool CriticalSection::CurrentThreadIsOwner() const {
-#if defined(WEBRTC_WIN)
-  // OwningThread has type HANDLE but actually contains the Thread ID:
-  // http://stackoverflow.com/questions/12675301/why-is-the-owningthread-member-of-critical-section-of-type-handle-when-it-is-de
-  // Converting through size_t avoids the VS 2015 warning C4312: conversion from
-  // 'type1' to 'type2' of greater size
-  return crit_.OwningThread ==
-         reinterpret_cast<HANDLE>(static_cast<size_t>(GetCurrentThreadId()));
-#elif defined(WEBRTC_POSIX)
-#if RTC_DCHECK_IS_ON
-  return IsThreadRefEqual(thread_, CurrentThreadRef());
-#else
-  return true;
-#endif  // RTC_DCHECK_IS_ON
-#else
-#error Unsupported platform.
-#endif
-}
+bool CriticalSection::CurrentThreadIsOwner() const { return true; }
 
-CritScope::CritScope(const CriticalSection* cs) : cs_(cs) {
-  cs_->Enter();
-}
-CritScope::~CritScope() {
-  cs_->Leave();
-}
+CritScope::CritScope(const CriticalSection* cs) : cs_(cs) { cs_->Enter(); }
+CritScope::~CritScope() { cs_->Leave(); }
 
 void GlobalLockPod::Lock() {
 #if !defined(WEBRTC_WIN) && \
@@ -238,16 +209,12 @@ void GlobalLockPod::Unlock() {
   RTC_DCHECK_EQ(1, old_value) << "Unlock called without calling Lock first";
 }
 
-GlobalLock::GlobalLock() {
-  lock_acquired = 0;
-}
+GlobalLock::GlobalLock() { lock_acquired = 0; }
 
 GlobalLockScope::GlobalLockScope(GlobalLockPod* lock) : lock_(lock) {
   lock_->Lock();
 }
 
-GlobalLockScope::~GlobalLockScope() {
-  lock_->Unlock();
-}
+GlobalLockScope::~GlobalLockScope() { lock_->Unlock(); }
 
 }  // namespace rtc

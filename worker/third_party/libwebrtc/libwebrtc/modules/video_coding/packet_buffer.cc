@@ -24,7 +24,6 @@
 #include "modules/video_coding/frame_object.h"
 #include "rtc_base/atomic_ops.h"
 #include "rtc_base/checks.h"
-#include "rtc_base/logging.h"
 #include "rtc_base/numerics/mod_ops.h"
 #include "system_wrappers/include/clock.h"
 #include "system_wrappers/include/field_trial.h"
@@ -33,16 +32,13 @@ namespace webrtc {
 namespace video_coding {
 
 rtc::scoped_refptr<PacketBuffer> PacketBuffer::Create(
-    Clock* clock,
-    size_t start_buffer_size,
-    size_t max_buffer_size,
+    Clock* clock, size_t start_buffer_size, size_t max_buffer_size,
     OnAssembledFrameCallback* assembled_frame_callback) {
   return rtc::scoped_refptr<PacketBuffer>(new PacketBuffer(
       clock, start_buffer_size, max_buffer_size, assembled_frame_callback));
 }
 
-PacketBuffer::PacketBuffer(Clock* clock,
-                           size_t start_buffer_size,
+PacketBuffer::PacketBuffer(Clock* clock, size_t start_buffer_size,
                            size_t max_buffer_size,
                            OnAssembledFrameCallback* assembled_frame_callback)
     : clock_(clock),
@@ -63,9 +59,7 @@ PacketBuffer::PacketBuffer(Clock* clock,
   RTC_DCHECK((max_buffer_size & (max_buffer_size - 1)) == 0);
 }
 
-PacketBuffer::~PacketBuffer() {
-  Clear();
-}
+PacketBuffer::~PacketBuffer() { Clear(); }
 
 bool PacketBuffer::InsertPacket(VCMPacket* packet) {
   std::vector<std::unique_ptr<RtpFrameObject>> found_frames;
@@ -109,7 +103,6 @@ bool PacketBuffer::InsertPacket(VCMPacket* packet) {
       if (sequence_buffer_[index].used) {
         // Clear the buffer, delete payload, and return false to signal that a
         // new keyframe is needed.
-        RTC_LOG(LS_WARNING) << "Clear PacketBuffer and request key frame.";
         Clear();
         delete[] packet->dataPtr;
         packet->dataPtr = nullptr;
@@ -151,8 +144,7 @@ void PacketBuffer::ClearTo(uint16_t seq_num) {
   }
 
   // If the packet buffer was cleared between a frame was created and returned.
-  if (!first_packet_received_)
-    return;
+  if (!first_packet_received_) return;
 
   // Avoid iterating over the buffer more than once by capping the number of
   // iterations to the |size_| of the buffer.
@@ -227,8 +219,6 @@ int PacketBuffer::GetUniqueFramesSeen() const {
 
 bool PacketBuffer::ExpandBufferSize() {
   if (size_ == max_size_) {
-    RTC_LOG(LS_WARNING) << "PacketBuffer is already at max size (" << max_size_
-                        << "), failed to increase size.";
     return false;
   }
 
@@ -245,7 +235,6 @@ bool PacketBuffer::ExpandBufferSize() {
   size_ = new_size;
   sequence_buffer_ = std::move(new_sequence_buffer);
   data_buffer_ = std::move(new_data_buffer);
-  RTC_LOG(LS_INFO) << "PacketBuffer size expanded to " << new_size;
   return true;
 }
 
@@ -253,26 +242,19 @@ bool PacketBuffer::PotentialNewFrame(uint16_t seq_num) const {
   size_t index = seq_num % size_;
   int prev_index = index > 0 ? index - 1 : size_ - 1;
 
-  if (!sequence_buffer_[index].used)
-    return false;
-  if (sequence_buffer_[index].seq_num != seq_num)
-    return false;
-  if (sequence_buffer_[index].frame_created)
-    return false;
-  if (sequence_buffer_[index].frame_begin)
-    return true;
-  if (!sequence_buffer_[prev_index].used)
-    return false;
-  if (sequence_buffer_[prev_index].frame_created)
-    return false;
+  if (!sequence_buffer_[index].used) return false;
+  if (sequence_buffer_[index].seq_num != seq_num) return false;
+  if (sequence_buffer_[index].frame_created) return false;
+  if (sequence_buffer_[index].frame_begin) return true;
+  if (!sequence_buffer_[prev_index].used) return false;
+  if (sequence_buffer_[prev_index].frame_created) return false;
   if (sequence_buffer_[prev_index].seq_num !=
       static_cast<uint16_t>(sequence_buffer_[index].seq_num - 1)) {
     return false;
   }
   if (data_buffer_[prev_index].timestamp != data_buffer_[index].timestamp)
     return false;
-  if (sequence_buffer_[prev_index].continuous)
-    return true;
+  if (sequence_buffer_[prev_index].continuous) return true;
 
   return false;
 }
@@ -326,8 +308,7 @@ std::vector<std::unique_ptr<RtpFrameObject>> PacketBuffer::FindFrames(
         // order afterwards.
         packet_infos.push_back(data_buffer_[start_index].packet_info);
 
-        if (!is_h264 && sequence_buffer_[start_index].frame_begin)
-          break;
+        if (!is_h264 && sequence_buffer_[start_index].frame_begin) break;
 
         if (is_h264 && !is_h264_keyframe) {
           const auto* h264_header = absl::get_if<RTPVideoHeaderH264>(
@@ -351,8 +332,7 @@ std::vector<std::unique_ptr<RtpFrameObject>> PacketBuffer::FindFrames(
           }
         }
 
-        if (tested_packets == size_)
-          break;
+        if (tested_packets == size_) break;
 
         start_index = start_index > 0 ? start_index - 1 : size_ - 1;
 
@@ -377,13 +357,6 @@ std::vector<std::unique_ptr<RtpFrameObject>> PacketBuffer::FindFrames(
       if (is_h264) {
         // Warn if this is an unsafe frame.
         if (has_h264_idr && (!has_h264_sps || !has_h264_pps)) {
-          RTC_LOG(LS_WARNING)
-              << "Received H.264-IDR frame "
-              << "(SPS: " << has_h264_sps << ", PPS: " << has_h264_pps
-              << "). Treating as "
-              << (sps_pps_idr_is_h264_keyframe_ ? "delta" : "key")
-              << " frame since WebRTC-SpsPpsIdrIsH264Keyframe is "
-              << (sps_pps_idr_is_h264_keyframe_ ? "enabled." : "disabled");
         }
 
         // Now that we have decided whether to treat this frame as a key frame
@@ -472,9 +445,6 @@ bool PacketBuffer::GetBitstream(const RtpFrameObject& frame,
     RTC_DCHECK_EQ(data_buffer_[index].seqNum, sequence_buffer_[index].seq_num);
     size_t length = data_buffer_[index].sizeBytes;
     if (destination + length > destination_end) {
-      RTC_LOG(LS_WARNING) << "Frame (" << frame.id.picture_id << ":"
-                          << static_cast<int>(frame.id.spatial_layer) << ")"
-                          << " bitstream buffer is not large enough.";
       return false;
     }
 
@@ -510,8 +480,7 @@ int PacketBuffer::Release() const {
 }
 
 void PacketBuffer::UpdateMissingPackets(uint16_t seq_num) {
-  if (!newest_inserted_seq_num_)
-    newest_inserted_seq_num_ = seq_num;
+  if (!newest_inserted_seq_num_) newest_inserted_seq_num_ = seq_num;
 
   const int kMaxPaddingAge = 1000;
   if (AheadOf(seq_num, *newest_inserted_seq_num_)) {

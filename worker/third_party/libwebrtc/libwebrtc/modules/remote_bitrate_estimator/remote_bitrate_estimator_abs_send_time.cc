@@ -12,15 +12,15 @@
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "modules/remote_bitrate_estimator/remote_bitrate_estimator_abs_send_time.h"
+
+#include <math.h>
+
+#include <algorithm>
+
 #include "api/transport/field_trial_based_config.h"
 #include "modules/remote_bitrate_estimator/include/remote_bitrate_estimator.h"
 #include "rtc_base/constructor_magic.h"
-
-#include "Logger.hpp"
-#include "DepLibUV.hpp"
-
-#include <math.h>
-#include <algorithm>
+#include "uv_loop.h"
 
 namespace webrtc {
 namespace {
@@ -35,12 +35,12 @@ absl::optional<DataRate> OptionalRateFromOptionalBps(
 }  // namespace
 
 enum {
-  // MS_NOTE: kAbsSendTimeFraction taken from RTPHeaderExtension::kAbsSendTimeFraction.
+  // MS_NOTE: kAbsSendTimeFraction taken from
+  // RTPHeaderExtension::kAbsSendTimeFraction.
   kAbsSendTimeFraction = 18,
   kTimestampGroupLengthMs = 5,
   kAbsSendTimeInterArrivalUpshift = 8,
-  kInterArrivalShift = kAbsSendTimeFraction +
-                       kAbsSendTimeInterArrivalUpshift,
+  kInterArrivalShift = kAbsSendTimeFraction + kAbsSendTimeInterArrivalUpshift,
   kInitialProbingIntervalMs = 2000,
   kMinClusterSize = 4,
   kMaxProbePackets = 15,
@@ -65,10 +65,8 @@ RemoteBitrateEstimatorAbsSendTime::~RemoteBitrateEstimatorAbsSendTime() =
     default;
 
 bool RemoteBitrateEstimatorAbsSendTime::IsWithinClusterBounds(
-    int send_delta_ms,
-    const Cluster& cluster_aggregate) {
-  if (cluster_aggregate.count == 0)
-    return true;
+    int send_delta_ms, const Cluster& cluster_aggregate) {
+  if (cluster_aggregate.count == 0) return true;
   float cluster_mean = cluster_aggregate.send_mean_ms /
                        static_cast<float>(cluster_aggregate.count);
   return fabs(static_cast<float>(send_delta_ms) - cluster_mean) < 2.5f;
@@ -94,9 +92,7 @@ RemoteBitrateEstimatorAbsSendTime::RemoteBitrateEstimatorAbsSendTime(
       first_packet_time_ms_(-1),
       last_update_ms_(-1),
       uma_recorded_(false),
-      remote_rate_(&field_trials_) {
-  MS_DEBUG_TAG(bwe, "RemoteBitrateEstimatorAbsSendTime: Instantiating.");
-}
+      remote_rate_(&field_trials_) {}
 
 void RemoteBitrateEstimatorAbsSendTime::ComputeClusters(
     std::list<Cluster>* clusters) const {
@@ -139,8 +135,7 @@ RemoteBitrateEstimatorAbsSendTime::FindBestProbe(
   std::list<Cluster>::const_iterator best_it = clusters.end();
   for (std::list<Cluster>::const_iterator it = clusters.begin();
        it != clusters.end(); ++it) {
-    if (it->send_mean_ms == 0 || it->recv_mean_ms == 0)
-      continue;
+    if (it->send_mean_ms == 0 || it->recv_mean_ms == 0) continue;
     if (it->num_above_min_delta > it->count / 2 &&
         (it->recv_mean_ms - it->send_mean_ms <= 2.0f &&
          it->send_mean_ms - it->recv_mean_ms <= 5.0f)) {
@@ -157,13 +152,10 @@ RemoteBitrateEstimatorAbsSendTime::FindBestProbe(
       int recv_bitrate_bps = it->mean_size * 8 * 1000 / it->recv_mean_ms;
 
       MS_DEBUG_DEV(
-        "probe failed, sent at %d bps, received at %d bps [mean "
-        "send delta:%fms, mean recv delta:%fms, num probes:%d]",
-        send_bitrate_bps,
-        recv_bitrate_bps,
-        it->send_mean_ms,
-        it->recv_mean_ms,
-        it->count);
+          "probe failed, sent at %d bps, received at %d bps [mean "
+          "send delta:%fms, mean recv delta:%fms, num probes:%d]",
+          send_bitrate_bps, recv_bitrate_bps, it->send_mean_ms,
+          it->recv_mean_ms, it->count);
 #endif
 
       break;
@@ -179,8 +171,7 @@ RemoteBitrateEstimatorAbsSendTime::ProcessClusters(int64_t now_ms) {
   if (clusters.empty()) {
     // If we reach the max number of probe packets and still have no clusters,
     // we will remove the oldest one.
-    if (probes_.size() >= kMaxProbePackets)
-      probes_.pop_front();
+    if (probes_.size() >= kMaxProbePackets) probes_.pop_front();
     return ProbeResult::kNoUpdate;
   }
 
@@ -191,16 +182,6 @@ RemoteBitrateEstimatorAbsSendTime::ProcessClusters(int64_t now_ms) {
     // Make sure that a probe sent on a lower bitrate than our estimate can't
     // reduce the estimate.
     if (IsBitrateImproving(probe_bitrate_bps)) {
-      MS_DEBUG_DEV(
-          "probe successful, sent at %d bps, received at %d bps "
-          "mean send delta:%fms, mean recv delta:%f ms, "
-          "num probes:%d",
-          best_it->GetSendBitrateBps(),
-          best_it->GetRecvBitrateBps(),
-          best_it->send_mean_ms,
-          best_it->recv_mean_ms,
-          best_it->count);
-
       remote_rate_.SetEstimate(DataRate::bps(probe_bitrate_bps),
                                Timestamp::ms(now_ms));
       return ProbeResult::kBitrateUpdated;
@@ -209,8 +190,7 @@ RemoteBitrateEstimatorAbsSendTime::ProcessClusters(int64_t now_ms) {
 
   // Not probing and received non-probe packet, or finished with current set
   // of probes.
-  if (clusters.size() >= kExpectedNumberOfProbes)
-    probes_.clear();
+  if (clusters.size() >= kExpectedNumberOfProbes) probes_.clear();
   return ProbeResult::kNoUpdate;
 }
 
@@ -224,20 +204,15 @@ bool RemoteBitrateEstimatorAbsSendTime::IsBitrateImproving(
 }
 
 void RemoteBitrateEstimatorAbsSendTime::IncomingPacket(
-    int64_t arrival_time_ms, size_t payload_size, const RTC::RtpPacket& packet, const uint32_t send_time_24bits)
-{
-  MS_TRACE();
-
-  IncomingPacketInfo(arrival_time_ms, send_time_24bits, payload_size, packet.GetSsrc());
+    int64_t arrival_time_ms, size_t payload_size,
+    const bifrost::RtpPacket& packet, const uint32_t send_time_24bits) {
+  IncomingPacketInfo(arrival_time_ms, send_time_24bits, payload_size,
+                     packet.GetSsrc());
 }
 
 void RemoteBitrateEstimatorAbsSendTime::IncomingPacketInfo(
-    int64_t arrival_time_ms,
-    uint32_t send_time_24bits,
-    size_t payload_size,
+    int64_t arrival_time_ms, uint32_t send_time_24bits, size_t payload_size,
     uint32_t ssrc) {
-  MS_ASSERT(send_time_24bits < (1ul << 24), "invalid sendTime24bits value");
-
   if (!uma_recorded_) {
     uma_recorded_ = true;
   }
@@ -247,7 +222,8 @@ void RemoteBitrateEstimatorAbsSendTime::IncomingPacketInfo(
   uint32_t timestamp = send_time_24bits << kAbsSendTimeInterArrivalUpshift;
   int64_t send_time_ms = static_cast<int64_t>(timestamp) * kTimestampToMs;
 
-  int64_t now_ms = DepLibUV::GetTimeMsInt64();
+  //  int64_t now_ms = DepLibUV::GetTimeMsInt64();
+  int64_t now_ms = 0;
   // TODO(holmer): SSRCs are only needed for REMB, should be broken out from
   // here.
 
@@ -265,8 +241,7 @@ void RemoteBitrateEstimatorAbsSendTime::IncomingPacketInfo(
   }
   incoming_bitrate_.Update(payload_size, arrival_time_ms);
 
-  if (first_packet_time_ms_ == -1)
-    first_packet_time_ms_ = now_ms;
+  if (first_packet_time_ms_ == -1) first_packet_time_ms_ = now_ms;
 
   uint32_t ts_delta = 0;
   int64_t t_delta = 0;
@@ -293,14 +268,6 @@ void RemoteBitrateEstimatorAbsSendTime::IncomingPacketInfo(
           send_delta_ms = send_time_ms - probes_.back().send_time_ms;
           recv_delta_ms = arrival_time_ms - probes_.back().recv_time_ms;
         }
-        MS_DEBUG_DEV(
-            "probe packet received [send time:%" PRId64
-            "ms, recv "
-            "time:%" PRId64 "ms, send delta:%dms, recv delta:%d ms]",
-            send_time_ms,
-            arrival_time_ms,
-            send_delta_ms,
-            recv_delta_ms);
       }
       probes_.push_back(Probe(send_time_ms, arrival_time_ms, payload_size));
       ++total_probes_received_;
@@ -380,8 +347,7 @@ void RemoteBitrateEstimatorAbsSendTime::RemoveStream(uint32_t ssrc) {
 }
 
 bool RemoteBitrateEstimatorAbsSendTime::LatestEstimate(
-    std::vector<uint32_t>* ssrcs,
-    uint32_t* bitrate_bps) const {
+    std::vector<uint32_t>* ssrcs, uint32_t* bitrate_bps) const {
   // Currently accessed from both the process thread (see
   // ModuleRtpRtcpImpl::Process()) and the configuration thread (see
   // Call::GetStats()). Should in the future only be accessed from a single

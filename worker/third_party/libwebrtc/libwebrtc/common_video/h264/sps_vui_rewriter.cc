@@ -21,7 +21,6 @@
 #include "common_video/h264/sps_parser.h"
 #include "rtc_base/bit_buffer.h"
 #include "rtc_base/checks.h"
-#include "rtc_base/logging.h"
 #include "rtc_base/numerics/safe_minmax.h"
 #include "system_wrappers/include/metrics.h"
 
@@ -45,35 +44,30 @@ enum SpsValidEvent {
   kSpsRewrittenMax = 8
 };
 
-#define RETURN_FALSE_ON_FAIL(x)                                      \
-  if (!(x)) {                                                        \
-    RTC_LOG_F(LS_ERROR) << " (line:" << __LINE__ << ") FAILED: " #x; \
-    return false;                                                    \
+#define RETURN_FALSE_ON_FAIL(x) \
+  if (!(x)) {                   \
+    return false;               \
   }
 
-#define COPY_UINT8(src, dest, tmp)                   \
-  do {                                               \
-    RETURN_FALSE_ON_FAIL((src)->ReadUInt8(&tmp));    \
-    if (dest)                                        \
-      RETURN_FALSE_ON_FAIL((dest)->WriteUInt8(tmp)); \
+#define COPY_UINT8(src, dest, tmp)                           \
+  do {                                                       \
+    RETURN_FALSE_ON_FAIL((src)->ReadUInt8(&tmp));            \
+    if (dest) RETURN_FALSE_ON_FAIL((dest)->WriteUInt8(tmp)); \
   } while (0)
 
-#define COPY_EXP_GOLOMB(src, dest, tmp)                          \
-  do {                                                           \
-    RETURN_FALSE_ON_FAIL((src)->ReadExponentialGolomb(&tmp));    \
-    if (dest)                                                    \
-      RETURN_FALSE_ON_FAIL((dest)->WriteExponentialGolomb(tmp)); \
+#define COPY_EXP_GOLOMB(src, dest, tmp)                                  \
+  do {                                                                   \
+    RETURN_FALSE_ON_FAIL((src)->ReadExponentialGolomb(&tmp));            \
+    if (dest) RETURN_FALSE_ON_FAIL((dest)->WriteExponentialGolomb(tmp)); \
   } while (0)
 
-#define COPY_BITS(src, dest, tmp, bits)                   \
-  do {                                                    \
-    RETURN_FALSE_ON_FAIL((src)->ReadBits(&tmp, bits));    \
-    if (dest)                                             \
-      RETURN_FALSE_ON_FAIL((dest)->WriteBits(tmp, bits)); \
+#define COPY_BITS(src, dest, tmp, bits)                           \
+  do {                                                            \
+    RETURN_FALSE_ON_FAIL((src)->ReadBits(&tmp, bits));            \
+    if (dest) RETURN_FALSE_ON_FAIL((dest)->WriteBits(tmp, bits)); \
   } while (0)
 
-bool CopyAndRewriteVui(const SpsParser::SpsState& sps,
-                       rtc::BitBuffer* source,
+bool CopyAndRewriteVui(const SpsParser::SpsState& sps, rtc::BitBuffer* source,
                        rtc::BitBufferWriter* destination,
                        const webrtc::ColorSpace* color_space,
                        SpsVuiRewriter::ParseResult* out_vui_rewritten);
@@ -85,8 +79,7 @@ bool IsDefaultColorSpace(const ColorSpace& color_space);
 bool AddVideoSignalTypeInfo(rtc::BitBufferWriter* destination,
                             const ColorSpace& color_space);
 bool CopyOrRewriteVideoSignalTypeInfo(
-    rtc::BitBuffer* source,
-    rtc::BitBufferWriter* destination,
+    rtc::BitBuffer* source, rtc::BitBufferWriter* destination,
     const ColorSpace* color_space,
     SpsVuiRewriter::ParseResult* out_vui_rewritten);
 bool CopyRemainingBits(rtc::BitBuffer* source,
@@ -123,19 +116,16 @@ void SpsVuiRewriter::UpdateStats(ParseResult result, Direction direction) {
 }
 
 SpsVuiRewriter::ParseResult SpsVuiRewriter::ParseAndRewriteSps(
-    const uint8_t* buffer,
-    size_t length,
+    const uint8_t* buffer, size_t length,
     absl::optional<SpsParser::SpsState>* sps,
-    const webrtc::ColorSpace* color_space,
-    rtc::Buffer* destination) {
+    const webrtc::ColorSpace* color_space, rtc::Buffer* destination) {
   // Create temporary RBSP decoded buffer of the payload (exlcuding the
   // leading nalu type header byte (the SpsParser uses only the payload).
   std::vector<uint8_t> rbsp_buffer = H264::ParseRbsp(buffer, length);
   rtc::BitBuffer source_buffer(rbsp_buffer.data(), rbsp_buffer.size());
   absl::optional<SpsParser::SpsState> sps_state =
       SpsParser::ParseSpsUpToVui(&source_buffer);
-  if (!sps_state)
-    return ParseResult::kFailure;
+  if (!sps_state) return ParseResult::kFailure;
 
   *sps = sps_state;
 
@@ -164,7 +154,6 @@ SpsVuiRewriter::ParseResult SpsVuiRewriter::ParseAndRewriteSps(
   ParseResult vui_updated;
   if (!CopyAndRewriteVui(*sps_state, &source_buffer, &sps_writer, color_space,
                          &vui_updated)) {
-    RTC_LOG(LS_ERROR) << "Failed to parse/copy SPS VUI.";
     return ParseResult::kFailure;
   }
 
@@ -174,7 +163,6 @@ SpsVuiRewriter::ParseResult SpsVuiRewriter::ParseAndRewriteSps(
   }
 
   if (!CopyRemainingBits(&source_buffer, &sps_writer)) {
-    RTC_LOG(LS_ERROR) << "Failed to parse/copy SPS VUI.";
     return ParseResult::kFailure;
   }
 
@@ -198,11 +186,9 @@ SpsVuiRewriter::ParseResult SpsVuiRewriter::ParseAndRewriteSps(
 }
 
 SpsVuiRewriter::ParseResult SpsVuiRewriter::ParseAndRewriteSps(
-    const uint8_t* buffer,
-    size_t length,
+    const uint8_t* buffer, size_t length,
     absl::optional<SpsParser::SpsState>* sps,
-    const webrtc::ColorSpace* color_space,
-    rtc::Buffer* destination,
+    const webrtc::ColorSpace* color_space, rtc::Buffer* destination,
     Direction direction) {
   ParseResult result =
       ParseAndRewriteSps(buffer, length, sps, color_space, destination);
@@ -211,14 +197,10 @@ SpsVuiRewriter::ParseResult SpsVuiRewriter::ParseAndRewriteSps(
 }
 
 void SpsVuiRewriter::ParseOutgoingBitstreamAndRewriteSps(
-    rtc::ArrayView<const uint8_t> buffer,
-    size_t num_nalus,
-    const size_t* nalu_offsets,
-    const size_t* nalu_lengths,
-    const webrtc::ColorSpace* color_space,
-    rtc::Buffer* output_buffer,
-    size_t* output_nalu_offsets,
-    size_t* output_nalu_lengths) {
+    rtc::ArrayView<const uint8_t> buffer, size_t num_nalus,
+    const size_t* nalu_offsets, const size_t* nalu_lengths,
+    const webrtc::ColorSpace* color_space, rtc::Buffer* output_buffer,
+    size_t* output_nalu_offsets, size_t* output_nalu_lengths) {
   // Allocate some extra space for potentially adding a missing VUI.
   output_buffer->EnsureCapacity(buffer.size() + num_nalus * kMaxVuiSpsIncrease);
 
@@ -279,8 +261,7 @@ void SpsVuiRewriter::ParseOutgoingBitstreamAndRewriteSps(
 }
 
 namespace {
-bool CopyAndRewriteVui(const SpsParser::SpsState& sps,
-                       rtc::BitBuffer* source,
+bool CopyAndRewriteVui(const SpsParser::SpsState& sps, rtc::BitBuffer* source,
                        rtc::BitBufferWriter* destination,
                        const webrtc::ColorSpace* color_space,
                        SpsVuiRewriter::ParseResult* out_vui_rewritten) {
@@ -510,8 +491,7 @@ bool AddVideoSignalTypeInfo(rtc::BitBufferWriter* destination,
 }
 
 bool CopyOrRewriteVideoSignalTypeInfo(
-    rtc::BitBuffer* source,
-    rtc::BitBufferWriter* destination,
+    rtc::BitBuffer* source, rtc::BitBufferWriter* destination,
     const ColorSpace* color_space,
     SpsVuiRewriter::ParseResult* out_vui_rewritten) {
   // Read.

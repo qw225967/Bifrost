@@ -12,9 +12,8 @@
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "modules/remote_bitrate_estimator/inter_arrival.h"
-#include "modules/include/module_common_types_public.h"
 
-#include "Logger.hpp"
+#include "modules/include/module_common_types_public.h"
 
 namespace webrtc {
 
@@ -31,16 +30,11 @@ InterArrival::InterArrival(uint32_t timestamp_group_length_ticks,
       burst_grouping_(enable_burst_grouping),
       num_consecutive_reordered_packets_(0) {}
 
-bool InterArrival::ComputeDeltas(uint32_t timestamp,
-                                 int64_t arrival_time_ms,
-                                 int64_t system_time_ms,
-                                 size_t packet_size,
+bool InterArrival::ComputeDeltas(uint32_t timestamp, int64_t arrival_time_ms,
+                                 int64_t system_time_ms, size_t packet_size,
                                  uint32_t* timestamp_delta,
                                  int64_t* arrival_time_delta_ms,
                                  int* packet_size_delta) {
-  MS_ASSERT(timestamp_delta != nullptr, "timestamp_delta is null");
-  MS_ASSERT(arrival_time_delta_ms != nullptr, "arrival_time_delta_ms is null");
-  MS_ASSERT(packet_size_delta != nullptr, "packet_size_delta is null");
   bool calculated_deltas = false;
   if (current_timestamp_group_.IsFirstPacket()) {
     // We don't have enough data to update the filter, so we store it until we
@@ -64,9 +58,6 @@ bool InterArrival::ComputeDeltas(uint32_t timestamp,
           prev_timestamp_group_.last_system_time_ms;
       if (*arrival_time_delta_ms - system_time_delta_ms >=
           kArrivalTimeOffsetThresholdMs) {
-        MS_WARN_TAG(bwe,
-            "the arrival time clock offset has changed (diff = %" PRIi64 "ms, resetting",
-            *arrival_time_delta_ms - system_time_delta_ms);
         Reset();
         return false;
       }
@@ -75,18 +66,12 @@ bool InterArrival::ComputeDeltas(uint32_t timestamp,
         // arrival timestamp.
         ++num_consecutive_reordered_packets_;
         if (num_consecutive_reordered_packets_ >= kReorderedResetThreshold) {
-          MS_WARN_TAG(bwe,
-                 "packets are being reordered on the path from the "
-                 "socket to the bandwidth estimator. Ignoring this "
-                 "packet for bandwidth estimation, resetting");
           Reset();
         }
         return false;
       } else {
         num_consecutive_reordered_packets_ = 0;
       }
-
-      MS_ASSERT(*arrival_time_delta_ms >= 0, "arrival_time_delta_ms is < 0");
 
       *packet_size_delta = static_cast<int>(current_timestamp_group_.size) -
                            static_cast<int>(prev_timestamp_group_.size);
@@ -114,7 +99,8 @@ bool InterArrival::PacketInOrder(uint32_t timestamp, int64_t arrival_time_ms) {
   if (current_timestamp_group_.IsFirstPacket()) {
     return true;
   } else if (arrival_time_ms < 0) {
-    // NOTE: Change related to https://github.com/versatica/mediaproxy/issues/357
+    // NOTE: Change related to
+    // https://github.com/versatica/mediaproxy/issues/357
     //
     // Sometimes we do get negative arrival time, which causes BelongsToBurst()
     // to fail, which may cause anything that uses InterArrival to crash.
@@ -159,17 +145,11 @@ bool InterArrival::BelongsToBurst(int64_t arrival_time_ms,
     return false;
   }
 
-  MS_ASSERT(
-    current_timestamp_group_.complete_time_ms >= 0,
-    "current_timestamp_group_.complete_time_ms < 0 [current_timestamp_group_.complete_time_ms:%" PRIi64 "]",
-    current_timestamp_group_.complete_time_ms);
-
   int64_t arrival_time_delta_ms =
       arrival_time_ms - current_timestamp_group_.complete_time_ms;
   uint32_t timestamp_diff = timestamp - current_timestamp_group_.timestamp;
   int64_t ts_delta_ms = timestamp_to_ms_coeff_ * timestamp_diff + 0.5;
-  if (ts_delta_ms == 0)
-    return true;
+  if (ts_delta_ms == 0) return true;
   int propagation_delta_ms = arrival_time_delta_ms - ts_delta_ms;
   if (propagation_delta_ms < 0 &&
       arrival_time_delta_ms <= kBurstDeltaThresholdMs &&

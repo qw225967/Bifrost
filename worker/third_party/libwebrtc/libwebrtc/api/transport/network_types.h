@@ -11,14 +11,16 @@
 #ifndef API_TRANSPORT_NETWORK_TYPES_H_
 #define API_TRANSPORT_NETWORK_TYPES_H_
 
+#include <absl/types/optional.h>
+#include <stdint.h>
+
+#include <vector>
+
 #include "api/units/data_rate.h"
 #include "api/units/data_size.h"
 #include "api/units/time_delta.h"
 #include "api/units/timestamp.h"
-
-#include <absl/types/optional.h>
-#include <stdint.h>
-#include <vector>
+#include "uv_loop.h"
 
 namespace webrtc {
 
@@ -72,8 +74,7 @@ struct NetworkRouteChange {
 
 struct PacedPacketInfo {
   PacedPacketInfo();
-  PacedPacketInfo(int probe_cluster_id,
-                  int probe_cluster_min_probes,
+  PacedPacketInfo(int probe_cluster_id, int probe_cluster_min_probes,
                   int probe_cluster_min_bytes);
 
   bool operator==(const PacedPacketInfo& rhs) const;

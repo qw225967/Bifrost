@@ -33,7 +33,6 @@
 #include "rtc_base/checks.h"
 #include "rtc_base/critical_section.h"
 #include "rtc_base/location.h"
-#include "rtc_base/logging.h"
 #include "rtc_base/one_time_event.h"
 #include "rtc_base/thread_checker.h"
 #include "rtc_base/trace_event.h"
@@ -82,8 +81,7 @@ void VideoReceiver::Process() {
       rtc::CritScope cs(&process_crit_);
       request_key_frame = _scheduleKeyRequest;
     }
-    if (request_key_frame)
-      RequestKeyFrame();
+    if (request_key_frame) RequestKeyFrame();
   }
 
   // Packet retransmission requests
@@ -221,8 +219,7 @@ int32_t VideoReceiver::Decode(uint16_t maxWaitTimeMs) {
   VCMEncodedFrame* frame = _receiver.FrameForDecoding(
       maxWaitTimeMs, _codecDataBase.PrefersLateDecoding());
 
-  if (!frame)
-    return VCM_FRAME_NOT_READY;
+  if (!frame) return VCM_FRAME_NOT_READY;
 
   bool drop_frame = false;
   {
@@ -253,9 +250,6 @@ int32_t VideoReceiver::Decode(uint16_t maxWaitTimeMs) {
                               clock_->TimeInMilliseconds());
 
   if (first_frame_received_()) {
-    RTC_LOG(LS_INFO) << "Received first "
-                     << (frame->Complete() ? "complete" : "incomplete")
-                     << " decodable video frame";
   }
 
   const int32_t ret = Decode(*frame);

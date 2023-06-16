@@ -13,8 +13,6 @@
 
 #include "rtc_base/experiments/field_trial_parser.h"
 
-#include "Logger.hpp"
-
 #include <algorithm>
 #include <map>
 #include <type_traits>
@@ -34,7 +32,7 @@ FieldTrialParameterInterface::FieldTrialParameterInterface(std::string key)
     : key_(key) {}
 FieldTrialParameterInterface::~FieldTrialParameterInterface() {
   // RTC_DCHECK(used_) << "Field trial parameter with key: '" << key_
-                    // << "' never used.";
+  // << "' never used.";
 }
 
 void ParseFieldTrial(
@@ -75,16 +73,11 @@ void ParseFieldTrial(
     auto field = field_map.find(key);
     if (field != field_map.end()) {
       if (!field->second->Parse(std::move(opt_value))) {
-        MS_WARN_TAG(bwe, "Failed to read field with key: '%s' in trial: \"%s\"",
-           key.c_str(), trial_string.c_str());
       }
     } else if (!opt_value && keyless_field && !key.empty()) {
       if (!keyless_field->Parse(key)) {
-        MS_WARN_TAG(bwe, "Failed to read empty key field with value: '%s' in trial: \"%s\"",
-           key.c_str(), trial_string.c_str());
       }
     } else {
-      MS_DEBUG_TAG(bwe, "No field with key: '%s' (found in trial: \"%s\")", key.c_str(), trial_string.c_str());
     }
   }
 
@@ -108,8 +101,7 @@ absl::optional<double> ParseTypedParameter<double>(std::string str) {
   double value;
   char unit[2]{0, 0};
   if (sscanf(str.c_str(), "%lf%1s", &value, unit) >= 1) {
-    if (unit[0] == '%')
-      return value / 100;
+    if (unit[0] == '%') return value / 100;
     return value;
   } else {
     return absl::nullopt;
@@ -136,20 +128,15 @@ FieldTrialFlag::FieldTrialFlag(std::string key) : FieldTrialFlag(key, false) {}
 FieldTrialFlag::FieldTrialFlag(std::string key, bool default_value)
     : FieldTrialParameterInterface(key), value_(default_value) {}
 
-bool FieldTrialFlag::Get() const {
-  return value_;
-}
+bool FieldTrialFlag::Get() const { return value_; }
 
-webrtc::FieldTrialFlag::operator bool() const {
-  return value_;
-}
+webrtc::FieldTrialFlag::operator bool() const { return value_; }
 
 bool FieldTrialFlag::Parse(absl::optional<std::string> str_value) {
   // Only set the flag if there is no argument provided.
   if (str_value) {
     absl::optional<bool> opt_value = ParseTypedParameter<bool>(*str_value);
-    if (!opt_value)
-      return false;
+    if (!opt_value) return false;
     value_ = *opt_value;
   } else {
     value_ = true;
@@ -158,14 +145,11 @@ bool FieldTrialFlag::Parse(absl::optional<std::string> str_value) {
 }
 
 AbstractFieldTrialEnum::AbstractFieldTrialEnum(
-    std::string key,
-    int default_value,
-    std::map<std::string, int> mapping)
+    std::string key, int default_value, std::map<std::string, int> mapping)
     : FieldTrialParameterInterface(key),
       value_(default_value),
       enum_mapping_(mapping) {
-  for (auto& key_val : enum_mapping_)
-    valid_values_.insert(key_val.second);
+  for (auto& key_val : enum_mapping_) valid_values_.insert(key_val.second);
 }
 AbstractFieldTrialEnum::AbstractFieldTrialEnum(const AbstractFieldTrialEnum&) =
     default;

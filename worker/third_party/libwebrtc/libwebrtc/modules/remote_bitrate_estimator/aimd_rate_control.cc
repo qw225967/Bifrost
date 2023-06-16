@@ -12,21 +12,20 @@
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "modules/remote_bitrate_estimator/aimd_rate_control.h"
+
+#include <inttypes.h>
+
+#include <algorithm>
+#include <cmath>
+#include <cstdio>
+#include <string>
+
 #include "api/transport/network_types.h"
 #include "api/units/data_rate.h"
 #include "modules/remote_bitrate_estimator/include/bwe_defines.h"
 #include "modules/remote_bitrate_estimator/overuse_detector.h"
 #include "rtc_base/experiments/field_trial_parser.h"
 #include "rtc_base/numerics/safe_minmax.h"
-
-#include "Logger.hpp"
-#include "MpErrors.hpp"
-
-#include <inttypes.h>
-#include <algorithm>
-#include <cmath>
-#include <cstdio>
-#include <string>
 
 namespace webrtc {
 namespace {
@@ -49,15 +48,11 @@ double ReadBackoffFactor(const WebRtcKeyValueConfig& key_value_config) {
       sscanf(experiment_string.c_str(), "Enabled-%lf", &backoff_factor);
   if (parsed_values == 1) {
     if (backoff_factor >= 1.0) {
-      MS_WARN_TAG(bwe, "Back-off factor must be less than 1.");
     } else if (backoff_factor <= 0.0) {
-      MS_WARN_TAG(bwe, "Back-off factor must be greater than 0.");
     } else {
       return backoff_factor;
     }
   }
-
-  MS_WARN_TAG(bwe, "Failed to parse parameters for AimdRateControl experiment from field trial string. Using default.");
 
   return kDefaultBackoffFactor;
 }
@@ -86,9 +81,8 @@ AimdRateControl::AimdRateControl(const WebRtcKeyValueConfig* key_value_config,
       rtt_(kDefaultRtt),
       send_side_(send_side),
       in_experiment_(!AdaptiveThresholdExperimentIsDisabled(*key_value_config)),
-      no_bitrate_increase_in_alr_(
-          IsEnabled(*key_value_config,
-                    "WebRTC-DontIncreaseDelayBasedBweInAlr")),
+      no_bitrate_increase_in_alr_(IsEnabled(
+          *key_value_config, "WebRTC-DontIncreaseDelayBasedBweInAlr")),
       smoothing_experiment_(false),
       estimate_bounded_backoff_(
           IsEnabled(*key_value_config, "WebRTC-Bwe-EstimateBoundedBackoff")),
@@ -104,10 +98,8 @@ AimdRateControl::AimdRateControl(const WebRtcKeyValueConfig* key_value_config,
   ParseFieldTrial({&initial_backoff_interval_, &low_throughput_threshold_},
                   key_value_config->Lookup("WebRTC-BweAimdRateControlConfig"));
   if (initial_backoff_interval_) {
-    MS_DEBUG_TAG(bwe, "Using aimd rate control with initial back-off interval: %s",
-                     ToString(*initial_backoff_interval_).c_str());
   }
-  MS_DEBUG_TAG(bwe, "Using aimd rate control with back off factor: %f ", beta_);
+
   ParseFieldTrial(
       {&capacity_deviation_ratio_threshold_, &capacity_limit_deviation_factor_},
       key_value_config->Lookup("WebRTC-Bwe-AimdRateControl-NetworkState"));
@@ -122,15 +114,11 @@ void AimdRateControl::SetStartBitrate(DataRate start_bitrate) {
 }
 
 void AimdRateControl::SetMinBitrate(DataRate min_bitrate) {
-  MS_DEBUG_DEV("[min_bitrate:%" PRIi64 "]", min_bitrate.bps());
-
   min_configured_bitrate_ = min_bitrate;
   current_bitrate_ = std::max(min_bitrate, current_bitrate_);
 }
 
-bool AimdRateControl::ValidEstimate() const {
-  return bitrate_is_initialized_;
-}
+bool AimdRateControl::ValidEstimate() const { return bitrate_is_initialized_; }
 
 TimeDelta AimdRateControl::GetFeedbackInterval() const {
   // Estimate how often we can send RTCP if we allocate up to 5% of bandwidth
@@ -174,13 +162,9 @@ bool AimdRateControl::InitialTimeToReduceFurther(Timestamp at_time) const {
   return false;
 }
 
-DataRate AimdRateControl::LatestEstimate() const {
-  return current_bitrate_;
-}
+DataRate AimdRateControl::LatestEstimate() const { return current_bitrate_; }
 
-void AimdRateControl::SetRtt(TimeDelta rtt) {
-  rtt_ = rtt;
-}
+void AimdRateControl::SetRtt(TimeDelta rtt) { rtt_ = rtt; }
 
 DataRate AimdRateControl::Update(const RateControlInput* input,
                                  Timestamp at_time) {
@@ -236,8 +220,7 @@ double AimdRateControl::GetNearMaxIncreaseRateBpsPerSecond() const {
 
   // Approximate the over-use estimator delay to 100 ms.
   TimeDelta response_time = rtt_ + TimeDelta::ms(100);
-  if (in_experiment_)
-    response_time = response_time * 2;
+  if (in_experiment_) response_time = response_time * 2;
   double increase_rate_bps_per_second =
       (avg_packet_size / response_time).bps<double>();
   double kMinIncreaseRateBpsPerSecond = 4000;
@@ -365,7 +348,7 @@ DataRate AimdRateControl::ChangeBitrate(DataRate new_bitrate,
       break;
 
     default:
-      MS_THROW_ERROR("unknown rate control state");
+      break;
   }
   return ClampBitrate(new_bitrate, estimated_throughput);
 }
@@ -397,9 +380,7 @@ DataRate AimdRateControl::ClampBitrate(DataRate new_bitrate,
 }
 
 DataRate AimdRateControl::MultiplicativeRateIncrease(
-    Timestamp at_time,
-    Timestamp last_time,
-    DataRate current_bitrate) const {
+    Timestamp at_time, Timestamp last_time, DataRate current_bitrate) const {
   double alpha = 1.08;
   if (last_time.IsFinite()) {
     auto time_since_last_update = at_time - last_time;
@@ -436,7 +417,7 @@ void AimdRateControl::ChangeState(const RateControlInput& input,
       rate_control_state_ = kRcHold;
       break;
     default:
-      MS_THROW_ERROR("unknown input.bw_state");
+      break;
   }
 }
 

@@ -20,7 +20,6 @@
 #include "absl/strings/match.h"
 #include "api/audio_codecs/audio_decoder.h"
 #include "rtc_base/checks.h"
-#include "rtc_base/logging.h"
 #include "rtc_base/strings/audio_format_to_string.h"
 
 namespace webrtc {
@@ -38,8 +37,7 @@ DecoderDatabase::~DecoderDatabase() = default;
 DecoderDatabase::DecoderInfo::DecoderInfo(
     const SdpAudioFormat& audio_format,
     absl::optional<AudioCodecPairId> codec_pair_id,
-    AudioDecoderFactory* factory,
-    const std::string& codec_name)
+    AudioDecoderFactory* factory, const std::string& codec_name)
     : name_(codec_name),
       audio_format_(audio_format),
       codec_pair_id_(codec_pair_id),
@@ -105,13 +103,9 @@ DecoderDatabase::DecoderInfo::SubtypeFromFormat(const SdpAudioFormat& format) {
   return Subtype::kNormal;
 }
 
-bool DecoderDatabase::Empty() const {
-  return decoders_.empty();
-}
+bool DecoderDatabase::Empty() const { return decoders_.empty(); }
 
-int DecoderDatabase::Size() const {
-  return static_cast<int>(decoders_.size());
-}
+int DecoderDatabase::Size() const { return static_cast<int>(decoders_.size()); }
 
 void DecoderDatabase::Reset() {
   decoders_.clear();
@@ -293,8 +287,6 @@ int DecoderDatabase::CheckPayloadTypes(const PacketList& packet_list) const {
   for (it = packet_list.begin(); it != packet_list.end(); ++it) {
     if (!GetDecoderInfo(it->payload_type)) {
       // Payload type is not found.
-      RTC_LOG(LS_WARNING) << "CheckPayloadTypes: unknown RTP payload type "
-                          << static_cast<int>(it->payload_type);
       return kDecoderNotFound;
     }
   }

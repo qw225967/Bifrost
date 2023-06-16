@@ -27,20 +27,16 @@
 #include "modules/audio_processing/aec3/downsampled_render_buffer.h"
 #include "modules/audio_processing/logging/apm_data_dumper.h"
 #include "rtc_base/checks.h"
-#include "rtc_base/logging.h"
 
 namespace webrtc {
 namespace aec3 {
 
 #if defined(WEBRTC_HAS_NEON)
 
-void MatchedFilterCore_NEON(size_t x_start_index,
-                            float x2_sum_threshold,
-                            float smoothing,
-                            rtc::ArrayView<const float> x,
+void MatchedFilterCore_NEON(size_t x_start_index, float x2_sum_threshold,
+                            float smoothing, rtc::ArrayView<const float> x,
                             rtc::ArrayView<const float> y,
-                            rtc::ArrayView<float> h,
-                            bool* filters_updated,
+                            rtc::ArrayView<float> h, bool* filters_updated,
                             float* error_sum) {
   const int h_size = static_cast<int>(h.size());
   const int x_size = static_cast<int>(x.size());
@@ -144,13 +140,10 @@ void MatchedFilterCore_NEON(size_t x_start_index,
 
 #if defined(WEBRTC_ARCH_X86_FAMILY)
 
-void MatchedFilterCore_SSE2(size_t x_start_index,
-                            float x2_sum_threshold,
-                            float smoothing,
-                            rtc::ArrayView<const float> x,
+void MatchedFilterCore_SSE2(size_t x_start_index, float x2_sum_threshold,
+                            float smoothing, rtc::ArrayView<const float> x,
                             rtc::ArrayView<const float> y,
-                            rtc::ArrayView<float> h,
-                            bool* filters_updated,
+                            rtc::ArrayView<float> h, bool* filters_updated,
                             float* error_sum) {
   const int h_size = static_cast<int>(h.size());
   const int x_size = static_cast<int>(x.size());
@@ -255,14 +248,10 @@ void MatchedFilterCore_SSE2(size_t x_start_index,
 }
 #endif
 
-void MatchedFilterCore(size_t x_start_index,
-                       float x2_sum_threshold,
-                       float smoothing,
-                       rtc::ArrayView<const float> x,
-                       rtc::ArrayView<const float> y,
-                       rtc::ArrayView<float> h,
-                       bool* filters_updated,
-                       float* error_sum) {
+void MatchedFilterCore(size_t x_start_index, float x2_sum_threshold,
+                       float smoothing, rtc::ArrayView<const float> x,
+                       rtc::ArrayView<const float> y, rtc::ArrayView<float> h,
+                       bool* filters_updated, float* error_sum) {
   // Process for all samples in the sub-block.
   for (size_t i = 0; i < y.size(); ++i) {
     // Apply the matched filter as filter * x, and compute x * x.
@@ -300,15 +289,11 @@ void MatchedFilterCore(size_t x_start_index,
 
 }  // namespace aec3
 
-MatchedFilter::MatchedFilter(ApmDataDumper* data_dumper,
-                             Aec3Optimization optimization,
-                             size_t sub_block_size,
-                             size_t window_size_sub_blocks,
-                             int num_matched_filters,
-                             size_t alignment_shift_sub_blocks,
-                             float excitation_limit,
-                             float smoothing,
-                             float matching_filter_threshold)
+MatchedFilter::MatchedFilter(
+    ApmDataDumper* data_dumper, Aec3Optimization optimization,
+    size_t sub_block_size, size_t window_size_sub_blocks,
+    int num_matched_filters, size_t alignment_shift_sub_blocks,
+    float excitation_limit, float smoothing, float matching_filter_threshold)
     : data_dumper_(data_dumper),
       optimization_(optimization),
       sub_block_size_(sub_block_size),
@@ -438,8 +423,7 @@ void MatchedFilter::Update(const DownsampledRenderBuffer& render_buffer,
   }
 }
 
-void MatchedFilter::LogFilterProperties(int sample_rate_hz,
-                                        size_t shift,
+void MatchedFilter::LogFilterProperties(int sample_rate_hz, size_t shift,
                                         size_t downsampling_factor) const {
   size_t alignment_shift = 0;
   const int fs_by_1000 = LowestBandRate(sample_rate_hz) / 1000;
@@ -447,10 +431,6 @@ void MatchedFilter::LogFilterProperties(int sample_rate_hz,
     int start = static_cast<int>(alignment_shift * downsampling_factor);
     int end = static_cast<int>((alignment_shift + filters_[k].size()) *
                                downsampling_factor);
-    RTC_LOG(LS_INFO) << "Filter " << k << ": start: "
-                     << (start - static_cast<int>(shift)) / fs_by_1000
-                     << " ms, end: "
-                     << (end - static_cast<int>(shift)) / fs_by_1000 << " ms.";
     alignment_shift += filter_intra_lag_shift_;
   }
 }

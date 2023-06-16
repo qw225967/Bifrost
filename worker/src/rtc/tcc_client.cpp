@@ -50,7 +50,8 @@ void TransportCongestionControlClient::InitializeController() {
       static_cast<int>(this->initial_available_bitrate_);
 
   this->rtp_transport_controller_send_ = new webrtc::RtpTransportControllerSend(
-      this, nullptr, this->controller_factory_, bitrate_config);
+      this, nullptr, this->controller_factory_,
+      bitrate_config, this->uv_loop_);
 
   this->rtp_transport_controller_send_->RegisterTargetTransferRateObserver(
       this);

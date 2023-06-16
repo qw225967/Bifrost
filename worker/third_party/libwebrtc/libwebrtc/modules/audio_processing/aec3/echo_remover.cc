@@ -34,16 +34,13 @@
 #include "modules/audio_processing/aec3/suppression_gain.h"
 #include "modules/audio_processing/logging/apm_data_dumper.h"
 #include "rtc_base/atomic_ops.h"
-#include "rtc_base/checks.h"
 #include "rtc_base/constructor_magic.h"
-#include "rtc_base/logging.h"
 
 namespace webrtc {
 
 namespace {
 
-void LinearEchoPower(const FftData& E,
-                     const FftData& Y,
+void LinearEchoPower(const FftData& E, const FftData& Y,
                      std::array<float, kFftLengthBy2Plus1>* S2) {
   for (size_t k = 0; k < E.re.size(); ++k) {
     (*S2)[k] = (Y.re[k] - E.re[k]) * (Y.re[k] - E.re[k]) +
@@ -73,10 +70,8 @@ void SignalTransition(rtc::ArrayView<const float> from,
 
 // Computes a windowed (square root Hanning) padded FFT and updates the related
 // memory.
-void WindowedPaddedFft(const Aec3Fft& fft,
-                       rtc::ArrayView<const float> v,
-                       rtc::ArrayView<float> v_old,
-                       FftData* V) {
+void WindowedPaddedFft(const Aec3Fft& fft, rtc::ArrayView<const float> v,
+                       rtc::ArrayView<float> v_old, FftData* V) {
   fft.PaddedFft(v, v_old, Aec3Fft::Window::kSqrtHanning, V);
   std::copy(v.begin(), v.end(), v_old.begin());
 }
@@ -173,11 +168,9 @@ void EchoRemoverImpl::GetMetrics(EchoControl::Metrics* metrics) const {
 }
 
 void EchoRemoverImpl::ProcessCapture(
-    EchoPathVariability echo_path_variability,
-    bool capture_signal_saturation,
+    EchoPathVariability echo_path_variability, bool capture_signal_saturation,
     const absl::optional<DelayEstimate>& external_delay,
-    RenderBuffer* render_buffer,
-    std::vector<std::vector<float>>* capture) {
+    RenderBuffer* render_buffer, std::vector<std::vector<float>>* capture) {
   ++block_counter_;
   const std::vector<std::vector<float>>& x = render_buffer->Block(0);
   std::vector<std::vector<float>>* y = capture;
@@ -205,8 +198,6 @@ void EchoRemoverImpl::ProcessCapture(
       if (gain_change_hangover_ == 0) {
         constexpr int kMaxBlocksPerFrame = 3;
         gain_change_hangover_ = kMaxBlocksPerFrame;
-        RTC_LOG(LS_WARNING)
-            << "Gain change detected at block " << block_counter_;
       } else {
         echo_path_variability.gain_change = false;
       }
@@ -344,8 +335,7 @@ void EchoRemoverImpl::ProcessCapture(
 }
 
 void EchoRemoverImpl::FormLinearFilterOutput(
-    const SubtractorOutput& subtractor_output,
-    rtc::ArrayView<float> output) {
+    const SubtractorOutput& subtractor_output, rtc::ArrayView<float> output) {
   RTC_DCHECK_EQ(subtractor_output.e_main.size(), output.size());
   RTC_DCHECK_EQ(subtractor_output.e_shadow.size(), output.size());
   bool use_main_output = true;

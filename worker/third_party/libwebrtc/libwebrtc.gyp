@@ -230,7 +230,6 @@
       'libwebrtc/rtc_base/checks.h',
       'libwebrtc/rtc_base/copy_on_write_buffer.h',
       'libwebrtc/rtc_base/critical_section.h',
-      'libwebrtc/rtc_base/logging.h',
       'libwebrtc/rtc_base/ref_counter.h',
       'libwebrtc/rtc_base/zero_memory.h',
       'libwebrtc/rtc_base/synchronization/sequence_checker.h',

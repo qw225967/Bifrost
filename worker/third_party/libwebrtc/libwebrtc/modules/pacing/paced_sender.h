@@ -27,6 +27,7 @@
 #include "modules/rtp_rtcp/include/rtp_rtcp_defines.h"
 #include "rtc_base/experiments/field_trial_parser.h"
 #include "rtp_packet.h"
+#include "uv_loop.h"
 
 namespace webrtc {
 
@@ -42,6 +43,7 @@ class PacedSender {
   static const float kDefaultPaceMultiplier;
 
   PacedSender(PacketRouter* packet_router,
+              bifrost::UvLoop* loop,
               const WebRtcKeyValueConfig* field_trials = nullptr);
 
   virtual ~PacedSender() = default;
@@ -99,6 +101,8 @@ class PacedSender {
   void OnPaddingSent(int64_t now_us, size_t bytes_sent);
 
   bool Congested() const;
+
+  bifrost::UvLoop* loop_;
 
   PacketRouter* const packet_router_;
   const std::unique_ptr<FieldTrialBasedConfig> fallback_field_trials_;

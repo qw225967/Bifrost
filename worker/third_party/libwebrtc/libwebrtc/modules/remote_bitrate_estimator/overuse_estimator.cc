@@ -12,13 +12,13 @@
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "modules/remote_bitrate_estimator/overuse_estimator.h"
-#include "modules/remote_bitrate_estimator/include/bwe_defines.h"
-
-#include "Logger.hpp"
 
 #include <math.h>
 #include <string.h>
+
 #include <algorithm>
+
+#include "modules/remote_bitrate_estimator/include/bwe_defines.h"
 
 namespace webrtc {
 
@@ -41,13 +41,9 @@ OveruseEstimator::OveruseEstimator(const OverUseDetectorOptions& options)
          sizeof(process_noise_));
 }
 
-OveruseEstimator::~OveruseEstimator() {
-  ts_delta_hist_.clear();
-}
+OveruseEstimator::~OveruseEstimator() { ts_delta_hist_.clear(); }
 
-void OveruseEstimator::Update(int64_t t_delta,
-                              double ts_delta,
-                              int size_delta,
+void OveruseEstimator::Update(int64_t t_delta, double ts_delta, int size_delta,
                               BandwidthUsage current_hypothesis,
                               int64_t now_ms) {
   const double min_frame_period = UpdateMinFramePeriod(ts_delta);
@@ -108,11 +104,7 @@ void OveruseEstimator::Update(int64_t t_delta,
       E_[0][0] + E_[1][1] >= 0 &&
       E_[0][0] * E_[1][1] - E_[0][1] * E_[1][0] >= 0 && E_[0][0] >= 0;
 
-  MS_ASSERT(positive_semi_definite, "positive_semi_definite is not true");
-
   if (!positive_semi_definite) {
-    MS_ERROR("The over-use estimator's covariance matrix is no longer "
-           "semi-definite.");
   }
 
   slope_ = slope_ + K[0] * residual;
@@ -132,8 +124,7 @@ double OveruseEstimator::UpdateMinFramePeriod(double ts_delta) {
   return min_frame_period;
 }
 
-void OveruseEstimator::UpdateNoiseEstimate(double residual,
-                                           double ts_delta,
+void OveruseEstimator::UpdateNoiseEstimate(double residual, double ts_delta,
                                            bool stable_state) {
   if (!stable_state) {
     return;
