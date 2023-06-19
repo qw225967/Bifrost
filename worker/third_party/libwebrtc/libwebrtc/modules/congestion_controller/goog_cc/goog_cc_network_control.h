@@ -45,7 +45,8 @@ struct GoogCcConfig {
 class GoogCcNetworkController : public NetworkControllerInterface {
  public:
   GoogCcNetworkController(NetworkControllerConfig config,
-                          GoogCcConfig congestion_controller_config);
+                          GoogCcConfig congestion_controller_config,
+                          bifrost::UvLoop* loop);
   ~GoogCcNetworkController() override;
 
   // NetworkControllerInterface
@@ -150,6 +151,8 @@ class GoogCcNetworkController : public NetworkControllerInterface {
   bool previously_in_alr_ = false;
 
   absl::optional<DataSize> current_data_window_;
+
+  bifrost::UvLoop* loop_;
 
   RTC_DISALLOW_IMPLICIT_CONSTRUCTORS(GoogCcNetworkController);
 };

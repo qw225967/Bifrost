@@ -90,7 +90,7 @@ Type FeedbackPacket<FeedbackPs>::rtcpType = Type::PSFB;
 // clang-format on
 
 template <>
-FeedbackPacket<FeedbackPs>* FeedbackPacket<FeedbackPs>::Parse(
+std::shared_ptr<FeedbackPacket<FeedbackPs>> FeedbackPacket<FeedbackPs>::Parse(
     const uint8_t* data, size_t len) {
   if (len < sizeof(CommonHeader) + sizeof(FeedbackPacket::Header)) {
     std::cout
@@ -144,7 +144,7 @@ FeedbackPacket<FeedbackPs>* FeedbackPacket<FeedbackPs>::Parse(
                 << commonHeader->count << "]" << std::endl;
   }
 
-  return packet;
+  return nullptr;
 }
 
 /* Specialization for Rtcp class. */
@@ -172,7 +172,7 @@ Type FeedbackPacket<FeedbackRtp>::rtcpType = Type::RTPFB;
 /* Class methods. */
 
 template <>
-FeedbackPacket<FeedbackRtp>* FeedbackPacket<FeedbackRtp>::Parse(
+std::shared_ptr<FeedbackPacket<FeedbackRtp>> FeedbackPacket<FeedbackRtp>::Parse(
     const uint8_t* data, size_t len) {
   if (len < sizeof(CommonHeader) + sizeof(FeedbackPacket::Header)) {
     std::cout
@@ -184,7 +184,7 @@ FeedbackPacket<FeedbackRtp>* FeedbackPacket<FeedbackRtp>::Parse(
 
   auto* commonHeader =
       reinterpret_cast<CommonHeader*>(const_cast<uint8_t*>(data));
-  FeedbackRtpPacket* packet{nullptr};
+  std::shared_ptr<FeedbackRtpPacket> packet{nullptr};
 
   switch (FeedbackRtp::MessageType(commonHeader->count)) {
     case FeedbackRtp::MessageType::NACK:

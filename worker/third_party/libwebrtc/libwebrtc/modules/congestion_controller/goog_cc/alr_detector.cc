@@ -12,14 +12,13 @@
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "modules/congestion_controller/goog_cc/alr_detector.h"
-#include "rtc_base/numerics/safe_conversions.h"
-
-#include "DepLibUV.hpp"
-#include "Logger.hpp"
 
 #include <absl/memory/memory.h>
+
 #include <cstdint>
 #include <cstdio>
+
+#include "rtc_base/numerics/safe_conversions.h"
 
 namespace webrtc {
 
@@ -40,9 +39,11 @@ absl::optional<AlrExperimentSettings> GetExperimentSettings(
 }
 }  //  namespace
 
-AlrDetector::AlrDetector(const WebRtcKeyValueConfig* key_value_config)
-    : AlrDetector(key_value_config,
-                  GetExperimentSettings(key_value_config)) {}
+AlrDetector::AlrDetector(const WebRtcKeyValueConfig* key_value_config,
+                         bifrost::UvLoop* loop)
+    : AlrDetector(key_value_config, GetExperimentSettings(key_value_config)) {
+  loop_ = loop;
+}
 
 AlrDetector::AlrDetector(
     const WebRtcKeyValueConfig* key_value_config,
@@ -85,20 +86,17 @@ void AlrDetector::OnBytesSent(size_t bytes_sent, int64_t send_time_ms) {
   bool state_changed = false;
   if (alr_budget_.budget_ratio() > start_budget_level_ratio_ &&
       !alr_started_time_ms_) {
-    alr_started_time_ms_.emplace(DepLibUV::GetTimeMsInt64());
+    alr_started_time_ms_.emplace(loop_->get_time_ms_int64());
     state_changed = true;
   } else if (alr_budget_.budget_ratio() < stop_budget_level_ratio_ &&
              alr_started_time_ms_) {
     state_changed = true;
     alr_started_time_ms_.reset();
   }
-
-  if (state_changed)
-    MS_DEBUG_DEV("state changed");
 }
 
 void AlrDetector::SetEstimatedBitrate(int bitrate_bps) {
-  //RTC_DCHECK(bitrate_bps);
+  // RTC_DCHECK(bitrate_bps);
   int target_rate_kbps =
       static_cast<double>(bitrate_bps) * bandwidth_usage_ratio_ / 1000;
   alr_budget_.set_target_rate_kbps(target_rate_kbps);

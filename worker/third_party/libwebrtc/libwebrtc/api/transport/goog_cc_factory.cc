@@ -9,14 +9,18 @@
  */
 
 #include "api/transport/goog_cc_factory.h"
-#include "modules/congestion_controller/goog_cc/goog_cc_network_control.h"
 
 #include <absl/memory/memory.h>
+
 #include <utility>
+
+#include "modules/congestion_controller/goog_cc/goog_cc_network_control.h"
+#include "uv_loop.h"
 
 namespace webrtc {
 GoogCcNetworkControllerFactory::GoogCcNetworkControllerFactory(
-    NetworkStatePredictorFactoryInterface* network_state_predictor_factory) {
+    NetworkStatePredictorFactoryInterface* network_state_predictor_factory,
+    bifrost::UvLoop* loop) {
   factory_config_.network_state_predictor_factory =
       network_state_predictor_factory;
 }
@@ -26,7 +30,8 @@ GoogCcNetworkControllerFactory::GoogCcNetworkControllerFactory(
     : factory_config_(std::move(config)) {}
 
 std::unique_ptr<NetworkControllerInterface>
-GoogCcNetworkControllerFactory::Create(NetworkControllerConfig config) {
+GoogCcNetworkControllerFactory::Create(NetworkControllerConfig config,
+                                       bifrost::UvLoop* loop) {
   GoogCcConfig goog_cc_config;
   goog_cc_config.feedback_only = factory_config_.feedback_only;
   if (factory_config_.network_state_estimator_factory) {
@@ -40,8 +45,8 @@ GoogCcNetworkControllerFactory::Create(NetworkControllerConfig config) {
         factory_config_.network_state_predictor_factory
             ->CreateNetworkStatePredictor();
   }
-  return absl::make_unique<GoogCcNetworkController>(config,
-                                                    std::move(goog_cc_config));
+  return absl::make_unique<GoogCcNetworkController>(
+      config, std::move(goog_cc_config), loop);
 }
 
 TimeDelta GoogCcNetworkControllerFactory::GetProcessInterval() const {

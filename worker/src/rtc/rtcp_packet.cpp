@@ -37,17 +37,15 @@ std::map<Type, std::string> RtcpPacket::type2String =
 
 /* Class methods. */
 
-RtcpPacket* RtcpPacket::Parse(const uint8_t* data, size_t len) {
+std::shared_ptr<RtcpPacket> RtcpPacket::Parse(const uint8_t* data, size_t len) {
   // First, Currently parsing and Last RTCP packets in the compound packet.
-  RtcpPacket* first{nullptr};
-  RtcpPacket* current{nullptr};
-  RtcpPacket* last{nullptr};
+  std::shared_ptr<RtcpPacket> current{nullptr};
 
   while (len > 0u) {
     if (!RtcpPacket::IsRtcp(data, len)) {
       std::cout << "[rtcp packet] data is not a RTCP packet" << std::endl;
 
-      return first;
+      return nullptr;
     }
 
     auto* header =
@@ -59,7 +57,7 @@ RtcpPacket* RtcpPacket::Parse(const uint8_t* data, size_t len) {
                 << len << ", "
                 << "packet len:" << packetLen << "]";
 
-      return first;
+      return nullptr;
     }
 
     switch (Type(header->packetType)) {
@@ -89,7 +87,6 @@ RtcpPacket* RtcpPacket::Parse(const uint8_t* data, size_t len) {
 
       case Type::RTPFB: {
         current = FeedbackRtpPacket::Parse(data, packetLen);
-
         break;
       }
 
@@ -118,21 +115,14 @@ RtcpPacket* RtcpPacket::Parse(const uint8_t* data, size_t len) {
       std::cout << "[rtcp packet] error parsing " << packetType.c_str()
                 << " RtcpPacket" << std::endl;
 
-      return first;
+      return nullptr;
     }
 
     data += packetLen;
     len -= packetLen;
-
-    if (!first)
-      first = current;
-    else
-      last->SetNext(current);
-
-    last = current->GetNext() != nullptr ? current->GetNext() : current;
   }
 
-  return first;
+  return current;
 }
 
 const std::string& RtcpPacket::Type2String(Type type) {

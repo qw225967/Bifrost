@@ -11,11 +11,12 @@
 #ifndef API_TRANSPORT_NETWORK_CONTROL_H_
 #define API_TRANSPORT_NETWORK_CONTROL_H_
 
+#include <stdint.h>
+
+#include <memory>
+
 #include "api/transport/network_types.h"
 #include "api/transport/webrtc_key_value_config.h"
-
-#include <stdint.h>
-#include <memory>
 
 namespace webrtc {
 // TODO(srte): Remove this forward declaration when this is in api.
@@ -86,7 +87,7 @@ class NetworkControllerInterface {
   // Called with network state estimate updates.
   virtual NetworkControlUpdate OnNetworkStateEstimate(NetworkStateEstimate) = 0;
 
-  virtual void SetSendSideBandwidthMinBitrate(int minBitrate){}
+  virtual void SetSendSideBandwidthMinBitrate(int minBitrate) {}
 
   virtual void ChangeWindowSize(size_t size) {}
 
@@ -104,7 +105,7 @@ class NetworkControllerFactoryInterface {
   // Used to create a new network controller, requires an observer to be
   // provided to handle callbacks.
   virtual std::unique_ptr<NetworkControllerInterface> Create(
-      NetworkControllerConfig config) = 0;
+      NetworkControllerConfig config, bifrost::UvLoop* loop) = 0;
   // Returns the interval by which the network controller expects
   // OnProcessInterval calls.
   virtual TimeDelta GetProcessInterval() const = 0;

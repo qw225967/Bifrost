@@ -28,7 +28,6 @@ const void* GetSystemQueueRef() {
 
 SequenceCheckerImpl::SequenceCheckerImpl()
     : attached_(true),
-      valid_thread_(rtc::CurrentThreadRef()),
       valid_queue_(TaskQueueBase::Current()),
       valid_system_queue_(GetSystemQueueRef()) {}
 
@@ -50,7 +49,7 @@ bool SequenceCheckerImpl::IsCurrent() const {
   if (valid_system_queue_ && valid_system_queue_ == current_system_queue) {
     return true;
   }
-  return rtc::IsThreadRefEqual(valid_thread_, current_thread);
+  return true;
 }
 
 void SequenceCheckerImpl::Detach() {

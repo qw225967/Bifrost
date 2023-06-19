@@ -22,11 +22,15 @@ class Settings {
   // Struct holding the configuration.
   struct Configuration {
     Configuration(std::string name = "default", std::string ip = "127.0.0.1",
-                  uint16_t port = 9000)
-        : userName(std::move(name)), rtcIp(std::move(ip)), rtcPort(port) {}
+                  uint16_t port = 9001, uint32_t ssrc = 12341234)
+        : userName(std::move(name)),
+          rtcIp(std::move(ip)),
+          rtcPort(port),
+          ssrc(ssrc) {}
     std::string userName;
     uint16_t rtcPort;
     std::string rtcIp;
+    uint32_t ssrc;
   };
 
  public:

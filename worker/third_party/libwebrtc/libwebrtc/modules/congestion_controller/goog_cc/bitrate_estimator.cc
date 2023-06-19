@@ -12,14 +12,14 @@
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "modules/congestion_controller/goog_cc/bitrate_estimator.h"
-#include "api/units/data_rate.h"
-
-#include "Logger.hpp"
 
 #include <stdio.h>
+
 #include <algorithm>
 #include <cmath>
 #include <string>
+
+#include "api/units/data_rate.h"
 
 namespace webrtc {
 
@@ -35,13 +35,9 @@ const char kBweThroughputWindowConfig[] = "WebRTC-BweThroughputWindowConfig";
 
 BitrateEstimator::BitrateEstimator(const WebRtcKeyValueConfig* key_value_config)
     : sum_(0),
-      initial_window_ms_("initial_window_ms",
-                         kInitialRateWindowMs,
-                         kMinRateWindowMs,
-                         kMaxRateWindowMs),
-      noninitial_window_ms_("window_ms",
-                            kRateWindowMs,
-                            kMinRateWindowMs,
+      initial_window_ms_("initial_window_ms", kInitialRateWindowMs,
+                         kMinRateWindowMs, kMaxRateWindowMs),
+      noninitial_window_ms_("window_ms", kRateWindowMs, kMinRateWindowMs,
                             kMaxRateWindowMs),
       uncertainty_scale_("scale", 10.0),
       uncertainty_scale_in_alr_("scale_alr", 10.0),
@@ -64,12 +60,10 @@ void BitrateEstimator::Update(Timestamp at_time, DataSize amount, bool in_alr) {
   int rate_window_ms = noninitial_window_ms_;
   // We use a larger window at the beginning to get a more stable sample that
   // we can use to initialize the estimate.
-  if (bitrate_estimate_kbps_ < 0.f)
-    rate_window_ms = initial_window_ms_;
+  if (bitrate_estimate_kbps_ < 0.f) rate_window_ms = initial_window_ms_;
   float bitrate_sample_kbps =
       UpdateWindow(at_time.ms(), amount.bytes(), rate_window_ms);
-  if (bitrate_sample_kbps < 0.0f)
-    return;
+  if (bitrate_sample_kbps < 0.0f) return;
   if (bitrate_estimate_kbps_ < 0.0f) {
     // This is the very first sample we get. Use it to initialize the estimate.
     bitrate_estimate_kbps_ = bitrate_sample_kbps;
@@ -103,13 +97,9 @@ void BitrateEstimator::Update(Timestamp at_time, DataSize amount, bool in_alr) {
       std::max(bitrate_estimate_kbps_, estimate_floor_.Get().kbps<float>());
   bitrate_estimate_var_ = sample_var * pred_bitrate_estimate_var /
                           (sample_var + pred_bitrate_estimate_var);
-  MS_DEBUG_DEV(
-    "acknowledged_bitrate %" PRIu64", %f",
-    at_time.ms(), bitrate_estimate_kbps_ * 1000);
 }
 
-float BitrateEstimator::UpdateWindow(int64_t now_ms,
-                                     int bytes,
+float BitrateEstimator::UpdateWindow(int64_t now_ms, int bytes,
                                      int rate_window_ms) {
   // Reset if time moves backwards.
   if (now_ms < prev_time_ms_) {
@@ -137,8 +127,7 @@ float BitrateEstimator::UpdateWindow(int64_t now_ms,
 }
 
 absl::optional<DataRate> BitrateEstimator::bitrate() const {
-  if (bitrate_estimate_kbps_ < 0.f)
-    return absl::nullopt;
+  if (bitrate_estimate_kbps_ < 0.f) return absl::nullopt;
   return DataRate::kbps(bitrate_estimate_kbps_);
 }
 

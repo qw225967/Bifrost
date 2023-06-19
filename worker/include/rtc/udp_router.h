@@ -15,32 +15,35 @@
 #include <unordered_map>
 #include <vector>
 
+#include "common.h"
 #include "port_manager.h"
 #include "udp_socket.h"
 
 namespace bifrost {
-
 class UdpRouter : public UdpSocket {
  public:
   class UdpRouterObServer {
    public:
-    virtual void OnUdpRouterPacketReceived(
-        bifrost::UdpRouter* socket, const uint8_t* data, size_t len,
-        const struct sockaddr* remoteAddr) = 0;
+    virtual void OnUdpRouterRtpPacketReceived(
+        bifrost::UdpRouter* socket, RtpPacketPtr rtp_packet,
+        const struct sockaddr* remote_addr) = 0;
+    virtual void OnUdpRouterRtcpPacketReceived(
+        bifrost::UdpRouter* socket, RtcpPacketPtr rtcp_packet,
+        const struct sockaddr* remote_addr) = 0;
   };
   typedef std::shared_ptr<UdpRouterObServer> UdpRouterObServerPtr;
 
+ public:
   /* Instance methods. */
   UdpRouter(uv_loop_t* loop) : UdpSocket(PortManager::BindUdp(loop)) {}
   UdpRouter(Settings::Configuration config, uv_loop_t* loop)
       : UdpSocket(PortManager::BindUdp(std::move(config), loop)) {}
-
- public:
   UdpRouter(UdpRouter& other) = delete;
   void operator=(const UdpRouter&) = delete;
+  ~UdpRouter() override;
 
  public:
-  ~UdpRouter() override;
+  void SetRemoteTransport(uint32_t ssrc, UdpRouterObServerPtr observer);
 
   /* Pure virtual methods inherited from ::UdpRouter. */
  public:
@@ -49,7 +52,7 @@ class UdpRouter : public UdpSocket {
   //  RTC::RTCP::Packet* RtcpDataReceived(const uint8_t* data, size_t len);
   //  RTC::RtpPacket* RtpDataReceived(const uint8_t* data, size_t len);
  private:
-  UdpRouterObServerPtr observer;
+  std::unordered_map<uint32_t, UdpRouterObServerPtr> observers;
 };
 }  // namespace bifrost
 

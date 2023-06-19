@@ -28,6 +28,7 @@
 #include "rtc_base/constructor_magic.h"
 #include "rtc_base/rate_statistics.h"
 #include "rtp_packet.h"
+#include "uv_loop.h"
 
 namespace webrtc {
 
@@ -71,7 +72,7 @@ struct Cluster {
 
 class RemoteBitrateEstimatorAbsSendTime : public RemoteBitrateEstimator {
  public:
-  RemoteBitrateEstimatorAbsSendTime(RemoteBitrateObserver* observer);
+  RemoteBitrateEstimatorAbsSendTime(RemoteBitrateObserver* observer, bifrost::UvLoop* loop);
   ~RemoteBitrateEstimatorAbsSendTime();
 
   void IncomingPacket(int64_t arrivalTimeMs, size_t payloadSize,
@@ -128,6 +129,8 @@ class RemoteBitrateEstimatorAbsSendTime : public RemoteBitrateEstimator {
 
   Ssrcs ssrcs_;
   AimdRateControl remote_rate_;
+
+  bifrost::UvLoop* loop_;
 
   RTC_DISALLOW_IMPLICIT_CONSTRUCTORS(RemoteBitrateEstimatorAbsSendTime);
 };

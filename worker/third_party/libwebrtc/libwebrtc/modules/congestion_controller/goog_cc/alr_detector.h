@@ -11,15 +11,15 @@
 #ifndef MODULES_CONGESTION_CONTROLLER_GOOG_CC_ALR_DETECTOR_H_
 #define MODULES_CONGESTION_CONTROLLER_GOOG_CC_ALR_DETECTOR_H_
 
-#include "api/transport/webrtc_key_value_config.h"
-#include "modules/pacing/interval_budget.h"
-#include "rtc_base/experiments/alr_experiment.h"
-#include "rtc_base/experiments/field_trial_units.h"
-
 #include <absl/types/optional.h>
 #include <stddef.h>
 #include <stdint.h>
 
+#include "api/transport/webrtc_key_value_config.h"
+#include "modules/pacing/interval_budget.h"
+#include "rtc_base/experiments/alr_experiment.h"
+#include "rtc_base/experiments/field_trial_units.h"
+#include "uv_loop.h"
 
 namespace webrtc {
 
@@ -32,7 +32,8 @@ namespace webrtc {
 // Note: This class is not thread-safe.
 class AlrDetector {
  public:
-  explicit AlrDetector(const WebRtcKeyValueConfig* key_value_config);
+  explicit AlrDetector(const WebRtcKeyValueConfig* key_value_config,
+                       bifrost::UvLoop* loop);
   ~AlrDetector();
 
   void OnBytesSent(size_t bytes_sent, int64_t send_time_ms);
@@ -61,14 +62,16 @@ class AlrDetector {
               absl::optional<AlrExperimentSettings> experiment_settings);
 
   friend class GoogCcStatePrinter;
-  FieldTrialParameter<double>  bandwidth_usage_ratio_;
-  FieldTrialParameter<double>  start_budget_level_ratio_;
-  FieldTrialParameter<double>  stop_budget_level_ratio_;
+  FieldTrialParameter<double> bandwidth_usage_ratio_;
+  FieldTrialParameter<double> start_budget_level_ratio_;
+  FieldTrialParameter<double> stop_budget_level_ratio_;
 
   absl::optional<int64_t> last_send_time_ms_;
 
   IntervalBudget alr_budget_;
   absl::optional<int64_t> alr_started_time_ms_;
+
+  bifrost::UvLoop* loop_;
 };
 }  // namespace webrtc
 

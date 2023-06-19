@@ -48,4 +48,11 @@ typedef SSIZE_T ssize_t;
 #define CONFIG_FILE_PATH_STRING "../conf/config.json"
 #define LOCAL_DATA_FILE_PATH_STRING "../source/test.h264"
 
+namespace bifrost {
+class RtpPacket;
+typedef std::shared_ptr<RtpPacket> RtpPacketPtr;
+class RtcpPacket;
+typedef std::shared_ptr<RtcpPacket> RtcpPacketPtr;
+}  // namespace bifrost
+
 #endif  // WORKER_COMMON_H

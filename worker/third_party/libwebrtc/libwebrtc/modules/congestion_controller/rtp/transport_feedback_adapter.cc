@@ -12,18 +12,18 @@
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "modules/congestion_controller/rtp/transport_feedback_adapter.h"
-#include "api/units/timestamp.h"
-#include "modules/rtp_rtcp/include/rtp_rtcp_defines.h"
-#include "system_wrappers/source/field_trial.h"
-#include "mp_helpers.h"
-
-#include "Logger.hpp"
-#include "RTC/RTCP/FeedbackRtpTransport.hpp"
 
 #include <stdlib.h>
+
 #include <algorithm>
 #include <cmath>
 #include <utility>
+
+#include "api/units/timestamp.h"
+#include "modules/rtp_rtcp/include/rtp_rtcp_defines.h"
+#include "mp_helpers.h"
+#include "rtcp_tcc.h"
+#include "system_wrappers/source/field_trial.h"
 
 namespace webrtc {
 namespace {
@@ -57,8 +57,7 @@ TransportFeedbackAdapter::TransportFeedbackAdapter()
       local_net_id_(0),
       remote_net_id_(0) {}
 
-TransportFeedbackAdapter::~TransportFeedbackAdapter() {
-}
+TransportFeedbackAdapter::~TransportFeedbackAdapter() {}
 
 void TransportFeedbackAdapter::AddPacket(const RtpPacketSendInfo& packet_info,
                                          size_t overhead_bytes,
@@ -74,16 +73,23 @@ void TransportFeedbackAdapter::AddPacket(const RtpPacketSendInfo& packet_info,
     }
 
     // MS_NOTE: TODO remove.
-    // MS_DUMP("packet_feedback.arrival_time_ms: %" PRIi64, packet_feedback.arrival_time_ms);
-    // MS_DUMP("packet_feedback.send_time_ms: %" PRIi64, packet_feedback.send_time_ms);
-    // MS_DUMP("packet_feedback.sequence_number: %" PRIu16, packet_feedback.sequence_number);
-    // MS_DUMP("packet_feedback.long_sequence_number: %" PRIi64, packet_feedback.long_sequence_number);
-    // MS_DUMP("packet_feedback.payload_size: %zu", packet_feedback.payload_size);
-    // MS_DUMP("packet_feedback.unacknowledged_data: %zu", packet_feedback.unacknowledged_data);
-    // MS_DUMP("packet_feedback.local_net_id: %" PRIu16, packet_feedback.local_net_id);
-    // MS_DUMP("packet_feedback.remote_net_id: %" PRIu16, packet_feedback.remote_net_id);
-    // MS_DUMP("packet_feedback.ssrc: %" PRIu32, packet_feedback.ssrc.value());
-    // MS_DUMP("packet_feedback.rtp_sequence_number: %" PRIu16, packet_feedback.rtp_sequence_number);
+    // MS_DUMP("packet_feedback.arrival_time_ms: %" PRIi64,
+    // packet_feedback.arrival_time_ms); MS_DUMP("packet_feedback.send_time_ms:
+    // %" PRIi64, packet_feedback.send_time_ms);
+    // MS_DUMP("packet_feedback.sequence_number: %" PRIu16,
+    // packet_feedback.sequence_number);
+    // MS_DUMP("packet_feedback.long_sequence_number: %" PRIi64,
+    // packet_feedback.long_sequence_number);
+    // MS_DUMP("packet_feedback.payload_size: %zu",
+    // packet_feedback.payload_size);
+    // MS_DUMP("packet_feedback.unacknowledged_data: %zu",
+    // packet_feedback.unacknowledged_data);
+    // MS_DUMP("packet_feedback.local_net_id: %" PRIu16,
+    // packet_feedback.local_net_id); MS_DUMP("packet_feedback.remote_net_id: %"
+    // PRIu16, packet_feedback.remote_net_id); MS_DUMP("packet_feedback.ssrc: %"
+    // PRIu32, packet_feedback.ssrc.value());
+    // MS_DUMP("packet_feedback.rtp_sequence_number: %" PRIu16,
+    // packet_feedback.rtp_sequence_number);
 
     send_time_history_.RemoveOld(creation_time.ms());
     send_time_history_.AddNewPacket(std::move(packet_feedback));
@@ -127,7 +133,7 @@ absl::optional<SentPacket> TransportFeedbackAdapter::ProcessSentPacket(
 
 absl::optional<TransportPacketsFeedback>
 TransportFeedbackAdapter::ProcessTransportFeedback(
-    const RTC::RTCP::FeedbackRtpTransportPacket& feedback,
+    const bifrost::FeedbackRtpTransportPacket& feedback,
     Timestamp feedback_receive_time) {
   DataSize prior_in_flight = GetOutstandingData();
 
@@ -140,8 +146,7 @@ TransportFeedbackAdapter::ProcessTransportFeedback(
   }
 
   std::vector<PacketFeedback> feedback_vector = last_packet_feedback_vector_;
-  if (feedback_vector.empty())
-    return absl::nullopt;
+  if (feedback_vector.empty()) return absl::nullopt;
 
   TransportPacketsFeedback msg;
   for (const PacketFeedback& rtp_feedback : feedback_vector) {
@@ -172,7 +177,7 @@ DataSize TransportFeedbackAdapter::GetOutstandingData() const {
 }
 
 std::vector<PacketFeedback> TransportFeedbackAdapter::GetPacketFeedbackVector(
-    const RTC::RTCP::FeedbackRtpTransportPacket& feedback,
+    const bifrost::FeedbackRtpTransportPacket& feedback,
     Timestamp feedback_time) {
   // Add timestamp deltas to a local time base selected on first packet arrival.
   // This won't be the true time base, but makes it easier to manually inspect
@@ -180,15 +185,15 @@ std::vector<PacketFeedback> TransportFeedbackAdapter::GetPacketFeedbackVector(
   if (last_timestamp_us_ == kNoTimestamp) {
     current_offset_ms_ = feedback_time.ms();
   } else {
-    current_offset_ms_ +=
-      mp_helpers::FeedbackRtpTransport::GetBaseDeltaUs(&feedback, last_timestamp_us_) / 1000;
+    current_offset_ms_ += mp_helpers::FeedbackRtpTransport::GetBaseDeltaUs(
+                              &feedback, last_timestamp_us_) /
+                          1000;
   }
   last_timestamp_us_ =
-    mp_helpers::FeedbackRtpTransport::GetBaseTimeUs(&feedback);
+      mp_helpers::FeedbackRtpTransport::GetBaseTimeUs(&feedback);
 
   std::vector<PacketFeedback> packet_feedback_vector;
   if (feedback.GetPacketStatusCount() == 0) {
-    MS_WARN_DEV("empty transport feedback packet received");
     return packet_feedback_vector;
   }
   packet_feedback_vector.reserve(feedback.GetPacketStatusCount());
@@ -197,7 +202,8 @@ std::vector<PacketFeedback> TransportFeedbackAdapter::GetPacketFeedbackVector(
     int64_t offset_us = 0;
     int64_t timestamp_ms = 0;
     uint16_t seq_num = feedback.GetBaseSequenceNumber();
-    for (const auto& packet : mp_helpers::FeedbackRtpTransport::GetReceivedPackets(&feedback)) {
+    for (const auto& packet :
+         mp_helpers::FeedbackRtpTransport::GetReceivedPackets(&feedback)) {
       // Insert into the vector those unreceived packets which precede this
       // iteration's received packet.
       for (; seq_num != packet.sequence_number(); ++seq_num) {
@@ -226,10 +232,6 @@ std::vector<PacketFeedback> TransportFeedbackAdapter::GetPacketFeedbackVector(
     }
 
     if (failed_lookups > 0) {
-      MS_WARN_DEV("failed to lookup send time for %zu"
-                  " packet%s, send time history too small?",
-                  failed_lookups,
-                  (failed_lookups > 1 ? "s" : ""));
     }
   }
   return packet_feedback_vector;

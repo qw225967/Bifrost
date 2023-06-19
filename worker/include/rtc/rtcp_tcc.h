@@ -169,7 +169,8 @@ class FeedbackRtpTransportPacket : public FeedbackRtpPacket {
   static int16_t maxPacketDelta;
 
  public:
-  static FeedbackRtpTransportPacket* Parse(const uint8_t* data, size_t len);
+  static std::shared_ptr<FeedbackRtpTransportPacket> Parse(const uint8_t* data,
+                                                           size_t len);
 
  private:
   static std::map<Status, std::string> status2String;

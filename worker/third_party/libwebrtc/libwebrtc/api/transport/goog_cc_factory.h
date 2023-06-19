@@ -11,10 +11,10 @@
 #ifndef API_TRANSPORT_GOOG_CC_FACTORY_H_
 #define API_TRANSPORT_GOOG_CC_FACTORY_H_
 
+#include <memory>
+
 #include "api/network_state_predictor.h"
 #include "api/transport/network_control.h"
-
-#include <memory>
 
 namespace webrtc {
 
@@ -31,11 +31,12 @@ class GoogCcNetworkControllerFactory
  public:
   GoogCcNetworkControllerFactory() = default;
   explicit GoogCcNetworkControllerFactory(
-      NetworkStatePredictorFactoryInterface* network_state_predictor_factory);
+      NetworkStatePredictorFactoryInterface* network_state_predictor_factory,
+      bifrost::UvLoop* loop);
 
   explicit GoogCcNetworkControllerFactory(GoogCcFactoryConfig config);
   std::unique_ptr<NetworkControllerInterface> Create(
-      NetworkControllerConfig config) override;
+      NetworkControllerConfig config, bifrost::UvLoop* loop) override;
   TimeDelta GetProcessInterval() const override;
 
  protected:

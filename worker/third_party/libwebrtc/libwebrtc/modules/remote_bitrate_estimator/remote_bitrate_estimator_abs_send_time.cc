@@ -81,10 +81,11 @@ void RemoteBitrateEstimatorAbsSendTime::AddCluster(std::list<Cluster>* clusters,
 }
 
 RemoteBitrateEstimatorAbsSendTime::RemoteBitrateEstimatorAbsSendTime(
-    RemoteBitrateObserver* observer)
+    RemoteBitrateObserver* observer, bifrost::UvLoop* loop)
     : observer_(observer),
       inter_arrival_(),
       estimator_(),
+      loop_(loop),
       detector_(&field_trials_),
       incoming_bitrate_(kBitrateWindowMs, 8000),
       incoming_bitrate_initialized_(false),
@@ -222,8 +223,8 @@ void RemoteBitrateEstimatorAbsSendTime::IncomingPacketInfo(
   uint32_t timestamp = send_time_24bits << kAbsSendTimeInterArrivalUpshift;
   int64_t send_time_ms = static_cast<int64_t>(timestamp) * kTimestampToMs;
 
-  //  int64_t now_ms = DepLibUV::GetTimeMsInt64();
-  int64_t now_ms = 0;
+  int64_t now_ms = loop_->get_time_ms_int64();  // frq test
+
   // TODO(holmer): SSRCs are only needed for REMB, should be broken out from
   // here.
 

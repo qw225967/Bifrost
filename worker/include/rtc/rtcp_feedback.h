@@ -24,7 +24,8 @@ class FeedbackPacket : public RtcpPacket {
 
  public:
   static Type rtcpType;
-  static FeedbackPacket<T>* Parse(const uint8_t* data, size_t len);
+  static std::shared_ptr<FeedbackPacket<T>> Parse(const uint8_t* data,
+                                                  size_t len);
   static const std::string& MessageType2String(typename T::MessageType type);
 
  private:

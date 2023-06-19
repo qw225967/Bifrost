@@ -110,6 +110,8 @@ class Byte {
    * Getters below get value in Host Byte Order.
    * Setters below set value in Network Byte Order.
    */
+  static std::string bytes_to_hex(const uint8_t *buf, std::size_t len, std::size_t num_per_line=8);
+
   static uint8_t get_1_byte(const uint8_t* data, size_t i) { return data[i]; }
 
   static uint16_t get_2_bytes(const uint8_t* data, size_t i) {

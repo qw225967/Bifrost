@@ -12,12 +12,11 @@
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "modules/congestion_controller/rtp/send_time_history.h"
-#include "modules/rtp_rtcp/include/rtp_rtcp_defines.h"
-
-#include "Logger.hpp"
 
 #include <algorithm>
 #include <utility>
+
+#include "modules/rtp_rtcp/include/rtp_rtcp_defines.h"
 
 namespace webrtc {
 
@@ -48,7 +47,6 @@ void SendTimeHistory::AddNewPacket(PacketFeedback packet) {
 
 void SendTimeHistory::AddUntracked(size_t packet_size, int64_t send_time_ms) {
   if (send_time_ms < last_send_time_ms_) {
-    MS_WARN_TAG(bwe, "ignoring untracked data for out of order packet");
   }
   pending_untracked_size_ += packet_size;
   last_untracked_send_time_ms_ =
@@ -59,19 +57,13 @@ SendTimeHistory::Status SendTimeHistory::OnSentPacket(uint16_t sequence_number,
                                                       int64_t send_time_ms) {
   int64_t unwrapped_seq_num = seq_num_unwrapper_.Unwrap(sequence_number);
   auto it = history_.find(unwrapped_seq_num);
-  if (it == history_.end())
-    return Status::kNotAdded;
+  if (it == history_.end()) return Status::kNotAdded;
   bool packet_retransmit = it->second.send_time_ms >= 0;
   it->second.send_time_ms = send_time_ms;
   last_send_time_ms_ = std::max(last_send_time_ms_, send_time_ms);
-  if (!packet_retransmit)
-    AddPacketBytes(it->second);
+  if (!packet_retransmit) AddPacketBytes(it->second);
   if (pending_untracked_size_ > 0) {
     if (send_time_ms < last_untracked_send_time_ms_) {
-      MS_WARN_TAG(bwe,
-          "appending acknowledged data for out of order packet."
-          " (Diff:%" PRIi64 " ms)",
-          last_untracked_send_time_ms_ - send_time_ms);
     }
     it->second.unacknowledged_data += pending_untracked_size_;
     pending_untracked_size_ = 0;
@@ -85,8 +77,7 @@ absl::optional<PacketFeedback> SendTimeHistory::GetPacket(
       seq_num_unwrapper_.UnwrapWithoutUpdate(sequence_number);
   absl::optional<PacketFeedback> optional_feedback;
   auto it = history_.find(unwrapped_seq_num);
-  if (it != history_.end())
-    optional_feedback.emplace(it->second);
+  if (it != history_.end()) optional_feedback.emplace(it->second);
   return optional_feedback;
 }
 
@@ -98,16 +89,14 @@ bool SendTimeHistory::GetFeedback(PacketFeedback* packet_feedback,
   UpdateAckedSeqNum(unwrapped_seq_num);
   // RTC_DCHECK_GE(*last_ack_seq_num_, 0);
   auto it = history_.find(unwrapped_seq_num);
-  if (it == history_.end())
-    return false;
+  if (it == history_.end()) return false;
 
   // Save arrival_time not to overwrite it.
   int64_t arrival_time_ms = packet_feedback->arrival_time_ms;
   *packet_feedback = it->second;
   packet_feedback->arrival_time_ms = arrival_time_ms;
 
-  if (remove)
-    history_.erase(it);
+  if (remove) history_.erase(it);
   return true;
 }
 
@@ -122,8 +111,7 @@ DataSize SendTimeHistory::GetOutstandingData(uint16_t local_net_id,
 }
 
 absl::optional<int64_t> SendTimeHistory::GetFirstUnackedSendTime() const {
-  if (!last_ack_seq_num_)
-    return absl::nullopt;
+  if (!last_ack_seq_num_) return absl::nullopt;
   auto it = history_.find(*last_ack_seq_num_);
   if (it == history_.end() ||
       it->second.send_time_ms == PacketFeedback::kNoSendTime)
@@ -151,18 +139,15 @@ void SendTimeHistory::RemovePacketBytes(const PacketFeedback& packet) {
   auto it = in_flight_bytes_.find({packet.local_net_id, packet.remote_net_id});
   if (it != in_flight_bytes_.end()) {
     it->second -= packet.payload_size;
-    if (it->second == 0)
-      in_flight_bytes_.erase(it);
+    if (it->second == 0) in_flight_bytes_.erase(it);
   }
 }
 
 void SendTimeHistory::UpdateAckedSeqNum(int64_t acked_seq_num) {
-  if (last_ack_seq_num_ && *last_ack_seq_num_ >= acked_seq_num)
-    return;
+  if (last_ack_seq_num_ && *last_ack_seq_num_ >= acked_seq_num) return;
 
   auto unacked_it = history_.begin();
-  if (last_ack_seq_num_)
-    unacked_it = history_.lower_bound(*last_ack_seq_num_);
+  if (last_ack_seq_num_) unacked_it = history_.lower_bound(*last_ack_seq_num_);
 
   auto newly_acked_end = history_.upper_bound(acked_seq_num);
   for (; unacked_it != newly_acked_end; ++unacked_it) {

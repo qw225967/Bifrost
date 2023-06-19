@@ -72,7 +72,7 @@ class RtcpPacket {
             );
     // clang-format on
   }
-  static RtcpPacket* Parse(const uint8_t* data, size_t len);
+  static std::shared_ptr<RtcpPacket> Parse(const uint8_t* data, size_t len);
   static const std::string& Type2String(Type type);
 
  private:

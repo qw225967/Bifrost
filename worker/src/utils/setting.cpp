@@ -142,6 +142,7 @@ void Settings::AnalysisConfigurationFile(std::string config_path) {
     std::string server_ip;
     std::string server_name;
     uint16_t server_port;
+    uint32_t server_ssrc;
     // name
     auto name_iter = server_iter->find("userName");
     if (name_iter == server_iter->end()) {
@@ -166,7 +167,16 @@ void Settings::AnalysisConfigurationFile(std::string config_path) {
       server_port = port_iter->get<uint16_t>();
     }
 
-    Configuration server_config(server_name, server_ip, server_port);
+    // ssrc
+    auto ssrc_iter = server_iter->find("ssrc");
+    if (ssrc_iter == server_iter->end()) {
+      std::cout << "[setting] server config can not find ssrc";
+    } else {
+      server_ssrc = ssrc_iter->get<uint32_t>();
+    }
+
+    Configuration server_config(server_name, server_ip, server_port,
+                                server_ssrc);
     server_configuration_ = server_config;
   }
 
@@ -174,6 +184,7 @@ void Settings::AnalysisConfigurationFile(std::string config_path) {
     std::string client_ip;
     std::string client_name;
     uint16_t client_port;
+    uint32_t server_ssrc;
     // name
     auto name_iter = client.find("userName");
     if (name_iter == client.end()) {
@@ -198,7 +209,16 @@ void Settings::AnalysisConfigurationFile(std::string config_path) {
       client_port = port_iter->get<uint16_t>();
     }
 
-    Configuration client_config(client_name, client_ip, client_port);
+    // ssrc
+    auto ssrc_iter = client.find("ssrc");
+    if (ssrc_iter == client.end()) {
+      std::cout << "[setting] server config can not find ssrc";
+    } else {
+      server_ssrc = ssrc_iter->get<uint32_t>();
+    }
+
+    Configuration client_config(client_name, client_ip, client_port,
+                                server_ssrc);
     client_configuration_map_[client_name] = client_config;
   }
 }

@@ -52,14 +52,11 @@ class OldStyleEncodedFrame final : public AudioDecoder::EncodedAudioFrame {
 
 }  // namespace
 
-bool AudioDecoder::EncodedAudioFrame::IsDtxPacket() const {
-  return false;
-}
+bool AudioDecoder::EncodedAudioFrame::IsDtxPacket() const { return false; }
 
 AudioDecoder::ParseResult::ParseResult() = default;
 AudioDecoder::ParseResult::ParseResult(ParseResult&& b) = default;
-AudioDecoder::ParseResult::ParseResult(uint32_t timestamp,
-                                       int priority,
+AudioDecoder::ParseResult::ParseResult(uint32_t timestamp, int priority,
                                        std::unique_ptr<EncodedAudioFrame> frame)
     : timestamp(timestamp), priority(priority), frame(std::move(frame)) {
   RTC_DCHECK_GE(priority, 0);
@@ -71,8 +68,7 @@ AudioDecoder::ParseResult& AudioDecoder::ParseResult::operator=(
     ParseResult&& b) = default;
 
 std::vector<AudioDecoder::ParseResult> AudioDecoder::ParsePayload(
-    rtc::Buffer&& payload,
-    uint32_t timestamp) {
+    rtc::Buffer&& payload, uint32_t timestamp) {
   std::vector<ParseResult> results;
   std::unique_ptr<EncodedAudioFrame> frame(
       new OldStyleEncodedFrame(this, std::move(payload)));
@@ -80,13 +76,9 @@ std::vector<AudioDecoder::ParseResult> AudioDecoder::ParsePayload(
   return results;
 }
 
-int AudioDecoder::Decode(const uint8_t* encoded,
-                         size_t encoded_len,
-                         int sample_rate_hz,
-                         size_t max_decoded_bytes,
-                         int16_t* decoded,
-                         SpeechType* speech_type) {
-  TRACE_EVENT0("webrtc", "AudioDecoder::Decode");
+int AudioDecoder::Decode(const uint8_t* encoded, size_t encoded_len,
+                         int sample_rate_hz, size_t max_decoded_bytes,
+                         int16_t* decoded, SpeechType* speech_type) {
   rtc::MsanCheckInitialized(rtc::MakeArrayView(encoded, encoded_len));
   int duration = PacketDuration(encoded, encoded_len);
   if (duration >= 0 &&
@@ -97,13 +89,9 @@ int AudioDecoder::Decode(const uint8_t* encoded,
                         speech_type);
 }
 
-int AudioDecoder::DecodeRedundant(const uint8_t* encoded,
-                                  size_t encoded_len,
-                                  int sample_rate_hz,
-                                  size_t max_decoded_bytes,
-                                  int16_t* decoded,
-                                  SpeechType* speech_type) {
-  TRACE_EVENT0("webrtc", "AudioDecoder::DecodeRedundant");
+int AudioDecoder::DecodeRedundant(const uint8_t* encoded, size_t encoded_len,
+                                  int sample_rate_hz, size_t max_decoded_bytes,
+                                  int16_t* decoded, SpeechType* speech_type) {
   rtc::MsanCheckInitialized(rtc::MakeArrayView(encoded, encoded_len));
   int duration = PacketDurationRedundant(encoded, encoded_len);
   if (duration >= 0 &&
@@ -116,16 +104,13 @@ int AudioDecoder::DecodeRedundant(const uint8_t* encoded,
 
 int AudioDecoder::DecodeRedundantInternal(const uint8_t* encoded,
                                           size_t encoded_len,
-                                          int sample_rate_hz,
-                                          int16_t* decoded,
+                                          int sample_rate_hz, int16_t* decoded,
                                           SpeechType* speech_type) {
   return DecodeInternal(encoded, encoded_len, sample_rate_hz, decoded,
                         speech_type);
 }
 
-bool AudioDecoder::HasDecodePlc() const {
-  return false;
-}
+bool AudioDecoder::HasDecodePlc() const { return false; }
 
 size_t AudioDecoder::DecodePlc(size_t num_frames, int16_t* decoded) {
   return 0;
@@ -135,9 +120,7 @@ size_t AudioDecoder::DecodePlc(size_t num_frames, int16_t* decoded) {
 void AudioDecoder::GeneratePlc(size_t /*requested_samples_per_channel*/,
                                rtc::BufferT<int16_t>* /*concealment_audio*/) {}
 
-int AudioDecoder::ErrorCode() {
-  return 0;
-}
+int AudioDecoder::ErrorCode() { return 0; }
 
 int AudioDecoder::PacketDuration(const uint8_t* encoded,
                                  size_t encoded_len) const {

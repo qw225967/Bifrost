@@ -42,9 +42,12 @@ class Transport : public UvTimer::Listener,
   void OnTimer(UvTimer* timer) override;
 
   // UdpRouterObServer
-  void OnUdpRouterPacketReceived(bifrost::UdpRouter* socket,
-                                 const uint8_t* data, size_t len,
-                                 const struct sockaddr* remoteAddr) override;
+  void OnUdpRouterRtpPacketReceived(
+      bifrost::UdpRouter* socket, RtpPacketPtr rtp_packet,
+      const struct sockaddr* remote_addr) override;
+  void OnUdpRouterRtcpPacketReceived(
+      bifrost::UdpRouter* socket, RtcpPacketPtr rtcp_packet,
+      const struct sockaddr* remote_addr) override;
 
   // TransportCongestionControlClient::Observer
   void OnTransportCongestionControlClientBitrates(
@@ -60,6 +63,10 @@ class Transport : public UvTimer::Listener,
       RtcpPacket* packet) override {}
 
   void Run();
+
+  void RunDataProducer();
+
+  void SetRemoteTransport(uint32_t ssrc, UdpRouter::UdpRouterObServerPtr observer);
 
  private:
   void TccClientSendRtpPacket(RtpPacketPtr& packet);
@@ -78,6 +85,10 @@ class Transport : public UvTimer::Listener,
   UvLoopPtr uv_loop_;
   UdpRouterPtr udp_router_;
   SockAddressPtr udp_remote_address_;
+
+  // addr
+  Settings::Configuration local_;
+  Settings::Configuration remote_;
 };
 }  // namespace bifrost
 

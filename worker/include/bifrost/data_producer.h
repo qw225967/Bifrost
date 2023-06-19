@@ -19,7 +19,7 @@ namespace bifrost {
 typedef std::shared_ptr<RtpPacket> RtpPacketPtr;
 class DataProducer {
  public:
-  DataProducer();
+  DataProducer(uint32_t ssrc);
   ~DataProducer();
 
  public:

@@ -12,16 +12,16 @@
 // #define MS_LOG_DEV_LEVEL 3
 
 #include "modules/congestion_controller/goog_cc/delay_based_bwe.h"
-#include "modules/congestion_controller/goog_cc/trendline_estimator.h"
-
-#include "Logger.hpp"
 
 #include <absl/memory/memory.h>
+
 #include <algorithm>
 #include <cstdint>
 #include <cstdio>
 #include <string>
 #include <utility>
+
+#include "modules/congestion_controller/goog_cc/trendline_estimator.h"
 
 namespace webrtc {
 namespace {
@@ -74,19 +74,16 @@ DelayBasedBwe::DelayBasedBwe(const WebRtcKeyValueConfig* key_value_config,
 DelayBasedBwe::~DelayBasedBwe() {}
 
 DelayBasedBwe::Result DelayBasedBwe::IncomingPacketFeedbackVector(
-    const TransportPacketsFeedback& msg,
-    absl::optional<DataRate> acked_bitrate,
+    const TransportPacketsFeedback& msg, absl::optional<DataRate> acked_bitrate,
     absl::optional<DataRate> probe_bitrate,
-    absl::optional<NetworkStateEstimate> network_estimate,
-    bool in_alr) {
-  //RTC_DCHECK_RUNS_SERIALIZED(&network_race_);
+    absl::optional<NetworkStateEstimate> network_estimate, bool in_alr) {
+  // RTC_DCHECK_RUNS_SERIALIZED(&network_race_);
 
   auto packet_feedback_vector = msg.SortedByReceiveTime();
   // TODO(holmer): An empty feedback vector here likely means that
   // all acks were too late and that the send time history had
   // timed out. We should reduce the rate when this occurs.
   if (packet_feedback_vector.empty()) {
-    MS_WARN_DEV("very late feedback received");
     return DelayBasedBwe::Result();
   }
 
@@ -165,9 +162,7 @@ DelayBasedBwe::Result DelayBasedBwe::MaybeUpdateEstimate(
     absl::optional<DataRate> acked_bitrate,
     absl::optional<DataRate> probe_bitrate,
     absl::optional<NetworkStateEstimate> state_estimate,
-    bool recovered_from_overuse,
-    bool in_alr,
-    Timestamp at_time) {
+    bool recovered_from_overuse, bool in_alr, Timestamp at_time) {
   Result result;
 
   // Currently overusing the bandwidth.
@@ -209,11 +204,6 @@ DelayBasedBwe::Result DelayBasedBwe::MaybeUpdateEstimate(
   if ((result.updated && prev_bitrate_ != result.target_bitrate) ||
       detector_state != prev_state_) {
     DataRate bitrate = result.updated ? result.target_bitrate : prev_bitrate_;
-
-    MS_DEBUG_DEV(
-      "[at_time:%lld, target_bitrate_bps:%lld, detector_state:%s]",
-      at_time.ms(), bitrate.bps(), BandwidthUsage2String(detector_state).c_str());
-
     prev_bitrate_ = bitrate;
     prev_state_ = detector_state;
   }
@@ -238,13 +228,10 @@ bool DelayBasedBwe::LatestEstimate(std::vector<uint32_t>* ssrcs,
   // ModuleRtpRtcpImpl::Process()) and the configuration thread (see
   // Call::GetStats()). Should in the future only be accessed from a single
   // thread.
-  //RTC_DCHECK(ssrcs);
-  //RTC_DCHECK(bitrate);
-  MS_ASSERT(ssrcs, "ssrcs must be != null");
-  MS_ASSERT(bitrate, "bitrate must be != null");
+  // RTC_DCHECK(ssrcs);
+  // RTC_DCHECK(bitrate);
 
-  if (!rate_control_.ValidEstimate())
-    return false;
+  if (!rate_control_.ValidEstimate()) return false;
 
   *ssrcs = {kFixedSsrc};
   *bitrate = rate_control_.LatestEstimate();
@@ -252,8 +239,6 @@ bool DelayBasedBwe::LatestEstimate(std::vector<uint32_t>* ssrcs,
 }
 
 void DelayBasedBwe::SetStartBitrate(DataRate start_bitrate) {
-  MS_DEBUG_DEV("BWE setting start bitrate to: %s",
-               ToString(start_bitrate).c_str());
   rate_control_.SetStartBitrate(start_bitrate);
 }
 

@@ -70,7 +70,7 @@ std::map<FeedbackRtpTransportPacket::Status, std::string> FeedbackRtpTransportPa
 
 /* Class methods. */
 
-FeedbackRtpTransportPacket* FeedbackRtpTransportPacket::Parse(
+std::shared_ptr<FeedbackRtpTransportPacket> FeedbackRtpTransportPacket::Parse(
     const uint8_t* data, size_t len) {
   if (len < sizeof(CommonHeader) + sizeof(FeedbackPacket::Header) +
                 FeedbackRtpTransportPacket::fixedHeaderSize) {
@@ -85,12 +85,12 @@ FeedbackRtpTransportPacket* FeedbackRtpTransportPacket::Parse(
   auto* commonHeader =
       const_cast<CommonHeader*>(reinterpret_cast<const CommonHeader*>(data));
 
-  std::unique_ptr<FeedbackRtpTransportPacket> packet(
-      new FeedbackRtpTransportPacket(commonHeader, len));
+  std::shared_ptr<FeedbackRtpTransportPacket> packet =
+      std::make_shared<FeedbackRtpTransportPacket>(commonHeader, len);
 
   if (!packet->IsCorrect()) return nullptr;
 
-  return packet.release();
+  return packet;
 }
 
 /* Instance methods. */

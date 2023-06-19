@@ -11,9 +11,29 @@
 
 #include <uv.h>
 
+#include <iomanip>
 #include <iostream>
+#include <sstream>
 
 namespace bifrost {
+std::string Byte::bytes_to_hex(const uint8_t* buf, std::size_t len,
+                               std::size_t num_per_line) {
+  if (buf == NULL || len == 0 || num_per_line == 0) {
+    return std::string();
+  }
+  std::ostringstream oss;
+  for (std::size_t i = 0; i < len; i++) {
+    oss << std::right << std::setw(3) << std::hex << static_cast<int>(buf[i]);
+    if ((i + 1) % num_per_line == 0) {
+      oss << '\n';
+    }
+  }
+  if (len % num_per_line != 0) {
+    oss << '\n';
+  }
+  return oss.str();
+}
+
 int IP::get_family(const std::string& ip) {
   if (ip.size() >= INET6_ADDRSTRLEN) return AF_UNSPEC;
 

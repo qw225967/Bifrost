@@ -84,7 +84,7 @@ RtpTransportControllerSend::RtpTransportControllerSend(
     NetworkControllerFactoryInterface* controller_factory,
     const BitrateConstraints& bitrate_config, bifrost::UvLoop* loop)
     : packet_router_(packet_router),
-      pacer_(packet_router_),
+      pacer_(packet_router_, loop),
       observer_(nullptr),
       loop_(loop),
       controller_factory_override_(controller_factory),
@@ -266,7 +266,8 @@ void RtpTransportControllerSend::MaybeCreateControllers() {
   initial_config_.constraints.at_time =
       Timestamp::ms(loop_->get_time_ms_int64());
 
-  controller_ = controller_factory_override_->Create(initial_config_);
+  controller_ =
+      controller_factory_override_->Create(initial_config_, this->loop_);
   process_interval_ = controller_factory_override_->GetProcessInterval();
 
   UpdateControllerWithTimeInterval();

@@ -13,15 +13,14 @@
 
 #include "modules/congestion_controller/goog_cc/trendline_estimator.h"
 
-#include "modules/remote_bitrate_estimator/include/bwe_defines.h"
-#include "rtc_base/numerics/safe_minmax.h"
-
-#include "Logger.hpp"
-
 #include <absl/types/optional.h>
 #include <math.h>
+
 #include <algorithm>
 #include <string>
+
+#include "modules/remote_bitrate_estimator/include/bwe_defines.h"
+#include "rtc_base/numerics/safe_minmax.h"
 
 namespace webrtc {
 
@@ -42,20 +41,15 @@ size_t ReadTrendlineFilterWindowSize(
   int parsed_values =
       sscanf(experiment_string.c_str(), "Enabled-%zu", &window_size);
   if (parsed_values == 1) {
-    if (window_size > 1)
-      return window_size;
-    MS_WARN_DEV("window size must be greater than 1");
+    if (window_size > 1) return window_size;
   }
-  MS_WARN_DEV(
-    "failed to parse parameters for BweWindowSizeInPackets"
-    " experiment from field trial string, using default");
   return kDefaultTrendlineWindowSize;
 }
 
 absl::optional<double> LinearFitSlope(
     const std::deque<std::pair<double, double>>& points) {
-  //RTC_DCHECK(points.size() >= 2);
-  // Compute the "center of mass".
+  // RTC_DCHECK(points.size() >= 2);
+  //  Compute the "center of mass".
   double sum_x = 0;
   double sum_y = 0;
   for (const auto& point : points) {
@@ -71,8 +65,7 @@ absl::optional<double> LinearFitSlope(
     numerator += (point.first - x_avg) * (point.second - y_avg);
     denominator += (point.first - x_avg) * (point.first - x_avg);
   }
-  if (denominator == 0)
-    return absl::nullopt;
+  if (denominator == 0) return absl::nullopt;
   return numerator / denominator;
 }
 
@@ -91,14 +84,11 @@ TrendlineEstimator::TrendlineEstimator(
                       .find("Enabled") == 0
               ? ReadTrendlineFilterWindowSize(key_value_config)
               : kDefaultTrendlineWindowSize,
-          kDefaultTrendlineSmoothingCoeff,
-          kDefaultTrendlineThresholdGain,
+          kDefaultTrendlineSmoothingCoeff, kDefaultTrendlineThresholdGain,
           network_state_predictor) {}
 
 TrendlineEstimator::TrendlineEstimator(
-    size_t window_size,
-    double smoothing_coef,
-    double threshold_gain,
+    size_t window_size, double smoothing_coef, double threshold_gain,
     NetworkStatePredictor* network_state_predictor)
     : window_size_(window_size),
       smoothing_coef_(smoothing_coef),
@@ -120,41 +110,33 @@ TrendlineEstimator::TrendlineEstimator(
       hypothesis_(BandwidthUsage::kBwNormal),
       hypothesis_predicted_(BandwidthUsage::kBwNormal),
       network_state_predictor_(network_state_predictor),
-      dynamic_min_threshold_(3.f) {
-  MS_DEBUG_DEV(
-    "using Trendline filter for delay change estimation with window size: %zu",
-    window_size_);
-}
+      dynamic_min_threshold_(3.f) {}
 
 TrendlineEstimator::~TrendlineEstimator() {}
 
-void TrendlineEstimator::Update(double recv_delta_ms,
-                                double send_delta_ms,
-                                int64_t send_time_ms,
-                                int64_t arrival_time_ms,
+void TrendlineEstimator::Update(double recv_delta_ms, double send_delta_ms,
+                                int64_t send_time_ms, int64_t arrival_time_ms,
                                 bool calculated_deltas) {
   if (calculated_deltas) {
     const double delta_ms = recv_delta_ms - send_delta_ms;
     ++num_of_deltas_;
     num_of_deltas_ = std::min(num_of_deltas_, kDeltaCounterMax);
-    if (first_arrival_time_ms_ == -1)
-      first_arrival_time_ms_ = arrival_time_ms;
+    if (first_arrival_time_ms_ == -1) first_arrival_time_ms_ = arrival_time_ms;
 
     // Exponential backoff filter.
     accumulated_delay_ += delta_ms;
     // BWE_TEST_LOGGING_PLOT(1, "accumulated_delay_ms", arrival_time_ms,
-                          // accumulated_delay_);
+    // accumulated_delay_);
     smoothed_delay_ = smoothing_coef_ * smoothed_delay_ +
                       (1 - smoothing_coef_) * accumulated_delay_;
     // BWE_TEST_LOGGING_PLOT(1, "smoothed_delay_ms", arrival_time_ms,
-                          // smoothed_delay_);
+    // smoothed_delay_);
 
     // Simple linear regression.
     delay_hist_.push_back(std::make_pair(
         static_cast<double>(arrival_time_ms - first_arrival_time_ms_),
         smoothed_delay_));
-    while (delay_hist_.size() > window_size_)
-      delay_hist_.pop_front();
+    while (delay_hist_.size() > window_size_) delay_hist_.pop_front();
     double trend = prev_trend_;
     if (delay_hist_.size() == window_size_) {
       // Update trend_ if it is possible to fit a line to the data. The delay
@@ -190,7 +172,7 @@ void TrendlineEstimator::Detect(double trend, double ts_delta, int64_t now_ms) {
   // BWE_TEST_LOGGING_PLOT(1, "T", now_ms, modified_trend);
   // BWE_TEST_LOGGING_PLOT(1, "threshold", now_ms, threshold_);
 
-	// frq test 动态增加阈值，大码率时敏感，低码率时迟钝，让码率尽快平衡
+  // frq test 动态增加阈值，大码率时敏感，低码率时迟钝，让码率尽快平衡
   if (modified_trend > threshold_) {
     if (time_over_using_ == -1) {
       // Initialize the timer. Assume that we've been
@@ -224,8 +206,7 @@ void TrendlineEstimator::Detect(double trend, double ts_delta, int64_t now_ms) {
 
 void TrendlineEstimator::UpdateThreshold(double modified_trend,
                                          int64_t now_ms) {
-  if (last_update_ms_ == -1)
-    last_update_ms_ = now_ms;
+  if (last_update_ms_ == -1) last_update_ms_ = now_ms;
 
   if (fabs(modified_trend) > threshold_ + kMaxAdaptOffsetMs) {
     // Avoid adapting the threshold to big latency spikes, caused e.g.,
@@ -238,7 +219,10 @@ void TrendlineEstimator::UpdateThreshold(double modified_trend,
   const int64_t kMaxTimeDeltaMs = 100;
   int64_t time_delta_ms = std::min(now_ms - last_update_ms_, kMaxTimeDeltaMs);
   threshold_ += k * (fabs(modified_trend) - threshold_) * time_delta_ms;
-  threshold_ = rtc::SafeClamp(threshold_, dynamic_min_threshold_, 600.f); // frq test 中间的数值 dynamic_min_threshold_ 原值 6.f 配合外部动态调整阈值判断
+  threshold_ =
+      rtc::SafeClamp(threshold_, dynamic_min_threshold_,
+                     600.f);  // frq test 中间的数值 dynamic_min_threshold_
+                              // 原值 6.f 配合外部动态调整阈值判断
   last_update_ms_ = now_ms;
 }
 
