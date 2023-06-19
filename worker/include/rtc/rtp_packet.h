@@ -524,7 +524,7 @@ class RtpPacket {
   uint8_t ridExtensionId{0u};
   uint8_t rridExtensionId{0u};
   uint8_t absSendTimeExtensionId{0u};
-  uint8_t transportWideCc01ExtensionId{0u};
+  uint8_t transportWideCc01ExtensionId{7u};
   uint8_t frameMarking07ExtensionId{0u};  // NOTE: Remove once RFC.
   uint8_t frameMarkingExtensionId{0u};
   uint8_t ssrcAudioLevelExtensionId{0u};

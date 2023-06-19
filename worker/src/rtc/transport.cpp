@@ -73,7 +73,18 @@ void Transport::SetRemoteTransport(uint32_t ssrc,
 }
 
 void Transport::TccClientSendRtpPacket(RtpPacketPtr& packet) {
-  packet->SetTransportWideCc01ExtensionId(15);
+  static uint8_t buffer[4096];
+  uint8_t extenLen = 2u;
+  static std::vector<RtpPacket::GenericExtension> extensions;
+  uint8_t* bufferPtr{buffer};
+  // NOTE: Add value 0. The sending Transport will update it.
+  uint16_t wideSeqNumber{0u};
+
+  Byte::set_2_bytes(bufferPtr, 0, wideSeqNumber);
+  extensions.emplace_back(static_cast<uint8_t>(7), extenLen, bufferPtr);
+  packet->SetExtensions(1, extensions);
+
+  packet->SetTransportWideCc01ExtensionId(7);
   packet->UpdateTransportWideCc01(++this->tcc_seq_);
 
   this->udp_router_->Send(packet->GetData(), packet->GetSize(),
@@ -83,9 +94,13 @@ void Transport::TccClientSendRtpPacket(RtpPacketPtr& packet) {
 void Transport::OnUdpRouterRtpPacketReceived(
     bifrost::UdpRouter* socket, RtpPacketPtr rtp_packet,
     const struct sockaddr* remote_addr) {
+  uint16_t wideSeqNumber;
+  rtp_packet->ReadTransportWideCc01(wideSeqNumber);
+
   std::cout << "ssrc:" << rtp_packet->GetSsrc()
             << ", seq:" << rtp_packet->GetSequenceNumber()
-            << ", payload_type:" << rtp_packet->GetPayloadType();
+            << ", payload_type:" << rtp_packet->GetPayloadType()
+            << ", tcc seq:" << wideSeqNumber << std::endl;
 }
 
 void Transport::OnUdpRouterRtcpPacketReceived(
@@ -94,6 +109,8 @@ void Transport::OnUdpRouterRtcpPacketReceived(
 
 void Transport::OnTimer(UvTimer* timer) {
   if (timer == this->producer_timer.get()) {
+    std::cout << "timer call" << std::endl;
+
     auto packet = this->data_producer_->CreateData();
     this->TccClientSendRtpPacket(packet);
   }
