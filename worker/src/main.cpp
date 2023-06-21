@@ -8,9 +8,16 @@
  *******************************************************/
 
 #include <string>
+#include <thread>
 
 #include "setting.h"
 #include "transport.h"
+
+void ThreadPlay() {
+  auto temp =
+      std::make_shared<bifrost::Transport>(bifrost::Transport::SinglePlay);
+  temp->Run();
+}
 
 int main() {
   // 读取配置文件
@@ -18,6 +25,8 @@ int main() {
   std::string play_config_path(PLAYER_CONFIG_FILE_PATH_STRING);
   bifrost::Settings::AnalysisConfigurationFile(publish_config_path,
                                                play_config_path);
+
+  std::thread play(ThreadPlay);
 
   auto temp =
       std::make_shared<bifrost::Transport>(bifrost::Transport::SinglePublish);
