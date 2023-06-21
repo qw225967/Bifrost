@@ -10,36 +10,44 @@
 #ifndef WORKER_TRANSPORT_H
 #define WORKER_TRANSPORT_H
 
-#include "data_producer.h"
-#include "tcc_client.h"
-#include "tcc_server.h"
+#include "player.h"
+#include "publisher.h"
 #include "udp_router.h"
+#include "unordered_map"
 #include "uv_loop.h"
-#include "uv_timer.h"
 
 namespace bifrost {
-typedef std::shared_ptr<UvTimer> UvTimerPtr;
-typedef std::shared_ptr<UvLoop> UvLoopPtr;
+typedef std::shared_ptr<Player> PlayerPtr;
+typedef std::shared_ptr<Publisher> PublisherPtr;
 typedef std::shared_ptr<UdpRouter> UdpRouterPtr;
-typedef std::shared_ptr<sockaddr> SockAddressPtr;
-typedef std::shared_ptr<DataProducer> DataProducerPtr;
-typedef std::shared_ptr<TransportCongestionControlClient>
-    TransportCongestionControlClientPtr;
-typedef std::shared_ptr<TransportCongestionControlServer>
-    TransportCongestionControlServerPtr;
-
-class Transport : public UvTimer::Listener,
-                  public UdpRouter::UdpRouterObServer,
-                  public TransportCongestionControlClient::Observer,
-                  public TransportCongestionControlServer::Observer {
+class Transport : public UdpRouter::UdpRouterObServer,
+                  public Publisher::Observer,
+                  public Player::Observer {
  public:
-  Transport(Settings::Configuration& local_config,
-            Settings::Configuration& remote_config);
+  enum TransportModel {
+    SinglePublish,
+    SinglePlay,
+    SinglePublishAndPlays,
+  };
+
+ public:
+  Transport(TransportModel model);
   ~Transport();
 
  public:
-  // UvTimer
-  void OnTimer(UvTimer* timer) override;
+  // Publisher
+  void OnPublisherSendPacket(RtpPacketPtr packet,
+                             const struct sockaddr* remote_addr) override {
+    this->udp_router_->Send(packet->GetData(), packet->GetSize(), remote_addr,
+                            nullptr);
+  }
+
+  // Player
+  void OnPlayerSendPacket(RtcpPacketPtr packet,
+                          const struct sockaddr* remote_addr) override {
+    this->udp_router_->Send(packet->GetData(), packet->GetSize(), remote_addr,
+                            nullptr);
+  }
 
   // UdpRouterObServer
   void OnUdpRouterRtpPacketReceived(
@@ -49,46 +57,23 @@ class Transport : public UvTimer::Listener,
       bifrost::UdpRouter* socket, RtcpPacketPtr rtcp_packet,
       const struct sockaddr* remote_addr) override;
 
-  // TransportCongestionControlClient::Observer
-  void OnTransportCongestionControlClientBitrates(
-      TransportCongestionControlClient* tcc_client,
-      TransportCongestionControlClient::Bitrates& bitrates) override {}
-  void OnTransportCongestionControlClientSendRtpPacket(
-      TransportCongestionControlClient* tcc_client, RtpPacket* packet,
-      const webrtc::PacedPacketInfo& pacing_info) override {}
-
-  // TransportCongestionControlServer::Observer
-  void OnTransportCongestionControlServerSendRtcpPacket(
-      TransportCongestionControlServer* tccServer,
-      RtcpPacket* packet) override {}
-
   void Run();
 
-  void RunDataProducer();
-
-  void SetRemoteTransport(uint32_t ssrc, UdpRouter::UdpRouterObServerPtr observer);
-
  private:
-  void TccClientSendRtpPacket(RtpPacketPtr& packet);
-
- private:
-  // tcc
-  uint16_t tcc_seq_ = 0;
-  TransportCongestionControlClientPtr tcc_client_{nullptr};
-  TransportCongestionControlServerPtr tcc_server_{nullptr};
-
-  // send packet producer
-  DataProducerPtr data_producer_;
-
   // uv
-  UvTimerPtr producer_timer;
-  UvLoopPtr uv_loop_;
-  UdpRouterPtr udp_router_;
-  SockAddressPtr udp_remote_address_;
+  UvLoop* uv_loop_;
 
-  // addr
-  Settings::Configuration local_;
-  Settings::Configuration remote_;
+  // router
+  UdpRouterPtr udp_router_;
+
+  // players
+  std::unordered_map<uint32_t, PlayerPtr> players_;
+
+  // publisher
+  PublisherPtr publisher_;
+
+  // TransportModel
+  TransportModel model_;
 };
 }  // namespace bifrost
 

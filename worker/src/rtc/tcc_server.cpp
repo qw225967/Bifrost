@@ -20,10 +20,12 @@ static constexpr size_t PacketLossHistogramLength{24};
 
 TransportCongestionControlServer::TransportCongestionControlServer(
     TransportCongestionControlServer::Observer* observer,
-    size_t maxRtcpPacketLen, UvLoop* uv_loop)
-    : observer_(observer), maxRtcpPacketLen(maxRtcpPacketLen) {
+    size_t maxRtcpPacketLen, UvLoop** uv_loop)
+    : observer_(observer),
+      maxRtcpPacketLen(maxRtcpPacketLen),
+      uv_loop_(*uv_loop) {
   this->transportCcFeedbackPacket =
-      std::make_unique<FeedbackRtpTransportPacket>(0u, 0u);
+      std::make_shared<FeedbackRtpTransportPacket>(0u, 0u);
 
   // Set initial packet count.
   this->transportCcFeedbackPacket->SetFeedbackPacketCount(
@@ -31,7 +33,10 @@ TransportCongestionControlServer::TransportCongestionControlServer(
 
   // Create the feedback send periodic timer.
   this->transportCcFeedbackSendPeriodicTimer =
-      new UvTimer(this, uv_loop->get_loop().get());
+      new UvTimer(this, this->uv_loop_->get_loop().get());
+
+  this->transportCcFeedbackSendPeriodicTimer->Start(
+      TransportCcFeedbackSendInterval, TransportCcFeedbackSendInterval);
 }
 
 TransportCongestionControlServer::~TransportCongestionControlServer() {
@@ -47,6 +52,8 @@ void TransportCongestionControlServer::IncomingPacket(uint64_t nowMs,
                                                       const RtpPacket* packet) {
   uint16_t wideSeqNumber;
 
+  std::cout << "IncomingPacket packet" << std::endl;
+
   if (!packet->ReadTransportWideCc01(wideSeqNumber)) return;
 
   // Update the RTCP media SSRC of the ongoing Transport-CC Feedback packet.
@@ -59,11 +66,18 @@ void TransportCongestionControlServer::IncomingPacket(uint64_t nowMs,
 
   // Provide the feedback packet with the RTP packet info. If it fails,
   // send current feedback and add the packet info to a new one.
+  if (this->transportCcFeedbackPacket == nullptr) return;
+
   auto result = this->transportCcFeedbackPacket->AddPacket(
       wideSeqNumber, nowMs, this->maxRtcpPacketLen);
 
+  std::cout << "wideSeqNumber:" << wideSeqNumber << ", last seq:"
+            << this->transportCcFeedbackPacket->GetLatestSequenceNumber()
+            << std::endl;
+
   switch (result) {
     case FeedbackRtpTransportPacket::AddPacketResult::SUCCESS: {
+      std::cout << "IncomingPacket SUCCESS" << std::endl;
       // If the feedback packet is full, send it now.
       if (this->transportCcFeedbackPacket->IsFull()) {
         std::cout << "[tcc server] transport-cc feedback packet is full, "
@@ -77,6 +91,7 @@ void TransportCongestionControlServer::IncomingPacket(uint64_t nowMs,
     }
 
     case FeedbackRtpTransportPacket::AddPacketResult::MAX_SIZE_EXCEEDED: {
+      std::cout << "IncomingPacket MAX_SIZE_EXCEEDED" << std::endl;
       // Send ongoing feedback packet and add the new packet info to the
       // regenerated one.
       SendTransportCcFeedback();
@@ -88,9 +103,10 @@ void TransportCongestionControlServer::IncomingPacket(uint64_t nowMs,
     }
 
     case FeedbackRtpTransportPacket::AddPacketResult::FATAL: {
+      std::cout << "IncomingPacket FATAL" << std::endl;
       // Create a new feedback packet.
       this->transportCcFeedbackPacket =
-          std::make_unique<FeedbackRtpTransportPacket>(
+          std::make_shared<FeedbackRtpTransportPacket>(
               this->transportCcFeedbackSenderSsrc,
               this->transportCcFeedbackMediaSsrc);
 
@@ -123,41 +139,47 @@ void TransportCongestionControlServer::SetMaxIncomingBitrate(uint32_t bitrate) {
 inline void TransportCongestionControlServer::SendTransportCcFeedback() {
   if (!this->transportCcFeedbackPacket->IsSerializable()) return;
 
+  std::cout << "OnTimer SendTransportCcFeedback 1" << std::endl;
   auto latestWideSeqNumber =
       this->transportCcFeedbackPacket->GetLatestSequenceNumber();
   auto latestTimestamp = this->transportCcFeedbackPacket->GetLatestTimestamp();
-
+  std::cout << "OnTimer SendTransportCcFeedback 2" << std::endl;
   // Notify the listener.
   this->observer_->OnTransportCongestionControlServerSendRtcpPacket(
-      this, this->transportCcFeedbackPacket.get());
-
+      this, this->transportCcFeedbackPacket);
+  std::cout << "OnTimer SendTransportCcFeedback 3" << std::endl;
   // Update packet loss history.
   size_t expected_packets =
       this->transportCcFeedbackPacket->GetPacketStatusCount();
+  std::cout << "OnTimer SendTransportCcFeedback 4" << std::endl;
   size_t lost_packets = 0;
   for (const auto& result :
        this->transportCcFeedbackPacket->GetPacketResults()) {
     if (!result.received) lost_packets += 1;
   }
-
+  std::cout << "OnTimer SendTransportCcFeedback 5" << std::endl;
   this->UpdatePacketLoss(static_cast<double>(lost_packets) / expected_packets);
 
+  std::cout << "OnTimer SendTransportCcFeedback 6" << std::endl;
   // Create a new feedback packet.
   this->transportCcFeedbackPacket =
-      std::make_unique<FeedbackRtpTransportPacket>(
+      std::make_shared<FeedbackRtpTransportPacket>(
           this->transportCcFeedbackSenderSsrc,
           this->transportCcFeedbackMediaSsrc);
 
+  std::cout << "OnTimer SendTransportCcFeedback 7" << std::endl;
   // Increment packet count.
   this->transportCcFeedbackPacket->SetFeedbackPacketCount(
       ++this->transportCcFeedbackPacketCount);
 
+  std::cout << "OnTimer SendTransportCcFeedback 8" << std::endl;
   // Pass the latest packet info (if any) as pre base for the new feedback
   // packet.
   if (latestTimestamp > 0u) {
     this->transportCcFeedbackPacket->AddPacket(
         latestWideSeqNumber, latestTimestamp, this->maxRtcpPacketLen);
   }
+  std::cout << "OnTimer SendTransportCcFeedback 9" << std::endl;
 }
 
 inline void TransportCongestionControlServer::MaySendLimitationRembFeedback() {}
@@ -191,7 +213,9 @@ inline void TransportCongestionControlServer::OnRembServerAvailableBitrate(
     const std::vector<uint32_t>& ssrcs, uint32_t availableBitrate) {}
 
 inline void TransportCongestionControlServer::OnTimer(UvTimer* timer) {
-  if (timer == this->transportCcFeedbackSendPeriodicTimer)
+  if (timer == this->transportCcFeedbackSendPeriodicTimer) {
+    std::cout << "OnTimer TransportCongestionControlServer" << std::endl;
     SendTransportCcFeedback();
+  }
 }
 }  // namespace bifrost

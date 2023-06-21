@@ -32,18 +32,23 @@ class Settings {
     std::string rtcIp;
     uint32_t ssrc;
   };
+  struct AddressConfiguration {
+    Configuration local_receive_configuration_;
+    Configuration remote_send_configuration_;
+  };
 
  public:
   static void SetConfiguration(int argc, char* argv[]);
-  static void AnalysisConfigurationFile(std::string config_path);
+  static void AnalysisConfigurationFile(std::string& config_path,
+                                        std::string& player_config_path);
   static void PrintConfiguration();
 
  public:
   static sockaddr get_sockaddr_by_config(Configuration& config);
 
  public:
-  static struct Configuration server_configuration_;
-  static std::map<std::string, Configuration> client_configuration_map_;
+  static struct AddressConfiguration publisher_config_;
+  static std::map<std::string, struct AddressConfiguration> player_config_map_;
 };
 }  // namespace bifrost
 

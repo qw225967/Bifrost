@@ -40,12 +40,13 @@ typedef SSIZE_T ssize_t;
 //#define USING_DEFAULT_AF_CONFIG 1
 
 // 使用真实数据做测试
-#define USING_LOCAL_FILE_DATA 1
+//#define USING_LOCAL_FILE_DATA 1
 
 // 使用小端模式
 #define MS_LITTLE_ENDIAN 1
 
-#define CONFIG_FILE_PATH_STRING "../conf/config.json"
+#define PUBLISHER_CONFIG_FILE_PATH_STRING "../conf/publisher_config.json"
+#define PLAYER_CONFIG_FILE_PATH_STRING "../conf/player_config.json"
 #define LOCAL_DATA_FILE_PATH_STRING "../source/test.h264"
 
 namespace bifrost {

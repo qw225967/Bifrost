@@ -146,8 +146,9 @@ void UdpSocket::Send(const uint8_t* data, size_t len,
 
     return;
   } else if (sent >= 0) {
-    std::cout << "[udp_socket] datagram truncated just " << sent
-              << " of %zu bytes were sent" << len;
+    //    std::cout << "[udp_socket] datagram truncated just " << sent << " of
+    //    bytes "
+    //              << len << " were sent" << std::endl;
 
     // Update sent bytes.
     this->sent_bytes_ += sent;

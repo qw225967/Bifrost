@@ -19,15 +19,26 @@ static constexpr uint64_t AvailableBitrateEventInterval{1000u};  // In ms.
 static constexpr size_t PacketLossHistogramLength{24};
 static constexpr uint32_t MaxAvailableBitrate{4096000u};
 
+static uint8_t ProbationPacketHeader[] = {
+    0b10010000, 0b01111111, 0, 0,  // PayloadType: 127, Sequence Number: 0
+    0,          0,          0, 0,  // Timestamp: 0
+    0,          0,          0, 0,  // SSRC: 0
+    0xBE,       0xDE,       0, 4,  // Header Extension (One-Byte Extensions)
+    0,          0,          0, 0,  // Space for MID extension
+    0,          0,          0, 0, 0,
+    0,          0,          0, 0,  // Space for abs-send-time extension
+    0,          0,          0      // Space for transport-wide-cc-01 extension
+};
+
 /* Instance methods. */
 TransportCongestionControlClient::TransportCongestionControlClient(
     TransportCongestionControlClient::Observer* observer,
-    uint32_t initial_available_bitrate, UvLoop* uv_loop)
+    uint32_t initial_available_bitrate, UvLoop** uv_loop)
     : observer_(observer),
       initial_available_bitrate_(
           std::max<uint32_t>(initial_available_bitrate, MinBitrate)),
       max_outgoing_bitrate_(MaxAvailableBitrate),
-      uv_loop_(uv_loop) {
+      uv_loop_(*uv_loop) {
   webrtc::GoogCcFactoryConfig config;
 
   // Provide RTCP feedback as well as Receiver Reports.
@@ -35,6 +46,8 @@ TransportCongestionControlClient::TransportCongestionControlClient(
 
   this->controller_factory_ =
       new webrtc::GoogCcNetworkControllerFactory(std::move(config));
+
+  this->InitializeController();
 }
 
 TransportCongestionControlClient::~TransportCongestionControlClient() {
@@ -44,14 +57,24 @@ TransportCongestionControlClient::~TransportCongestionControlClient() {
   DestroyController();
 }
 
+RtpPacket* TransportCongestionControlClient::GeneratePadding(
+    size_t target_size_bytes) {
+  uint8_t data[1400u];
+  std::memcpy(data, ProbationPacketHeader, sizeof(ProbationPacketHeader));
+  auto probationPacket = RtpPacket::Parse(data, 1400u);
+  probationPacket->SetPayloadLength(sizeof(ProbationPacketHeader));
+  return probationPacket.get();
+}
+
 void TransportCongestionControlClient::InitializeController() {
   webrtc::BitrateConstraints bitrate_config;
+  bitrate_config.min_bitrate_bps = MinBitrate;           // 最小设置30kbps;
+  bitrate_config.max_bitrate_bps = MaxAvailableBitrate;  // 最大设置4mbps;
   bitrate_config.start_bitrate_bps =
       static_cast<int>(this->initial_available_bitrate_);
 
   this->rtp_transport_controller_send_ = new webrtc::RtpTransportControllerSend(
-      this, nullptr, this->controller_factory_,
-      bitrate_config, this->uv_loop_);
+      this, nullptr, this->controller_factory_, bitrate_config, this->uv_loop_);
 
   this->rtp_transport_controller_send_->RegisterTargetTransferRateObserver(
       this);
@@ -225,9 +248,10 @@ void TransportCongestionControlClient::MayEmitAvailableBitrateEvent(
   }
 
   if (notify) {
-    std::cout
-        << "[tcc client] notifying the listener with new available bitrate:"
-        << this->bitrates_.availableBitrate << std::endl;
+    //    std::cout
+    //        << "[tcc client] notifying the listener with new available
+    //        bitrate:"
+    //        << this->bitrates_.availableBitrate << std::endl;
 
     this->last_available_bitrate_event_at_ms_ = nowMs;
 
@@ -280,9 +304,9 @@ void TransportCongestionControlClient::OnTimer(UvTimer* timer) {
 
     // Time to call PacedSender::Process().
     this->rtp_transport_controller_send_->packet_sender()->Process();
-
     this->process_timer_->Start(std::min<uint64_t>(
-        // Depends on probation being done and WebRTC-Pacer-MinPacketLimitMs
+        // Depends on probation being done and
+        // WebRTC-Pacer-MinPacketLimitMs
         // field trial.
         this->rtp_transport_controller_send_->packet_sender()
             ->TimeUntilNextProcess(),

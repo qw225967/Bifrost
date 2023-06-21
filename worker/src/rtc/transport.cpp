@@ -10,86 +10,95 @@
 #include "transport.h"
 
 namespace bifrost {
-const uint32_t InitialAvailableBitrate = 2000000u;
-
-Transport::Transport(Settings::Configuration& local_config,
-                     Settings::Configuration& remote_config)
-    : local_(local_config), remote_(remote_config) {
-  this->uv_loop_ = std::make_shared<UvLoop>();
+Transport::Transport(TransportModel model) : model_(model) {
+  this->uv_loop_ = new UvLoop;
 
   // 1.init loop
   this->uv_loop_->ClassInit();
 
-  // 2.get config
-  //   2.1 don't use default model : just get config default
+  // 2.publish and player
+  switch (model_) {
+    case SinglePublish: {
+      // 2.publisher
+      this->publisher_ = std::make_shared<Publisher>(
+          Settings::publisher_config_.remote_send_configuration_,
+          &this->uv_loop_, this);
+      break;
+    }
+    case SinglePlay: {
+      // 2.player
+      for (auto config : Settings::player_config_map_) {
+        auto player = std::make_shared<Player>(
+            config.second.remote_send_configuration_, &this->uv_loop_, this);
+        this->players_[config.second.local_receive_configuration_.ssrc] =
+            player;
+        break;
+      }
+      break;
+    }
+    case SinglePublishAndPlays: {
+      // 2.publisher
+      this->publisher_ = std::make_shared<Publisher>(
+          Settings::publisher_config_.remote_send_configuration_,
+          &this->uv_loop_, this);
+
+      // 3.player
+      for (auto config : Settings::player_config_map_) {
+        auto player = std::make_shared<Player>(
+            config.second.remote_send_configuration_, &this->uv_loop_, this);
+        this->players_[config.second.local_receive_configuration_.ssrc] =
+            player;
+      }
+      break;
+    }
+  }
+
+    // 4.get router
+    //   4.1 don't use default model : just get config default
 #ifdef USING_DEFAULT_AF_CONFIG
   this->udp_router_ =
-      std::make_shared<UdpRouter>(this->uv_loop_->get_loop().get());
-
-  //   2.2 use default model : get config by json file
+      std::make_shared<UdpRouter>(this->uv_loop_->get_loop().get(), this);
 #else
-  this->udp_router_ = std::make_shared<UdpRouter>(
-      local_config, this->uv_loop_->get_loop().get());
-
-  // 3.set remote address
-  auto remote_addr = Settings::get_sockaddr_by_config(remote_config);
-  this->udp_remote_address_ = std::make_shared<sockaddr>(remote_addr);
+  //   4.2 use default model : get config by json file
+  switch (model_) {
+    case SinglePublish: {
+      this->udp_router_ = std::make_shared<UdpRouter>(
+          Settings::publisher_config_.local_receive_configuration_,
+          this->uv_loop_->get_loop().get(), this);
+      break;
+    }
+    case SinglePlay: {
+      if (Settings::player_config_map_.empty()) {
+        return;
+      }
+      this->udp_router_ =
+          std::make_shared<UdpRouter>(Settings::player_config_map_.begin()
+                                          ->second.local_receive_configuration_,
+                                      this->uv_loop_->get_loop().get(), this);
+      break;
+    }
+    case SinglePublishAndPlays: {
+      this->udp_router_ = std::make_shared<UdpRouter>(
+          Settings::publisher_config_.local_receive_configuration_,
+          this->uv_loop_->get_loop().get(), this);
+      break;
+    }
+  }
 #endif
-
-  // 4.tcc client
-  this->tcc_client_ = std::make_shared<TransportCongestionControlClient>(
-      this, InitialAvailableBitrate, this->uv_loop_.get());
-
-  // 5.tcc server
-  this->tcc_server_ = std::make_shared<TransportCongestionControlServer>(
-      this, MtuSize, this->uv_loop_.get());
 }
 
 Transport::~Transport() {
-  this->producer_timer->Stop();
-  this->producer_timer.reset();
-
-  if (this->uv_loop_ != nullptr) this->uv_loop_.reset();
+  if (this->uv_loop_ != nullptr) delete this->uv_loop_;
   if (this->udp_router_ != nullptr) this->udp_router_.reset();
-  if (this->tcc_client_ != nullptr) this->tcc_client_.reset();
-  if (this->tcc_server_ != nullptr) this->tcc_server_.reset();
-}
+  if (this->publisher_ != nullptr) this->publisher_.reset();
 
-void Transport::RunDataProducer() {
-  // 1.timer start
-  this->producer_timer =
-      std::make_shared<UvTimer>(this, this->uv_loop_->get_loop().get());
-  this->producer_timer->Start(1000, 1000);
-
-  // 2.create data producer
-  this->data_producer_ = std::make_shared<DataProducer>(remote_.ssrc);
+  auto iter = this->players_.begin();
+  for (;iter != this->players_.end();iter++) {
+    iter->second.reset();
+  }
 }
 
 void Transport::Run() { this->uv_loop_->RunLoop(); }
-
-void Transport::SetRemoteTransport(uint32_t ssrc,
-                                   UdpRouter::UdpRouterObServerPtr observer) {
-  this->udp_router_->SetRemoteTransport(ssrc, std::move(observer));
-}
-
-void Transport::TccClientSendRtpPacket(RtpPacketPtr& packet) {
-  static uint8_t buffer[4096];
-  uint8_t extenLen = 2u;
-  static std::vector<RtpPacket::GenericExtension> extensions;
-  uint8_t* bufferPtr{buffer};
-  // NOTE: Add value 0. The sending Transport will update it.
-  uint16_t wideSeqNumber{0u};
-
-  Byte::set_2_bytes(bufferPtr, 0, wideSeqNumber);
-  extensions.emplace_back(static_cast<uint8_t>(7), extenLen, bufferPtr);
-  packet->SetExtensions(1, extensions);
-
-  packet->SetTransportWideCc01ExtensionId(7);
-  packet->UpdateTransportWideCc01(++this->tcc_seq_);
-
-  this->udp_router_->Send(packet->GetData(), packet->GetSize(),
-                          this->udp_remote_address_.get(), nullptr);
-}
 
 void Transport::OnUdpRouterRtpPacketReceived(
     bifrost::UdpRouter* socket, RtpPacketPtr rtp_packet,
@@ -100,20 +109,29 @@ void Transport::OnUdpRouterRtpPacketReceived(
   std::cout << "ssrc:" << rtp_packet->GetSsrc()
             << ", seq:" << rtp_packet->GetSequenceNumber()
             << ", payload_type:" << rtp_packet->GetPayloadType()
-            << ", tcc seq:" << wideSeqNumber << std::endl;
+            << ", tcc seq:" << wideSeqNumber << ", this:" << this << std::endl;
+
+  auto player = this->players_.find(rtp_packet->GetSsrc());
+  if (player != this->players_.end()) {
+    player->second->IncomingPacket(rtp_packet);
+  }
 }
 
 void Transport::OnUdpRouterRtcpPacketReceived(
     bifrost::UdpRouter* socket, RtcpPacketPtr rtcp_packet,
-    const struct sockaddr* remote_addr) {}
-
-void Transport::OnTimer(UvTimer* timer) {
-  if (timer == this->producer_timer.get()) {
-    std::cout << "timer call" << std::endl;
-
-    auto packet = this->data_producer_->CreateData();
-    this->TccClientSendRtpPacket(packet);
+    const struct sockaddr* remote_addr) {
+  auto type = rtcp_packet->GetType();
+  switch (type) {
+    case Type::RTPFB: {
+      auto feedback_packet = FeedbackRtpTransportPacket::Parse(
+          rtcp_packet->GetData(), rtcp_packet->GetSize());
+      if (feedback_packet == nullptr) {
+        std::cout << "feedback_packet nullptr" << std::endl;
+        return;
+      }
+      this->publisher_->ReceiveFeedbackTransport(feedback_packet.get());
+      break;
+    }
   }
 }
-
 }  // namespace bifrost

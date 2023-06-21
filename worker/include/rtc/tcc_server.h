@@ -6,6 +6,9 @@
 #include <deque>
 
 #include "common.h"
+#include "rtcp_feedback.h"
+#include "rtcp_packet.h"
+#include "rtcp_tcc.h"
 #include "rtp_packet.h"
 #include "uv_timer.h"
 
@@ -20,13 +23,13 @@ class TransportCongestionControlServer
 
    public:
     virtual void OnTransportCongestionControlServerSendRtcpPacket(
-        TransportCongestionControlServer* tccServer, RtcpPacket* packet) = 0;
+        TransportCongestionControlServer* tccServer, RtcpPacketPtr packet) = 0;
   };
 
  public:
   TransportCongestionControlServer(
       TransportCongestionControlServer::Observer* observer,
-      size_t maxRtcpPacketLen, UvLoop* uv_loop);
+      size_t maxRtcpPacketLen, UvLoop** uv_loop);
   virtual ~TransportCongestionControlServer();
 
  public:
@@ -59,7 +62,7 @@ class TransportCongestionControlServer
   Observer* observer_{nullptr};
   // Allocated by this.
   UvTimer* transportCcFeedbackSendPeriodicTimer{nullptr};
-  std::unique_ptr<FeedbackRtpTransportPacket> transportCcFeedbackPacket;
+  std::shared_ptr<FeedbackRtpTransportPacket> transportCcFeedbackPacket;
   webrtc::RemoteBitrateEstimatorAbsSendTime* rembServer{nullptr};
 
   // Others.

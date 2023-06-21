@@ -13,6 +13,7 @@
 #include <fstream>
 
 #include "common.h"
+#include "modules/rtp_rtcp/source/rtp_packet_to_send.h"
 #include "rtp_packet.h"
 
 namespace bifrost {
@@ -23,7 +24,7 @@ class DataProducer {
   ~DataProducer();
 
  public:
-  RtpPacketPtr CreateData();
+  webrtc::RtpPacketToSend* CreateData();
 
  private:
   std::ifstream data_file_;

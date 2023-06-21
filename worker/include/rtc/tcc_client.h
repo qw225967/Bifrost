@@ -46,7 +46,7 @@ class TransportCongestionControlClient
  public:
   TransportCongestionControlClient(
       TransportCongestionControlClient::Observer* observer,
-      uint32_t initial_available_bitrate, UvLoop* uv_loop);
+      uint32_t initial_available_bitrate, UvLoop** uv_loop);
   virtual ~TransportCongestionControlClient();
 
  public:
@@ -80,11 +80,12 @@ class TransportCongestionControlClient
 
   /* Pure virtual methods inherited from webrtc::PacketRouter. */
   void OnStartRateUpdate(webrtc::DataRate) override {}
+
  public:
   void SendPacket(RtpPacket* packet,
                   const webrtc::PacedPacketInfo& cluster_info) override;
 
-  RtpPacket* GeneratePadding(size_t target_size_bytes) override { return nullptr; }
+  RtpPacket* GeneratePadding(size_t target_size_bytes) override;
 
   /* Pure virtual methods inherited from RTC::Timer. */
  public:

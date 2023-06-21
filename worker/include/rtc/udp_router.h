@@ -35,24 +35,23 @@ class UdpRouter : public UdpSocket {
 
  public:
   /* Instance methods. */
-  UdpRouter(uv_loop_t* loop) : UdpSocket(PortManager::BindUdp(loop)) {}
-  UdpRouter(Settings::Configuration config, uv_loop_t* loop)
-      : UdpSocket(PortManager::BindUdp(std::move(config), loop)) {}
+  UdpRouter(uv_loop_t* loop, UdpRouterObServer* observer)
+      : observer_(observer), UdpSocket(PortManager::BindUdp(loop)) {}
+  UdpRouter(Settings::Configuration config, uv_loop_t* loop,
+            UdpRouterObServer* observer)
+      : observer_(observer),
+        UdpSocket(PortManager::BindUdp(std::move(config), loop)) {}
   UdpRouter(UdpRouter& other) = delete;
   void operator=(const UdpRouter&) = delete;
   ~UdpRouter() override;
-
- public:
-  void SetRemoteTransport(uint32_t ssrc, UdpRouterObServerPtr observer);
 
   /* Pure virtual methods inherited from ::UdpRouter. */
  public:
   void UserOnUdpDatagramReceived(const uint8_t* data, size_t len,
                                  const struct sockaddr* addr) override;
-  //  RTC::RTCP::Packet* RtcpDataReceived(const uint8_t* data, size_t len);
-  //  RTC::RtpPacket* RtpDataReceived(const uint8_t* data, size_t len);
+
  private:
-  std::unordered_map<uint32_t, UdpRouterObServerPtr> observers;
+  UdpRouterObServer* observer_;
 };
 }  // namespace bifrost
 

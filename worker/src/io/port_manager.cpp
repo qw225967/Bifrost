@@ -91,23 +91,30 @@ uv_handle_t* PortManager::BindPort(Settings::Configuration config,
 
 /* Class methods. */
 uv_handle_t* PortManager::BindPort(uv_loop_t* loop) {
-  std::cout << "[port manager] BindPort befor "
-            << Settings::server_configuration_.rtcIp.c_str() << std::endl;
+  std::cout
+      << "[port manager] BindPort befor "
+      << Settings::publisher_config_.local_receive_configuration_.rtcIp.c_str()
+      << std::endl;
   // First normalize the IP. This may throw if invalid IP.
-  IP::NormalizeIp(Settings::server_configuration_.rtcIp);
-  std::cout << "[port manager] BindPort after "
-            << Settings::server_configuration_.rtcIp.c_str() << std::endl;
+  IP::NormalizeIp(
+      Settings::publisher_config_.local_receive_configuration_.rtcIp);
+  std::cout
+      << "[port manager] BindPort after "
+      << Settings::publisher_config_.local_receive_configuration_.rtcIp.c_str()
+      << std::endl;
 
   struct sockaddr_storage
       bind_addr;  // NOLINT(cppcoreguidelines-pro-type-member-init)
   uv_handle_t* uvHandle{nullptr};
   int err;
   int flags{0};
-  int family = IP::get_family(Settings::server_configuration_.rtcIp);
+  int family = IP::get_family(
+      Settings::publisher_config_.local_receive_configuration_.rtcIp);
   switch (family) {
     case AF_INET: {
-      err = uv_ip4_addr(Settings::server_configuration_.rtcIp.c_str(), 0,
-                        reinterpret_cast<struct sockaddr_in*>(&bind_addr));
+      err = uv_ip4_addr(Settings::publisher_config_.local_receive_configuration_
+                            .rtcIp.c_str(),
+                        0, reinterpret_cast<struct sockaddr_in*>(&bind_addr));
       std::cout << "[port manager] uv_ip4_addr" << std::endl;
       if (err != 0)
         std::cout << "[port manager] uv_ip4_addr failed: " << uv_strerror(err)
@@ -117,8 +124,9 @@ uv_handle_t* PortManager::BindPort(uv_loop_t* loop) {
     }
 
     case AF_INET6: {
-      err = uv_ip6_addr(Settings::server_configuration_.rtcIp.c_str(), 0,
-                        reinterpret_cast<struct sockaddr_in6*>(&bind_addr));
+      err = uv_ip6_addr(Settings::publisher_config_.local_receive_configuration_
+                            .rtcIp.c_str(),
+                        0, reinterpret_cast<struct sockaddr_in6*>(&bind_addr));
       std::cout << "[port manager] uv_ip6_addr" << std::endl;
       if (err != 0)
         std::cout << "[port manager] uv_ip6_addr failed: " << uv_strerror(err)
@@ -141,14 +149,14 @@ uv_handle_t* PortManager::BindPort(uv_loop_t* loop) {
   switch (family) {
     case AF_INET:
       std::cout << "[port manager] unknown AF_INET" << std::endl;
-      (reinterpret_cast<struct sockaddr_in*>(&bind_addr))->sin_port =
-          htons(Settings::server_configuration_.rtcPort);
+      (reinterpret_cast<struct sockaddr_in*>(&bind_addr))->sin_port = htons(
+          Settings::publisher_config_.local_receive_configuration_.rtcPort);
       break;
 
     case AF_INET6:
       std::cout << "[port manager] unknown AF_INET6" << std::endl;
-      (reinterpret_cast<struct sockaddr_in6*>(&bind_addr))->sin6_port =
-          htons(Settings::server_configuration_.rtcPort);
+      (reinterpret_cast<struct sockaddr_in6*>(&bind_addr))->sin6_port = htons(
+          Settings::publisher_config_.local_receive_configuration_.rtcPort);
       break;
   }
 
