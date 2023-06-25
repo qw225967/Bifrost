@@ -13,7 +13,6 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>  // std::ostream_iterator
-#include <json.hpp>
 
 #include "utils.h"
 extern "C" {
@@ -125,10 +124,21 @@ sockaddr Settings::get_sockaddr_by_config(Configuration& publish_config) {
 
 void Settings::PrintConfiguration() {}
 
+void Settings::ReadExperimentConfiguration(json& config) {
+  auto gcc_iter = config.find("GccExperiment");
+  if (gcc_iter == config.end()) {
+    std::cout << "[setting] read experiment configuration gcc experiment"
+              << std::endl;
+  } else {
+    auto tlws = gcc_iter->find("TrendLineWindowSize");
+    gcc_experiment_config_.TrendLineWindowSize = tlws->get<uint32_t>();
+    auto tlts = gcc_iter->find("TrendLineThreshold");
+    gcc_experiment_config_.TrendLineThreshold = tlts->get<float>();
+  }
+}
+
 void Settings::AnalysisConfigurationFile(std::string& publish_config_path,
                                          std::string& player_config_path) {
-  using json = nlohmann::json;
-
   if (publish_config_path.empty()) {
     return;
   }
@@ -325,6 +335,10 @@ void Settings::AnalysisConfigurationFile(std::string& publish_config_path,
       player_config_map_[addr_config.local_receive_configuration_.userName] =
           addr_config;
     }
+
+    // experiment
+    auto experiment = publish_config.find("ExperimentConfig");
+    ReadExperimentConfiguration(experiment.value());
   }
 }
 

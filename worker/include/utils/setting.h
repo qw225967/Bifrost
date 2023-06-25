@@ -10,14 +10,18 @@
 #ifndef WORKER_SETTING_H
 #define WORKER_SETTING_H
 
+#include <json.hpp>
 #include <map>
 #include <string>
 #include <vector>
 
 #include "common.h"
+#include "experiment_manager.h"
 
 namespace bifrost {
 class Settings {
+  using json = nlohmann::json;
+
  public:
   // Struct holding the configuration.
   struct Configuration {
@@ -41,6 +45,7 @@ class Settings {
   static void SetConfiguration(int argc, char* argv[]);
   static void AnalysisConfigurationFile(std::string& config_path,
                                         std::string& player_config_path);
+  static void ReadExperimentConfiguration(json& config);
   static void PrintConfiguration();
 
  public:
@@ -49,6 +54,7 @@ class Settings {
  public:
   static struct AddressConfiguration publisher_config_;
   static std::map<std::string, struct AddressConfiguration> player_config_map_;
+  static ExperimentManager::GccExperimentConfig gcc_experiment_config_;
 };
 }  // namespace bifrost
 

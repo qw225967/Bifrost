@@ -13,11 +13,20 @@
 namespace bifrost {
 class ExperimentManager {
  public:
+  struct GccExperimentConfig {
+    // GCC拥塞检测计算趋势的窗口值。
+    // 例如：值为20，那么接收到feedback的时候，收到20个delta就会计算一次斜率。
+    uint32_t TrendLineWindowSize;
+
+    // GCC拥塞检测使用delta的斜率检测拥塞的阈值。
+    float TrendLineThreshold;
+  };
+
+ public:
   ExperimentManager();
   ~ExperimentManager();
 
  private:
-
 };
 }  // namespace bifrost
 
