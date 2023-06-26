@@ -378,6 +378,7 @@ add_executable(worker
         include/bifrost/data_producer.h
         include/bifrost/player.h
         include/bifrost/publisher.h
+        include/bifrost/experiment_manager.h
         include/io/uv_timer.h
         include/io/port_manager.h
         include/io/udp_socket.h
@@ -400,6 +401,7 @@ add_executable(worker
         src/bifrost/data_producer.cpp
         src/bifrost/player.cpp
         src/bifrost/publisher.cpp
+        src/bifrost/experiment_manager.cpp
         src/io/uv_timer.cpp
         src/io/port_manager.cpp
         src/io/udp_socket.cpp

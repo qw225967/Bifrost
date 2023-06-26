@@ -10,6 +10,8 @@
 #ifndef WORKER_EXPERIMENT_MANAGER_H
 #define WORKER_EXPERIMENT_MANAGER_H
 
+#include <iostream>
+
 namespace bifrost {
 class ExperimentManager {
  public:

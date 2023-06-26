@@ -23,6 +23,7 @@ namespace bifrost {
 
 /* Class variables. */
 struct Settings::AddressConfiguration Settings::publisher_config_;
+struct ExperimentManager::GccExperimentConfig Settings::gcc_experiment_config_;
 std::map<std::string, struct Settings::AddressConfiguration>
     Settings::player_config_map_;
 

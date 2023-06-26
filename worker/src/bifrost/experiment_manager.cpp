@@ -6,3 +6,10 @@
  * @file        : experiment_manager.cpp
  * @description : TODO
  *******************************************************/
+
+#include "experiment_manager.h"
+
+namespace bifrost {
+ExperimentManager::ExperimentManager() {}
+ExperimentManager::~ExperimentManager() {}
+}  // namespace bifrost

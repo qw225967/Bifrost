@@ -17,6 +17,8 @@
     "FecExperiment": {
     },
     "GccExperiment": {
+      "TrendLineWindowSize": 80,
+      "TrendLineThreshold": 0
     }
   }
 }

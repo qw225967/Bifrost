@@ -68,6 +68,8 @@ void Publisher::TccClientSendRtpPacket(const uint8_t* data, size_t len) {
   packetInfo.length = packet->GetSize();
   packetInfo.pacing_info = this->tcc_client_->GetPacingInfo();
 
+  // webrtc中发送和进入发送状态有一小段等待时间
+  // 因此分开了两个函数 insert 和 sent 函数
   this->tcc_client_->InsertPacket(packetInfo);
 
   this->tcc_client_->PacketSent(packetInfo,
