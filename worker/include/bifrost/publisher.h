@@ -10,6 +10,7 @@
 #ifndef WORKER_PUBLISHER_H
 #define WORKER_PUBLISHER_H
 
+#include "experiment_manager.h"
 #include "data_producer.h"
 #include "rtcp_tcc.h"
 #include "setting.h"
@@ -22,6 +23,7 @@ typedef std::shared_ptr<sockaddr> SockAddressPtr;
 typedef std::shared_ptr<DataProducer> DataProducerPtr;
 typedef std::shared_ptr<TransportCongestionControlClient>
     TransportCongestionControlClientPtr;
+typedef std::shared_ptr<ExperimentManager> ExperimentManagerPtr;
 class Publisher : public UvTimer::Listener,
                   public TransportCongestionControlClient::Observer {
  public:
@@ -42,6 +44,7 @@ class Publisher : public UvTimer::Listener,
             Observer* observer);
   ~Publisher() {
     delete producer_timer;
+    delete data_dump_timer;
     tcc_client_.reset();
     data_producer_.reset();
   }
@@ -67,6 +70,7 @@ class Publisher : public UvTimer::Listener,
   // uv
   UvLoop* uv_loop_;
   UvTimer* producer_timer;
+  UvTimer* data_dump_timer;
 
   // tcc
   uint16_t tcc_seq_ = 0;
@@ -84,6 +88,9 @@ class Publisher : public UvTimer::Listener,
   // pacer bytes
   uint32_t pacer_bits_;
   int32_t pre_remind_bytes_ = 0;
+
+  // experiment
+  ExperimentManagerPtr experiment_manager_;
 };
 }  // namespace bifrost
 

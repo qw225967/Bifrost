@@ -3,3 +3,4 @@
 cmake-build-debug
 
 source_file/*
+data/*

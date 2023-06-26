@@ -10,7 +10,13 @@
 #ifndef WORKER_EXPERIMENT_MANAGER_H
 #define WORKER_EXPERIMENT_MANAGER_H
 
+#include <stdlib.h>
+
+#include <fstream>
 #include <iostream>
+#include <vector>
+
+#include "experiment_data.h"
 
 namespace bifrost {
 class ExperimentManager {
@@ -28,7 +34,12 @@ class ExperimentManager {
   ExperimentManager();
   ~ExperimentManager();
 
+  void DumpGccDataToCsv(ExperimentGccData data);
+
  private:
+  // gcc experiment
+  std::ofstream gcc_data_file_;
+  std::vector<ExperimentGccData> gcc_data_vec_;
 };
 }  // namespace bifrost
 

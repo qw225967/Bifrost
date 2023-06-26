@@ -22,15 +22,20 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
   auto remote_addr = Settings::get_sockaddr_by_config(remote_config);
   this->udp_remote_address_ = std::make_shared<sockaddr>(remote_addr);
 
-  // 2.timer start
+  // 2.experiment
+  this->experiment_manager_ = std::make_shared<ExperimentManager>();
+
+  // 3.timer start
   this->producer_timer = new UvTimer(this, this->uv_loop_->get_loop().get());
   this->producer_timer->Start(5, 5);
+  this->data_dump_timer = new UvTimer(this, this->uv_loop_->get_loop().get());
+  this->data_dump_timer->Start(1000, 1000);
 
-  // 3.create data producer
+  // 4.create data producer
   this->data_producer_ =
       std::make_shared<DataProducer>(remote_addr_config_.ssrc);
 
-  // 4.tcc client
+  // 5.tcc client
   this->tcc_client_ = std::make_shared<TransportCongestionControlClient>(
       this, InitialAvailableBitrate, &this->uv_loop_);
 }
@@ -95,6 +100,12 @@ void Publisher::OnTimer(UvTimer* timer) {
       }
     }
     pre_remind_bytes_ = available;
+  }
+
+  if (timer == this->data_dump_timer) {
+    auto gcc_available = this->tcc_client_->get_available_bitrate();
+    ExperimentGccData gcc_data(gcc_available, 0);
+    this->experiment_manager_->DumpGccDataToCsv(gcc_data);
   }
 }
 }  // namespace bifrost
