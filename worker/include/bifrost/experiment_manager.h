@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "experiment_data.h"
+#include "uv_loop.h"
 
 namespace bifrost {
 class ExperimentManager {
