@@ -12,6 +12,7 @@
 
 #include <uv.h>
 
+#include <functional>
 #include <string>
 
 namespace bifrost {

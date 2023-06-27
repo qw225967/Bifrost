@@ -4,3 +4,7 @@ cmake-build-debug
 
 source_file/*
 data/*
+
+CMakeFiles/*
+
+third_party/libwebrtc/dep/abseil-cpp/abseil-cpp/CMakeFiles/*

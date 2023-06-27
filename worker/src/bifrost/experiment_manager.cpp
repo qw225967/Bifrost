@@ -11,6 +11,7 @@
 
 #include <ctime>
 #include <sstream>
+#include <cstring>
 
 namespace bifrost {
 ExperimentManager::ExperimentManager() {

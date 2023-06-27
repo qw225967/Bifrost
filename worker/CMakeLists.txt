@@ -460,4 +460,4 @@ add_executable(worker
         third_party/json/single_include/nlohmann/json.hpp
         )
 
-target_link_libraries(worker libuv.a)
+target_link_libraries(worker libuv.a pthread dl)

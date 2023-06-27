@@ -8,7 +8,7 @@ multi-stream competition experiments.
 
 ## Install
 
-***Just support MacOS/Linux now!***
+***Just support MacOS now!***
 
 ***Clion idea is recommended.***
 
@@ -28,12 +28,26 @@ mkdir -p build
 # generate project with tests
 cd build && cmake .. -DBUILD_TESTING=ON
 
+cd ..
+
 # add `-j <n>` with cmake >= 3.12
 cmake --build build
 ```
 
 ### 3.Debug
+#### 3.1 MacOS
 Clion must use lldb. 
+
+#### 3.2 Linux
+```
+cd Bifrost/worker
+
+mkdir -p build
+
+cd build && cmake ..
+
+make
+```
 
 ## Display
 

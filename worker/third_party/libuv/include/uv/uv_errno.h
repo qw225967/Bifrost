@@ -24,7 +24,7 @@
 
 #ifdef __APPLE__
 #include <sys/errno.h>
-#elif
+#else
 #include <errno.h>
 #endif
 

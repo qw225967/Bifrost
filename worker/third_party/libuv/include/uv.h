@@ -53,11 +53,12 @@ extern "C" {
 #endif
 #endif /* UV_EXTERN */
 
-#include "uv/errno.h"
-#include "uv/version.h"
 #include <stddef.h>
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
+
+#include "uv/uv_errno.h"
+#include "uv/version.h"
 
 /* Internal type, do not use. */
 struct uv__queue {

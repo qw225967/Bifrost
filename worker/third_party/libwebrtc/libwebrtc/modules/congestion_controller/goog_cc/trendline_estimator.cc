@@ -198,9 +198,6 @@ void TrendlineEstimator::Detect(double trend, double ts_delta, int64_t now_ms) {
     overuse_counter_ = 0;
     hypothesis_ = BandwidthUsage::kBwNormal;
   }
-  std::cout << "Detect hypothesis_:" << BandwidthUsage2String(hypothesis_)
-            << ", trend:" << trend << ", modified_trend:" << modified_trend
-            << ", threshold_:" << threshold_ << std::endl;
   prev_trend_ = trend;
   trends_.push_back(trend);
   UpdateThreshold(modified_trend, now_ms);
