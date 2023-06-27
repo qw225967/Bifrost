@@ -57,7 +57,7 @@ void ExperimentManager::DumpGccDataToCsv(uint32_t count, uint32_t sample_size,
   sprintf(temp_str, "%02d", now->tm_sec);
   timeStr << temp_str << ".";
   sprintf(temp_str, "%03d",
-          1000 - (1000 * count / sample_size));  // 平均换算1s内的采样点
+          1000 * count / sample_size);  // 平均换算1s内的采样点
   timeStr << temp_str;
   if (data.AvailableBitrate != 0 && data.SentBitrate != 0)
     this->gcc_data_file_ << timeStr.str() << "," << data.AvailableBitrate << ","
