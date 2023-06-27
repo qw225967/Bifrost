@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
+#include <iostream>
 #include <string>
 
 #include "api/transport/network_types.h"
@@ -271,6 +272,11 @@ DataRate AimdRateControl::ChangeBitrate(DataRate new_bitrate,
       // will not be able to get transport feedback necessary to detect if
       // the new estimate is correct.
       if (!(send_side_ && in_alr_ && no_bitrate_increase_in_alr_)) {
+        std::cout << "ChangeBitrate in_alr_:" << (in_alr_ ? "true" : "false")
+                  << ", no_bitrate_increase_in_alr_:"
+                  << (no_bitrate_increase_in_alr_ ? "true" : "false")
+                  << std::endl;
+
         if (link_capacity_.has_estimate()) {
           // The link_capacity estimate is reset if the measured throughput
           // is too far from the estimate. We can therefore assume that our

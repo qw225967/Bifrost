@@ -43,8 +43,7 @@ class RtpTransportControllerSend final
       PacketRouter* packet_router,
       NetworkStatePredictorFactoryInterface* predictor_factory,
       NetworkControllerFactoryInterface* controller_factory,
-      const BitrateConstraints& bitrate_config,
-      bifrost::UvLoop* loop);
+      const BitrateConstraints& bitrate_config, bifrost::UvLoop* loop);
   ~RtpTransportControllerSend() override;
 
   PacketRouter* packet_router() override;
@@ -88,6 +87,8 @@ class RtpTransportControllerSend final
   void SetSendSideBandwidthMinBitrate(int minBitrate);
 
   void ChangeWindowSize(size_t size);
+
+  std::vector<double> GetPrevTrend();
 
   void ChangeDynamicMinThreshold(double threshold);
 

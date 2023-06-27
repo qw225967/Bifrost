@@ -10,16 +10,17 @@
 #ifndef MODULES_CONGESTION_CONTROLLER_GOOG_CC_TRENDLINE_ESTIMATOR_H_
 #define MODULES_CONGESTION_CONTROLLER_GOOG_CC_TRENDLINE_ESTIMATOR_H_
 
+#include <stddef.h>
+#include <stdint.h>
+
+#include <deque>
+#include <utility>
+
 #include "api/network_state_predictor.h"
 #include "api/transport/webrtc_key_value_config.h"
 #include "modules/congestion_controller/goog_cc/delay_increase_detector_interface.h"
 #include "modules/remote_bitrate_estimator/include/bwe_defines.h"
 #include "rtc_base/constructor_magic.h"
-
-#include <stddef.h>
-#include <stdint.h>
-#include <deque>
-#include <utility>
 
 namespace webrtc {
 
@@ -34,8 +35,7 @@ class TrendlineEstimator : public DelayIncreaseDetectorInterface {
   // (or the thresholds been merged into the estimators), we can just set the
   // threshold instead of setting a gain.|network_state_predictor| is used to
   // bettter predict network state.
-  TrendlineEstimator(size_t window_size,
-                     double smoothing_coef,
+  TrendlineEstimator(size_t window_size, double smoothing_coef,
                      double threshold_gain,
                      NetworkStatePredictor* network_state_predictor);
 
@@ -43,32 +43,35 @@ class TrendlineEstimator : public DelayIncreaseDetectorInterface {
 
   // Update the estimator with a new sample. The deltas should represent deltas
   // between timestamp groups as defined by the InterArrival class.
-  void Update(double recv_delta_ms,
-              double send_delta_ms,
-              int64_t send_time_ms,
-              int64_t arrival_time_ms,
-              bool calculated_deltas) override;
+  void Update(double recv_delta_ms, double send_delta_ms, int64_t send_time_ms,
+              int64_t arrival_time_ms, bool calculated_deltas) override;
 
   BandwidthUsage State() const override;
 
   void ChangeWindowSize(size_t size) {
-		if (size > 150) {
-			window_size_ = 150;
-		} else if (size < 40) {
-			window_size_ = 40;
-		} else {
-			window_size_ = size;
-		}
-	}
+    if (size > 150) {
+      window_size_ = 150;
+    } else if (size < 40) {
+      window_size_ = 40;
+    } else {
+      window_size_ = size;
+    }
+  }
 
-	void ChangeDynamicMinThreshold(double threshold) {
-  	if (threshold > 90.f) {
-  		dynamic_min_threshold_ = 90.f;
-  	} else if (threshold < 6.f) {
-  		dynamic_min_threshold_ = 6.f;
-  	} else {
-  		dynamic_min_threshold_ = threshold;
-  	}
+  void ChangeDynamicMinThreshold(double threshold) {
+    if (threshold > 90.f) {
+      dynamic_min_threshold_ = 90.f;
+    } else if (threshold < 6.f) {
+      dynamic_min_threshold_ = 6.f;
+    } else {
+      dynamic_min_threshold_ = threshold;
+    }
+  }
+
+  std::vector<double> GetPrevTrend() {
+    auto temp = this->trends_;
+    this->trends_.clear();
+    return temp;
   }
 
  protected:
@@ -104,6 +107,7 @@ class TrendlineEstimator : public DelayIncreaseDetectorInterface {
   double prev_modified_trend_;
   int64_t last_update_ms_;
   double prev_trend_;
+  std::vector<double> trends_;
   double time_over_using_;
   int overuse_counter_;
   BandwidthUsage hypothesis_;

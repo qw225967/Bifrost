@@ -11,6 +11,13 @@
 #ifndef MODULES_CONGESTION_CONTROLLER_GOOG_CC_DELAY_BASED_BWE_H_
 #define MODULES_CONGESTION_CONTROLLER_GOOG_CC_DELAY_BASED_BWE_H_
 
+#include <absl/types/optional.h>
+#include <stddef.h>
+#include <stdint.h>
+
+#include <memory>
+#include <vector>
+
 #include "api/network_state_predictor.h"
 #include "api/transport/network_types.h"
 #include "api/transport/webrtc_key_value_config.h"
@@ -20,13 +27,6 @@
 #include "modules/remote_bitrate_estimator/include/bwe_defines.h"
 #include "modules/remote_bitrate_estimator/inter_arrival.h"
 #include "rtc_base/constructor_magic.h"
-
-#include <absl/types/optional.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <memory>
-#include <vector>
-
 
 namespace webrtc {
 class RtcEventLog;
@@ -52,8 +52,7 @@ class DelayBasedBwe {
       const TransportPacketsFeedback& msg,
       absl::optional<DataRate> acked_bitrate,
       absl::optional<DataRate> probe_bitrate,
-      absl::optional<NetworkStateEstimate> network_estimate,
-      bool in_alr);
+      absl::optional<NetworkStateEstimate> network_estimate, bool in_alr);
   void OnRttUpdate(TimeDelta avg_rtt);
   bool LatestEstimate(std::vector<uint32_t>* ssrcs, DataRate* bitrate) const;
   void SetStartBitrate(DataRate start_bitrate);
@@ -65,20 +64,22 @@ class DelayBasedBwe {
                           absl::optional<DataRate> link_capacity);
 
   void ChangeWindowSize(size_t size) {
-  	if (delay_detector_.get()) {
-  		delay_detector_->ChangeWindowSize(size);
-		}
-	}
+    if (delay_detector_.get()) {
+      delay_detector_->ChangeWindowSize(size);
+    }
+  }
+
+  std::vector<double> GetPrevTrend() { return delay_detector_->GetPrevTrend(); }
 
   void ChangeDynamicMinThreshold(double threshold) {
-  	if (delay_detector_.get()) {
-  		delay_detector_->ChangeDynamicMinThreshold(threshold);
-  	}
-	}
+    if (delay_detector_.get()) {
+      delay_detector_->ChangeDynamicMinThreshold(threshold);
+    }
+  }
 
-	void SetNoBitrateIncreaseInAlr(bool flag) {
-  	rate_control_.SetNoBitrateIncreaseInAlr(flag);
-	}
+  void SetNoBitrateIncreaseInAlr(bool flag) {
+    rate_control_.SetNoBitrateIncreaseInAlr(flag);
+  }
 
  private:
   friend class GoogCcStatePrinter;
@@ -88,13 +89,10 @@ class DelayBasedBwe {
       absl::optional<DataRate> acked_bitrate,
       absl::optional<DataRate> probe_bitrate,
       absl::optional<NetworkStateEstimate> state_estimate,
-      bool recovered_from_overuse,
-      bool in_alr,
-      Timestamp at_time);
+      bool recovered_from_overuse, bool in_alr, Timestamp at_time);
   // Updates the current remote rate estimate and returns true if a valid
   // estimate exists.
-  bool UpdateEstimate(Timestamp now,
-                      absl::optional<DataRate> acked_bitrate,
+  bool UpdateEstimate(Timestamp now, absl::optional<DataRate> acked_bitrate,
                       DataRate* target_bitrate);
 
   const WebRtcKeyValueConfig* const key_value_config_;

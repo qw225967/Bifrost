@@ -14,10 +14,14 @@
 
 namespace bifrost {
 struct ExperimentGccData {
-  ExperimentGccData(uint32_t available_bitrate, uint32_t sent_bitrate)
-      : AvailableBitrate(available_bitrate), SentBitrate(sent_bitrate) {}
+  ExperimentGccData(uint32_t available_bitrate, uint32_t sent_bitrate,
+                    double trend)
+      : AvailableBitrate(available_bitrate),
+        SentBitrate(sent_bitrate),
+        Trend(trend) {}
   uint32_t AvailableBitrate;
   uint32_t SentBitrate;
+  double Trend;
 };
 }  // namespace bifrost
 

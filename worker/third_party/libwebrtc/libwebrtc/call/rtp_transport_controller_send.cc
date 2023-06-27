@@ -66,6 +66,10 @@ void RtpTransportControllerSend::ChangeWindowSize(size_t size) {
   }
 }
 
+std::vector<double> RtpTransportControllerSend::GetPrevTrend() {
+  return controller_->GetPrevTrend();
+}
+
 void RtpTransportControllerSend::ChangeDynamicMinThreshold(double threshold) {
   if (controller_.get()) {
     controller_->ChangeDynamicMinThreshold(threshold);

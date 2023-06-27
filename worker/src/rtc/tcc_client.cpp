@@ -232,8 +232,8 @@ void TransportCongestionControlClient::MayEmitAvailableBitrateEvent(
   else if (this->bitrates_.availableBitrate < previousAvailableBitrate * 0.75) {
     std::cout << "[tcc client] high BWE value decrease detected, notifying the "
                  "listener [now:"
-              << this->bitrates_.availableBitrate << ", before:%"
-              << previousAvailableBitrate << "]" << std::endl;
+              << this->bitrates_.availableBitrate
+              << ", before:" << previousAvailableBitrate << "]" << std::endl;
 
     notify = true;
   }
@@ -241,8 +241,8 @@ void TransportCongestionControlClient::MayEmitAvailableBitrateEvent(
   else if (this->bitrates_.availableBitrate > previousAvailableBitrate * 1.50) {
     std::cout << "[tcc client] high BWE value increase detected, notifying the "
                  "listener [now:"
-              << this->bitrates_.availableBitrate << ", before:%"
-              << previousAvailableBitrate << "]" << std::endl;
+              << this->bitrates_.availableBitrate
+              << ", before:" << previousAvailableBitrate << "]" << std::endl;
 
     notify = true;
   }

@@ -124,12 +124,14 @@ void Transport::OnUdpRouterRtcpPacketReceived(
   auto type = rtcp_packet->GetType();
   switch (type) {
     case Type::RTPFB: {
-      auto feedback_packet = FeedbackRtpTransportPacket::Parse(
-          rtcp_packet->GetData(), rtcp_packet->GetSize());
-      if (feedback_packet == nullptr) {
-        return;
+      auto* rtp_fb = static_cast<FeedbackRtpPacket*>(rtcp_packet.get());
+      switch (rtp_fb->GetMessageType()) {
+        case FeedbackRtp::MessageType::TCC: {
+          auto* feedback = static_cast<FeedbackRtpTransportPacket*>(rtp_fb);
+          this->publisher_->ReceiveFeedbackTransport(feedback);
+          break;
+        }
       }
-      this->publisher_->ReceiveFeedbackTransport(feedback_packet.get());
       break;
     }
   }

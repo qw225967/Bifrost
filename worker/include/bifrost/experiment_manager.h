@@ -35,11 +35,13 @@ class ExperimentManager {
   ExperimentManager();
   ~ExperimentManager();
 
-  void DumpGccDataToCsv(ExperimentGccData data);
+  void DumpGccDataToCsv(uint32_t count, uint32_t sample_size,
+                        ExperimentGccData data);
 
  private:
   // gcc experiment
   std::ofstream gcc_data_file_;
+  std::ofstream gcc_trend_data_file_;
   std::vector<ExperimentGccData> gcc_data_vec_;
 };
 }  // namespace bifrost

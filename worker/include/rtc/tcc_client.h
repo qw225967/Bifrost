@@ -55,6 +55,9 @@ class TransportCongestionControlClient
   uint32_t get_available_bitrate() const {
     return this->bitrates_.availableBitrate;
   }
+  std::vector<double> get_trend() {
+    return rtp_transport_controller_send_->GetPrevTrend();
+  }
 
  public:
   void InsertPacket(webrtc::RtpPacketSendInfo& packetInfo);

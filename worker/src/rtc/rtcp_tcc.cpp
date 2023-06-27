@@ -102,9 +102,8 @@ FeedbackRtpTransportPacket::FeedbackRtpTransportPacket(
 
   if (len > availableLen) {
     std::cout << "[feedback tcc packet] packet announced length exceeds the "
-                 "available buffer length, "
-                 "discarded"
-              << std::endl;
+              << "available buffer length: " << len
+              << ", max len:" << availableLen << std::endl;
 
     this->isCorrect = false;
 

@@ -17,6 +17,7 @@
 #include <math.h>
 
 #include <algorithm>
+#include <iostream>
 #include <string>
 
 #include "modules/remote_bitrate_estimator/include/bwe_defines.h"
@@ -27,7 +28,7 @@ namespace webrtc {
 namespace {
 
 // Parameters for linear least squares fit of regression line to noisy data.
-constexpr size_t kDefaultTrendlineWindowSize = 20;
+constexpr size_t kDefaultTrendlineWindowSize = 80;
 constexpr double kDefaultTrendlineSmoothingCoeff = 0.9;
 constexpr double kDefaultTrendlineThresholdGain = 4.0;
 const char kBweWindowSizeInPacketsExperiment[] =
@@ -169,10 +170,7 @@ void TrendlineEstimator::Detect(double trend, double ts_delta, int64_t now_ms) {
   const double modified_trend =
       std::min(num_of_deltas_, kMinNumDeltas) * trend * threshold_gain_;
   prev_modified_trend_ = modified_trend;
-  // BWE_TEST_LOGGING_PLOT(1, "T", now_ms, modified_trend);
-  // BWE_TEST_LOGGING_PLOT(1, "threshold", now_ms, threshold_);
 
-  // frq test 动态增加阈值，大码率时敏感，低码率时迟钝，让码率尽快平衡
   if (modified_trend > threshold_) {
     if (time_over_using_ == -1) {
       // Initialize the timer. Assume that we've been
@@ -200,7 +198,11 @@ void TrendlineEstimator::Detect(double trend, double ts_delta, int64_t now_ms) {
     overuse_counter_ = 0;
     hypothesis_ = BandwidthUsage::kBwNormal;
   }
+  std::cout << "Detect hypothesis_:" << BandwidthUsage2String(hypothesis_)
+            << ", trend:" << trend << ", modified_trend:" << modified_trend
+            << ", threshold_:" << threshold_ << std::endl;
   prev_trend_ = trend;
+  trends_.push_back(trend);
   UpdateThreshold(modified_trend, now_ms);
 }
 

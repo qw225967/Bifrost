@@ -11,6 +11,13 @@
 #ifndef MODULES_CONGESTION_CONTROLLER_GOOG_CC_GOOG_CC_NETWORK_CONTROL_H_
 #define MODULES_CONGESTION_CONTROLLER_GOOG_CC_GOOG_CC_NETWORK_CONTROL_H_
 
+#include <absl/types/optional.h>
+#include <stdint.h>
+
+#include <deque>
+#include <memory>
+#include <vector>
+
 #include "api/network_state_predictor.h"
 #include "api/transport/field_trial_based_config.h"
 #include "api/transport/network_control.h"
@@ -28,12 +35,6 @@
 #include "rtc_base/constructor_magic.h"
 #include "rtc_base/experiments/field_trial_parser.h"
 #include "rtc_base/experiments/rate_control_settings.h"
-
-#include <absl/types/optional.h>
-#include <stdint.h>
-#include <deque>
-#include <memory>
-#include <vector>
 
 namespace webrtc {
 struct GoogCcConfig {
@@ -69,22 +70,26 @@ class GoogCcNetworkController : public NetworkControllerInterface {
   void SetSendSideBandwidthMinBitrate(int minBitrate);
 
   void ChangeWindowSize(size_t size) {
-  	if (delay_based_bwe_.get()) {
-  		delay_based_bwe_->ChangeWindowSize(size);
-  	}
+    if (delay_based_bwe_.get()) {
+      delay_based_bwe_->ChangeWindowSize(size);
+    }
+  }
+
+  std::vector<double> GetPrevTrend() {
+    return delay_based_bwe_->GetPrevTrend();
   }
 
   void ChangeDynamicMinThreshold(double threshold) {
-  	if (delay_based_bwe_.get()) {
-  		delay_based_bwe_->ChangeDynamicMinThreshold(threshold);
-  	}
+    if (delay_based_bwe_.get()) {
+      delay_based_bwe_->ChangeDynamicMinThreshold(threshold);
+    }
   }
 
   void SetNoBitrateIncreaseInAlr(bool flag) {
-  	if (delay_based_bwe_.get()) {
-  		delay_based_bwe_->SetNoBitrateIncreaseInAlr(flag);
-  	}
-	}
+    if (delay_based_bwe_.get()) {
+      delay_based_bwe_->SetNoBitrateIncreaseInAlr(flag);
+    }
+  }
 
  private:
   friend class GoogCcStatePrinter;

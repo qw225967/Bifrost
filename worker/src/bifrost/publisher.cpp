@@ -10,7 +10,7 @@
 #include "publisher.h"
 
 namespace bifrost {
-const uint32_t InitialAvailableBitrate = 2000000u;
+const uint32_t InitialAvailableBitrate = 600000u;
 
 Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
                      Observer* observer)
@@ -87,18 +87,17 @@ uint32_t Publisher::TccClientSendRtpPacket(const uint8_t* data, size_t len) {
 
 void Publisher::OnTimer(UvTimer* timer) {
   if (timer == this->producer_timer) {
-    int32_t available = int32_t(this->pacer_bits_ / 200) +
-                        pre_remind_bits_;  // bits to bytes 5ms
+    int32_t available = int32_t(this->pacer_bits_ / 200) + pre_remind_bits_;
 
-    available = available > (1200000 / 200) ? (1200000 / 200) : available;
+    //    available = available > (1200000 / 200) ? (1200000 / 200) : available;
     while (available > 0) {
       if (this->data_producer_ != nullptr) {
         auto packet = this->data_producer_->CreateData();
         if (packet == nullptr) {
           return;
         }
-        auto send_size =
-            this->TccClientSendRtpPacket(packet->data(), packet->capacity());
+        auto send_size = this->TccClientSendRtpPacket(
+            packet->data(), packet->capacity() + packet->size());
         available -= int32_t(send_size * 8);
         this->send_bits_prior_ += (send_size * 8);
         delete packet;
@@ -109,9 +108,16 @@ void Publisher::OnTimer(UvTimer* timer) {
 
   if (timer == this->data_dump_timer) {
     auto gcc_available = this->tcc_client_->get_available_bitrate();
-    ExperimentGccData gcc_data(gcc_available, this->send_bits_prior_);
+    std::vector<double> trends = this->tcc_client_->get_trend();
+
+    for (auto i = 0; i<trends.size(); i++) {
+      ExperimentGccData gcc_data_temp(0, 0, trends[i]);
+      this->experiment_manager_->DumpGccDataToCsv(i+1, trends.size(), gcc_data_temp);
+    }
+
+    ExperimentGccData gcc_data(gcc_available, this->send_bits_prior_, 0);
     this->send_bits_prior_ = 0;
-    this->experiment_manager_->DumpGccDataToCsv(gcc_data);
+    this->experiment_manager_->DumpGccDataToCsv(1, 1, gcc_data);
   }
 }
 }  // namespace bifrost
