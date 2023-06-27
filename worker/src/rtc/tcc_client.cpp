@@ -255,6 +255,7 @@ void TransportCongestionControlClient::MayEmitAvailableBitrateEvent(
 
     this->last_available_bitrate_event_at_ms_ = nowMs;
 
+    // TODO: impl this func in class publisher
     this->observer_->OnTransportCongestionControlClientBitrates(
         this, this->bitrates_);
   }

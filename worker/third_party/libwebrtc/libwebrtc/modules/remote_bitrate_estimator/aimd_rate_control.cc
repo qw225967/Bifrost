@@ -364,7 +364,7 @@ DataRate AimdRateControl::ClampBitrate(DataRate new_bitrate,
     // We allow a bit more lag at very low rates to not too easily get stuck if
     // the encoder produces uneven outputs.
     const DataRate max_bitrate =
-        5.5 * estimated_throughput + DataRate::kbps(10);
+        1.5 * estimated_throughput + DataRate::kbps(10);
     if (new_bitrate > current_bitrate_ && new_bitrate > max_bitrate) {
       new_bitrate = std::max(current_bitrate_, max_bitrate);
     }

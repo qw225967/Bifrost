@@ -27,7 +27,7 @@ namespace webrtc {
 namespace {
 
 // Parameters for linear least squares fit of regression line to noisy data.
-constexpr size_t kDefaultTrendlineWindowSize = 150;
+constexpr size_t kDefaultTrendlineWindowSize = 20;
 constexpr double kDefaultTrendlineSmoothingCoeff = 0.9;
 constexpr double kDefaultTrendlineThresholdGain = 4.0;
 const char kBweWindowSizeInPacketsExperiment[] =
@@ -219,10 +219,7 @@ void TrendlineEstimator::UpdateThreshold(double modified_trend,
   const int64_t kMaxTimeDeltaMs = 100;
   int64_t time_delta_ms = std::min(now_ms - last_update_ms_, kMaxTimeDeltaMs);
   threshold_ += k * (fabs(modified_trend) - threshold_) * time_delta_ms;
-  threshold_ =
-      rtc::SafeClamp(threshold_, dynamic_min_threshold_,
-                     600.f);  // frq test 中间的数值 dynamic_min_threshold_
-                              // 原值 6.f 配合外部动态调整阈值判断
+  threshold_ = rtc::SafeClamp(threshold_, 6.f, 600.f);
   last_update_ms_ = now_ms;
 }
 

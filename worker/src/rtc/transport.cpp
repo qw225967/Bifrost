@@ -93,7 +93,7 @@ Transport::~Transport() {
   if (this->publisher_ != nullptr) this->publisher_.reset();
 
   auto iter = this->players_.begin();
-  for (;iter != this->players_.end();iter++) {
+  for (; iter != this->players_.end(); iter++) {
     iter->second.reset();
   }
 }
@@ -106,10 +106,11 @@ void Transport::OnUdpRouterRtpPacketReceived(
   uint16_t wideSeqNumber;
   rtp_packet->ReadTransportWideCc01(wideSeqNumber);
 
-  std::cout << "ssrc:" << rtp_packet->GetSsrc()
-            << ", seq:" << rtp_packet->GetSequenceNumber()
-            << ", payload_type:" << rtp_packet->GetPayloadType()
-            << ", tcc seq:" << wideSeqNumber << ", this:" << this << std::endl;
+  //  std::cout << "ssrc:" << rtp_packet->GetSsrc()
+  //            << ", seq:" << rtp_packet->GetSequenceNumber()
+  //            << ", payload_type:" << rtp_packet->GetPayloadType()
+  //            << ", tcc seq:" << wideSeqNumber << ", this:" << this <<
+  //            std::endl;
 
   auto player = this->players_.find(rtp_packet->GetSsrc());
   if (player != this->players_.end()) {
@@ -126,7 +127,6 @@ void Transport::OnUdpRouterRtcpPacketReceived(
       auto feedback_packet = FeedbackRtpTransportPacket::Parse(
           rtcp_packet->GetData(), rtcp_packet->GetSize());
       if (feedback_packet == nullptr) {
-        std::cout << "feedback_packet nullptr" << std::endl;
         return;
       }
       this->publisher_->ReceiveFeedbackTransport(feedback_packet.get());

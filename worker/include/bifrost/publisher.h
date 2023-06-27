@@ -10,8 +10,8 @@
 #ifndef WORKER_PUBLISHER_H
 #define WORKER_PUBLISHER_H
 
-#include "experiment_manager.h"
 #include "data_producer.h"
+#include "experiment_manager.h"
 #include "rtcp_tcc.h"
 #include "setting.h"
 #include "tcc_client.h"
@@ -61,7 +61,7 @@ class Publisher : public UvTimer::Listener,
 
  private:
   void GetRtpExtensions(RtpPacketPtr packet);
-  void TccClientSendRtpPacket(const uint8_t* data, size_t len);
+  uint32_t TccClientSendRtpPacket(const uint8_t* data, size_t len);
 
  private:
   // observer
@@ -87,7 +87,8 @@ class Publisher : public UvTimer::Listener,
 
   // pacer bytes
   uint32_t pacer_bits_;
-  int32_t pre_remind_bytes_ = 0;
+  int32_t pre_remind_bits_ = 0;
+  uint32_t send_bits_prior_ = 0;
 
   // experiment
   ExperimentManagerPtr experiment_manager_;

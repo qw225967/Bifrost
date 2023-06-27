@@ -59,7 +59,7 @@ void Publisher::GetRtpExtensions(RtpPacketPtr packet) {
   packet->SetTransportWideCc01ExtensionId(7);
 }
 
-void Publisher::TccClientSendRtpPacket(const uint8_t* data, size_t len) {
+uint32_t Publisher::TccClientSendRtpPacket(const uint8_t* data, size_t len) {
   RtpPacketPtr packet = RtpPacket::Parse(data, len);
   this->GetRtpExtensions(packet);
   packet->UpdateTransportWideCc01(++this->tcc_seq_);
@@ -81,30 +81,36 @@ void Publisher::TccClientSendRtpPacket(const uint8_t* data, size_t len) {
                                 this->uv_loop_->get_time_ms_int64());
 
   observer_->OnPublisherSendPacket(packet, this->udp_remote_address_.get());
+
+  return packet->GetSize();
 }
 
 void Publisher::OnTimer(UvTimer* timer) {
   if (timer == this->producer_timer) {
-    int32_t available = int32_t(this->pacer_bits_ / 200 / 8) +
-                        pre_remind_bytes_;  // bits to bytes 5ms
+    int32_t available = int32_t(this->pacer_bits_ / 200) +
+                        pre_remind_bits_;  // bits to bytes 5ms
 
+    available = available > (1200000 / 200) ? (1200000 / 200) : available;
     while (available > 0) {
       if (this->data_producer_ != nullptr) {
         auto packet = this->data_producer_->CreateData();
         if (packet == nullptr) {
           return;
         }
-        this->TccClientSendRtpPacket(packet->data(), packet->size());
-        available -= int32_t(packet->size());
+        auto send_size =
+            this->TccClientSendRtpPacket(packet->data(), packet->capacity());
+        available -= int32_t(send_size * 8);
+        this->send_bits_prior_ += (send_size * 8);
         delete packet;
       }
     }
-    pre_remind_bytes_ = available;
+    pre_remind_bits_ = available;
   }
 
   if (timer == this->data_dump_timer) {
     auto gcc_available = this->tcc_client_->get_available_bitrate();
-    ExperimentGccData gcc_data(gcc_available, 0);
+    ExperimentGccData gcc_data(gcc_available, this->send_bits_prior_);
+    this->send_bits_prior_ = 0;
     this->experiment_manager_->DumpGccDataToCsv(gcc_data);
   }
 }
