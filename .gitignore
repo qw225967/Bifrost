@@ -4,3 +4,4 @@
 
 worker/source_file/*
 
+*CMakeFiles*
