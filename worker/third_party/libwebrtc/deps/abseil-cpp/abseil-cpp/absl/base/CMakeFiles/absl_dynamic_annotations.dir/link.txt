@@ -1,0 +1,2 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc libabsl_dynamic_annotations.a CMakeFiles/absl_dynamic_annotations.dir/dynamic_annotations.cc.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib libabsl_dynamic_annotations.a

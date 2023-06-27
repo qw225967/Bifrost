@@ -1,0 +1,2 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc libabsl_internal_examine_stack.a CMakeFiles/absl_internal_examine_stack.dir/internal/examine_stack.cc.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib libabsl_internal_examine_stack.a
