@@ -45,8 +45,7 @@ typedef SSIZE_T ssize_t;
 // 使用小端模式
 #define MS_LITTLE_ENDIAN 1
 
-#define PUBLISHER_CONFIG_FILE_PATH_STRING "../conf/publisher_config.json"
-#define PLAYER_CONFIG_FILE_PATH_STRING "../conf/player_config.json"
+#define PUBLISHER_CONFIG_FILE_PATH_STRING "../conf/config.json"
 #define LOCAL_DATA_FILE_PATH_STRING "../source/test.h264"
 
 namespace bifrost {

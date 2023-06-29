@@ -43,8 +43,7 @@ class Settings {
 
  public:
   static void SetConfiguration(int argc, char* argv[]);
-  static void AnalysisConfigurationFile(std::string& config_path,
-                                        std::string& player_config_path);
+  static void AnalysisConfigurationFile(std::string& config_path);
   static void ReadExperimentConfiguration(json& config);
   static void PrintConfiguration();
 
@@ -52,8 +51,7 @@ class Settings {
   static sockaddr get_sockaddr_by_config(Configuration& config);
 
  public:
-  static struct AddressConfiguration publisher_config_;
-  static std::map<std::string, struct AddressConfiguration> player_config_map_;
+  static struct AddressConfiguration config_;
   static ExperimentManager::GccExperimentConfig gcc_experiment_config_;
 };
 }  // namespace bifrost

@@ -21,34 +21,7 @@ Transport::Transport(TransportModel model) : model_(model) {
     case SinglePublish: {
       // 2.publisher
       this->publisher_ = std::make_shared<Publisher>(
-          Settings::publisher_config_.remote_send_configuration_,
-          &this->uv_loop_, this);
-      break;
-    }
-    case SinglePlay: {
-      // 2.player
-      for (auto config : Settings::player_config_map_) {
-        auto player = std::make_shared<Player>(
-            config.second.remote_send_configuration_, &this->uv_loop_, this);
-        this->players_[config.second.local_receive_configuration_.ssrc] =
-            player;
-        break;
-      }
-      break;
-    }
-    case SinglePublishAndPlays: {
-      // 2.publisher
-      this->publisher_ = std::make_shared<Publisher>(
-          Settings::publisher_config_.remote_send_configuration_,
-          &this->uv_loop_, this);
-
-      // 3.player
-      for (auto config : Settings::player_config_map_) {
-        auto player = std::make_shared<Player>(
-            config.second.remote_send_configuration_, &this->uv_loop_, this);
-        this->players_[config.second.local_receive_configuration_.ssrc] =
-            player;
-      }
+          Settings::config_.remote_send_configuration_, &this->uv_loop_, this);
       break;
     }
   }
@@ -60,30 +33,9 @@ Transport::Transport(TransportModel model) : model_(model) {
       std::make_shared<UdpRouter>(this->uv_loop_->get_loop().get(), this);
 #else
   //   4.2 use default model : get config by json file
-  switch (model_) {
-    case SinglePublish: {
-      this->udp_router_ = std::make_shared<UdpRouter>(
-          Settings::publisher_config_.local_receive_configuration_,
-          this->uv_loop_->get_loop().get(), this);
-      break;
-    }
-    case SinglePlay: {
-      if (Settings::player_config_map_.empty()) {
-        return;
-      }
-      this->udp_router_ =
-          std::make_shared<UdpRouter>(Settings::player_config_map_.begin()
-                                          ->second.local_receive_configuration_,
-                                      this->uv_loop_->get_loop().get(), this);
-      break;
-    }
-    case SinglePublishAndPlays: {
-      this->udp_router_ = std::make_shared<UdpRouter>(
-          Settings::publisher_config_.local_receive_configuration_,
-          this->uv_loop_->get_loop().get(), this);
-      break;
-    }
-  }
+  this->udp_router_ = std::make_shared<UdpRouter>(
+      Settings::config_.local_receive_configuration_,
+      this->uv_loop_->get_loop().get(), this);
 #endif
 }
 
@@ -112,9 +64,13 @@ void Transport::OnUdpRouterRtpPacketReceived(
   //            << ", tcc seq:" << wideSeqNumber << ", this:" << this <<
   //            std::endl;
 
-  auto player = this->players_.find(rtp_packet->GetSsrc());
-  if (player != this->players_.end()) {
-    player->second->IncomingPacket(rtp_packet);
+  auto player_iter = this->players_.find(rtp_packet->GetSsrc());
+  if (player_iter != this->players_.end()) {
+    player_iter->second->IncomingPacket(rtp_packet);
+  } else {
+    auto player = std::make_shared<Player>(
+        Settings::config_.remote_send_configuration_, &this->uv_loop_, this);
+    this->players_[rtp_packet->GetSsrc()] = player;
   }
 }
 

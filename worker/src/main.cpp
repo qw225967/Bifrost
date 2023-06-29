@@ -15,10 +15,8 @@
 
 int main() {
   // 读取配置文件
-  std::string publish_config_path(PUBLISHER_CONFIG_FILE_PATH_STRING);
-  std::string play_config_path(PLAYER_CONFIG_FILE_PATH_STRING);
-  bifrost::Settings::AnalysisConfigurationFile(publish_config_path,
-                                               play_config_path);
+  std::string config_path(PUBLISHER_CONFIG_FILE_PATH_STRING);
+  bifrost::Settings::AnalysisConfigurationFile(config_path);
 
   auto temp =
       std::make_shared<bifrost::Transport>(bifrost::Transport::SinglePublish);

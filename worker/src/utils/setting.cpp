@@ -22,10 +22,8 @@ extern "C" {
 namespace bifrost {
 
 /* Class variables. */
-struct Settings::AddressConfiguration Settings::publisher_config_;
+struct Settings::AddressConfiguration Settings::config_;
 struct ExperimentManager::GccExperimentConfig Settings::gcc_experiment_config_;
-std::map<std::string, struct Settings::AddressConfiguration>
-    Settings::player_config_map_;
 
 /* Class methods. */
 void Settings::SetConfiguration(int argc, char* argv[]) {
@@ -55,7 +53,7 @@ void Settings::SetConfiguration(int argc, char* argv[]) {
     switch (c) {
       case 'P': {
         try {
-          Settings::publisher_config_.local_receive_configuration_.rtcPort =
+          Settings::config_.local_receive_configuration_.rtcPort =
               static_cast<uint16_t>(std::stoi(optarg));
         } catch (const std::exception& error) {
           std::cout << "[setting] %s" << error.what() << std::endl;
@@ -67,7 +65,7 @@ void Settings::SetConfiguration(int argc, char* argv[]) {
       case 'I': {
         try {
           stringValue = std::string(optarg);
-          Settings::publisher_config_.local_receive_configuration_.rtcIp =
+          Settings::config_.local_receive_configuration_.rtcIp =
               stringValue;
         } catch (const std::exception& error) {
           std::cout << "[setting] %s" << error.what() << std::endl;
@@ -138,18 +136,17 @@ void Settings::ReadExperimentConfiguration(json& config) {
   }
 }
 
-void Settings::AnalysisConfigurationFile(std::string& publish_config_path,
-                                         std::string& player_config_path) {
-  if (publish_config_path.empty()) {
+void Settings::AnalysisConfigurationFile(std::string& config_path) {
+  if (config_path.empty()) {
     return;
   }
 
-  std::ifstream publish_json_file(publish_config_path.c_str());
-  json publish_config;
-  publish_json_file >> publish_config;
+  std::ifstream json_file(config_path.c_str());
+  json config;
+  json_file >> config;
 
-  auto publish_receive_iter = publish_config.find("LocalReceiveConfigs");
-  if (publish_receive_iter == publish_config.end()) {
+  auto local_receive_iter = config.find("LocalReceiveConfigs");
+  if (local_receive_iter == config.end()) {
     std::cout << "[setting] server publish_config can not find";
   } else {
     std::string ip;
@@ -157,43 +154,43 @@ void Settings::AnalysisConfigurationFile(std::string& publish_config_path,
     uint16_t port;
     uint32_t ssrc;
     // name
-    auto publish_name_iter = publish_receive_iter->find("userName");
-    if (publish_name_iter == publish_receive_iter->end()) {
+    auto local_name_iter = local_receive_iter->find("userName");
+    if (local_name_iter == local_receive_iter->end()) {
       std::cout << "[setting] server publish_config can not find name";
     } else {
-      name = publish_name_iter->get<std::string>();
+      name = local_name_iter->get<std::string>();
     }
 
     // ip
-    auto publish_ip_iter = publish_receive_iter->find("rtcIp");
-    if (publish_ip_iter == publish_receive_iter->end()) {
+    auto local_ip_iter = local_receive_iter->find("rtcIp");
+    if (local_ip_iter == local_receive_iter->end()) {
       std::cout << "[setting] server publish_config can not find ip";
     } else {
-      ip = publish_ip_iter->get<std::string>();
+      ip = local_ip_iter->get<std::string>();
     }
 
     // port
-    auto publish_port_iter = publish_receive_iter->find("rtcPort");
-    if (publish_port_iter == publish_receive_iter->end()) {
+    auto local_port_iter = local_receive_iter->find("rtcPort");
+    if (local_port_iter == local_receive_iter->end()) {
       std::cout << "[setting] server publish_config can not find port";
     } else {
-      port = publish_port_iter->get<uint16_t>();
+      port = local_port_iter->get<uint16_t>();
     }
 
     // ssrc
-    auto publish_ssrc_iter = publish_receive_iter->find("ssrc");
-    if (publish_ssrc_iter == publish_receive_iter->end()) {
+    auto local_ssrc_iter = local_receive_iter->find("ssrc");
+    if (local_ssrc_iter == local_receive_iter->end()) {
       std::cout << "[setting] server publish_config can not find ssrc";
     } else {
-      ssrc = publish_ssrc_iter->get<uint32_t>();
+      ssrc = local_ssrc_iter->get<uint32_t>();
     }
 
     Configuration publish_receive_config(name, ip, port, ssrc);
-    publisher_config_.local_receive_configuration_ = publish_receive_config;
+    config_.local_receive_configuration_ = publish_receive_config;
   }
 
-  auto publish_send_iter = publish_config.find("RemoteSendConfigs");
-  if (publish_send_iter == publish_config.end()) {
+  auto remote_send_iter = config.find("RemoteSendConfigs");
+  if (remote_send_iter == config.end()) {
     std::cout << "[setting] server publish_config can not find";
   } else {
     std::string ip;
@@ -201,146 +198,42 @@ void Settings::AnalysisConfigurationFile(std::string& publish_config_path,
     uint16_t port;
     uint32_t ssrc;
     // name
-    auto publish_name_iter = publish_send_iter->find("userName");
-    if (publish_name_iter == publish_send_iter->end()) {
+    auto remote_name_iter = remote_send_iter->find("userName");
+    if (remote_name_iter == remote_send_iter->end()) {
       std::cout << "[setting] server publish_config can not find name";
     } else {
-      name = publish_name_iter->get<std::string>();
+      name = remote_name_iter->get<std::string>();
     }
 
     // ip
-    auto publish_ip_iter = publish_send_iter->find("rtcIp");
-    if (publish_ip_iter == publish_send_iter->end()) {
+    auto remote_ip_iter = remote_send_iter->find("rtcIp");
+    if (remote_ip_iter == remote_send_iter->end()) {
       std::cout << "[setting] server publish_config can not find ip";
     } else {
-      ip = publish_ip_iter->get<std::string>();
+      ip = remote_ip_iter->get<std::string>();
     }
 
     // port
-    auto publish_port_iter = publish_send_iter->find("rtcPort");
-    if (publish_port_iter == publish_send_iter->end()) {
+    auto remote_port_iter = remote_send_iter->find("rtcPort");
+    if (remote_port_iter == remote_send_iter->end()) {
       std::cout << "[setting] server publish_config can not find port";
     } else {
-      port = publish_port_iter->get<uint16_t>();
+      port = remote_port_iter->get<uint16_t>();
     }
 
     // ssrc
-    auto publish_ssrc_iter = publish_send_iter->find("ssrc");
-    if (publish_ssrc_iter == publish_send_iter->end()) {
+    auto remote_ssrc_iter = remote_send_iter->find("ssrc");
+    if (remote_ssrc_iter == remote_send_iter->end()) {
       std::cout << "[setting] server publish_config can not find ssrc";
     } else {
-      ssrc = publish_ssrc_iter->get<uint32_t>();
+      ssrc = remote_ssrc_iter->get<uint32_t>();
     }
 
     Configuration send_config(name, ip, port, ssrc);
-    publisher_config_.remote_send_configuration_ = send_config;
+    config_.remote_send_configuration_ = send_config;
   }
-
-  if (player_config_path.empty()) {
-    return;
-  }
-
-  std::ifstream player_json_file(player_config_path.c_str());
-  json player_config;
-  player_json_file >> player_config;
-
-  for (auto config : player_config["Players"]) {
-    AddressConfiguration addr_config;
-    auto player_receive_iter = config.find("LocalReceiveConfigs");
-    if (player_receive_iter == config.end()) {
-      std::cout << "[setting] server publish_config can not find";
-    } else {
-      std::string ip;
-      std::string name;
-      uint16_t port;
-      uint32_t ssrc;
-      // name
-      auto player_name_iter = player_receive_iter->find("userName");
-      if (player_name_iter == player_receive_iter->end()) {
-        std::cout << "[setting] server publish_config can not find name";
-      } else {
-        name = player_name_iter->get<std::string>();
-      }
-
-      // ip
-      auto player_ip_iter = player_receive_iter->find("rtcIp");
-      if (player_ip_iter == player_receive_iter->end()) {
-        std::cout << "[setting] server publish_config can not find ip";
-      } else {
-        ip = player_ip_iter->get<std::string>();
-      }
-
-      // port
-      auto player_port_iter = player_receive_iter->find("rtcPort");
-      if (player_port_iter == player_receive_iter->end()) {
-        std::cout << "[setting] server publish_config can not find port";
-      } else {
-        port = player_port_iter->get<uint16_t>();
-      }
-
-      // ssrc
-      auto player_ssrc_iter = player_receive_iter->find("ssrc");
-      if (player_ssrc_iter == player_receive_iter->end()) {
-        std::cout << "[setting] server publish_config can not find ssrc";
-      } else {
-        ssrc = player_ssrc_iter->get<uint32_t>();
-      }
-
-      Configuration publish_receive_config(name, ip, port, ssrc);
-      addr_config.local_receive_configuration_ = publish_receive_config;
-      player_config_map_[name] = addr_config;
-    }
-
-    auto player_send_iter = config.find("RemoteSendConfigs");
-    if (player_send_iter == config.end()) {
-      std::cout << "[setting] server publish_config can not find";
-    } else {
-      std::string ip;
-      std::string name;
-      uint16_t port;
-      uint32_t ssrc;
-      // name
-      auto player_name_iter = player_send_iter->find("userName");
-      if (player_name_iter == player_send_iter->end()) {
-        std::cout << "[setting] server publish_config can not find name";
-      } else {
-        name = player_name_iter->get<std::string>();
-      }
-
-      // ip
-      auto player_ip_iter = player_send_iter->find("rtcIp");
-      if (player_ip_iter == player_send_iter->end()) {
-        std::cout << "[setting] server publish_config can not find ip";
-      } else {
-        ip = player_ip_iter->get<std::string>();
-      }
-
-      // port
-      auto player_port_iter = player_send_iter->find("rtcPort");
-      if (player_port_iter == player_send_iter->end()) {
-        std::cout << "[setting] server publish_config can not find port";
-      } else {
-        port = player_port_iter->get<uint16_t>();
-      }
-
-      // ssrc
-      auto player_ssrc_iter = player_send_iter->find("ssrc");
-      if (player_ssrc_iter == player_send_iter->end()) {
-        std::cout << "[setting] server publish_config can not find ssrc";
-      } else {
-        ssrc = player_ssrc_iter->get<uint32_t>();
-      }
-
-      Configuration send_config(name, ip, port, ssrc);
-      addr_config.remote_send_configuration_ = send_config;
-      player_config_map_[addr_config.local_receive_configuration_.userName] =
-          addr_config;
-    }
-
     // experiment
-    auto experiment = publish_config.find("ExperimentConfig");
+    auto experiment = config.find("ExperimentConfig");
     ReadExperimentConfiguration(experiment.value());
-  }
 }
-
 }  // namespace bifrost
