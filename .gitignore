@@ -3,5 +3,7 @@
 *ccmak-build-debug*
 
 worker/source_file/*
+worker/third_party/libuv/build*
+worker/build/
 
 *CMakeFiles*
