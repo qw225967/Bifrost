@@ -27,7 +27,7 @@ class Player : public UvTimer::Listener,
   };
 
  public:
-  Player(Settings::Configuration& remote_config, UvLoop** uv_loop,
+  Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
          Observer* observer);
   ~Player() {}
 
@@ -60,9 +60,6 @@ class Player : public UvTimer::Listener,
 
   // remote addr
   SockAddressPtr udp_remote_address_;
-
-  // addr config
-  Settings::Configuration remote_;
 };
 }  // namespace bifrost
 

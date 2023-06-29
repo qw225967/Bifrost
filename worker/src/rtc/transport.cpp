@@ -63,13 +63,12 @@ void Transport::OnUdpRouterRtpPacketReceived(
   //            << ", payload_type:" << rtp_packet->GetPayloadType()
   //            << ", tcc seq:" << wideSeqNumber << ", this:" << this <<
   //            std::endl;
-
+  if (model_ == SinglePublish) return;
   auto player_iter = this->players_.find(rtp_packet->GetSsrc());
   if (player_iter != this->players_.end()) {
     player_iter->second->IncomingPacket(rtp_packet);
   } else {
-    auto player = std::make_shared<Player>(
-        Settings::config_.remote_send_configuration_, &this->uv_loop_, this);
+    auto player = std::make_shared<Player>(remote_addr, &this->uv_loop_, this);
     this->players_[rtp_packet->GetSsrc()] = player;
   }
 }
