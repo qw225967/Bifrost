@@ -34,7 +34,7 @@ cd ..
 cmake --build build
 ```
 
-### 3.Debug
+### 3.Build
 #### 3.1 MacOS
 Clion must use lldb. 
 
