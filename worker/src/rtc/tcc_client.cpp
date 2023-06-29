@@ -17,7 +17,7 @@ static constexpr float MaxBitrateIncrementFactor{1.35f};
 static constexpr float MaxPaddingBitrateFactor{0.85f};
 static constexpr uint64_t AvailableBitrateEventInterval{1000u};  // In ms.
 static constexpr size_t PacketLossHistogramLength{24};
-static constexpr uint32_t MaxAvailableBitrate{4096000u};
+static constexpr uint32_t MaxAvailableBitrate{2048000u};
 
 static uint8_t ProbationPacketHeader[] = {
     0b10010000, 0b01111111, 0, 0,  // PayloadType: 127, Sequence Number: 0

@@ -87,7 +87,7 @@ allow_local_mode = true
 ### 2.Show
 The figure below shows the trend of the slope in the trend line module of the GCC algorithm during the transmission 
 process.
-![img.png](draw/trend_img.png)
+![img_1.png](draw/img_1.png)
 
 The figure below shows the target code rate and sending code rate of the GCC algorithm during transmission.
-![img.png](draw/available_send_bitrate.png)
+![img.png](draw/img.png)

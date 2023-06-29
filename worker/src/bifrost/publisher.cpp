@@ -87,15 +87,16 @@ uint32_t Publisher::TccClientSendRtpPacket(const uint8_t* data, size_t len) {
 
 void Publisher::OnTimer(UvTimer* timer) {
   if (timer == this->producer_timer) {
-    int32_t available = int32_t(this->pacer_bits_ / 200) + pre_remind_bits_;
+    int32_t available = int32_t(this->pacer_bits_ * 1.25 / 200) + pre_remind_bits_; // 5ms 一次发送定时，但每次多发25%数据
 
-    //    available = available > (1200000 / 200) ? (1200000 / 200) : available;
+    available = available > (1200000 / 200) ? (1200000 / 200) : available;
     while (available > 0) {
       if (this->data_producer_ != nullptr) {
         auto packet = this->data_producer_->CreateData();
         if (packet == nullptr) {
           return;
         }
+        if (available < packet->capacity() + packet->size()) break;
         auto send_size = this->TccClientSendRtpPacket(
             packet->data(), packet->capacity() + packet->size());
         available -= int32_t(send_size * 8);
