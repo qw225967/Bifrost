@@ -31,11 +31,14 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
   this->data_dump_timer = new UvTimer(this, this->uv_loop_->get_loop().get());
   this->data_dump_timer->Start(1000, 1000);
 
-  // 4.create data producer
+  // 4.nack
+  nack_ = std::make_shared<Nack>(remote_addr_config_.ssrc, uv_loop);
+
+  // 5.create data producer
   this->data_producer_ =
       std::make_shared<DataProducer>(remote_addr_config_.ssrc);
 
-  // 5.tcc client
+  // 6.tcc client
   this->tcc_client_ = std::make_shared<TransportCongestionControlClient>(
       this, InitialAvailableBitrate, &this->uv_loop_);
 }
@@ -61,6 +64,11 @@ void Publisher::GetRtpExtensions(RtpPacketPtr packet) {
 
 uint32_t Publisher::TccClientSendRtpPacket(const uint8_t* data, size_t len) {
   RtpPacketPtr packet = RtpPacket::Parse(data, len);
+
+  this->OnSendPacketInNack(packet);
+
+  if (packet->GetSequenceNumber() % 10 < 5) return 0;
+
   this->GetRtpExtensions(packet);
   packet->UpdateTransportWideCc01(++this->tcc_seq_);
 
@@ -81,7 +89,6 @@ uint32_t Publisher::TccClientSendRtpPacket(const uint8_t* data, size_t len) {
                                 this->uv_loop_->get_time_ms_int64());
 
   observer_->OnPublisherSendPacket(packet, this->udp_remote_address_.get());
-
   return packet->GetSize();
 }
 
@@ -92,11 +99,10 @@ void Publisher::OnTimer(UvTimer* timer) {
     available = available > (1200000 / 200) ? (1200000 / 200) : available;
     while (available > 0) {
       if (this->data_producer_ != nullptr) {
-        auto packet = this->data_producer_->CreateData();
+        auto packet = this->data_producer_->CreateData(available);
         if (packet == nullptr) {
-          return;
+          break;
         }
-        if (available < packet->capacity() + packet->size()) break;
         auto send_size = this->TccClientSendRtpPacket(
             packet->data(), packet->capacity() + packet->size());
         available -= int32_t(send_size * 8);

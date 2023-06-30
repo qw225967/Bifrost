@@ -9,6 +9,8 @@
 
 #include "transport.h"
 
+#include "rtcp_nack.h"
+
 namespace bifrost {
 Transport::Transport(TransportModel model) : model_(model) {
   this->uv_loop_ = new UvLoop;
@@ -66,9 +68,10 @@ void Transport::OnUdpRouterRtpPacketReceived(
   if (model_ == SinglePublish) return;
   auto player_iter = this->players_.find(rtp_packet->GetSsrc());
   if (player_iter != this->players_.end()) {
-    player_iter->second->IncomingPacket(rtp_packet);
+    player_iter->second->OnReceiveRtpPacket(rtp_packet);
   } else {
-    auto player = std::make_shared<Player>(remote_addr, &this->uv_loop_, this);
+    auto player = std::make_shared<Player>(remote_addr, &this->uv_loop_, this,
+                                           rtp_packet->GetSsrc());
     this->players_[rtp_packet->GetSsrc()] = player;
   }
 }
@@ -84,6 +87,11 @@ void Transport::OnUdpRouterRtcpPacketReceived(
         case FeedbackRtp::MessageType::TCC: {
           auto* feedback = static_cast<FeedbackRtpTransportPacket*>(rtp_fb);
           this->publisher_->ReceiveFeedbackTransport(feedback);
+          break;
+        }
+        case FeedbackRtp::MessageType::NACK: {
+          auto* nackPacket = static_cast<FeedbackRtpNackPacket*>(rtp_fb);
+          this->publisher_->OnReceiveNack(nackPacket);
           break;
         }
       }

@@ -12,9 +12,11 @@
 
 #include "setting.h"
 #include "tcc_server.h"
+#include "nack.h"
 
 namespace bifrost {
 typedef std::shared_ptr<sockaddr> SockAddressPtr;
+typedef std::shared_ptr<Nack> NackPtr;
 typedef std::shared_ptr<TransportCongestionControlServer>
     TransportCongestionControlServerPtr;
 class Player : public UvTimer::Listener,
@@ -28,8 +30,10 @@ class Player : public UvTimer::Listener,
 
  public:
   Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
-         Observer* observer);
-  ~Player() {}
+         Observer* observer, uint32_t ssrc);
+  ~Player() {
+    this->nack_.reset();
+  }
 
   // UvTimer
   void OnTimer(UvTimer* timer) {}
@@ -42,24 +46,32 @@ class Player : public UvTimer::Listener,
     observer_->OnPlayerSendPacket(packet, udp_remote_address_.get());
   }
 
- public:
-  void IncomingPacket(RtpPacketPtr packet) {
-    this->tcc_server_->IncomingPacket(this->uv_loop_->get_time_ms_int64(),
-                                      packet.get());
+  void OnReceiveRtpPacket(RtpPacketPtr packet);
+
+  void OnSendRtcpNack(RtcpPacketPtr packet) {
+    observer_->OnPlayerSendPacket(packet, udp_remote_address_.get());
   }
 
+ public:
+
  private:
+  /* ------------ base ------------ */
   // observer
   Observer* observer_;
-
-  // uv
-  UvLoop* uv_loop_;
-
-  // tcc
-  TransportCongestionControlServerPtr tcc_server_{nullptr};
-
   // remote addr
   SockAddressPtr udp_remote_address_;
+  // uv
+  UvLoop* uv_loop_;
+  // ssrc
+  uint32_t ssrc_;
+  /* ------------ base ------------ */
+
+  /* ------------ experiment ------------ */
+  // nack
+  NackPtr nack_;
+  // tcc
+  TransportCongestionControlServerPtr tcc_server_{nullptr};
+  /* ------------ experiment ------------ */
 };
 }  // namespace bifrost
 

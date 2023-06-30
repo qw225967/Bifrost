@@ -10,8 +10,11 @@
 #ifndef WORKER_PUBLISHER_H
 #define WORKER_PUBLISHER_H
 
+#include <unordered_map>
+
 #include "data_producer.h"
 #include "experiment_manager.h"
+#include "nack.h"
 #include "rtcp_tcc.h"
 #include "setting.h"
 #include "tcc_client.h"
@@ -23,6 +26,7 @@ typedef std::shared_ptr<sockaddr> SockAddressPtr;
 typedef std::shared_ptr<DataProducer> DataProducerPtr;
 typedef std::shared_ptr<TransportCongestionControlClient>
     TransportCongestionControlClientPtr;
+typedef std::shared_ptr<Nack> NackPtr;
 typedef std::shared_ptr<ExperimentManager> ExperimentManagerPtr;
 class Publisher : public UvTimer::Listener,
                   public TransportCongestionControlClient::Observer {
@@ -37,6 +41,17 @@ class Publisher : public UvTimer::Listener,
   void ReceiveFeedbackTransport(const FeedbackRtpTransportPacket* feedback) {
     this->tcc_client_->ReceiveRtcpTransportFeedback(feedback);
     this->pacer_bits_ = this->tcc_client_->get_available_bitrate();
+  }
+  void OnReceiveNack(FeedbackRtpNackPacket* packet) {
+    auto packets = this->nack_->ReceiveNack(packet);
+    for (auto pkt : packets) {
+      this->observer_->OnPublisherSendPacket(pkt,
+                                             this->udp_remote_address_.get());
+    }
+  }
+
+  void OnSendPacketInNack(RtpPacketPtr packet) {
+    nack_->OnSendRtpPacket(packet);
   }
 
  public:
@@ -64,34 +79,34 @@ class Publisher : public UvTimer::Listener,
   uint32_t TccClientSendRtpPacket(const uint8_t* data, size_t len);
 
  private:
+  /* ------------ base ------------ */
   // observer
   Observer* observer_;
-
+  // remote addr
+  SockAddressPtr udp_remote_address_;
+  // addr config
+  Settings::Configuration remote_addr_config_;
   // uv
   UvLoop* uv_loop_;
   UvTimer* producer_timer;
   UvTimer* data_dump_timer;
+  /* ------------ base ------------ */
 
+  /* ------------ experiment ------------ */
+  // send packet producer
+  DataProducerPtr data_producer_;
   // tcc
   uint16_t tcc_seq_ = 0;
   TransportCongestionControlClientPtr tcc_client_{nullptr};
-
-  // send packet producer
-  DataProducerPtr data_producer_;
-
-  // remote addr
-  SockAddressPtr udp_remote_address_;
-
-  // addr config
-  Settings::Configuration remote_addr_config_;
-
   // pacer bytes
   uint32_t pacer_bits_;
   int32_t pre_remind_bits_ = 0;
   uint32_t send_bits_prior_ = 0;
-
-  // experiment
+  // nack
+  NackPtr nack_;
+  // experiment manager
   ExperimentManagerPtr experiment_manager_;
+  /* ------------ experiment ------------ */
 };
 }  // namespace bifrost
 

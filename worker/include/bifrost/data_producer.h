@@ -24,7 +24,7 @@ class DataProducer {
   ~DataProducer();
 
  public:
-  webrtc::RtpPacketToSend* CreateData();
+  webrtc::RtpPacketToSend* CreateData(uint32_t available);
 
  private:
   std::ifstream data_file_;

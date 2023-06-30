@@ -9,6 +9,7 @@
 
 #include "rtcp_feedback.h"
 #include "rtcp_tcc.h"
+#include "rtcp_nack.h"
 
 #include <cstring>
 
@@ -189,6 +190,7 @@ std::shared_ptr<FeedbackPacket<FeedbackRtp>> FeedbackPacket<FeedbackRtp>::Parse(
 
   switch (FeedbackRtp::MessageType(commonHeader->count)) {
     case FeedbackRtp::MessageType::NACK:
+      packet = FeedbackRtpNackPacket::Parse(data, len);
       break;
 
     case FeedbackRtp::MessageType::TMMBR:

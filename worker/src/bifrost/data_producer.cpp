@@ -105,20 +105,20 @@ constexpr uint8_t kPacketWithH264[]{
     0x0d, 0x23, 0xd2, 0x5d, 0x9d, 0x74, 0x44, 0xbe, 0x11, 0x31, 0xcd, 0x20,
     0xce, 0xbd, 0xfb, 0xa1, 0xeb};
 
-DataProducer::DataProducer(uint32_t ssrc) : ssrc_(ssrc), sequence_(0) {
+DataProducer::DataProducer(uint32_t ssrc) : ssrc_(ssrc), sequence_(65533) {
 #ifdef USING_LOCAL_FILE_DATA
   data_file_.open(LOCAL_DATA_FILE_PATH_STRING, std::ios::binary);
 #endif
 }
 
-webrtc::RtpPacketToSend* DataProducer::CreateData() {
+webrtc::RtpPacketToSend* DataProducer::CreateData(uint32_t available) {
   // 使用webrtc中rtp包初始化方式
   auto* send_paket =
       new webrtc::RtpPacketToSend(nullptr, sizeof(kPacketWithH264));
 #ifdef USING_LOCAL_FILE_DATA
   data_file_.read((char*)data, sizeof(kPacketWithH264));
 #endif
-
+  if (available < sizeof(kPacketWithH264)) return nullptr;
   send_paket->SetSequenceNumber(this->sequence_++);
   send_paket->SetPayloadType(101);
   send_paket->SetSsrc(this->ssrc_);
