@@ -12,6 +12,8 @@
 
 #include "rtcp_feedback.h"
 
+#include <vector>
+
 namespace bifrost {
 template<typename Item>
 class FeedbackRtpItemsPacket : public FeedbackRtpPacket
