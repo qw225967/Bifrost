@@ -147,6 +147,16 @@ void TransportCongestionControlClient::ReceiveEstimatedBitrate(
   this->rtp_transport_controller_send_->OnReceivedEstimatedBitrate(bitrate);
 }
 
+void TransportCongestionControlClient::ReceiveRtcpReceiverReport(
+    const webrtc::RTCPReportBlock& report, float rtt, int64_t nowMs) {
+  if (this->rtp_transport_controller_send_ == nullptr) {
+    return;
+  }
+
+  this->rtp_transport_controller_send_->OnReceivedRtcpReceiverReport(
+      {report}, static_cast<int64_t>(rtt), nowMs);
+}
+
 void TransportCongestionControlClient::ReceiveRtcpTransportFeedback(
     const FeedbackRtpTransportPacket* feedback) {
   // Update packet loss history.

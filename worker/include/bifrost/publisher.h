@@ -15,6 +15,7 @@
 #include "data_producer.h"
 #include "experiment_manager.h"
 #include "nack.h"
+#include "rtcp_rr.h"
 #include "rtcp_tcc.h"
 #include "setting.h"
 #include "tcc_client.h"
@@ -44,13 +45,22 @@ class Publisher : public UvTimer::Listener,
   }
   void OnReceiveNack(FeedbackRtpNackPacket* packet) {
     auto packets = this->nack_->ReceiveNack(packet);
-    for (auto pkt : packets) {
+    for (auto& pkt : packets) {
       this->observer_->OnPublisherSendPacket(pkt,
                                              this->udp_remote_address_.get());
     }
   }
-
-  void OnSendPacketInNack(RtpPacketPtr packet) {
+  void ReceiveRR(ReceiverReport* report) {
+    webrtc::RTCPReportBlock webrtc_report;
+    webrtc_report.last_sender_report_timestamp = report->GetLastSenderReport();
+    webrtc_report.source_ssrc = report->GetSsrc();
+    webrtc_report.jitter = report->GetDelaySinceLastSenderReport();
+    webrtc_report.fraction_lost = report->GetFractionLost();
+    webrtc_report.packets_lost = report->GetTotalLost();
+    this->tcc_client_->ReceiveRtcpReceiverReport(
+        webrtc_report, rtt_, this->uv_loop_->get_time_ms_int64());
+  }
+  void OnSendPacketInNack(RtpPacketPtr& packet) {
     nack_->OnSendRtpPacket(packet);
   }
 
@@ -58,8 +68,9 @@ class Publisher : public UvTimer::Listener,
   Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
             Observer* observer);
   ~Publisher() {
-    delete producer_timer;
-    delete data_dump_timer;
+    delete producer_timer_;
+    delete data_dump_timer_;
+    delete send_report_timer_;
     tcc_client_.reset();
     data_producer_.reset();
   }
@@ -88,13 +99,16 @@ class Publisher : public UvTimer::Listener,
   Settings::Configuration remote_addr_config_;
   // uv
   UvLoop* uv_loop_;
-  UvTimer* producer_timer;
-  UvTimer* data_dump_timer;
+  UvTimer* producer_timer_;
+  UvTimer* data_dump_timer_;
+  UvTimer* send_report_timer_;
   /* ------------ base ------------ */
 
   /* ------------ experiment ------------ */
   // send packet producer
   DataProducerPtr data_producer_;
+  // send report
+  float rtt_ = 0;
   // tcc
   uint16_t tcc_seq_ = 0;
   TransportCongestionControlClientPtr tcc_client_{nullptr};

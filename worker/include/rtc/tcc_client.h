@@ -66,6 +66,8 @@ class TransportCongestionControlClient
   void ReceiveEstimatedBitrate(uint32_t bitrate);
   void ReceiveRtcpTransportFeedback(const FeedbackRtpTransportPacket* feedback);
   void RescheduleNextAvailableBitrateEvent();
+  void ReceiveRtcpReceiverReport(const webrtc::RTCPReportBlock& report,
+                                 float rtt, int64_t nowMs);
 
  private:
   void MayEmitAvailableBitrateEvent(uint32_t previousAvailableBitrate);

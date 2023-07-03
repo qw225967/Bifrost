@@ -81,6 +81,27 @@ void Transport::OnUdpRouterRtcpPacketReceived(
     const struct sockaddr* remote_addr) {
   auto type = rtcp_packet->GetType();
   switch (type) {
+    case Type::RR: {
+      auto* rr = static_cast<ReceiverReportPacket*>(rtcp_packet.get());
+
+      for (auto it = rr->Begin(); it != rr->End(); ++it)
+      {
+        auto& report   = *it;
+
+          webrtc::RTCPReportBlock webrtc_report;
+          webrtc_report.last_sender_report_timestamp = report->GetLastSenderReport();
+          webrtc_report.source_ssrc = report->GetSsrc();
+          webrtc_report.jitter = report->GetDelaySinceLastSenderReport();
+          webrtc_report.fraction_lost = report->GetFractionLost();
+          webrtc_report.packets_lost = report->GetTotalLost();
+          this->publisher_->ReceiveRtcpReceiverReport(webrtc_report,
+                                                     this->uv_loop_->get_time_ms_int64());
+      }
+      break;
+    }
+    case Type::SR: {
+      break;
+    }
     case Type::RTPFB: {
       auto* rtp_fb = static_cast<FeedbackRtpPacket*>(rtcp_packet.get());
       switch (rtp_fb->GetMessageType()) {

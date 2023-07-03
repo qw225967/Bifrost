@@ -16,7 +16,7 @@ namespace bifrost {
 constexpr uint32_t MaxRetransmissionDelay{3000};  // 原 2000
 constexpr size_t MaxPacketAge{10000u};
 constexpr size_t MaxNackPackets{1000u};
-constexpr uint32_t DefaultRtt{100u};
+constexpr uint32_t DefaultRtt{10u};
 constexpr uint8_t MaxNackRetries{20u};
 constexpr uint64_t TimerInterval{20u};
 
