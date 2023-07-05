@@ -8,7 +8,7 @@ multi-stream competition experiments.
 
 ## Install
 
-***Just support MacOS now!***
+***Just support MacOS/Linux now!***
 
 ***Clion idea is recommended.***
 
