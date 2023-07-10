@@ -9,9 +9,9 @@
 
 #include "experiment_manager.h"
 
+#include <cstring>
 #include <ctime>
 #include <sstream>
-#include <cstring>
 
 namespace bifrost {
 ExperimentManager::ExperimentManager() {

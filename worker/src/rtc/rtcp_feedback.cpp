@@ -8,10 +8,11 @@
  *******************************************************/
 
 #include "rtcp_feedback.h"
-#include "rtcp_tcc.h"
-#include "rtcp_nack.h"
 
 #include <cstring>
+
+#include "rtcp_nack.h"
+#include "rtcp_tcc.h"
 
 namespace bifrost {
 /* Class methods. */

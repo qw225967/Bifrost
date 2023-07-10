@@ -34,7 +34,8 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
   this->producer_timer_->Start(IntervalSendTime, IntervalSendTime);
   this->data_dump_timer_ = new UvTimer(this, this->uv_loop_->get_loop().get());
   this->data_dump_timer_->Start(IntervalDataDump, IntervalDataDump);
-  this->send_report_timer_ = new UvTimer(this, this->uv_loop_->get_loop().get());
+  this->send_report_timer_ =
+      new UvTimer(this, this->uv_loop_->get_loop().get());
   this->send_report_timer_->Start(IntervalSendReport, IntervalSendReport);
 
   // 4.nack
@@ -96,9 +97,22 @@ uint32_t Publisher::TccClientSendRtpPacket(const uint8_t* data, size_t len) {
   return packet->GetSize();
 }
 
+void Publisher::OnReceiveReceiverReport(ReceiverReport* report) {
+  webrtc::RTCPReportBlock webrtc_report;
+  webrtc_report.last_sender_report_timestamp = report->GetLastSenderReport();
+  webrtc_report.source_ssrc = report->GetSsrc();
+  webrtc_report.jitter = report->GetDelaySinceLastSenderReport();
+  webrtc_report.fraction_lost = report->GetFractionLost();
+  webrtc_report.packets_lost = report->GetTotalLost();
+  this->tcc_client_->ReceiveRtcpReceiverReport(
+      webrtc_report, rtt_, this->uv_loop_->get_time_ms_int64());
+}
+
 void Publisher::OnTimer(UvTimer* timer) {
   if (timer == this->producer_timer_) {
-    int32_t available = int32_t(this->pacer_bits_ * 1.25 / 200) + pre_remind_bits_; // 5ms 一次发送定时，但每次多发25%数据
+    int32_t available =
+        int32_t(this->pacer_bits_ * 1.25 / 200) +
+        pre_remind_bits_;  // 5ms 一次发送定时，但每次多发25%数据
 
     available = available > (1200000 / 200) ? (1200000 / 200) : available;
     while (available > 0) {
@@ -121,9 +135,10 @@ void Publisher::OnTimer(UvTimer* timer) {
     auto gcc_available = this->tcc_client_->get_available_bitrate();
     std::vector<double> trends = this->tcc_client_->get_trend();
 
-    for (auto i = 0; i<trends.size(); i++) {
+    for (auto i = 0; i < trends.size(); i++) {
       ExperimentGccData gcc_data_temp(0, 0, trends[i]);
-      this->experiment_manager_->DumpGccDataToCsv(i+1, trends.size(), gcc_data_temp);
+      this->experiment_manager_->DumpGccDataToCsv(i + 1, trends.size(),
+                                                  gcc_data_temp);
     }
 
     ExperimentGccData gcc_data(gcc_available, this->send_bits_prior_, 0);
@@ -132,7 +147,6 @@ void Publisher::OnTimer(UvTimer* timer) {
   }
 
   if (timer == this->send_report_timer_) {
-
   }
 }
 }  // namespace bifrost

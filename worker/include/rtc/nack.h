@@ -77,8 +77,8 @@ class Nack : UvTimer::Listener {
 
  private:
   // send
-  void FillRetransmissionContainer(
-      uint16_t seq, uint16_t bitmask, std::vector<RtpPacketPtr>& vec);
+  void FillRetransmissionContainer(uint16_t seq, uint16_t bitmask,
+                                   std::vector<RtpPacketPtr>& vec);
 
   // recv
   void AddPacketsToNackList(uint16_t seqStart, uint16_t seqEnd);
@@ -91,7 +91,7 @@ class Nack : UvTimer::Listener {
 
   // send
   uint32_t ssrc_;
-  std::unordered_map<uint16_t , StorageItem> send_rtp_packet_map_;
+  std::unordered_map<uint16_t, StorageItem> send_rtp_packet_map_;
   bool send_init_ = false;
   uint64_t max_send_ms_;
 

@@ -83,23 +83,21 @@ void Transport::OnUdpRouterRtcpPacketReceived(
   switch (type) {
     case Type::RR: {
       auto* rr = static_cast<ReceiverReportPacket*>(rtcp_packet.get());
-
-      for (auto it = rr->Begin(); it != rr->End(); ++it)
-      {
-        auto& report   = *it;
-
-          webrtc::RTCPReportBlock webrtc_report;
-          webrtc_report.last_sender_report_timestamp = report->GetLastSenderReport();
-          webrtc_report.source_ssrc = report->GetSsrc();
-          webrtc_report.jitter = report->GetDelaySinceLastSenderReport();
-          webrtc_report.fraction_lost = report->GetFractionLost();
-          webrtc_report.packets_lost = report->GetTotalLost();
-          this->publisher_->ReceiveRtcpReceiverReport(webrtc_report,
-                                                     this->uv_loop_->get_time_ms_int64());
+      for (auto it = rr->Begin(); it != rr->End(); ++it) {
+        auto& report = *it;
+        this->publisher_->OnReceiveReceiverReport(report);
       }
       break;
     }
     case Type::SR: {
+      auto* sr = dynamic_cast<SenderReportPacket*>(rtcp_packet.get());
+      for (auto it = sr->Begin(); it != sr->End(); ++it) {
+        auto& report = *it;
+        auto player_iter = this->players_.find(report->GetSsrc());
+        if (player_iter != this->players_.end()) {
+          player_iter->second->OnReceiveSenderReport(report);
+        }
+      }
       break;
     }
     case Type::RTPFB: {

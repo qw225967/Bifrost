@@ -11,9 +11,9 @@
 #define WORKER_RTCP_NACK_H
 
 #include "common.h"
-#include "utils.h"
 #include "rtcp_feedback_item.h"
 #include "rtcp_feedback_rtp.h"
+#include "utils.h"
 
 namespace bifrost {
 class FeedbackRtpNackItem : public FeedbackItem {

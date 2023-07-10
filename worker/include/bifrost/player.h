@@ -10,9 +10,11 @@
 #ifndef WORKER_PLAYER_H
 #define WORKER_PLAYER_H
 
+#include "nack.h"
 #include "setting.h"
 #include "tcc_server.h"
-#include "nack.h"
+#include "rtcp_sr.h"
+#include "rtcp_rr.h"
 
 namespace bifrost {
 typedef std::shared_ptr<sockaddr> SockAddressPtr;
@@ -31,9 +33,7 @@ class Player : public UvTimer::Listener,
  public:
   Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
          Observer* observer, uint32_t ssrc);
-  ~Player() {
-    this->nack_.reset();
-  }
+  ~Player() { this->nack_.reset(); }
 
   // UvTimer
   void OnTimer(UvTimer* timer) {}
@@ -52,8 +52,11 @@ class Player : public UvTimer::Listener,
     observer_->OnPlayerSendPacket(packet, udp_remote_address_.get());
   }
 
- public:
+  void OnReceiveSenderReport(SenderReport* report);
 
+  ReceiverReport* GetRtcpReceiverReport();
+
+ public:
  private:
   /* ------------ base ------------ */
   // observer
@@ -67,6 +70,11 @@ class Player : public UvTimer::Listener,
   /* ------------ base ------------ */
 
   /* ------------ experiment ------------ */
+  // sr
+  uint32_t last_sr_timestamp;
+  uint32_t last_sender_repor_ts;
+  uint64_t last_sr_received;
+  uint64_t last_sender_reportNtpMs;
   // nack
   NackPtr nack_;
   // tcc

@@ -12,6 +12,8 @@
 
 #include <vector>
 
+#include "rtcp_packet.h"
+
 namespace bifrost {
 class SenderReport {
  public:
@@ -70,7 +72,7 @@ class SenderReport {
   uint8_t raw[sizeof(Header)]{0};
 };
 
-class SenderReportPacket : public Packet {
+class SenderReportPacket : public RtcpPacket {
  public:
   using Iterator = std::vector<SenderReport*>::iterator;
 
@@ -78,9 +80,9 @@ class SenderReportPacket : public Packet {
   static SenderReportPacket* Parse(const uint8_t* data, size_t len);
 
  public:
-  SenderReportPacket() : Packet(Type::SR) {}
+  SenderReportPacket() : RtcpPacket(Type::SR) {}
   explicit SenderReportPacket(CommonHeader* commonHeader)
-      : Packet(commonHeader) {}
+      : RtcpPacket(commonHeader) {}
   ~SenderReportPacket() override {
     for (auto* report : this->reports) {
       delete report;
@@ -97,7 +99,7 @@ class SenderReportPacket : public Packet {
   size_t Serialize(uint8_t* buffer) override;
   size_t GetCount() const override { return 0; }
   size_t GetSize() const override {
-    size_t size = sizeof(Packet::CommonHeader);
+    size_t size = sizeof(RtcpPacket::CommonHeader);
 
     for (auto* report : this->reports) {
       size += report->GetSize();

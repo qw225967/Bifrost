@@ -50,16 +50,7 @@ class Publisher : public UvTimer::Listener,
                                              this->udp_remote_address_.get());
     }
   }
-  void ReceiveRR(ReceiverReport* report) {
-    webrtc::RTCPReportBlock webrtc_report;
-    webrtc_report.last_sender_report_timestamp = report->GetLastSenderReport();
-    webrtc_report.source_ssrc = report->GetSsrc();
-    webrtc_report.jitter = report->GetDelaySinceLastSenderReport();
-    webrtc_report.fraction_lost = report->GetFractionLost();
-    webrtc_report.packets_lost = report->GetTotalLost();
-    this->tcc_client_->ReceiveRtcpReceiverReport(
-        webrtc_report, rtt_, this->uv_loop_->get_time_ms_int64());
-  }
+  void OnReceiveReceiverReport(ReceiverReport* report);
   void OnSendPacketInNack(RtpPacketPtr& packet) {
     nack_->OnSendRtpPacket(packet);
   }
