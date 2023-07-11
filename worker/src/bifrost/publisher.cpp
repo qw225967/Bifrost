@@ -9,6 +9,8 @@
 
 #include "publisher.h"
 
+#include "rtcp_compound_packet.h"
+
 namespace bifrost {
 const uint32_t InitialAvailableBitrate = 600000u;
 const uint16_t IntervalSendTime = 5u;
@@ -48,6 +50,9 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
   // 6.tcc client
   this->tcc_client_ = std::make_shared<TransportCongestionControlClient>(
       this, InitialAvailableBitrate, &this->uv_loop_);
+
+  // 7. ssrc
+  ssrc_ = remote_addr_config_.ssrc;
 }
 
 void Publisher::GetRtpExtensions(RtpPacketPtr packet) {
@@ -108,6 +113,25 @@ void Publisher::OnReceiveReceiverReport(ReceiverReport* report) {
       webrtc_report, rtt_, this->uv_loop_->get_time_ms_int64());
 }
 
+SenderReport* Publisher::GetRtcpSenderReport(uint64_t nowMs) {
+  auto ntp = Time::TimeMs2Ntp(nowMs);
+  auto* report = new SenderReport();
+
+  // Calculate TS difference between now and maxPacketMs.
+  auto diffMs = nowMs - this->max_packet_ms_;
+  auto diffTs =
+      diffMs * 90000 / 1000;  // 现实中常用的采样换算此处写死 90000 - 视频
+
+  report->SetSsrc(this->ssrc_);
+  report->SetPacketCount(this->send_packet_count_);
+  report->SetOctetCount(this->send_packet_bytes_);
+  report->SetNtpSec(ntp.seconds);
+  report->SetNtpFrac(ntp.fractions);
+  report->SetRtpTs(this->max_packet_ts_ + diffTs);
+
+  return report;
+}
+
 void Publisher::OnTimer(UvTimer* timer) {
   if (timer == this->producer_timer_) {
     int32_t available =
@@ -121,10 +145,15 @@ void Publisher::OnTimer(UvTimer* timer) {
         if (packet == nullptr) {
           break;
         }
+        this->max_packet_ms_ = this->uv_loop_->get_time_ms_int64();
+        this->max_packet_ts_ = this->uv_loop_->get_time_ms_int64();
         auto send_size = this->TccClientSendRtpPacket(
             packet->data(), packet->capacity() + packet->size());
         available -= int32_t(send_size * 8);
         this->send_bits_prior_ += (send_size * 8);
+        this->send_packet_bytes_ += send_size;
+        this->send_packet_count_++;
+
         delete packet;
       }
     }
@@ -147,6 +176,14 @@ void Publisher::OnTimer(UvTimer* timer) {
   }
 
   if (timer == this->send_report_timer_) {
+    // 立刻回复sr
+    uint64_t now = this->uv_loop_->get_time_ms_int64();
+    std::shared_ptr<CompoundPacket> packet = std::make_shared<CompoundPacket>();
+    auto* report = GetRtcpSenderReport(now);
+    packet->AddSenderReport(report);
+    packet->Serialize(Buffer);
+    this->observer_->OnPublisherSendRtcpPacket(packet,
+                                               this->udp_remote_address_.get());
   }
 }
 }  // namespace bifrost

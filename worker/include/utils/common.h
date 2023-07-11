@@ -53,6 +53,8 @@ class RtpPacket;
 typedef std::shared_ptr<RtpPacket> RtpPacketPtr;
 class RtcpPacket;
 typedef std::shared_ptr<RtcpPacket> RtcpPacketPtr;
+class CompoundPacket;
+typedef std::shared_ptr<CompoundPacket> CompoundPacketPtr;
 }  // namespace bifrost
 
 #endif  // WORKER_COMMON_H

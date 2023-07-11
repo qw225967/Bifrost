@@ -28,24 +28,80 @@ void Player::OnReceiveRtpPacket(RtpPacketPtr packet) {
   this->nack_->OnReceiveRtpPacket(packet);
   this->tcc_server_->IncomingPacket(this->uv_loop_->get_time_ms_int64(),
                                     packet.get());
+  receive_packet_count_++;
 }
 
 void Player::OnReceiveSenderReport(SenderReport* report) {
-  this->last_sr_received  = this->uv_loop_->get_time_ms();
-  this->last_sr_timestamp = report->GetNtpSec() << 16;
-  this->last_sr_timestamp += report->GetNtpFrac() >> 16;
+  this->last_sr_received_ = this->uv_loop_->get_time_ms();
+  this->last_sr_timestamp_ = report->GetNtpSec() << 16;
+  this->last_sr_timestamp_ += report->GetNtpFrac() >> 16;
 
   // Update info about last Sender Report.
-  Time::Ntp ntp; // NOLINT(cppcoreguidelines-pro-type-member-init)
+  Time::Ntp ntp;  // NOLINT(cppcoreguidelines-pro-type-member-init)
 
-  ntp.seconds   = report->GetNtpSec();
+  ntp.seconds = report->GetNtpSec();
   ntp.fractions = report->GetNtpFrac();
 
-  this->last_sender_reportNtpMs = Time::Ntp2TimeMs(ntp);
-  this->last_sender_repor_ts     = report->GetRtpTs();
+  this->last_sender_report_ntp_ms_ = Time::Ntp2TimeMs(ntp);
+  this->last_sender_repor_ts_ = report->GetRtpTs();
 }
 
 ReceiverReport* Player::GetRtcpReceiverReport() {
   auto* report = new ReceiverReport();
+
+  report->SetSsrc(this->ssrc_);
+
+  // Calculate Packets Expected and Lost.
+  auto expected = this->GetExpectedPackets();
+
+  uint32_t packet_lost_ = 0;
+  if (expected > this->receive_packet_count_)
+    packet_lost_ = expected - this->receive_packet_count_;
+
+  // Calculate Fraction Lost.
+  uint32_t expectedInterval = expected - this->expected_prior_;
+
+  this->expected_prior_ = expected;
+
+  uint32_t receivedInterval =
+      this->receive_packet_count_ - this->received_prior_;
+
+  this->received_prior_ = this->receive_packet_count_;
+
+  int32_t lostInterval = expectedInterval - receivedInterval;
+
+  uint8_t fraction_lost = 0;
+  if (expectedInterval != 0 && lostInterval > 0)
+    fraction_lost =
+        std::round((static_cast<double>(lostInterval << 8) / expectedInterval));
+
+  report->SetTotalLost(packet_lost_);
+  report->SetFractionLost(fraction_lost);
+
+  // Fill the rest of the report.
+  report->SetLastSeq(static_cast<uint32_t>(this->max_seq_) + this->cycles_);
+
+  report->SetJitter(this->jitter_ / 1000);  // 换算单位
+
+  if (this->jitter_count_ < 5) {
+    report->SetJitter(0);
+    jitter_count_++;
+  }
+
+  if (this->last_sr_received_ != 0) {
+    // Get delay in milliseconds.
+    auto delayMs = static_cast<uint32_t>(this->uv_loop_->get_time_ms() -
+                                         this->last_sr_received_);
+    // Express delay in units of 1/65536 seconds.
+    uint32_t dlsr = (delayMs / 1000) << 16;
+
+    dlsr |= uint32_t{(delayMs % 1000) * 65536 / 1000};
+
+    report->SetDelaySinceLastSenderReport(dlsr);
+    report->SetLastSenderReport(this->last_sr_timestamp_);
+  } else {
+    report->SetDelaySinceLastSenderReport(0);
+    report->SetLastSenderReport(0);
+  }
 }
 }  // namespace bifrost

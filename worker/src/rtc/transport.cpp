@@ -9,6 +9,7 @@
 
 #include "transport.h"
 
+#include "rtcp_compound_packet.h"
 #include "rtcp_nack.h"
 
 namespace bifrost {
@@ -96,6 +97,15 @@ void Transport::OnUdpRouterRtcpPacketReceived(
         auto player_iter = this->players_.find(report->GetSsrc());
         if (player_iter != this->players_.end()) {
           player_iter->second->OnReceiveSenderReport(report);
+
+          // 立刻回复rr
+          std::unique_ptr<CompoundPacket> packet{nullptr};
+          packet.reset(new CompoundPacket());
+          auto* report = player_iter->second->GetRtcpReceiverReport();
+          packet->AddReceiverReport(report);
+          packet->Serialize(Buffer);
+          this->udp_router_->Send(packet->GetData(), packet->GetSize(),
+                                  remote_addr, nullptr);
         }
       }
       break;

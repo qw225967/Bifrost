@@ -15,6 +15,7 @@
 #include "udp_router.h"
 #include "unordered_map"
 #include "uv_loop.h"
+#include "rtcp_compound_packet.h"
 
 namespace bifrost {
 typedef std::shared_ptr<Player> PlayerPtr;
@@ -38,6 +39,12 @@ class Transport : public UdpRouter::UdpRouterObServer,
   // Publisher
   void OnPublisherSendPacket(RtpPacketPtr packet,
                              const struct sockaddr* remote_addr) override {
+    this->udp_router_->Send(packet->GetData(), packet->GetSize(), remote_addr,
+                            nullptr);
+  }
+
+  void OnPublisherSendRtcpPacket(CompoundPacketPtr packet,
+                                 const struct sockaddr* remote_addr) override {
     this->udp_router_->Send(packet->GetData(), packet->GetSize(), remote_addr,
                             nullptr);
   }

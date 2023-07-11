@@ -11,10 +11,10 @@
 #define WORKER_PLAYER_H
 
 #include "nack.h"
+#include "rtcp_rr.h"
+#include "rtcp_sr.h"
 #include "setting.h"
 #include "tcc_server.h"
-#include "rtcp_sr.h"
-#include "rtcp_rr.h"
 
 namespace bifrost {
 typedef std::shared_ptr<sockaddr> SockAddressPtr;
@@ -56,7 +56,12 @@ class Player : public UvTimer::Listener,
 
   ReceiverReport* GetRtcpReceiverReport();
 
- public:
+ private:
+  uint32_t GetExpectedPackets() const
+  {
+    return (this->cycles_ + this->max_seq_) - this->base_seq_ + 1;
+  }
+
  private:
   /* ------------ base ------------ */
   // observer
@@ -71,10 +76,19 @@ class Player : public UvTimer::Listener,
 
   /* ------------ experiment ------------ */
   // sr
-  uint32_t last_sr_timestamp;
-  uint32_t last_sender_repor_ts;
-  uint64_t last_sr_received;
-  uint64_t last_sender_reportNtpMs;
+  uint32_t last_sr_timestamp_;
+  uint32_t last_sender_repor_ts_;
+  uint64_t last_sr_received_;
+  uint64_t last_sender_report_ntp_ms_;
+  // rr
+  uint32_t receive_packet_count_ {0u};
+  uint16_t max_seq_{0u};   // Highest seq. number seen.
+  uint32_t cycles_{0u};    // Shifted count of seq. number cycles.
+  uint32_t base_seq_{0u};  // Base seq number.
+  uint32_t expected_prior_{0u};
+  uint32_t received_prior_{0u};
+  uint32_t jitter_count_{0u};
+  uint32_t jitter_{0u};
   // nack
   NackPtr nack_;
   // tcc

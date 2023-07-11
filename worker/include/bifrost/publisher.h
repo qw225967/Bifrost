@@ -16,6 +16,7 @@
 #include "experiment_manager.h"
 #include "nack.h"
 #include "rtcp_rr.h"
+#include "rtcp_sr.h"
 #include "rtcp_tcc.h"
 #include "setting.h"
 #include "tcc_client.h"
@@ -36,6 +37,8 @@ class Publisher : public UvTimer::Listener,
    public:
     virtual void OnPublisherSendPacket(RtpPacketPtr packet,
                                        const struct sockaddr* remote_addr) = 0;
+    virtual void OnPublisherSendRtcpPacket(CompoundPacketPtr packet,
+                                       const struct sockaddr* remote_addr) = 0;
   };
 
  public:
@@ -54,6 +57,8 @@ class Publisher : public UvTimer::Listener,
   void OnSendPacketInNack(RtpPacketPtr& packet) {
     nack_->OnSendRtpPacket(packet);
   }
+
+  SenderReport* GetRtcpSenderReport(uint64_t nowMs);
 
  public:
   Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
@@ -93,9 +98,16 @@ class Publisher : public UvTimer::Listener,
   UvTimer* producer_timer_;
   UvTimer* data_dump_timer_;
   UvTimer* send_report_timer_;
+  // ssrc
+  uint32_t ssrc_;
   /* ------------ base ------------ */
 
   /* ------------ experiment ------------ */
+  // sr
+  uint32_t send_packet_count_{0u};
+  uint64_t send_packet_bytes_{0u};
+  uint64_t max_packet_ms_{0u};
+  uint64_t max_packet_ts_{0u};
   // send packet producer
   DataProducerPtr data_producer_;
   // send report
