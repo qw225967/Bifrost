@@ -103,6 +103,32 @@ uint32_t Publisher::TccClientSendRtpPacket(const uint8_t* data, size_t len) {
 }
 
 void Publisher::OnReceiveReceiverReport(ReceiverReport* report) {
+
+  // Get the NTP representation of the current timestamp.
+  uint64_t nowMs = this->uv_loop_->get_time_ms();
+  auto ntp       = Time::TimeMs2Ntp(nowMs);
+
+  // Get the compact NTP representation of the current timestamp.
+  uint32_t compactNtp = (ntp.seconds & 0x0000FFFF) << 16;
+
+  compactNtp |= (ntp.fractions & 0xFFFF0000) >> 16;
+
+  uint32_t lastSr = report->GetLastSenderReport();
+  uint32_t dlsr   = report->GetDelaySinceLastSenderReport();
+
+  // RTT in 1/2^16 second fractions.
+  uint32_t rtt{ 0 };
+
+  // If no Sender Report was received by the remote endpoint yet, ignore lastSr
+  // and dlsr values in the Receiver Report.
+  if (lastSr && (compactNtp > dlsr + lastSr))
+    rtt = compactNtp - dlsr - lastSr;
+
+  // RTT in milliseconds.
+  this->rtt_ = static_cast<float>(rtt >> 16) * 1000;
+  this->rtt_ += (static_cast<float>(rtt & 0x0000FFFF) / 65536) * 1000;
+
+
   webrtc::RTCPReportBlock webrtc_report;
   webrtc_report.last_sender_report_timestamp = report->GetLastSenderReport();
   webrtc_report.source_ssrc = report->GetSsrc();
@@ -115,10 +141,11 @@ void Publisher::OnReceiveReceiverReport(ReceiverReport* report) {
             << ", ssrc:" << report->GetSsrc()
             << ", jitter:" << report->GetDelaySinceLastSenderReport()
             << ", fraction_lost:" << uint32_t(report->GetFractionLost())
-            << ", packets_lost:" << report->GetTotalLost() << std::endl;
+            << ", packets_lost:" << report->GetTotalLost()
+            << ", rtt:" << this->rtt_ << std::endl;
 
   this->tcc_client_->ReceiveRtcpReceiverReport(
-      webrtc_report, rtt_, this->uv_loop_->get_time_ms_int64());
+      webrtc_report, this->rtt_, this->uv_loop_->get_time_ms_int64());
 }
 
 SenderReport* Publisher::GetRtcpSenderReport(uint64_t nowMs) {
