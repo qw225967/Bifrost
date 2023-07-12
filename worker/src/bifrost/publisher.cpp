@@ -144,6 +144,8 @@ void Publisher::OnReceiveReceiverReport(ReceiverReport* report) {
             << ", packets_lost:" << report->GetTotalLost()
             << ", rtt:" << this->rtt_ << std::endl;
 
+  this->nack_->UpdateRtt(uint32_t(this->rtt_));
+
   this->tcc_client_->ReceiveRtcpReceiverReport(
       webrtc_report, this->rtt_, this->uv_loop_->get_time_ms_int64());
 }
