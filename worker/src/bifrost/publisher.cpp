@@ -109,6 +109,14 @@ void Publisher::OnReceiveReceiverReport(ReceiverReport* report) {
   webrtc_report.jitter = report->GetDelaySinceLastSenderReport();
   webrtc_report.fraction_lost = report->GetFractionLost();
   webrtc_report.packets_lost = report->GetTotalLost();
+
+  std::cout << "receive rr "
+            << "last_sender_report_timestamp:" << report->GetLastSenderReport()
+            << ", ssrc:" << report->GetSsrc()
+            << ", jitter:" << report->GetDelaySinceLastSenderReport()
+            << ", fraction_lost:" << uint32_t(report->GetFractionLost())
+            << ", packets_lost:" << report->GetTotalLost() << std::endl;
+
   this->tcc_client_->ReceiveRtcpReceiverReport(
       webrtc_report, rtt_, this->uv_loop_->get_time_ms_int64());
 }

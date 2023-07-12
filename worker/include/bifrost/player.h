@@ -20,9 +20,9 @@ namespace bifrost {
 typedef std::shared_ptr<sockaddr> SockAddressPtr;
 typedef std::shared_ptr<Nack> NackPtr;
 typedef std::shared_ptr<TransportCongestionControlServer>
-    TransportCongestionControlServerPtr;
+TransportCongestionControlServerPtr;
 class Player : public UvTimer::Listener,
-               public TransportCongestionControlServer::Observer {
+    public TransportCongestionControlServer::Observer {
  public:
   class Observer {
    public:
@@ -32,7 +32,7 @@ class Player : public UvTimer::Listener,
 
  public:
   Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
-         Observer* observer, uint32_t ssrc);
+      Observer* observer, uint32_t ssrc);
   ~Player() { this->nack_.reset(); }
 
   // UvTimer
@@ -57,8 +57,8 @@ class Player : public UvTimer::Listener,
   ReceiverReport* GetRtcpReceiverReport();
 
  private:
-  uint32_t GetExpectedPackets() const
-  {
+  bool UpdateSeq(uint16_t seq);
+  uint32_t GetExpectedPackets() const {
     return (this->cycles_ + this->max_seq_) - this->base_seq_ + 1;
   }
 
@@ -81,10 +81,11 @@ class Player : public UvTimer::Listener,
   uint64_t last_sr_received_;
   uint64_t last_sender_report_ntp_ms_;
   // rr
-  uint32_t receive_packet_count_ {0u};
+  uint32_t receive_packet_count_{0u};
   uint16_t max_seq_{0u};   // Highest seq. number seen.
   uint32_t cycles_{0u};    // Shifted count of seq. number cycles.
   uint32_t base_seq_{0u};  // Base seq number.
+  uint32_t bad_seq_{0u};   // Last 'bad' seq number + 1.
   uint32_t expected_prior_{0u};
   uint32_t received_prior_{0u};
   uint32_t jitter_count_{0u};

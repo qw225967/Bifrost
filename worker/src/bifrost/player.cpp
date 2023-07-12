@@ -10,8 +10,13 @@
 #include "player.h"
 
 namespace bifrost {
+static constexpr uint16_t MaxDropout{ 3000 };
+static constexpr uint16_t MaxMisorder{ 1500 };
+static constexpr uint32_t RtpSeqMod{ 1 << 16 };
+static constexpr size_t ScoreHistogramLength{ 24 };
+
 Player::Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
-               Observer* observer, uint32_t ssrc)
+    Observer* observer, uint32_t ssrc)
     : uv_loop_(*uv_loop), observer_(observer), ssrc_(ssrc) {
   // 1.remote address set
   this->udp_remote_address_ = std::make_shared<sockaddr>(*remote_addr);
@@ -24,7 +29,56 @@ Player::Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
       this, MtuSize, &this->uv_loop_);
 }
 
+bool Player::UpdateSeq(uint16_t seq)
+{
+  uint16_t udelta = seq - this->max_seq_;
+
+  // If the new packet sequence number is greater than the max seen but not
+  // "so much bigger", accept it.
+  // NOTE: udelta also handles the case of a new cycle, this is:
+  //    maxSeq:65536, seq:0 => udelta:1
+  if (udelta < MaxDropout)
+  {
+    // In order, with permissible gap.
+    if (seq < this->max_seq_)
+    {
+      // Sequence number wrapped: count another 64K cycle.
+      this->cycles_ += RtpSeqMod;
+    }
+
+    this->max_seq_ = seq;
+  }
+  // Too old packet received (older than the allowed misorder).
+  // Or to new packet (more than acceptable dropout).
+  else if (udelta <= RtpSeqMod - MaxMisorder)
+  {
+    // The sequence number made a very large jump. If two sequential packets
+    // arrive, accept the latter.
+    if (seq == this->bad_seq_)
+    {
+      // Initialize/reset RTP counters.
+      this->base_seq_ = seq;
+      this->max_seq_  = seq;
+      this->bad_seq_  = RtpSeqMod + 1; // So seq == badSeq is false.
+    }
+    else
+    {
+      this->bad_seq_ = (seq + 1) & (RtpSeqMod - 1);
+
+      return false;
+    }
+  }
+  // Acceptable misorder.
+  else
+  {
+    // Do nothing.
+  }
+
+  return true;
+}
+
 void Player::OnReceiveRtpPacket(RtpPacketPtr packet) {
+  this->UpdateSeq(packet->GetSequenceNumber());
   this->nack_->OnReceiveRtpPacket(packet);
   this->tcc_server_->IncomingPacket(this->uv_loop_->get_time_ms_int64(),
                                     packet.get());
@@ -54,7 +108,7 @@ ReceiverReport* Player::GetRtcpReceiverReport() {
   // Calculate Packets Expected and Lost.
   auto expected = this->GetExpectedPackets();
 
-  uint32_t packet_lost_ = 0;
+  int32_t packet_lost_ = 0;
   if (expected > this->receive_packet_count_)
     packet_lost_ = expected - this->receive_packet_count_;
 
@@ -91,7 +145,7 @@ ReceiverReport* Player::GetRtcpReceiverReport() {
   if (this->last_sr_received_ != 0) {
     // Get delay in milliseconds.
     auto delayMs = static_cast<uint32_t>(this->uv_loop_->get_time_ms() -
-                                         this->last_sr_received_);
+        this->last_sr_received_);
     // Express delay in units of 1/65536 seconds.
     uint32_t dlsr = (delayMs / 1000) << 16;
 
@@ -103,5 +157,7 @@ ReceiverReport* Player::GetRtcpReceiverReport() {
     report->SetDelaySinceLastSenderReport(0);
     report->SetLastSenderReport(0);
   }
+
+  return report;
 }
 }  // namespace bifrost

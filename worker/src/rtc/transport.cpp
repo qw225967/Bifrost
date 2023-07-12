@@ -99,8 +99,8 @@ void Transport::OnUdpRouterRtcpPacketReceived(
           player_iter->second->OnReceiveSenderReport(report);
 
           // 立刻回复rr
-          std::unique_ptr<CompoundPacket> packet{nullptr};
-          packet.reset(new CompoundPacket());
+          std::unique_ptr<CompoundPacket> packet =
+              std::make_unique<CompoundPacket>();
           auto* report = player_iter->second->GetRtcpReceiverReport();
           packet->AddReceiverReport(report);
           packet->Serialize(Buffer);
