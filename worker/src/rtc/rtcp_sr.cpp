@@ -13,8 +13,6 @@ namespace bifrost {
 /* Class methods. */
 
 SenderReport* SenderReport::Parse(const uint8_t* data, size_t len) {
-  MS_TRACE();
-
   // Get the header.
   auto* header = const_cast<Header*>(reinterpret_cast<const Header*>(data));
 
@@ -43,27 +41,27 @@ size_t SenderReport::Serialize(uint8_t* buffer) {
 
 /* Class methods. */
 
-SenderReportPacket* SenderReportPacket::Parse(const uint8_t* data, size_t len) {
-  MS_TRACE();
-
+std::shared_ptr<SenderReportPacket> SenderReportPacket::Parse(
+    const uint8_t* data, size_t len) {
   // Get the header.
   auto* header =
       const_cast<CommonHeader*>(reinterpret_cast<const CommonHeader*>(data));
 
-  std::unique_ptr<SenderReportPacket> packet(new SenderReportPacket(header));
-  size_t offset = sizeof(Packet::CommonHeader);
+  std::shared_ptr<SenderReportPacket> packet =
+      std::make_shared<SenderReportPacket>(header);
+  size_t offset = sizeof(RtcpPacket::CommonHeader);
 
   SenderReport* report = SenderReport::Parse(data + offset, len - offset);
 
   if (report) packet->AddReport(report);
 
-  return packet.release();
+  return packet;
 }
 
 /* Instance methods. */
 
 size_t SenderReportPacket::Serialize(uint8_t* buffer) {
-  size_t offset = Packet::Serialize(buffer);
+  size_t offset = RtcpPacket::Serialize(buffer);
 
   // Serialize reports.
   for (auto* report : this->reports) {

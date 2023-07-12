@@ -8,6 +8,7 @@
  *******************************************************/
 
 #include "rtcp_compound_packet.h"
+#include "rtcp_packet.h"
 
 namespace bifrost {
 /* Instance methods. */
@@ -38,7 +39,7 @@ void CompoundPacket::Serialize(uint8_t* data) {
     offset = this->sender_report_packet_.GetSize();
 
     // Fix header count field.
-    auto* header = reinterpret_cast<Packet::CommonHeader*>(this->header);
+    auto* header = reinterpret_cast<RtcpPacket::CommonHeader*>(this->header);
 
     header->count = 0;
 

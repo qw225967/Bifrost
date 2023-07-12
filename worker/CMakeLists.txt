@@ -399,6 +399,8 @@ add_executable(worker
         include/rtc/rtcp_feedback_rtp.h
         include/rtc/rtcp_feedback_item.h
         include/rtc/rtcp_compound_packet.h
+        include/rtc/rtcp_rr.h
+        include/rtc/rtcp_sr.h
         include/utils/common.h
         include/utils/setting.h
         include/utils/utils.h
@@ -425,6 +427,8 @@ add_executable(worker
         src/rtc/rtcp_nack.cpp
         src/rtc/rtcp_feedback_rtp.cpp
         src/rtc/rtcp_compound_packet.cpp
+        src/rtc/rtcp_rr.cpp
+        src/rtc/rtcp_sr.cpp
         src/utils/setting.cpp
         src/utils/utils.cpp
         src/main.cpp

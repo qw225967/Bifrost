@@ -11,6 +11,7 @@
 #define WORKER_RTCP_RR_H
 
 #include "rtcp_packet.h"
+#include "utils.h"
 
 namespace bifrost {
 class ReceiverReport {
@@ -101,7 +102,7 @@ class ReceiverReportPacket : public RtcpPacket {
   using Iterator = std::vector<ReceiverReport*>::iterator;
 
  public:
-  static ReceiverReportPacket* Parse(const uint8_t* data, size_t len,
+  static std::shared_ptr<ReceiverReportPacket> Parse(const uint8_t* data, size_t len,
                                      size_t offset = 0);
 
  public:

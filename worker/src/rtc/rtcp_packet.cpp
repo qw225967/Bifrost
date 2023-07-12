@@ -12,6 +12,8 @@
 #include <iostream>
 
 #include "rtcp_feedback.h"
+#include "rtcp_sr.h"
+#include "rtcp_rr.h"
 
 namespace bifrost {
 /* Namespace variables. */
@@ -62,10 +64,12 @@ std::shared_ptr<RtcpPacket> RtcpPacket::Parse(const uint8_t* data, size_t len) {
 
     switch (Type(header->packetType)) {
       case Type::SR: {
+        current = SenderReportPacket::Parse(data, packetLen);
         break;
       }
 
       case Type::RR: {
+        current = ReceiverReportPacket::Parse(data, packetLen);
         break;
       }
 

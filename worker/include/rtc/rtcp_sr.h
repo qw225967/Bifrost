@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "rtcp_packet.h"
+#include "utils.h"
 
 namespace bifrost {
 class SenderReport {
@@ -77,7 +78,7 @@ class SenderReportPacket : public RtcpPacket {
   using Iterator = std::vector<SenderReport*>::iterator;
 
  public:
-  static SenderReportPacket* Parse(const uint8_t* data, size_t len);
+  static std::shared_ptr<SenderReportPacket> Parse(const uint8_t* data, size_t len);
 
  public:
   SenderReportPacket() : RtcpPacket(Type::SR) {}

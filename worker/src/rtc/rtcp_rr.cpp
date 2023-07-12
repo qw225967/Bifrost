@@ -31,8 +31,6 @@ ReceiverReport* ReceiverReport::Parse(const uint8_t* data, size_t len) {
 void ReceiverReport::Dump() const {}
 
 size_t ReceiverReport::Serialize(uint8_t* buffer) {
-  MS_TRACE();
-
   // Copy the header.
   std::memcpy(buffer, this->header, sizeof(Header));
 
@@ -47,8 +45,8 @@ size_t ReceiverReport::Serialize(uint8_t* buffer) {
  * @param  len    - Total length of the packet.
  * @param  offset - points to the first Receiver Report in the incoming packet.
  */
-ReceiverReportPacket* ReceiverReportPacket::Parse(const uint8_t* data,
-                                                  size_t len, size_t offset) {
+std::shared_ptr<ReceiverReportPacket> ReceiverReportPacket::Parse(
+    const uint8_t* data, size_t len, size_t offset) {
   // Get the header.
   auto* header =
       const_cast<CommonHeader*>(reinterpret_cast<const CommonHeader*>(data));
@@ -62,15 +60,15 @@ ReceiverReportPacket* ReceiverReportPacket::Parse(const uint8_t* data,
     return nullptr;
   }
 
-  std::unique_ptr<ReceiverReportPacket> packet(
-      new ReceiverReportPacket(header));
+  std::shared_ptr<ReceiverReportPacket> packet =
+      std::make_shared<ReceiverReportPacket>(header);
 
-  uint32_t ssrc = Utils::Byte::Get4Bytes(reinterpret_cast<uint8_t*>(header),
-                                         sizeof(CommonHeader));
+  uint32_t ssrc = Byte::get_4_bytes(reinterpret_cast<uint8_t*>(header),
+                                    sizeof(CommonHeader));
 
   packet->SetSsrc(ssrc);
 
-  if (offset == 0) offset = sizeof(Packet::CommonHeader) + 4u /* ssrc */;
+  if (offset == 0) offset = sizeof(RtcpPacket::CommonHeader) + 4u /* ssrc */;
 
   uint8_t count = header->count;
 
@@ -81,20 +79,20 @@ ReceiverReportPacket* ReceiverReportPacket::Parse(const uint8_t* data,
       packet->AddReport(report);
       offset += report->GetSize();
     } else {
-      return packet.release();
+      return packet;
     }
   }
 
-  return packet.release();
+  return packet;
 }
 
 /* Instance methods. */
 
 size_t ReceiverReportPacket::Serialize(uint8_t* buffer) {
-  size_t offset = Packet::Serialize(buffer);
+  size_t offset = RtcpPacket::Serialize(buffer);
 
   // Copy the SSRC.
-  Utils::Byte::Set4Bytes(buffer, sizeof(Packet::CommonHeader), this->ssrc);
+  Byte::set_4_bytes(buffer, sizeof(RtcpPacket::CommonHeader), this->ssrc);
   offset += 4u;
 
   // Serialize reports.
