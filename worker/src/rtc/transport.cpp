@@ -13,18 +13,26 @@
 #include "rtcp_nack.h"
 
 namespace bifrost {
-Transport::Transport(TransportModel model) : model_(model) {
+Transport::Transport(TransportModel model, uint8_t number,
+                     ExperimentManagerPtr& experiment_manager)
+    : model_(model), number_(number), experiment_manager_(experiment_manager) {
   this->uv_loop_ = new UvLoop;
 
   // 1.init loop
   this->uv_loop_->ClassInit();
+
+  auto remote_config = Settings::config_.remote_send_configuration_;
+  remote_config.ssrc += number;
+
+  auto local_config = Settings::config_.local_receive_configuration_;
+  local_config.rtcPort += number;
 
   // 2.publish and player
   switch (model_) {
     case SinglePublish: {
       // 2.publisher
       this->publisher_ = std::make_shared<Publisher>(
-          Settings::config_.remote_send_configuration_, &this->uv_loop_, this);
+          remote_config, &this->uv_loop_, this, number, experiment_manager);
       break;
     }
   }
@@ -37,8 +45,7 @@ Transport::Transport(TransportModel model) : model_(model) {
 #else
   //   4.2 use default model : get config by json file
   this->udp_router_ = std::make_shared<UdpRouter>(
-      Settings::config_.local_receive_configuration_,
-      this->uv_loop_->get_loop().get(), this);
+      local_config, this->uv_loop_->get_loop().get(), this);
 #endif
 }
 
@@ -72,7 +79,8 @@ void Transport::OnUdpRouterRtpPacketReceived(
     player_iter->second->OnReceiveRtpPacket(rtp_packet);
   } else {
     auto player = std::make_shared<Player>(remote_addr, &this->uv_loop_, this,
-                                           rtp_packet->GetSsrc());
+                                           rtp_packet->GetSsrc(), this->number_,
+                                           this->experiment_manager_);
     this->players_[rtp_packet->GetSsrc()] = player;
   }
 }

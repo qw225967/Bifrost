@@ -18,18 +18,20 @@ const uint32_t IntervalDataDump = 1000u;
 const uint32_t IntervalSendReport = 2000u;
 
 Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
-                     Observer* observer)
+                     Observer* observer, uint8_t number,
+                     ExperimentManagerPtr& experiment_manager)
     : remote_addr_config_(remote_config),
       uv_loop_(*uv_loop),
       observer_(observer),
       pacer_bits_(InitialAvailableBitrate),
-      rtt_(100) {
+      rtt_(100),
+      experiment_manager_(experiment_manager),
+      number_(number) {
+  std::cout << "publish experiment manager:" << experiment_manager << std::endl;
+
   // 1.remote address set
   auto remote_addr = Settings::get_sockaddr_by_config(remote_config);
   this->udp_remote_address_ = std::make_shared<sockaddr>(remote_addr);
-
-  // 2.experiment
-  this->experiment_manager_ = std::make_shared<ExperimentManager>();
 
   // 3.timer start
   this->producer_timer_ = new UvTimer(this, this->uv_loop_->get_loop().get());
@@ -103,10 +105,9 @@ uint32_t Publisher::TccClientSendRtpPacket(const uint8_t* data, size_t len) {
 }
 
 void Publisher::OnReceiveReceiverReport(ReceiverReport* report) {
-
   // Get the NTP representation of the current timestamp.
   uint64_t nowMs = this->uv_loop_->get_time_ms();
-  auto ntp       = Time::TimeMs2Ntp(nowMs);
+  auto ntp = Time::TimeMs2Ntp(nowMs);
 
   // Get the compact NTP representation of the current timestamp.
   uint32_t compactNtp = (ntp.seconds & 0x0000FFFF) << 16;
@@ -114,20 +115,18 @@ void Publisher::OnReceiveReceiverReport(ReceiverReport* report) {
   compactNtp |= (ntp.fractions & 0xFFFF0000) >> 16;
 
   uint32_t lastSr = report->GetLastSenderReport();
-  uint32_t dlsr   = report->GetDelaySinceLastSenderReport();
+  uint32_t dlsr = report->GetDelaySinceLastSenderReport();
 
   // RTT in 1/2^16 second fractions.
-  uint32_t rtt{ 0 };
+  uint32_t rtt{0};
 
   // If no Sender Report was received by the remote endpoint yet, ignore lastSr
   // and dlsr values in the Receiver Report.
-  if (lastSr && (compactNtp > dlsr + lastSr))
-    rtt = compactNtp - dlsr - lastSr;
+  if (lastSr && (compactNtp > dlsr + lastSr)) rtt = compactNtp - dlsr - lastSr;
 
   // RTT in milliseconds.
   this->rtt_ = static_cast<float>(rtt >> 16) * 1000;
   this->rtt_ += (static_cast<float>(rtt & 0x0000FFFF) / 65536) * 1000;
-
 
   webrtc::RTCPReportBlock webrtc_report;
   webrtc_report.last_sender_report_timestamp = report->GetLastSenderReport();
@@ -203,13 +202,13 @@ void Publisher::OnTimer(UvTimer* timer) {
 
     for (auto i = 0; i < trends.size(); i++) {
       ExperimentGccData gcc_data_temp(0, 0, trends[i]);
-      this->experiment_manager_->DumpGccDataToCsv(i + 1, trends.size(),
+      this->experiment_manager_->DumpGccDataToCsv(this->number_, i + 1, trends.size(),
                                                   gcc_data_temp);
     }
 
     ExperimentGccData gcc_data(gcc_available, this->send_bits_prior_, 0);
     this->send_bits_prior_ = 0;
-    this->experiment_manager_->DumpGccDataToCsv(1, 1, gcc_data);
+    this->experiment_manager_->DumpGccDataToCsv(this->number_, 1, 1, gcc_data);
   }
 
   if (timer == this->send_report_timer_) {

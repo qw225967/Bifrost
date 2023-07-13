@@ -10,6 +10,7 @@
 #ifndef WORKER_PLAYER_H
 #define WORKER_PLAYER_H
 
+#include "experiment_manager.h"
 #include "nack.h"
 #include "rtcp_rr.h"
 #include "rtcp_sr.h"
@@ -20,9 +21,9 @@ namespace bifrost {
 typedef std::shared_ptr<sockaddr> SockAddressPtr;
 typedef std::shared_ptr<Nack> NackPtr;
 typedef std::shared_ptr<TransportCongestionControlServer>
-TransportCongestionControlServerPtr;
+    TransportCongestionControlServerPtr;
 class Player : public UvTimer::Listener,
-    public TransportCongestionControlServer::Observer {
+               public TransportCongestionControlServer::Observer {
  public:
   class Observer {
    public:
@@ -32,7 +33,8 @@ class Player : public UvTimer::Listener,
 
  public:
   Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
-      Observer* observer, uint32_t ssrc);
+         Observer* observer, uint32_t ssrc, uint8_t number,
+         ExperimentManagerPtr& experiment_manager);
   ~Player() { this->nack_.reset(); }
 
   // UvTimer
@@ -72,6 +74,10 @@ class Player : public UvTimer::Listener,
   UvLoop* uv_loop_;
   // ssrc
   uint32_t ssrc_;
+  // number
+  uint8_t number_;
+  // experiment manager
+  ExperimentManagerPtr experiment_manager_;
   /* ------------ base ------------ */
 
   /* ------------ experiment ------------ */

@@ -8,7 +8,7 @@
   "RemoteSendConfigs": {
     "userName": "remote_client_1",
     "rtcPort": 9002,
-    "rtcIp": "127.0.0.1",
+    "rtcIp": "101.42.42.53",
     "ssrc": 12341234
   },
   "ExperimentConfig": {

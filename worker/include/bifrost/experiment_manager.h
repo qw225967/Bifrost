@@ -11,13 +11,13 @@
 #define WORKER_EXPERIMENT_MANAGER_H
 
 #include <stdlib.h>
-
 #include <fstream>
 #include <iostream>
+#include <unordered_map>
 #include <vector>
+#include <mutex>
 
 #include "experiment_data.h"
-#include "uv_loop.h"
 
 namespace bifrost {
 class ExperimentManager {
@@ -35,15 +35,40 @@ class ExperimentManager {
   ExperimentManager();
   ~ExperimentManager();
 
-  void DumpGccDataToCsv(uint32_t count, uint32_t sample_size,
+  void AddTransportNumber(uint8_t number) {
+    trend_map_[number] = {};
+    ExperimentGccData temp(0, 0, 0);
+    bitrate_map_[number] = temp;
+  }
+
+  void InitTransportColumn() {
+    this->gcc_data_file_ << "TimeStamp";
+    this->gcc_trend_data_file_ << "TimeStamp";
+    for (int i = 0; i < trend_map_.size(); i++) {
+      this->gcc_data_file_ << ",AvailableBitrate" << i << ",";
+      this->gcc_data_file_ << "SentBitrate" << i;
+      this->gcc_trend_data_file_ << ",Trend" << i;
+    }
+    this->gcc_data_file_ << std::endl;
+    this->gcc_trend_data_file_ << std::endl;
+  }
+
+  void DumpGccDataToCsv(uint8_t number, uint32_t count, uint32_t sample_size,
                         ExperimentGccData data);
 
  private:
   // gcc experiment
   std::ofstream gcc_data_file_;
   std::ofstream gcc_trend_data_file_;
-  std::vector<ExperimentGccData> gcc_data_vec_;
+  // transport
+  std::unordered_map<uint8_t, ExperimentGccData> bitrate_map_;
+  std::unordered_map<uint8_t, std::vector<ExperimentGccData>> trend_map_;
+  std::unordered_map<uint8_t, bool> bitrate_count_flag_map_;
+  std::unordered_map<uint8_t, bool> trend_count_flag_map_;
+  // mutex
+  std::mutex locker;
 };
+typedef std::shared_ptr<ExperimentManager> ExperimentManagerPtr;
 }  // namespace bifrost
 
 #endif  // WORKER_EXPERIMENT_MANAGER_H

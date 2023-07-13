@@ -10,12 +10,13 @@
 #ifndef WORKER_TRANSPORT_H
 #define WORKER_TRANSPORT_H
 
+#include "experiment_manager.h"
 #include "player.h"
 #include "publisher.h"
+#include "rtcp_compound_packet.h"
 #include "udp_router.h"
 #include "unordered_map"
 #include "uv_loop.h"
-#include "rtcp_compound_packet.h"
 
 namespace bifrost {
 typedef std::shared_ptr<Player> PlayerPtr;
@@ -32,7 +33,8 @@ class Transport : public UdpRouter::UdpRouterObServer,
   };
 
  public:
-  Transport(TransportModel model);
+  Transport(TransportModel model, uint8_t number,
+            ExperimentManagerPtr& experiment_manager);
   ~Transport();
 
  public:
@@ -81,6 +83,12 @@ class Transport : public UdpRouter::UdpRouterObServer,
 
   // TransportModel
   TransportModel model_;
+
+  // number
+  uint8_t number_;
+
+  // experiment manager
+  ExperimentManagerPtr experiment_manager_;
 };
 }  // namespace bifrost
 

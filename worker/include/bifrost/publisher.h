@@ -13,7 +13,6 @@
 #include <unordered_map>
 
 #include "data_producer.h"
-#include "experiment_manager.h"
 #include "nack.h"
 #include "rtcp_rr.h"
 #include "rtcp_sr.h"
@@ -22,6 +21,7 @@
 #include "tcc_client.h"
 #include "uv_loop.h"
 #include "uv_timer.h"
+#include "experiment_manager.h"
 
 namespace bifrost {
 typedef std::shared_ptr<sockaddr> SockAddressPtr;
@@ -29,7 +29,6 @@ typedef std::shared_ptr<DataProducer> DataProducerPtr;
 typedef std::shared_ptr<TransportCongestionControlClient>
     TransportCongestionControlClientPtr;
 typedef std::shared_ptr<Nack> NackPtr;
-typedef std::shared_ptr<ExperimentManager> ExperimentManagerPtr;
 class Publisher : public UvTimer::Listener,
                   public TransportCongestionControlClient::Observer {
  public:
@@ -62,7 +61,8 @@ class Publisher : public UvTimer::Listener,
 
  public:
   Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
-            Observer* observer);
+            Observer* observer, uint8_t number,
+            ExperimentManagerPtr& experiment_manager);
   ~Publisher() {
     delete producer_timer_;
     delete data_dump_timer_;
@@ -71,7 +71,7 @@ class Publisher : public UvTimer::Listener,
     data_producer_.reset();
   }
   // UvTimer
-  void OnTimer(UvTimer* timer);
+  void OnTimer(UvTimer* timer) override;
 
   // TransportCongestionControlClient::Observer
   void OnTransportCongestionControlClientBitrates(
@@ -100,6 +100,10 @@ class Publisher : public UvTimer::Listener,
   UvTimer* send_report_timer_;
   // ssrc
   uint32_t ssrc_;
+  // number
+  uint8_t number_;
+  // experiment manager
+  ExperimentManagerPtr experiment_manager_;
   /* ------------ base ------------ */
 
   /* ------------ experiment ------------ */
@@ -121,8 +125,6 @@ class Publisher : public UvTimer::Listener,
   uint32_t send_bits_prior_ = 0;
   // nack
   NackPtr nack_;
-  // experiment manager
-  ExperimentManagerPtr experiment_manager_;
   /* ------------ experiment ------------ */
 };
 }  // namespace bifrost
