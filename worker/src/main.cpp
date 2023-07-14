@@ -15,7 +15,7 @@
 #include "transport.h"
 #include "experiment_manager.h"
 
-void ThreadPublish2(std::shared_ptr<bifrost::Transport> &ptr) {
+void ThreadPublish(std::shared_ptr<bifrost::Transport> &ptr) {
   ptr->Run();
 }
 
@@ -26,17 +26,20 @@ int main() {
 
   bifrost::ExperimentManagerPtr ptr = std::make_shared<bifrost::ExperimentManager>();
 
+
+  auto temp0 =
+      std::make_shared<bifrost::Transport>(bifrost::Transport::SinglePublish, 0, ptr);
+  ptr->AddTransportNumber(0);
   auto temp1 =
       std::make_shared<bifrost::Transport>(bifrost::Transport::SinglePublish, 1, ptr);
   ptr->AddTransportNumber(1);
-  auto temp2 =
-      std::make_shared<bifrost::Transport>(bifrost::Transport::SinglePublish, 0, ptr);
-  ptr->AddTransportNumber(0);
   ptr->InitTransportColumn();
 
-  std::thread publish2(ThreadPublish2, ref(temp1));
+  std::thread publish0(ThreadPublish, ref(temp0));
+  std::thread publish1(ThreadPublish, ref(temp1));
 
-  temp2->Run();
+  publish0.join();
+  publish1.join();
 
   return 0;
 }
