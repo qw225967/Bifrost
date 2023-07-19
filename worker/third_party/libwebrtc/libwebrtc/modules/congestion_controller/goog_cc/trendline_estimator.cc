@@ -28,7 +28,7 @@ namespace webrtc {
 namespace {
 
 // Parameters for linear least squares fit of regression line to noisy data.
-constexpr size_t kDefaultTrendlineWindowSize = 80;
+constexpr size_t kDefaultTrendlineWindowSize = 80; // 原值 20
 constexpr double kDefaultTrendlineSmoothingCoeff = 0.9;
 constexpr double kDefaultTrendlineThresholdGain = 4.0;
 const char kBweWindowSizeInPacketsExperiment[] =

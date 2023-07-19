@@ -36,12 +36,27 @@ class ExperimentManager {
   ~ExperimentManager();
 
   void AddTransportNumber(uint8_t number) {
+    locker.lock();
     trend_map_[number] = {};
     ExperimentGccData temp(0, 0, 0);
     bitrate_map_[number] = temp;
+    zero_dump_map_[number] = false;
+    locker.unlock();
+  }
+
+  void StartZeroDump(uint8_t number) {
+    locker.lock();
+    zero_dump_map_[number] = true;
+    locker.unlock();
+  }
+  void StopZeroDump(uint8_t number) {
+    locker.lock();
+    zero_dump_map_[number] = false;
+    locker.unlock();
   }
 
   void InitTransportColumn() {
+    locker.lock();
     this->gcc_data_file_ << "TimeStamp";
     this->gcc_trend_data_file_ << "TimeStamp";
     for (int i = 0; i < trend_map_.size(); i++) {
@@ -51,6 +66,7 @@ class ExperimentManager {
     }
     this->gcc_data_file_ << std::endl;
     this->gcc_trend_data_file_ << std::endl;
+    locker.unlock();
   }
 
   void DumpGccDataToCsv(uint8_t number, uint32_t count, uint32_t sample_size,
@@ -65,6 +81,7 @@ class ExperimentManager {
   std::unordered_map<uint8_t, std::vector<ExperimentGccData>> trend_map_;
   std::unordered_map<uint8_t, bool> bitrate_count_flag_map_;
   std::unordered_map<uint8_t, bool> trend_count_flag_map_;
+  std::unordered_map<uint8_t, bool> zero_dump_map_;
   // mutex
   std::mutex locker;
 };

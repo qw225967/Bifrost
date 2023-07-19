@@ -12,7 +12,7 @@
 #include "rtcp_compound_packet.h"
 
 namespace bifrost {
-const uint32_t InitialAvailableBitrate = 600000u;
+const uint32_t InitialAvailableBitrate = 1000000u;
 const uint16_t IntervalSendTime = 5u;
 const uint32_t IntervalDataDump = 1000u;
 const uint32_t IntervalSendReport = 2000u;

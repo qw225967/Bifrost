@@ -63,7 +63,8 @@ void ExperimentManager::DumpGccDataToCsv(uint8_t number, uint32_t count,
   bool is_need_bitrate_dump = true;
   if (bitrate_count_flag_map_.empty()) is_need_bitrate_dump = false;
   for (auto flag : bitrate_count_flag_map_) {
-    is_need_bitrate_dump = is_need_bitrate_dump && flag.second;
+    is_need_bitrate_dump =
+        is_need_bitrate_dump && (flag.second || zero_dump_map_[flag.first]);
   }
 
   if (is_need_bitrate_dump) {
@@ -73,7 +74,8 @@ void ExperimentManager::DumpGccDataToCsv(uint8_t number, uint32_t count,
     for (uint8_t i = 0; i < bitrate_map_.size(); i++) {
       this->gcc_data_file_ << "," << bitrate_map_[i].AvailableBitrate;
       this->gcc_data_file_ << "," << bitrate_map_[i].SentBitrate;
-      bitrate_count_flag_map_[i] = false;
+      if (!zero_dump_map_[i])
+        bitrate_count_flag_map_[i] = false;
     }
     this->gcc_data_file_ << std::endl;
   }

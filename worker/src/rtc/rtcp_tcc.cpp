@@ -360,7 +360,8 @@ FeedbackRtpTransportPacket::GetPacketResults() const {
   uint16_t currentSequenceNumber = this->baseSequenceNumber - 1;
 
   for (auto* chunk : this->chunks) {
-    chunk->FillResults(packetResults, currentSequenceNumber);
+    if (chunk)
+      chunk->FillResults(packetResults, currentSequenceNumber);
   }
 
   size_t deltaIdx{0u};
