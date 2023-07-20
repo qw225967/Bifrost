@@ -8,7 +8,6 @@
 #define QUICHE_QUIC_CORE_CONGESTION_CONTROL_LOSS_DETECTION_INTERFACE_H_
 
 #include "quiche/quic/core/congestion_control/send_algorithm_interface.h"
-#include "quiche/quic/core/quic_config.h"
 #include "quiche/quic/core/quic_packets.h"
 #include "quiche/quic/core/quic_time.h"
 #include "quiche/quic/core/quic_types.h"
