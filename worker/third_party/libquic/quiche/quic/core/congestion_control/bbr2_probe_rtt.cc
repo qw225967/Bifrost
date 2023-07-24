@@ -6,7 +6,6 @@
 
 #include "quiche/quic/core/congestion_control/bbr2_sender.h"
 #include "quiche/quic/core/quic_time.h"
-#include "quiche/quic/platform/api/quic_logging.h"
 
 namespace quic {
 
@@ -27,12 +26,12 @@ Bbr2Mode Bbr2ProbeRttMode::OnCongestionEvent(
         congestion_event.bytes_in_flight <=
             sender_->GetMinimumCongestionWindow()) {
       exit_time_ = congestion_event.event_time + Params().probe_rtt_duration;
-      QUIC_DVLOG(2) << sender_ << " PROBE_RTT exit time set to " << exit_time_
-                    << ". bytes_inflight:" << congestion_event.bytes_in_flight
-                    << ", inflight_target:" << InflightTarget()
-                    << ", min_congestion_window:"
-                    << sender_->GetMinimumCongestionWindow() << "  @ "
-                    << congestion_event.event_time;
+//      QUIC_DVLOG(2) << sender_ << " PROBE_RTT exit time set to " << exit_time_
+//                    << ". bytes_inflight:" << congestion_event.bytes_in_flight
+//                    << ", inflight_target:" << InflightTarget()
+//                    << ", min_congestion_window:"
+//                    << sender_->GetMinimumCongestionWindow() << "  @ "
+//                    << congestion_event.event_time;
     }
     return Bbr2Mode::PROBE_RTT;
   }

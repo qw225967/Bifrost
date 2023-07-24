@@ -365,10 +365,10 @@ void BbrSender::OnCongestionEvent(bool /*rtt_updated*/,
   // ack-only packets). In both cases, sampler_.total_bytes_acked() will not
   // change.
   if (total_bytes_acked_before != sampler_.total_bytes_acked()) {
-    QUIC_LOG_IF(WARNING, sample.sample_max_bandwidth.IsZero())
-        << sampler_.total_bytes_acked() - total_bytes_acked_before
-        << " bytes from " << acked_packets.size()
-        << " packets have been acked, but sample_max_bandwidth is zero.";
+//    QUIC_LOG_IF(WARNING, sample.sample_max_bandwidth.IsZero())
+//        << sampler_.total_bytes_acked() - total_bytes_acked_before
+//        << " bytes from " << acked_packets.size()
+//        << " packets have been acked, but sample_max_bandwidth is zero.";
     if (!sample.sample_is_app_limited ||
         sample.sample_max_bandwidth > max_bandwidth_.GetBest()) {
       max_bandwidth_.Update(sample.sample_max_bandwidth, round_trip_count_);
@@ -502,14 +502,14 @@ bool BbrSender::MaybeUpdateMinRtt(QuicTime now,
       !min_rtt_.IsZero() && (now > (min_rtt_timestamp_ + kMinRttExpiry));
 
   if (min_rtt_expired || sample_min_rtt < min_rtt_ || min_rtt_.IsZero()) {
-    QUIC_DVLOG(2) << "Min RTT updated, old value: " << min_rtt_
-                  << ", new value: " << sample_min_rtt
-                  << ", current time: " << now.ToDebuggingValue();
+//    QUIC_DVLOG(2) << "Min RTT updated, old value: " << min_rtt_
+//                  << ", new value: " << sample_min_rtt
+//                  << ", current time: " << now.ToDebuggingValue();
 
     min_rtt_ = sample_min_rtt;
     min_rtt_timestamp_ = now;
   }
-  QUICHE_DCHECK(!min_rtt_.IsZero());
+//  QUICHE_DCHECK(!min_rtt_.IsZero());
 
   return min_rtt_expired;
 }
@@ -576,7 +576,7 @@ void BbrSender::CheckIfFullBandwidthReached(
   rounds_without_bandwidth_gain_++;
   if ((rounds_without_bandwidth_gain_ >= num_startup_rtts_) ||
       ShouldExitStartupDueToLoss(last_packet_send_state)) {
-    QUICHE_DCHECK(has_non_app_limited_sample_);
+//    QUICHE_DCHECK(has_non_app_limited_sample_);
     is_at_full_bandwidth_ = true;
   }
 }
@@ -595,7 +595,7 @@ void BbrSender::MaybeExitStartupOrDrain(QuicTime now) {
 }
 
 void BbrSender::OnExitStartup(QuicTime now) {
-  QUICHE_DCHECK_EQ(mode_, STARTUP);
+//  QUICHE_DCHECK_EQ(mode_, STARTUP);
   if (stats_) {
     stats_->slowstart_duration.Stop(now);
   }
@@ -835,8 +835,8 @@ void BbrSender::OnApplicationLimited(QuicByteCount bytes_in_flight) {
   }
 
   sampler_.OnAppLimited();
-  QUIC_DVLOG(2) << "Becoming application limited. Last sent packet: "
-                << last_sent_packet_ << ", CWND: " << GetCongestionWindow();
+//  QUIC_DVLOG(2) << "Becoming application limited. Last sent packet: "
+//                << last_sent_packet_ << ", CWND: " << GetCongestionWindow();
 }
 
 void BbrSender::PopulateConnectionStats(QuicConnectionStats* stats) const {

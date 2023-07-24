@@ -64,12 +64,12 @@ class QUIC_EXPORT_PRIVATE SendAlgorithmInterface {
 
   virtual ~SendAlgorithmInterface() {}
 
-  // 去掉连接配置
-//  virtual void SetFromConfig(const QuicConfig& config,
-//                             Perspective perspective) = 0;
-//
-//  virtual void ApplyConnectionOptions(
-//      const QuicTagVector& connection_options) = 0;
+
+  virtual void SetFromConfig(const QuicConfig& config,
+                             Perspective perspective) = 0;
+
+  virtual void ApplyConnectionOptions(
+      const QuicTagVector& connection_options) = 0;
 
   // Sets the initial congestion window in number of packets.  May be ignored
   // if called after the initial congestion window is no longer relevant.

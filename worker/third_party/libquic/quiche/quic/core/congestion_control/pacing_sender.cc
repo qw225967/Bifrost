@@ -65,7 +65,7 @@ void PacingSender::OnPacketSent(
   }
 
   if (remove_non_initial_burst_) {
-//    QUIC_RELOADABLE_FLAG_COUNT_N(quic_pacing_remove_non_initial_burst, 1, 2);
+    QUIC_RELOADABLE_FLAG_COUNT_N(quic_pacing_remove_non_initial_burst, 1, 2);
   } else {
     // If in recovery, the connection is not coming out of quiescence.
     if (bytes_in_flight == 0 && !sender_->InRecovery()) {
@@ -145,7 +145,7 @@ QuicTime::Delta PacingSender::TimeUntilSend(
   }
 
   if (remove_non_initial_burst_) {
-//    QUIC_RELOADABLE_FLAG_COUNT_N(quic_pacing_remove_non_initial_burst, 2, 2);
+    QUIC_RELOADABLE_FLAG_COUNT_N(quic_pacing_remove_non_initial_burst, 2, 2);
     if (burst_tokens_ > 0 || lumpy_tokens_ > 0) {
       // Don't pace if we have burst or lumpy tokens available.
 //      QUIC_DVLOG(1) << "Can send packet now. burst_tokens:" << burst_tokens_

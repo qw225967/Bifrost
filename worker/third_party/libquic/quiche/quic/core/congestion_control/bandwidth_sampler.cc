@@ -267,7 +267,7 @@ void BandwidthSampler::OnPacketSent(
 void BandwidthSampler::OnPacketNeutered(QuicPacketNumber packet_number) {
   connection_state_map_.Remove(
       packet_number, [&](const ConnectionStateOnSentPacket& sent_packet) {
-//        QUIC_CODE_COUNT(quic_bandwidth_sampler_packet_neutered);
+        QUIC_CODE_COUNT(quic_bandwidth_sampler_packet_neutered);
         total_bytes_neutered_ += sent_packet.size;
       });
 }
@@ -451,9 +451,9 @@ BandwidthSample BandwidthSampler::OnPacketAcknowledgedInner(
     // issue.
     if (a0.ack_time == sent_packet.sent_time) {
       // This is the 1st packet after quiescense.
-//      QUIC_CODE_COUNT_N(quic_prev_ack_time_larger_than_current_ack_time, 1, 2);
+      QUIC_CODE_COUNT_N(quic_prev_ack_time_larger_than_current_ack_time, 1, 2);
     } else {
-//      QUIC_CODE_COUNT_N(quic_prev_ack_time_larger_than_current_ack_time, 2, 2);
+      QUIC_CODE_COUNT_N(quic_prev_ack_time_larger_than_current_ack_time, 2, 2);
     }
 //    QUIC_LOG_EVERY_N_SEC(ERROR, 60)
 //        << "Time of the previously acked packet:"

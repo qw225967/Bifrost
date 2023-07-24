@@ -15,7 +15,6 @@
 #include "quiche/quic/core/quic_types.h"
 #include "quiche/quic/platform/api/quic_flag_utils.h"
 #include "quiche/quic/platform/api/quic_flags.h"
-#include "quiche/common/print_elements.h"
 
 namespace quic {
 
@@ -117,12 +116,12 @@ void Bbr2Sender::ApplyConnectionOptions(
     const QuicTagVector& connection_options) {
   if (GetQuicReloadableFlag(quic_bbr2_extra_acked_window) &&
       ContainsQuicTag(connection_options, kBBR4)) {
-//    QUIC_RELOADABLE_FLAG_COUNT_N(quic_bbr2_extra_acked_window, 1, 2);
+    QUIC_RELOADABLE_FLAG_COUNT_N(quic_bbr2_extra_acked_window, 1, 2);
     model_.SetMaxAckHeightTrackerWindowLength(20);
   }
   if (GetQuicReloadableFlag(quic_bbr2_extra_acked_window) &&
       ContainsQuicTag(connection_options, kBBR5)) {
-//    QUIC_RELOADABLE_FLAG_COUNT_N(quic_bbr2_extra_acked_window, 2, 2);
+    QUIC_RELOADABLE_FLAG_COUNT_N(quic_bbr2_extra_acked_window, 2, 2);
     model_.SetMaxAckHeightTrackerWindowLength(40);
   }
   if (ContainsQuicTag(connection_options, kBBQ1)) {
@@ -205,12 +204,12 @@ void Bbr2Sender::ApplyConnectionOptions(
   }
   if (GetQuicReloadableFlag(quic_bbr2_probe_two_rounds) &&
       ContainsQuicTag(connection_options, kBB2U)) {
-//    QUIC_RELOADABLE_FLAG_COUNT_N(quic_bbr2_probe_two_rounds, 1, 3);
+    QUIC_RELOADABLE_FLAG_COUNT_N(quic_bbr2_probe_two_rounds, 1, 3);
     params_.max_probe_up_queue_rounds = 2;
   }
   if (GetQuicReloadableFlag(quic_bbr2_probe_two_rounds) &&
       ContainsQuicTag(connection_options, kBB2S)) {
-//    QUIC_RELOADABLE_FLAG_COUNT_N(quic_bbr2_probe_two_rounds, 2, 3);
+    QUIC_RELOADABLE_FLAG_COUNT_N(quic_bbr2_probe_two_rounds, 2, 3);
     params_.max_startup_queue_rounds = 2;
   }
 }

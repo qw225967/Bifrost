@@ -12,7 +12,6 @@
 #include "quiche/quic/core/quic_packets.h"
 #include "quiche/quic/platform/api/quic_flag_utils.h"
 #include "quiche/quic/platform/api/quic_flags.h"
-#include "quiche/quic/platform/api/quic_logging.h"
 
 namespace quic {
 
@@ -120,7 +119,7 @@ QuicByteCount CubicBytes::CongestionWindowAfterAck(
 
   if (!epoch_.IsInitialized()) {
     // First ACK after a loss event.
-    QUIC_DVLOG(1) << "Start of epoch";
+//    QUIC_DVLOG(1) << "Start of epoch";
     epoch_ = event_time;               // Start of epoch.
     acked_bytes_count_ = acked_bytes;  // Reset count.
     // Reset estimated_tcp_congestion_window_ to be in sync with cubic.
@@ -151,8 +150,8 @@ QuicByteCount CubicBytes::CongestionWindowAfterAck(
                                           kCubeScale;
 
   const bool add_delta = elapsed_time > time_to_origin_point_;
-  QUICHE_DCHECK(add_delta ||
-                (origin_point_congestion_window_ > delta_congestion_window));
+//  QUICHE_DCHECK(add_delta ||
+//                (origin_point_congestion_window_ > delta_congestion_window));
   QuicByteCount target_congestion_window =
       add_delta ? origin_point_congestion_window_ + delta_congestion_window
                 : origin_point_congestion_window_ - delta_congestion_window;
@@ -161,7 +160,7 @@ QuicByteCount CubicBytes::CongestionWindowAfterAck(
       std::min(target_congestion_window,
                current_congestion_window + acked_bytes_count_ / 2);
 
-  QUICHE_DCHECK_LT(0u, estimated_tcp_congestion_window_);
+//  QUICHE_DCHECK_LT(0u, estimated_tcp_congestion_window_);
   // Increase the window by approximately Alpha * 1 MSS of bytes every
   // time we ack an estimated tcp window of bytes.  For small
   // congestion windows (less than 25), the formula below will
@@ -181,8 +180,8 @@ QuicByteCount CubicBytes::CongestionWindowAfterAck(
     target_congestion_window = estimated_tcp_congestion_window_;
   }
 
-  QUIC_DVLOG(1) << "Final target congestion_window: "
-                << target_congestion_window;
+//  QUIC_DVLOG(1) << "Final target congestion_window: "
+//                << target_congestion_window;
   return target_congestion_window;
 }
 

@@ -201,18 +201,18 @@ Bbr2ProbeBwMode::AdaptUpperBoundsResult Bbr2ProbeBwMode::MaybeAdaptUpperBounds(
             sender_->GetTargetBytesInflight() * (1.0 - Params().beta);
         if (inflight_at_send >= inflight_target) {
           // The new code does not change behavior.
-//          QUIC_CODE_COUNT(quic_bbr2_cut_inflight_hi_gradually_noop);
+          QUIC_CODE_COUNT(quic_bbr2_cut_inflight_hi_gradually_noop);
         } else {
           // The new code actually cuts inflight_hi slower than before.
-//          QUIC_CODE_COUNT(quic_bbr2_cut_inflight_hi_gradually_in_effect);
+          QUIC_CODE_COUNT(quic_bbr2_cut_inflight_hi_gradually_in_effect);
         }
         if (Params().limit_inflight_hi_by_max_delivered) {
           QuicByteCount new_inflight_hi =
               std::max(inflight_at_send, inflight_target);
           if (new_inflight_hi >= model_->max_bytes_delivered_in_round()) {
-//            QUIC_CODE_COUNT(quic_bbr2_cut_inflight_hi_max_delivered_noop);
+            QUIC_CODE_COUNT(quic_bbr2_cut_inflight_hi_max_delivered_noop);
           } else {
-//            QUIC_CODE_COUNT(quic_bbr2_cut_inflight_hi_max_delivered_in_effect);
+            QUIC_CODE_COUNT(quic_bbr2_cut_inflight_hi_max_delivered_in_effect);
             new_inflight_hi = model_->max_bytes_delivered_in_round();
           }
 //          QUIC_DVLOG(3) << sender_
@@ -461,7 +461,7 @@ void Bbr2ProbeBwMode::UpdateProbeUp(
                                      Params().full_bw_threshold);
         if (model_->rounds_with_queueing() >=
             Params().max_probe_up_queue_rounds) {
-//          QUIC_RELOADABLE_FLAG_COUNT_N(quic_bbr2_probe_two_rounds, 3, 3);
+          QUIC_RELOADABLE_FLAG_COUNT_N(quic_bbr2_probe_two_rounds, 3, 3);
           is_queuing = true;
         }
       }

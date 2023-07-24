@@ -8,7 +8,6 @@
 
 #include "quiche/quic/platform/api/quic_flag_utils.h"
 #include "quiche/quic/platform/api/quic_flags.h"
-#include "quiche/quic/platform/api/quic_logging.h"
 
 namespace quic {
 
@@ -42,10 +41,10 @@ void RttStats::ExpireSmoothedMetrics() {
 bool RttStats::UpdateRtt(QuicTime::Delta send_delta, QuicTime::Delta ack_delay,
                          QuicTime now) {
   if (send_delta.IsInfinite() || send_delta <= QuicTime::Delta::Zero()) {
-    QUIC_LOG_FIRST_N(WARNING, 3)
-        << "Ignoring measured send_delta, because it's is "
-        << "either infinite, zero, or negative.  send_delta = "
-        << send_delta.ToMicroseconds();
+//    QUIC_LOG_FIRST_N(WARNING, 3)
+//        << "Ignoring measured send_delta, because it's is "
+//        << "either infinite, zero, or negative.  send_delta = "
+//        << send_delta.ToMicroseconds();
     return false;
   }
 
@@ -89,8 +88,8 @@ bool RttStats::UpdateRtt(QuicTime::Delta send_delta, QuicTime::Delta ack_delay,
         kOneMinusBeta * mean_deviation_.ToMicroseconds() +
         kBeta * std::abs((smoothed_rtt_ - rtt_sample).ToMicroseconds())));
     smoothed_rtt_ = kOneMinusAlpha * smoothed_rtt_ + kAlpha * rtt_sample;
-    QUIC_DVLOG(1) << " smoothed_rtt(us):" << smoothed_rtt_.ToMicroseconds()
-                  << " mean_deviation(us):" << mean_deviation_.ToMicroseconds();
+//    QUIC_DVLOG(1) << " smoothed_rtt(us):" << smoothed_rtt_.ToMicroseconds()
+//                  << " mean_deviation(us):" << mean_deviation_.ToMicroseconds();
   }
   return true;
 }
@@ -104,7 +103,7 @@ void RttStats::OnConnectionMigration() {
 }
 
 QuicTime::Delta RttStats::GetStandardOrMeanDeviation() const {
-  QUICHE_DCHECK(calculate_standard_deviation_);
+//  QUICHE_DCHECK(calculate_standard_deviation_);
   if (!standard_deviation_calculator_.has_valid_standard_deviation) {
     return mean_deviation_;
   }
@@ -124,7 +123,7 @@ void RttStats::StandardDeviationCaculator::OnNewRttSample(
 
 QuicTime::Delta
 RttStats::StandardDeviationCaculator::CalculateStandardDeviation() const {
-  QUICHE_DCHECK(has_valid_standard_deviation);
+//  QUICHE_DCHECK(has_valid_standard_deviation);
   return QuicTime::Delta::FromMicroseconds(sqrt(m2));
 }
 
