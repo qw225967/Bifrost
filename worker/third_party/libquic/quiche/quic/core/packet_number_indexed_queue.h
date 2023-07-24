@@ -147,14 +147,14 @@ template <typename... Args>
 bool PacketNumberIndexedQueue<T>::Emplace(QuicPacketNumber packet_number,
                                           Args&&... args) {
   if (!packet_number.IsInitialized()) {
-    QUIC_BUG(quic_bug_10359_1)
-        << "Try to insert an uninitialized packet number";
+//    QUIC_BUG(quic_bug_10359_1)
+//        << "Try to insert an uninitialized packet number";
     return false;
   }
 
   if (IsEmpty()) {
     QUICHE_DCHECK(entries_.empty());
-    QUICHE_DCHECK(!first_packet_.IsInitialized());
+//    QUICHE_DCHECK(!first_packet_.IsInitialized());
 
     entries_.emplace_back(std::forward<Args>(args)...);
     number_of_present_entries_ = 1;

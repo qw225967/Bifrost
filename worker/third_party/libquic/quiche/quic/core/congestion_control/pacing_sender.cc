@@ -7,7 +7,6 @@
 #include "quiche/quic/core/quic_bandwidth.h"
 #include "quiche/quic/platform/api/quic_flag_utils.h"
 #include "quiche/quic/platform/api/quic_flags.h"
-#include "quiche/quic/platform/api/quic_logging.h"
 
 namespace quic {
 namespace {
@@ -31,7 +30,7 @@ PacingSender::PacingSender()
 PacingSender::~PacingSender() {}
 
 void PacingSender::set_sender(SendAlgorithmInterface* sender) {
-  QUICHE_DCHECK(sender != nullptr);
+//  QUICHE_DCHECK(sender != nullptr);
   sender_ = sender;
 }
 
@@ -42,7 +41,7 @@ void PacingSender::OnCongestionEvent(bool rtt_updated,
                                      const LostPacketVector& lost_packets,
                                      QuicPacketCount num_ect,
                                      QuicPacketCount num_ce) {
-  QUICHE_DCHECK(sender_ != nullptr);
+//  QUICHE_DCHECK(sender_ != nullptr);
   if (!lost_packets.empty()) {
     // Clear any burst tokens when entering recovery.
     burst_tokens_ = 0;
@@ -55,10 +54,10 @@ void PacingSender::OnPacketSent(
     QuicTime sent_time, QuicByteCount bytes_in_flight,
     QuicPacketNumber packet_number, QuicByteCount bytes,
     HasRetransmittableData has_retransmittable_data) {
-  QUICHE_DCHECK(sender_ != nullptr);
-  QUIC_DVLOG(3) << "Packet " << packet_number << " with " << bytes
-                << " bytes sent at " << sent_time
-                << ". bytes_in_flight: " << bytes_in_flight;
+//  QUICHE_DCHECK(sender_ != nullptr);
+//  QUIC_DVLOG(3) << "Packet " << packet_number << " with " << bytes
+//                << " bytes sent at " << sent_time
+//                << ". bytes_in_flight: " << bytes_in_flight;
   sender_->OnPacketSent(sent_time, bytes_in_flight, packet_number, bytes,
                         has_retransmittable_data);
   if (has_retransmittable_data != HAS_RETRANSMITTABLE_DATA) {
@@ -66,7 +65,7 @@ void PacingSender::OnPacketSent(
   }
 
   if (remove_non_initial_burst_) {
-    QUIC_RELOADABLE_FLAG_COUNT_N(quic_pacing_remove_non_initial_burst, 1, 2);
+//    QUIC_RELOADABLE_FLAG_COUNT_N(quic_pacing_remove_non_initial_burst, 1, 2);
   } else {
     // If in recovery, the connection is not coming out of quiescence.
     if (bytes_in_flight == 0 && !sender_->InRecovery()) {
@@ -138,7 +137,7 @@ void PacingSender::SetBurstTokens(uint32_t burst_tokens) {
 
 QuicTime::Delta PacingSender::TimeUntilSend(
     QuicTime now, QuicByteCount bytes_in_flight) const {
-  QUICHE_DCHECK(sender_ != nullptr);
+//  QUICHE_DCHECK(sender_ != nullptr);
 
   if (!sender_->CanSend(bytes_in_flight)) {
     // The underlying sender prevents sending.
@@ -146,37 +145,37 @@ QuicTime::Delta PacingSender::TimeUntilSend(
   }
 
   if (remove_non_initial_burst_) {
-    QUIC_RELOADABLE_FLAG_COUNT_N(quic_pacing_remove_non_initial_burst, 2, 2);
+//    QUIC_RELOADABLE_FLAG_COUNT_N(quic_pacing_remove_non_initial_burst, 2, 2);
     if (burst_tokens_ > 0 || lumpy_tokens_ > 0) {
       // Don't pace if we have burst or lumpy tokens available.
-      QUIC_DVLOG(1) << "Can send packet now. burst_tokens:" << burst_tokens_
-                    << ", lumpy_tokens:" << lumpy_tokens_;
+//      QUIC_DVLOG(1) << "Can send packet now. burst_tokens:" << burst_tokens_
+//                    << ", lumpy_tokens:" << lumpy_tokens_;
       return QuicTime::Delta::Zero();
     }
   } else {
     if (burst_tokens_ > 0 || bytes_in_flight == 0 || lumpy_tokens_ > 0) {
       // Don't pace if we have burst tokens available or leaving quiescence.
-      QUIC_DVLOG(1) << "Sending packet now. burst_tokens:" << burst_tokens_
-                    << ", bytes_in_flight:" << bytes_in_flight
-                    << ", lumpy_tokens:" << lumpy_tokens_;
+//      QUIC_DVLOG(1) << "Sending packet now. burst_tokens:" << burst_tokens_
+//                    << ", bytes_in_flight:" << bytes_in_flight
+//                    << ", lumpy_tokens:" << lumpy_tokens_;
       return QuicTime::Delta::Zero();
     }
   }
 
   // If the next send time is within the alarm granularity, send immediately.
   if (ideal_next_packet_send_time_ > now + alarm_granularity_) {
-    QUIC_DVLOG(1) << "Delaying packet: "
-                  << (ideal_next_packet_send_time_ - now).ToMicroseconds();
+//    QUIC_DVLOG(1) << "Delaying packet: "
+//                  << (ideal_next_packet_send_time_ - now).ToMicroseconds();
     return ideal_next_packet_send_time_ - now;
   }
 
-  QUIC_DVLOG(1) << "Can send packet now. ideal_next_packet_send_time: "
-                << ideal_next_packet_send_time_ << ", now: " << now;
+//  QUIC_DVLOG(1) << "Can send packet now. ideal_next_packet_send_time: "
+//                << ideal_next_packet_send_time_ << ", now: " << now;
   return QuicTime::Delta::Zero();
 }
 
 QuicBandwidth PacingSender::PacingRate(QuicByteCount bytes_in_flight) const {
-  QUICHE_DCHECK(sender_ != nullptr);
+//  QUICHE_DCHECK(sender_ != nullptr);
   if (!max_pacing_rate_.IsZero()) {
     return QuicBandwidth::FromBitsPerSecond(
         std::min(max_pacing_rate_.ToBitsPerSecond(),

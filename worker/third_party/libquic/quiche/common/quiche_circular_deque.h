@@ -14,7 +14,6 @@
 #include <type_traits>
 
 #include "quiche/common/platform/api/quiche_export.h"
-#include "quiche/common/platform/api/quiche_logging.h"
 
 namespace quiche {
 
@@ -587,8 +586,8 @@ class QUICHE_NO_EXPORT QuicheCircularDeque {
 
   void Relocate(size_t new_capacity) {
     const size_t num_elements = size();
-    QUICHE_DCHECK_GT(new_capacity, num_elements)
-        << "new_capacity:" << new_capacity << ", num_elements:" << num_elements;
+//    QUICHE_DCHECK_GT(new_capacity, num_elements)
+//        << "new_capacity:" << new_capacity << ", num_elements:" << num_elements;
 
     size_t new_data_capacity = new_capacity + 1;
     pointer new_data = AllocatorTraits::allocate(

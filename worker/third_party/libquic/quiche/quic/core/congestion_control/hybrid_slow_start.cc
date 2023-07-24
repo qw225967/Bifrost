@@ -6,8 +6,6 @@
 
 #include <algorithm>
 
-#include "quiche/quic/platform/api/quic_logging.h"
-
 namespace quic {
 
 // Note(pwestin): the magic clamping numbers come from the original code in
@@ -46,7 +44,7 @@ void HybridSlowStart::Restart() {
 }
 
 void HybridSlowStart::StartReceiveRound(QuicPacketNumber last_sent) {
-  QUIC_DVLOG(1) << "Reset hybrid slow start @" << last_sent;
+//  QUIC_DVLOG(1) << "Reset hybrid slow start @" << last_sent;
   end_packet_number_ = last_sent;
   current_min_rtt_ = QuicTime::Delta::Zero();
   rtt_sample_count_ = 0;

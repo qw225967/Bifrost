@@ -144,7 +144,7 @@ class QUIC_EXPORT_PRIVATE BbrSender : public SendAlgorithmInterface {
 
   // Sets the pacing gain used in STARTUP.  Must be greater than 1.
   void set_high_gain(float high_gain) {
-    QUICHE_DCHECK_LT(1.0f, high_gain);
+//    QUICHE_DCHECK_LT(1.0f, high_gain);
     high_gain_ = high_gain;
     if (mode_ == STARTUP) {
       pacing_gain_ = high_gain;
@@ -153,7 +153,7 @@ class QUIC_EXPORT_PRIVATE BbrSender : public SendAlgorithmInterface {
 
   // Sets the CWND gain used in STARTUP.  Must be greater than 1.
   void set_high_cwnd_gain(float high_cwnd_gain) {
-    QUICHE_DCHECK_LT(1.0f, high_cwnd_gain);
+//    QUICHE_DCHECK_LT(1.0f, high_cwnd_gain);
     high_cwnd_gain_ = high_cwnd_gain;
     if (mode_ == STARTUP) {
       congestion_window_gain_ = high_cwnd_gain;
@@ -162,7 +162,7 @@ class QUIC_EXPORT_PRIVATE BbrSender : public SendAlgorithmInterface {
 
   // Sets the gain used in DRAIN.  Must be less than 1.
   void set_drain_gain(float drain_gain) {
-    QUICHE_DCHECK_GT(1.0f, drain_gain);
+//    QUICHE_DCHECK_GT(1.0f, drain_gain);
     drain_gain_ = drain_gain;
   }
 

@@ -48,28 +48,28 @@ class QUIC_EXPORT_PRIVATE GeneralLossAlgorithm : public LossDetectionInterface {
                             QuicPacketNumber previous_largest_acked) override;
 
   void OnConfigNegotiated() override {
-    QUICHE_DCHECK(false)
-        << "Unexpected call to GeneralLossAlgorithm::OnConfigNegotiated";
+//    QUICHE_DCHECK(false)
+//        << "Unexpected call to GeneralLossAlgorithm::OnConfigNegotiated";
   }
 
   void OnMinRttAvailable() override {
-    QUICHE_DCHECK(false)
-        << "Unexpected call to GeneralLossAlgorithm::OnMinRttAvailable";
+//    QUICHE_DCHECK(false)
+//        << "Unexpected call to GeneralLossAlgorithm::OnMinRttAvailable";
   }
 
   void OnUserAgentIdKnown() override {
-    QUICHE_DCHECK(false)
-        << "Unexpected call to GeneralLossAlgorithm::OnUserAgentIdKnown";
+//    QUICHE_DCHECK(false)
+//        << "Unexpected call to GeneralLossAlgorithm::OnUserAgentIdKnown";
   }
 
   void OnConnectionClosed() override {
-    QUICHE_DCHECK(false)
-        << "Unexpected call to GeneralLossAlgorithm::OnConnectionClosed";
+//    QUICHE_DCHECK(false)
+//        << "Unexpected call to GeneralLossAlgorithm::OnConnectionClosed";
   }
 
   void OnReorderingDetected() override {
-    QUICHE_DCHECK(false)
-        << "Unexpected call to GeneralLossAlgorithm::OnReorderingDetected";
+//    QUICHE_DCHECK(false)
+//        << "Unexpected call to GeneralLossAlgorithm::OnReorderingDetected";
   }
 
   void Initialize(PacketNumberSpace packet_number_space,

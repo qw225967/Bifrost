@@ -5,7 +5,6 @@
 #include "quiche/quic/core/congestion_control/bbr2_drain.h"
 
 #include "quiche/quic/core/congestion_control/bbr2_sender.h"
-#include "quiche/quic/platform/api/quic_logging.h"
 
 namespace quic {
 
@@ -17,23 +16,23 @@ Bbr2Mode Bbr2DrainMode::OnCongestionEvent(
   model_->set_pacing_gain(Params().drain_pacing_gain);
 
   // Only STARTUP can transition to DRAIN, both of them use the same cwnd gain.
-  QUICHE_DCHECK_EQ(model_->cwnd_gain(), Params().drain_cwnd_gain);
+//  QUICHE_DCHECK_EQ(model_->cwnd_gain(), Params().drain_cwnd_gain);
   model_->set_cwnd_gain(Params().drain_cwnd_gain);
 
   QuicByteCount drain_target = DrainTarget();
   if (congestion_event.bytes_in_flight <= drain_target) {
-    QUIC_DVLOG(3) << sender_ << " Exiting DRAIN. bytes_in_flight:"
-                  << congestion_event.bytes_in_flight
-                  << ", bdp:" << model_->BDP()
-                  << ", drain_target:" << drain_target << "  @ "
-                  << congestion_event.event_time;
+//    QUIC_DVLOG(3) << sender_ << " Exiting DRAIN. bytes_in_flight:"
+//                  << congestion_event.bytes_in_flight
+//                  << ", bdp:" << model_->BDP()
+//                  << ", drain_target:" << drain_target << "  @ "
+//                  << congestion_event.event_time;
     return Bbr2Mode::PROBE_BW;
   }
 
-  QUIC_DVLOG(3) << sender_ << " Staying in DRAIN. bytes_in_flight:"
-                << congestion_event.bytes_in_flight << ", bdp:" << model_->BDP()
-                << ", drain_target:" << drain_target << "  @ "
-                << congestion_event.event_time;
+//  QUIC_DVLOG(3) << sender_ << " Staying in DRAIN. bytes_in_flight:"
+//                << congestion_event.bytes_in_flight << ", bdp:" << model_->BDP()
+//                << ", drain_target:" << drain_target << "  @ "
+//                << congestion_event.event_time;
   return Bbr2Mode::DRAIN;
 }
 

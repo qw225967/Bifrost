@@ -10,15 +10,14 @@
 #include "quiche/quic/core/quic_types.h"
 #include "quiche/quic/platform/api/quic_flag_utils.h"
 #include "quiche/quic/platform/api/quic_flags.h"
-#include "quiche/quic/platform/api/quic_logging.h"
 
 namespace quic {
 
 RoundTripCounter::RoundTripCounter() : round_trip_count_(0) {}
 
 void RoundTripCounter::OnPacketSent(QuicPacketNumber packet_number) {
-  QUICHE_DCHECK(!last_sent_packet_.IsInitialized() ||
-                last_sent_packet_ < packet_number);
+//  QUICHE_DCHECK(!last_sent_packet_.IsInitialized() ||
+//                last_sent_packet_ < packet_number);
   last_sent_packet_ = packet_number;
 }
 
@@ -129,10 +128,10 @@ void Bbr2NetworkModel::OnCongestionEventStart(
   // b) all packets in |acked_packets| did not generate valid samples. (e.g. ack
   // of ack-only packets). In both cases, total_bytes_acked() will not change.
   if (prior_bytes_acked != total_bytes_acked()) {
-    QUIC_LOG_IF(WARNING, sample.sample_max_bandwidth.IsZero())
-        << total_bytes_acked() - prior_bytes_acked << " bytes from "
-        << acked_packets.size()
-        << " packets have been acked, but sample_max_bandwidth is zero.";
+//    QUIC_LOG_IF(WARNING, sample.sample_max_bandwidth.IsZero())
+//        << total_bytes_acked() - prior_bytes_acked << " bytes from "
+//        << acked_packets.size()
+//        << " packets have been acked, but sample_max_bandwidth is zero.";
     congestion_event->sample_max_bandwidth = sample.sample_max_bandwidth;
     if (!sample.sample_is_app_limited ||
         sample.sample_max_bandwidth > MaxBandwidth()) {
@@ -154,11 +153,11 @@ void Bbr2NetworkModel::OnCongestionEventStart(
         congestion_event->prior_bytes_in_flight -
         congestion_event->bytes_acked - congestion_event->bytes_lost;
   } else {
-    QUIC_LOG_FIRST_N(ERROR, 1)
-        << "prior_bytes_in_flight:" << congestion_event->prior_bytes_in_flight
-        << " is smaller than the sum of bytes_acked:"
-        << congestion_event->bytes_acked
-        << " and bytes_lost:" << congestion_event->bytes_lost;
+//    QUIC_LOG_FIRST_N(ERROR, 1)
+//        << "prior_bytes_in_flight:" << congestion_event->prior_bytes_in_flight
+//        << " is smaller than the sum of bytes_acked:"
+//        << congestion_event->bytes_acked
+//        << " and bytes_lost:" << congestion_event->bytes_lost;
     congestion_event->bytes_in_flight = 0;
   }
 
@@ -222,8 +221,8 @@ void Bbr2NetworkModel::AdaptLowerBounds(
       }
       bandwidth_lo_ =
           std::max(bandwidth_latest_, bandwidth_lo_ * (1.0 - Params().beta));
-      QUIC_DVLOG(3) << "bandwidth_lo_ updated to " << bandwidth_lo_
-                    << ", bandwidth_latest_ is " << bandwidth_latest_;
+//      QUIC_DVLOG(3) << "bandwidth_lo_ updated to " << bandwidth_lo_
+//                    << ", bandwidth_latest_ is " << bandwidth_latest_;
 
       if (Params().ignore_inflight_lo) {
         return;
@@ -280,7 +279,8 @@ void Bbr2NetworkModel::AdaptLowerBounds(
            static_cast<double>(congestion_event.prior_cwnd));
       break;
     case Bbr2Params::DEFAULT:
-      QUIC_BUG(quic_bug_10466_1) << "Unreachable case DEFAULT.";
+//      QUIC_BUG(quic_bug_10466_1) << "Unreachable case DEFAULT.";
+      break;
   }
   QuicBandwidth last_bandwidth = bandwidth_latest_;
   // sample_max_bandwidth will be Zero() if the loss is triggered by a timer
@@ -339,9 +339,9 @@ bool Bbr2NetworkModel::MaybeExpireMinRtt(
   if (congestion_event.sample_min_rtt.IsInfinite()) {
     return false;
   }
-  QUIC_DVLOG(3) << "Replacing expired min rtt of " << min_rtt_filter_.Get()
-                << " by " << congestion_event.sample_min_rtt << "  @ "
-                << congestion_event.event_time;
+//  QUIC_DVLOG(3) << "Replacing expired min rtt of " << min_rtt_filter_.Get()
+//                << " by " << congestion_event.sample_min_rtt << "  @ "
+//                << congestion_event.event_time;
   min_rtt_filter_.ForceUpdate(congestion_event.sample_min_rtt,
                               congestion_event.event_time);
   return true;
@@ -366,12 +366,12 @@ bool Bbr2NetworkModel::IsInflightTooHigh(
   // bytes_lost_in_round_, OTOH, is the total bytes lost in the "current" round.
   const QuicByteCount bytes_lost_in_round = bytes_lost_in_round_;
 
-  QUIC_DVLOG(3) << "IsInflightTooHigh: loss_events_in_round:"
-                << loss_events_in_round()
-
-                << " bytes_lost_in_round:" << bytes_lost_in_round
-                << ", lost_in_round_threshold:"
-                << inflight_at_send * Params().loss_threshold;
+//  QUIC_DVLOG(3) << "IsInflightTooHigh: loss_events_in_round:"
+//                << loss_events_in_round()
+//
+//                << " bytes_lost_in_round:" << bytes_lost_in_round
+//                << ", lost_in_round_threshold:"
+//                << inflight_at_send * Params().loss_threshold;
 
   if (inflight_at_send > 0 && bytes_lost_in_round > 0) {
     QuicByteCount lost_in_round_threshold =
@@ -415,16 +415,16 @@ QuicByteCount Bbr2NetworkModel::inflight_hi_with_headroom() const {
 
 bool Bbr2NetworkModel::HasBandwidthGrowth(
     const Bbr2CongestionEvent& congestion_event) {
-  QUICHE_DCHECK(!full_bandwidth_reached_);
-  QUICHE_DCHECK(congestion_event.end_of_round_trip);
+//  QUICHE_DCHECK(!full_bandwidth_reached_);
+//  QUICHE_DCHECK(congestion_event.end_of_round_trip);
 
   QuicBandwidth threshold =
       full_bandwidth_baseline_ * Params().full_bw_threshold;
 
   if (MaxBandwidth() >= threshold) {
-    QUIC_DVLOG(3) << " CheckBandwidthGrowth at end of round. max_bandwidth:"
-                  << MaxBandwidth() << ", threshold:" << threshold
-                  << " (Still growing)  @ " << congestion_event.event_time;
+//    QUIC_DVLOG(3) << " CheckBandwidthGrowth at end of round. max_bandwidth:"
+//                  << MaxBandwidth() << ", threshold:" << threshold
+//                  << " (Still growing)  @ " << congestion_event.event_time;
     full_bandwidth_baseline_ = MaxBandwidth();
     rounds_without_bandwidth_growth_ = 0;
     return true;
@@ -437,21 +437,21 @@ bool Bbr2NetworkModel::HasBandwidthGrowth(
       !congestion_event.last_packet_send_state.is_app_limited) {
     full_bandwidth_reached_ = true;
   }
-  QUIC_DVLOG(3) << " CheckBandwidthGrowth at end of round. max_bandwidth:"
-                << MaxBandwidth() << ", threshold:" << threshold
-                << " rounds_without_growth:" << rounds_without_bandwidth_growth_
-                << " full_bw_reached:" << full_bandwidth_reached_ << "  @ "
-                << congestion_event.event_time;
+//  QUIC_DVLOG(3) << " CheckBandwidthGrowth at end of round. max_bandwidth:"
+//                << MaxBandwidth() << ", threshold:" << threshold
+//                << " rounds_without_growth:" << rounds_without_bandwidth_growth_
+//                << " full_bw_reached:" << full_bandwidth_reached_ << "  @ "
+//                << congestion_event.event_time;
 
   return false;
 }
 
 void Bbr2NetworkModel::CheckPersistentQueue(
     const Bbr2CongestionEvent& congestion_event, float target_gain) {
-  QUICHE_DCHECK(congestion_event.end_of_round_trip);
-  QUICHE_DCHECK_NE(min_bytes_in_flight_in_round_,
-                   std::numeric_limits<uint64_t>::max());
-  QUICHE_DCHECK_GE(target_gain, Params().full_bw_threshold);
+//  QUICHE_DCHECK(congestion_event.end_of_round_trip);
+//  QUICHE_DCHECK_NE(min_bytes_in_flight_in_round_,
+//                   std::numeric_limits<uint64_t>::max());
+//  QUICHE_DCHECK_GE(target_gain, Params().full_bw_threshold);
   QuicByteCount target =
       std::max(static_cast<QuicByteCount>(target_gain * BDP()),
                BDP() + QueueingThresholdExtraBytes());

@@ -10,7 +10,6 @@
 #include "quiche/quic/platform/api/quic_bug_tracker.h"
 #include "quiche/quic/platform/api/quic_flag_utils.h"
 #include "quiche/quic/platform/api/quic_flags.h"
-#include "quiche/quic/platform/api/quic_logging.h"
 
 namespace quic {
 
@@ -46,13 +45,13 @@ QuicByteCount MaxAckHeightTracker::Update(
     }
     expected_bytes_acked = bandwidth_estimate * second_best.time_delta;
     if (expected_bytes_acked < second_best.bytes_acked) {
-      QUICHE_DCHECK_LE(best.round, second_best.round);
+//      QUICHE_DCHECK_LE(best.round, second_best.round);
       second_best.extra_acked = second_best.bytes_acked - expected_bytes_acked;
       max_ack_height_filter_.Update(second_best, second_best.round);
     }
     expected_bytes_acked = bandwidth_estimate * third_best.time_delta;
     if (expected_bytes_acked < third_best.bytes_acked) {
-      QUICHE_DCHECK_LE(second_best.round, third_best.round);
+//      QUICHE_DCHECK_LE(second_best.round, third_best.round);
       third_best.extra_acked = third_best.bytes_acked - expected_bytes_acked;
       max_ack_height_filter_.Update(third_best, third_best.round);
     }
@@ -64,14 +63,14 @@ QuicByteCount MaxAckHeightTracker::Update(
       last_sent_packet_number_before_epoch_.IsInitialized() &&
       last_acked_packet_number.IsInitialized() &&
       last_acked_packet_number > last_sent_packet_number_before_epoch_) {
-    QUIC_DVLOG(3) << "Force starting a new aggregation epoch. "
-                     "last_sent_packet_number_before_epoch_:"
-                  << last_sent_packet_number_before_epoch_
-                  << ", last_acked_packet_number:" << last_acked_packet_number;
+//    QUIC_DVLOG(3) << "Force starting a new aggregation epoch. "
+//                     "last_sent_packet_number_before_epoch_:"
+//                  << last_sent_packet_number_before_epoch_
+//                  << ", last_acked_packet_number:" << last_acked_packet_number;
     if (reduce_extra_acked_on_bandwidth_increase_) {
-      QUIC_BUG(quic_bwsampler_46)
-          << "A full round of aggregation should never "
-          << "pass with startup_include_extra_acked(B204) enabled.";
+//      QUIC_BUG(quic_bwsampler_46)
+//          << "A full round of aggregation should never "
+//          << "pass with startup_include_extra_acked(B204) enabled.";
     }
     force_new_epoch = true;
   }
@@ -91,17 +90,17 @@ QuicByteCount MaxAckHeightTracker::Update(
   // than or equal to the max bandwidth.
   if (aggregation_epoch_bytes_ <=
       ack_aggregation_bandwidth_threshold_ * expected_bytes_acked) {
-    QUIC_DVLOG(3) << "Starting a new aggregation epoch because "
-                     "aggregation_epoch_bytes_ "
-                  << aggregation_epoch_bytes_
-                  << " is smaller than expected. "
-                     "ack_aggregation_bandwidth_threshold_:"
-                  << ack_aggregation_bandwidth_threshold_
-                  << ", expected_bytes_acked:" << expected_bytes_acked
-                  << ", bandwidth_estimate:" << bandwidth_estimate
-                  << ", aggregation_duration:" << aggregation_delta
-                  << ", new_aggregation_epoch:" << ack_time
-                  << ", new_aggregation_bytes_acked:" << bytes_acked;
+//    QUIC_DVLOG(3) << "Starting a new aggregation epoch because "
+//                     "aggregation_epoch_bytes_ "
+//                  << aggregation_epoch_bytes_
+//                  << " is smaller than expected. "
+//                     "ack_aggregation_bandwidth_threshold_:"
+//                  << ack_aggregation_bandwidth_threshold_
+//                  << ", expected_bytes_acked:" << expected_bytes_acked
+//                  << ", bandwidth_estimate:" << bandwidth_estimate
+//                  << ", aggregation_duration:" << aggregation_delta
+//                  << ", new_aggregation_epoch:" << ack_time
+//                  << ", new_aggregation_bytes_acked:" << bytes_acked;
     // Reset to start measuring a new aggregation epoch.
     aggregation_epoch_bytes_ = bytes_acked;
     aggregation_epoch_start_time_ = ack_time;
@@ -115,13 +114,13 @@ QuicByteCount MaxAckHeightTracker::Update(
   // Compute how many extra bytes were delivered vs max bandwidth.
   QuicByteCount extra_bytes_acked =
       aggregation_epoch_bytes_ - expected_bytes_acked;
-  QUIC_DVLOG(3) << "Updating MaxAckHeight. ack_time:" << ack_time
-                << ", last sent packet:" << last_sent_packet_number
-                << ", bandwidth_estimate:" << bandwidth_estimate
-                << ", bytes_acked:" << bytes_acked
-                << ", expected_bytes_acked:" << expected_bytes_acked
-                << ", aggregation_epoch_bytes_:" << aggregation_epoch_bytes_
-                << ", extra_bytes_acked:" << extra_bytes_acked;
+//  QUIC_DVLOG(3) << "Updating MaxAckHeight. ack_time:" << ack_time
+//                << ", last sent packet:" << last_sent_packet_number
+//                << ", bandwidth_estimate:" << bandwidth_estimate
+//                << ", bytes_acked:" << bytes_acked
+//                << ", expected_bytes_acked:" << expected_bytes_acked
+//                << ", aggregation_epoch_bytes_:" << aggregation_epoch_bytes_
+//                << ", extra_bytes_acked:" << extra_bytes_acked;
   ExtraAckedEvent new_event;
   new_event.extra_acked = extra_bytes_acked;
   new_event.bytes_acked = aggregation_epoch_bytes_;
@@ -226,49 +225,49 @@ void BandwidthSampler::OnPacketSent(
     if (unacked_packet_map_ != nullptr && !unacked_packet_map_->empty()) {
       QuicPacketNumber maybe_least_unacked =
           unacked_packet_map_->GetLeastUnacked();
-      QUIC_BUG(quic_bug_10437_1)
-          << "BandwidthSampler in-flight packet map has exceeded maximum "
-             "number of tracked packets("
-          << max_tracked_packets_
-          << ").  First tracked: " << connection_state_map_.first_packet()
-          << "; last tracked: " << connection_state_map_.last_packet()
-          << "; entry_slots_used: " << connection_state_map_.entry_slots_used()
-          << "; number_of_present_entries: "
-          << connection_state_map_.number_of_present_entries()
-          << "; packet number: " << packet_number
-          << "; unacked_map: " << unacked_packet_map_->DebugString()
-          << "; total_bytes_sent: " << total_bytes_sent_
-          << "; total_bytes_acked: " << total_bytes_acked_
-          << "; total_bytes_lost: " << total_bytes_lost_
-          << "; total_bytes_neutered: " << total_bytes_neutered_
-          << "; last_acked_packet_sent_time: " << last_acked_packet_sent_time_
-          << "; total_bytes_sent_at_last_acked_packet: "
-          << total_bytes_sent_at_last_acked_packet_
-          << "; least_unacked_packet_info: "
-          << (unacked_packet_map_->IsUnacked(maybe_least_unacked)
-                  ? unacked_packet_map_
-                        ->GetTransmissionInfo(maybe_least_unacked)
-                        .DebugString()
-                  : "n/a");
+//      QUIC_BUG(quic_bug_10437_1)
+//          << "BandwidthSampler in-flight packet map has exceeded maximum "
+//             "number of tracked packets("
+//          << max_tracked_packets_
+//          << ").  First tracked: " << connection_state_map_.first_packet()
+//          << "; last tracked: " << connection_state_map_.last_packet()
+//          << "; entry_slots_used: " << connection_state_map_.entry_slots_used()
+//          << "; number_of_present_entries: "
+//          << connection_state_map_.number_of_present_entries()
+//          << "; packet number: " << packet_number
+//          << "; unacked_map: " << unacked_packet_map_->DebugString()
+//          << "; total_bytes_sent: " << total_bytes_sent_
+//          << "; total_bytes_acked: " << total_bytes_acked_
+//          << "; total_bytes_lost: " << total_bytes_lost_
+//          << "; total_bytes_neutered: " << total_bytes_neutered_
+//          << "; last_acked_packet_sent_time: " << last_acked_packet_sent_time_
+//          << "; total_bytes_sent_at_last_acked_packet: "
+//          << total_bytes_sent_at_last_acked_packet_
+//          << "; least_unacked_packet_info: "
+//          << (unacked_packet_map_->IsUnacked(maybe_least_unacked)
+//                  ? unacked_packet_map_
+//                        ->GetTransmissionInfo(maybe_least_unacked)
+//                        .DebugString()
+//                  : "n/a");
     } else {
-      QUIC_BUG(quic_bug_10437_2)
-          << "BandwidthSampler in-flight packet map has exceeded maximum "
-             "number of tracked packets.";
+//      QUIC_BUG(quic_bug_10437_2)
+//          << "BandwidthSampler in-flight packet map has exceeded maximum "
+//             "number of tracked packets.";
     }
   }
 
   bool success = connection_state_map_.Emplace(packet_number, sent_time, bytes,
                                                bytes_in_flight + bytes, *this);
-  QUIC_BUG_IF(quic_bug_10437_3, !success)
-      << "BandwidthSampler failed to insert the packet "
-         "into the map, most likely because it's already "
-         "in it.";
+//  QUIC_BUG_IF(quic_bug_10437_3, !success)
+//      << "BandwidthSampler failed to insert the packet "
+//         "into the map, most likely because it's already "
+//         "in it.";
 }
 
 void BandwidthSampler::OnPacketNeutered(QuicPacketNumber packet_number) {
   connection_state_map_.Remove(
       packet_number, [&](const ConnectionStateOnSentPacket& sent_packet) {
-        QUIC_CODE_COUNT(quic_bandwidth_sampler_packet_neutered);
+//        QUIC_CODE_COUNT(quic_bandwidth_sampler_packet_neutered);
         total_bytes_neutered_ += sent_packet.size;
       });
 }
@@ -373,7 +372,7 @@ QuicByteCount BandwidthSampler::OnAckEventEnd(
   // previous epoch, as a A0 candidate.
   if (overestimate_avoidance_ && extra_acked == 0) {
     a0_candidates_.push_back(recent_ack_points_.LessRecentPoint());
-    QUIC_DVLOG(1) << "New a0_candidate:" << a0_candidates_.back();
+//    QUIC_DVLOG(1) << "New a0_candidate:" << a0_candidates_.back();
   }
   return extra_acked;
 }
@@ -420,8 +419,8 @@ BandwidthSample BandwidthSampler::OnPacketAcknowledgedInner(
   // current packet was sent. In that case, there is no bandwidth sample to
   // make.
   if (sent_packet.last_acked_packet_sent_time == QuicTime::Zero()) {
-    QUIC_BUG(quic_bug_10437_4)
-        << "sent_packet.last_acked_packet_sent_time is zero";
+//    QUIC_BUG(quic_bug_10437_4)
+//        << "sent_packet.last_acked_packet_sent_time is zero";
     return BandwidthSample();
   }
 
@@ -438,7 +437,7 @@ BandwidthSample BandwidthSampler::OnPacketAcknowledgedInner(
   AckPoint a0;
   if (overestimate_avoidance_ &&
       ChooseA0Point(sent_packet.send_time_state.total_bytes_acked, &a0)) {
-    QUIC_DVLOG(2) << "Using a0 point: " << a0;
+//    QUIC_DVLOG(2) << "Using a0 point: " << a0;
   } else {
     a0.ack_time = sent_packet.last_acked_packet_ack_time,
     a0.total_bytes_acked = sent_packet.send_time_state.total_bytes_acked;
@@ -452,19 +451,19 @@ BandwidthSample BandwidthSampler::OnPacketAcknowledgedInner(
     // issue.
     if (a0.ack_time == sent_packet.sent_time) {
       // This is the 1st packet after quiescense.
-      QUIC_CODE_COUNT_N(quic_prev_ack_time_larger_than_current_ack_time, 1, 2);
+//      QUIC_CODE_COUNT_N(quic_prev_ack_time_larger_than_current_ack_time, 1, 2);
     } else {
-      QUIC_CODE_COUNT_N(quic_prev_ack_time_larger_than_current_ack_time, 2, 2);
+//      QUIC_CODE_COUNT_N(quic_prev_ack_time_larger_than_current_ack_time, 2, 2);
     }
-    QUIC_LOG_EVERY_N_SEC(ERROR, 60)
-        << "Time of the previously acked packet:"
-        << a0.ack_time.ToDebuggingValue()
-        << " is larger than the ack time of the current packet:"
-        << ack_time.ToDebuggingValue()
-        << ". acked packet number:" << packet_number
-        << ", total_bytes_acked_:" << total_bytes_acked_
-        << ", overestimate_avoidance_:" << overestimate_avoidance_
-        << ", sent_packet:" << sent_packet;
+//    QUIC_LOG_EVERY_N_SEC(ERROR, 60)
+//        << "Time of the previously acked packet:"
+//        << a0.ack_time.ToDebuggingValue()
+//        << " is larger than the ack time of the current packet:"
+//        << ack_time.ToDebuggingValue()
+//        << ". acked packet number:" << packet_number
+//        << ", total_bytes_acked_:" << total_bytes_acked_
+//        << ", overestimate_avoidance_:" << overestimate_avoidance_
+//        << ", sent_packet:" << sent_packet;
     return BandwidthSample();
   }
   QuicBandwidth ack_rate = QuicBandwidth::FromBytesAndTimeDelta(
@@ -480,13 +479,13 @@ BandwidthSample BandwidthSampler::OnPacketAcknowledgedInner(
   SentPacketToSendTimeState(sent_packet, &sample.state_at_send);
 
   if (sample.bandwidth.IsZero()) {
-    QUIC_LOG_EVERY_N_SEC(ERROR, 60)
-        << "ack_rate: " << ack_rate << ", send_rate: " << send_rate
-        << ". acked packet number:" << packet_number
-        << ", overestimate_avoidance_:" << overestimate_avoidance_ << "a1:{"
-        << total_bytes_acked_ << "@" << ack_time << "}, a0:{"
-        << a0.total_bytes_acked << "@" << a0.ack_time
-        << "}, sent_packet:" << sent_packet;
+//    QUIC_LOG_EVERY_N_SEC(ERROR, 60)
+//        << "ack_rate: " << ack_rate << ", send_rate: " << send_rate
+//        << ". acked packet number:" << packet_number
+//        << ", overestimate_avoidance_:" << overestimate_avoidance_ << "a1:{"
+//        << total_bytes_acked_ << "@" << ack_time << "}, a0:{"
+//        << a0.total_bytes_acked << "@" << a0.ack_time
+//        << "}, sent_packet:" << sent_packet;
   }
   return sample;
 }
@@ -494,8 +493,8 @@ BandwidthSample BandwidthSampler::OnPacketAcknowledgedInner(
 bool BandwidthSampler::ChooseA0Point(QuicByteCount total_bytes_acked,
                                      AckPoint* a0) {
   if (a0_candidates_.empty()) {
-    QUIC_BUG(quic_bug_10437_5)
-        << "No A0 point candicates. total_bytes_acked:" << total_bytes_acked;
+//    QUIC_BUG(quic_bug_10437_5)
+//        << "No A0 point candicates. total_bytes_acked:" << total_bytes_acked;
     return false;
   }
 

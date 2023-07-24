@@ -10,7 +10,6 @@
 #include "quiche/quic/core/quic_types.h"
 #include "quiche/quic/platform/api/quic_flag_utils.h"
 #include "quiche/quic/platform/api/quic_flags.h"
-#include "quiche/quic/platform/api/quic_logging.h"
 
 namespace quic {
 
@@ -30,7 +29,7 @@ Bbr2StartupMode::Bbr2StartupMode(const Bbr2Sender* sender,
 
 void Bbr2StartupMode::Enter(QuicTime /*now*/,
                             const Bbr2CongestionEvent* /*congestion_event*/) {
-  QUIC_BUG(quic_bug_10463_1) << "Bbr2StartupMode::Enter should not be called";
+//  QUIC_BUG(quic_bug_10463_1) << "Bbr2StartupMode::Enter should not be called";
 }
 
 void Bbr2StartupMode::Leave(QuicTime now,
@@ -46,7 +45,7 @@ Bbr2Mode Bbr2StartupMode::OnCongestionEvent(
     const LostPacketVector& /*lost_packets*/,
     const Bbr2CongestionEvent& congestion_event) {
   if (model_->full_bandwidth_reached()) {
-    QUIC_BUG() << "In STARTUP, but full_bandwidth_reached is true.";
+//    QUIC_BUG() << "In STARTUP, but full_bandwidth_reached is true.";
     return Bbr2Mode::DRAIN;
   }
   if (!congestion_event.end_of_round_trip) {
@@ -68,7 +67,7 @@ Bbr2Mode Bbr2StartupMode::OnCongestionEvent(
   }
 
   if (Params().decrease_startup_pacing_at_end_of_round) {
-    QUICHE_DCHECK_GT(model_->pacing_gain(), 0);
+//    QUICHE_DCHECK_GT(model_->pacing_gain(), 0);
     if (!congestion_event.last_packet_send_state.is_app_limited) {
       // Multiply by startup_pacing_gain, so if the bandwidth doubles,
       // the pacing gain will be the full startup_pacing_gain.
@@ -104,7 +103,7 @@ Bbr2Mode Bbr2StartupMode::OnCongestionEvent(
 
 void Bbr2StartupMode::CheckExcessiveLosses(
     const Bbr2CongestionEvent& congestion_event) {
-  QUICHE_DCHECK(congestion_event.end_of_round_trip);
+//  QUICHE_DCHECK(congestion_event.end_of_round_trip);
 
   if (model_->full_bandwidth_reached()) {
     return;
@@ -119,9 +118,9 @@ void Bbr2StartupMode::CheckExcessiveLosses(
         new_inflight_hi = model_->max_bytes_delivered_in_round();
       }
     }
-    QUIC_DVLOG(3) << sender_ << " Exiting STARTUP due to loss at round "
-                  << model_->RoundTripCount()
-                  << ". inflight_hi:" << new_inflight_hi;
+//    QUIC_DVLOG(3) << sender_ << " Exiting STARTUP due to loss at round "
+//                  << model_->RoundTripCount()
+//                  << ". inflight_hi:" << new_inflight_hi;
     // TODO(ianswett): Add a shared method to set inflight_hi in the model.
     model_->set_inflight_hi(new_inflight_hi);
     model_->set_full_bandwidth_reached();
