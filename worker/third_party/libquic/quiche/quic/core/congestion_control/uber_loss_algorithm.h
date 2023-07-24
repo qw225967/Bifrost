@@ -48,9 +48,6 @@ class QUIC_EXPORT_PRIVATE UberLossAlgorithm : public LossDetectionInterface {
   UberLossAlgorithm& operator=(const UberLossAlgorithm&) = delete;
   ~UberLossAlgorithm() override {}
 
-  void SetFromConfig(const QuicConfig& config,
-                     Perspective perspective) override;
-
   // Detects lost packets.
   DetectionStats DetectLosses(const QuicUnackedPacketMap& unacked_packets,
                               QuicTime time, const RttStats& rtt_stats,

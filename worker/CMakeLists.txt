@@ -473,7 +473,6 @@ add_executable(worker
         third_party/libquic/quiche/quic/core/quic_types.h
         third_party/libquic/quiche/quic/core/quic_unacked_packet_map.cc
         third_party/libquic/quiche/quic/core/quic_unacked_packet_map.h
-        third_party/libquic/quiche/quic/platform/api/quic_bug_tracker.h
         third_party/libquic/quiche/quic/platform/api/quic_export.h
         third_party/libquic/quiche/quic/platform/api/quic_flag_utils.h
         third_party/libquic/quiche/quic/platform/api/quic_flags.h

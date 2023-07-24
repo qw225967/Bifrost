@@ -8,7 +8,6 @@
 #include "quiche/quic/core/quic_constants.h"
 #include "quiche/quic/core/quic_packet_number.h"
 #include "quiche/quic/core/quic_types.h"
-#include "quiche/quic/platform/api/quic_bug_tracker.h"
 #include "quiche/common/quiche_circular_deque.h"
 
 namespace quic {
@@ -153,7 +152,7 @@ bool PacketNumberIndexedQueue<T>::Emplace(QuicPacketNumber packet_number,
   }
 
   if (IsEmpty()) {
-    QUICHE_DCHECK(entries_.empty());
+//    QUICHE_DCHECK(entries_.empty());
 //    QUICHE_DCHECK(!first_packet_.IsInitialized());
 
     entries_.emplace_back(std::forward<Args>(args)...);
@@ -175,7 +174,7 @@ bool PacketNumberIndexedQueue<T>::Emplace(QuicPacketNumber packet_number,
 
   number_of_present_entries_++;
   entries_.emplace_back(std::forward<Args>(args)...);
-  QUICHE_DCHECK_EQ(packet_number, last_packet());
+//  QUICHE_DCHECK_EQ(packet_number, last_packet());
   return true;
 }
 

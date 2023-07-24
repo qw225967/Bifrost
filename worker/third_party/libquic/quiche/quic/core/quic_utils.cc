@@ -19,7 +19,6 @@
 #include "quiche/quic/core/quic_constants.h"
 #include "quiche/quic/core/quic_types.h"
 #include "quiche/quic/core/quic_versions.h"
-#include "quiche/quic/platform/api/quic_bug_tracker.h"
 #include "quiche/quic/platform/api/quic_flag_utils.h"
 #include "quiche/quic/platform/api/quic_flags.h"
 #include "quiche/common/platform/api/quiche_logging.h"
@@ -293,8 +292,8 @@ SentPacketState QuicUtils::RetransmissionTypeToPacketState(
     case ALL_INITIAL_RETRANSMISSION:
       return UNACKABLE;
     default:
-      QUIC_BUG(quic_bug_10839_2)
-          << retransmission_type << " is not a retransmission_type";
+//      QUIC_BUG(quic_bug_10839_2)
+//          << retransmission_type << " is not a retransmission_type";
       return UNACKABLE;
   }
 }
@@ -319,8 +318,8 @@ QuicStreamId QuicUtils::GetInvalidStreamId(QuicTransportVersion version) {
 
 // static
 QuicStreamId QuicUtils::GetCryptoStreamId(QuicTransportVersion version) {
-  QUIC_BUG_IF(quic_bug_12982_1, QuicVersionUsesCryptoFrames(version))
-      << "CRYPTO data aren't in stream frames; they have no stream ID.";
+//  QUIC_BUG_IF(quic_bug_12982_1, QuicVersionUsesCryptoFrames(version))
+//      << "CRYPTO data aren't in stream frames; they have no stream ID.";
   return QuicVersionUsesCryptoFrames(version) ? GetInvalidStreamId(version) : 1;
 }
 
@@ -335,7 +334,7 @@ bool QuicUtils::IsCryptoStreamId(QuicTransportVersion version,
 
 // static
 QuicStreamId QuicUtils::GetHeadersStreamId(QuicTransportVersion version) {
-  QUICHE_DCHECK(!VersionUsesHttp3(version));
+//  QUICHE_DCHECK(!VersionUsesHttp3(version));
   return GetFirstBidirectionalStreamId(version, Perspective::IS_CLIENT);
 }
 
@@ -372,7 +371,7 @@ bool QuicUtils::IsOutgoingStreamId(ParsedQuicVersion version, QuicStreamId id,
 // static
 bool QuicUtils::IsBidirectionalStreamId(QuicStreamId id,
                                         ParsedQuicVersion version) {
-  QUICHE_DCHECK(version.HasIetfQuicFrames());
+//  QUICHE_DCHECK(version.HasIetfQuicFrames());
   return id % 4 < 2;
 }
 
@@ -380,26 +379,26 @@ bool QuicUtils::IsBidirectionalStreamId(QuicStreamId id,
 StreamType QuicUtils::GetStreamType(QuicStreamId id, Perspective perspective,
                                     bool peer_initiated,
                                     ParsedQuicVersion version) {
-  QUICHE_DCHECK(version.HasIetfQuicFrames());
+//  QUICHE_DCHECK(version.HasIetfQuicFrames());
   if (IsBidirectionalStreamId(id, version)) {
     return BIDIRECTIONAL;
   }
 
   if (peer_initiated) {
     if (perspective == Perspective::IS_SERVER) {
-      QUICHE_DCHECK_EQ(2u, id % 4);
+//      QUICHE_DCHECK_EQ(2u, id % 4);
     } else {
-      QUICHE_DCHECK_EQ(Perspective::IS_CLIENT, perspective);
-      QUICHE_DCHECK_EQ(3u, id % 4);
+//      QUICHE_DCHECK_EQ(Perspective::IS_CLIENT, perspective);
+//      QUICHE_DCHECK_EQ(3u, id % 4);
     }
     return READ_UNIDIRECTIONAL;
   }
 
   if (perspective == Perspective::IS_SERVER) {
-    QUICHE_DCHECK_EQ(3u, id % 4);
+//    QUICHE_DCHECK_EQ(3u, id % 4);
   } else {
-    QUICHE_DCHECK_EQ(Perspective::IS_CLIENT, perspective);
-    QUICHE_DCHECK_EQ(2u, id % 4);
+//    QUICHE_DCHECK_EQ(Perspective::IS_CLIENT, perspective);
+//    QUICHE_DCHECK_EQ(2u, id % 4);
   }
   return WRITE_UNIDIRECTIONAL;
 }
@@ -541,9 +540,9 @@ PacketNumberSpace QuicUtils::GetPacketNumberSpace(
     case ENCRYPTION_FORWARD_SECURE:
       return APPLICATION_DATA;
     default:
-      QUIC_BUG(quic_bug_10839_3)
-          << "Try to get packet number space of encryption level: "
-          << encryption_level;
+//      QUIC_BUG(quic_bug_10839_3)
+//          << "Try to get packet number space of encryption level: "
+//          << encryption_level;
       return NUM_PACKET_NUMBER_SPACES;
   }
 }
@@ -559,7 +558,7 @@ EncryptionLevel QuicUtils::GetEncryptionLevelToSendAckofSpace(
     case APPLICATION_DATA:
       return ENCRYPTION_FORWARD_SECURE;
     default:
-      QUICHE_DCHECK(false);
+//      QUICHE_DCHECK(false);
       return NUM_ENCRYPTION_LEVELS;
   }
 }
@@ -604,7 +603,7 @@ bool QuicUtils::AreStatelessResetTokensEqual(
 
 bool IsValidWebTransportSessionId(WebTransportSessionId id,
                                   ParsedQuicVersion version) {
-  QUICHE_DCHECK(version.UsesHttp3());
+//  QUICHE_DCHECK(version.UsesHttp3());
   return (id <= std::numeric_limits<QuicStreamId>::max()) &&
          QuicUtils::IsBidirectionalStreamId(id, version) &&
          QuicUtils::IsClientInitiatedStreamId(version.transport_version, id);

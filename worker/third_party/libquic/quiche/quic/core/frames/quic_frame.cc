@@ -8,7 +8,6 @@
 #include "quiche/quic/core/frames/quic_retire_connection_id_frame.h"
 #include "quiche/quic/core/quic_constants.h"
 #include "quiche/quic/core/quic_types.h"
-#include "quiche/quic/platform/api/quic_bug_tracker.h"
 #include "quiche/quic/platform/api/quic_logging.h"
 #include "quiche/common/platform/api/quiche_mem_slice.h"
 #include "quiche/common/quiche_buffer_allocator.h"
@@ -149,7 +148,8 @@ void DeleteFrame(QuicFrame* frame) {
       delete frame->ack_frequency_frame;
       break;
     case NUM_FRAME_TYPES:
-      QUICHE_DCHECK(false) << "Cannot delete type: " << frame->type;
+//      QUICHE_DCHECK(false) << "Cannot delete type: " << frame->type;
+      break;
   }
 }
 
@@ -260,8 +260,8 @@ void SetControlFrameId(QuicControlFrameId control_frame_id, QuicFrame* frame) {
       frame->new_token_frame->control_frame_id = control_frame_id;
       return;
     default:
-      QUIC_BUG(quic_bug_12594_1)
-          << "Try to set control frame id of a frame without control frame id";
+//      QUIC_BUG(quic_bug_12594_1)
+//          << "Try to set control frame id of a frame without control frame id";
   }
 }
 
@@ -311,8 +311,8 @@ QuicFrame CopyRetransmittableControlFrame(const QuicFrame& frame) {
       copy = QuicFrame(new QuicNewTokenFrame(*frame.new_token_frame));
       break;
     default:
-      QUIC_BUG(quic_bug_10533_1)
-          << "Try to copy a non-retransmittable control frame: " << frame;
+//      QUIC_BUG(quic_bug_10533_1)
+//          << "Try to copy a non-retransmittable control frame: " << frame;
       copy = QuicFrame(QuicPingFrame(kInvalidControlFrameId));
       break;
   }
@@ -405,7 +405,7 @@ QuicFrame CopyQuicFrame(quiche::QuicheBufferAllocator* allocator,
       copy = QuicFrame(new QuicAckFrequencyFrame(*frame.ack_frequency_frame));
       break;
     default:
-      QUIC_BUG(quic_bug_10533_2) << "Cannot copy frame: " << frame;
+//      QUIC_BUG(quic_bug_10533_2) << "Cannot copy frame: " << frame;
       copy = QuicFrame(QuicPingFrame(kInvalidControlFrameId));
       break;
   }

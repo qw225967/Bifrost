@@ -22,9 +22,6 @@ class QUIC_EXPORT_PRIVATE LossDetectionInterface {
  public:
   virtual ~LossDetectionInterface() {}
 
-  virtual void SetFromConfig(const QuicConfig& config,
-                             Perspective perspective) = 0;
-
   struct QUIC_NO_EXPORT DetectionStats {
     // Maximum sequence reordering observed in newly acked packets.
     QuicPacketCount sent_packets_max_sequence_reordering = 0;

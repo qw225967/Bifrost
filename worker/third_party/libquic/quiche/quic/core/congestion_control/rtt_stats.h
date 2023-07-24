@@ -12,7 +12,6 @@
 
 #include "quiche/quic/core/quic_packets.h"
 #include "quiche/quic/core/quic_time.h"
-#include "quiche/quic/platform/api/quic_bug_tracker.h"
 #include "quiche/quic/platform/api/quic_export.h"
 
 namespace quic {

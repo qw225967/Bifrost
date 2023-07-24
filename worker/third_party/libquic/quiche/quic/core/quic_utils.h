@@ -11,7 +11,6 @@
 #include <string>
 #include <type_traits>
 
-#include "absl/numeric/bits.h"
 #include "absl/numeric/int128.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/string_view.h"
@@ -24,8 +23,6 @@
 #include "quiche/quic/core/quic_types.h"
 #include "quiche/quic/core/quic_versions.h"
 #include "quiche/quic/platform/api/quic_export.h"
-#include "quiche/quic/platform/api/quic_socket_address.h"
-#include "quiche/common/platform/api/quiche_mem_slice.h"
 
 namespace quic {
 
@@ -297,9 +294,9 @@ class QUIC_EXPORT_PRIVATE BitMask {
   static constexpr std::enable_if_t<!std::is_enum_v<Bit>, Mask> MakeMask(
       Bit bit) {
     // We can't use QUICHE_DCHECK_LT here, since it doesn't work with constexpr.
-    QUICHE_DCHECK(bit < static_cast<Bit>(NumBits()));
+//    QUICHE_DCHECK(bit < static_cast<Bit>(NumBits()));
     if constexpr (std::is_signed_v<Bit>) {
-      QUICHE_DCHECK(bit >= 0);
+//      QUICHE_DCHECK(bit >= 0);
     }
     return Mask(1) << bit;
   }

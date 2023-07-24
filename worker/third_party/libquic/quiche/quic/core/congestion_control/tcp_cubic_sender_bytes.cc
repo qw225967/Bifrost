@@ -12,7 +12,6 @@
 #include "quiche/quic/core/congestion_control/rtt_stats.h"
 #include "quiche/quic/core/crypto/crypto_protocol.h"
 #include "quiche/quic/core/quic_constants.h"
-#include "quiche/quic/platform/api/quic_bug_tracker.h"
 #include "quiche/quic/platform/api/quic_flags.h"
 
 namespace quic {
@@ -51,26 +50,6 @@ TcpCubicSenderBytes::TcpCubicSenderBytes(
       min_slow_start_exit_window_(min_congestion_window_) {}
 
 TcpCubicSenderBytes::~TcpCubicSenderBytes() {}
-
-void TcpCubicSenderBytes::SetFromConfig(const QuicConfig& config,
-                                        Perspective perspective) {
-  if (perspective == Perspective::IS_SERVER &&
-      config.HasReceivedConnectionOptions()) {
-    if (ContainsQuicTag(config.ReceivedConnectionOptions(), kMIN4)) {
-      // Min CWND of 4 experiment.
-      min4_mode_ = true;
-      SetMinCongestionWindowInPackets(1);
-    }
-    if (ContainsQuicTag(config.ReceivedConnectionOptions(), kSSLR)) {
-      // Slow Start Fast Exit experiment.
-      slow_start_large_reduction_ = true;
-    }
-    if (ContainsQuicTag(config.ReceivedConnectionOptions(), kNPRR)) {
-      // Use unity pacing instead of PRR.
-      no_prr_ = true;
-    }
-  }
-}
 
 void TcpCubicSenderBytes::AdjustNetworkParameters(const NetworkParams& params) {
   if (params.bandwidth.IsZero() || params.rtt.IsZero()) {

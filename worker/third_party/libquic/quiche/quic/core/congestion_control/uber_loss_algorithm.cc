@@ -7,7 +7,6 @@
 #include <algorithm>
 
 #include "quiche/quic/core/crypto/crypto_protocol.h"
-#include "quiche/quic/platform/api/quic_bug_tracker.h"
 
 namespace quic {
 
@@ -15,15 +14,6 @@ UberLossAlgorithm::UberLossAlgorithm() {
   for (int8_t i = INITIAL_DATA; i < NUM_PACKET_NUMBER_SPACES; ++i) {
     general_loss_algorithms_[i].Initialize(static_cast<PacketNumberSpace>(i),
                                            this);
-  }
-}
-
-void UberLossAlgorithm::SetFromConfig(const QuicConfig& config,
-                                      Perspective perspective) {
-  if (config.HasClientRequestedIndependentOption(kELDT, perspective) &&
-      tuner_ != nullptr) {
-    tuning_configured_ = true;
-    MaybeStartTuning();
   }
 }
 

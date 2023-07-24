@@ -8,7 +8,6 @@
 
 #include "absl/strings/str_cat.h"
 #include "quiche/quic/core/quic_error_codes.h"
-#include "quiche/common/print_elements.h"
 
 namespace quic {
 
@@ -104,8 +103,8 @@ std::string HistogramEnumString(WriteStatus enum_value) {
     case WRITE_STATUS_NUM_VALUES:
       return "NUM_VALUES";
   }
-  QUIC_DLOG(ERROR) << "Invalid WriteStatus value: "
-                   << static_cast<int16_t>(enum_value);
+//  QUIC_DLOG(ERROR) << "Invalid WriteStatus value: "
+//                   << static_cast<int16_t>(enum_value);
   return "<invalid>";
 }
 

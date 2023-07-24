@@ -3,8 +3,8 @@
 #include <cstdint>
 #include <cstring>
 
-#include "openssl/rand.h"
-#include "quiche/common/platform/api/quiche_logging.h"
+//#include "openssl/rand.h"
+
 namespace quiche {
 
 namespace {
@@ -15,7 +15,7 @@ namespace {
 
 inline uint64_t Xoshiro256InitializeRngStateMember() {
   uint64_t result;
-  RAND_bytes(reinterpret_cast<uint8_t*>(&result), sizeof(result));
+//  RAND_bytes(reinterpret_cast<uint8_t*>(&result), sizeof(result));
   return result;
 }
 
@@ -56,7 +56,7 @@ class DefaultQuicheRandom : public QuicheRandom {
 };
 
 void DefaultQuicheRandom::RandBytes(void* data, size_t len) {
-  RAND_bytes(reinterpret_cast<uint8_t*>(data), len);
+//  RAND_bytes(reinterpret_cast<uint8_t*>(data), len);
 }
 
 uint64_t DefaultQuicheRandom::RandUint64() {
@@ -73,7 +73,7 @@ void DefaultQuicheRandom::InsecureRandBytes(void* data, size_t len) {
     len -= sizeof(uint64_t);
   }
   if (len > 0) {
-    QUICHE_DCHECK_LT(len, sizeof(uint64_t));
+//    QUICHE_DCHECK_LT(len, sizeof(uint64_t));
     uint64_t random_bytes64 = Xoshiro256PlusPlus();
     memcpy(data, &random_bytes64, len);
   }

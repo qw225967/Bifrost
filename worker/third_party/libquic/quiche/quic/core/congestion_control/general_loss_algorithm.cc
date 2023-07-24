@@ -6,7 +6,6 @@
 
 #include "quiche/quic/core/congestion_control/rtt_stats.h"
 #include "quiche/quic/core/quic_packets.h"
-#include "quiche/quic/platform/api/quic_bug_tracker.h"
 #include "quiche/quic/platform/api/quic_flag_utils.h"
 #include "quiche/quic/platform/api/quic_flags.h"
 
@@ -163,7 +162,7 @@ void GeneralLossAlgorithm::SpuriousLossDetected(
   }
 
   if (use_adaptive_reordering_threshold_) {
-    QUICHE_DCHECK_LT(packet_number, previous_largest_acked);
+//    QUICHE_DCHECK_LT(packet_number, previous_largest_acked);
     // Increase reordering_threshold_ such that packet_number would not have
     // been declared lost.
     reordering_threshold_ = std::max(
@@ -175,7 +174,7 @@ void GeneralLossAlgorithm::Initialize(PacketNumberSpace packet_number_space,
                                       LossDetectionInterface* parent) {
   parent_ = parent;
   if (packet_number_space_ < NUM_PACKET_NUMBER_SPACES) {
-    QUIC_BUG(quic_bug_10430_2) << "Cannot switch packet_number_space";
+//    QUIC_BUG(quic_bug_10430_2) << "Cannot switch packet_number_space";
     return;
   }
 

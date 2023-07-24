@@ -88,30 +88,6 @@ Bbr2Sender::Bbr2Sender(QuicTime now, const RttStats* rtt_stats,
 //  QUICHE_DCHECK_EQ(mode_, Bbr2Mode::STARTUP);
 }
 
-void Bbr2Sender::SetFromConfig(const QuicConfig& config,
-                               Perspective perspective) {
-  if (config.HasClientRequestedIndependentOption(kB2NA, perspective)) {
-    params_.add_ack_height_to_queueing_threshold = false;
-  }
-  if (config.HasClientRequestedIndependentOption(kB2RP, perspective)) {
-    params_.avoid_unnecessary_probe_rtt = false;
-  }
-  if (config.HasClientRequestedIndependentOption(k1RTT, perspective)) {
-    params_.startup_full_bw_rounds = 1;
-  }
-  if (config.HasClientRequestedIndependentOption(k2RTT, perspective)) {
-    params_.startup_full_bw_rounds = 2;
-  }
-  if (config.HasClientRequestedIndependentOption(kB2HR, perspective)) {
-    params_.inflight_hi_headroom = 0.15;
-  }
-  if (config.HasClientRequestedIndependentOption(kICW1, perspective)) {
-    max_cwnd_when_network_parameters_adjusted_ = 100 * kDefaultTCPMSS;
-  }
-
-  ApplyConnectionOptions(config.ClientRequestedIndependentOptions(perspective));
-}
-
 void Bbr2Sender::ApplyConnectionOptions(
     const QuicTagVector& connection_options) {
   if (GetQuicReloadableFlag(quic_bbr2_extra_acked_window) &&

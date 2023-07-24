@@ -27,9 +27,6 @@ class QUIC_EXPORT_PRIVATE GeneralLossAlgorithm : public LossDetectionInterface {
   GeneralLossAlgorithm& operator=(const GeneralLossAlgorithm&) = delete;
   ~GeneralLossAlgorithm() override {}
 
-  void SetFromConfig(const QuicConfig& /*config*/,
-                     Perspective /*perspective*/) override {}
-
   // Uses |largest_acked| and time to decide when packets are lost.
   DetectionStats DetectLosses(const QuicUnackedPacketMap& unacked_packets,
                               QuicTime time, const RttStats& rtt_stats,

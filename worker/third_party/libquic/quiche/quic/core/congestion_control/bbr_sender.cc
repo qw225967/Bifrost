@@ -13,7 +13,6 @@
 #include "quiche/quic/core/crypto/crypto_protocol.h"
 #include "quiche/quic/core/quic_time.h"
 #include "quiche/quic/core/quic_time_accumulator.h"
-#include "quiche/quic/platform/api/quic_bug_tracker.h"
 #include "quiche/quic/platform/api/quic_flag_utils.h"
 #include "quiche/quic/platform/api/quic_flags.h"
 
@@ -201,58 +200,6 @@ QuicByteCount BbrSender::GetSlowStartThreshold() const { return 0; }
 
 bool BbrSender::InRecovery() const {
   return recovery_state_ != NOT_IN_RECOVERY;
-}
-
-void BbrSender::SetFromConfig(const QuicConfig& config,
-                              Perspective perspective) {
-  if (config.HasClientRequestedIndependentOption(k1RTT, perspective)) {
-    num_startup_rtts_ = 1;
-  }
-  if (config.HasClientRequestedIndependentOption(k2RTT, perspective)) {
-    num_startup_rtts_ = 2;
-  }
-  if (config.HasClientRequestedIndependentOption(kBBR3, perspective)) {
-    drain_to_target_ = true;
-  }
-  if (config.HasClientRequestedIndependentOption(kBWM3, perspective)) {
-    bytes_lost_multiplier_while_detecting_overshooting_ = 3;
-  }
-  if (config.HasClientRequestedIndependentOption(kBWM4, perspective)) {
-    bytes_lost_multiplier_while_detecting_overshooting_ = 4;
-  }
-  if (config.HasClientRequestedIndependentOption(kBBR4, perspective)) {
-    sampler_.SetMaxAckHeightTrackerWindowLength(2 * kBandwidthWindowSize);
-  }
-  if (config.HasClientRequestedIndependentOption(kBBR5, perspective)) {
-    sampler_.SetMaxAckHeightTrackerWindowLength(4 * kBandwidthWindowSize);
-  }
-  if (config.HasClientRequestedIndependentOption(kBBQ1, perspective)) {
-    set_high_gain(kDerivedHighGain);
-    set_high_cwnd_gain(kDerivedHighGain);
-    set_drain_gain(1.0 / kDerivedHighCWNDGain);
-  }
-  if (config.HasClientRequestedIndependentOption(kBBQ3, perspective)) {
-    enable_ack_aggregation_during_startup_ = true;
-  }
-  if (config.HasClientRequestedIndependentOption(kBBQ5, perspective)) {
-    expire_ack_aggregation_in_startup_ = true;
-  }
-  if (config.HasClientRequestedIndependentOption(kMIN1, perspective)) {
-    min_congestion_window_ = kMaxSegmentSize;
-  }
-  if (config.HasClientRequestedIndependentOption(kICW1, perspective)) {
-    max_congestion_window_with_network_parameters_adjusted_ =
-        100 * kDefaultTCPMSS;
-  }
-  if (config.HasClientRequestedIndependentOption(kDTOS, perspective)) {
-    detect_overshooting_ = true;
-    // DTOS would allow pacing rate drop to IW 10 / min_rtt if overshooting is
-    // detected.
-    cwnd_to_calculate_min_pacing_rate_ =
-        std::min(initial_congestion_window_, 10 * kDefaultTCPMSS);
-  }
-
-  ApplyConnectionOptions(config.ClientRequestedIndependentOptions(perspective));
 }
 
 void BbrSender::ApplyConnectionOptions(

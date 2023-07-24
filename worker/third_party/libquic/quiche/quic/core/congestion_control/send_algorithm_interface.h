@@ -14,7 +14,6 @@
 #include "quiche/quic/core/crypto/quic_random.h"
 #include "quiche/quic/core/quic_bandwidth.h"
 #include "quiche/quic/core/quic_clock.h"
-#include "quiche/quic/core/quic_config.h"
 #include "quiche/quic/core/quic_connection_stats.h"
 #include "quiche/quic/core/quic_packets.h"
 #include "quiche/quic/core/quic_time.h"
@@ -63,10 +62,6 @@ class QUIC_EXPORT_PRIVATE SendAlgorithmInterface {
       SendAlgorithmInterface* old_send_algorithm);
 
   virtual ~SendAlgorithmInterface() {}
-
-
-  virtual void SetFromConfig(const QuicConfig& config,
-                             Perspective perspective) = 0;
 
   virtual void ApplyConnectionOptions(
       const QuicTagVector& connection_options) = 0;

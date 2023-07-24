@@ -12,7 +12,6 @@
 #include "absl/strings/str_cat.h"
 #include "quiche/quic/core/quic_packets.h"
 #include "quiche/quic/core/quic_transmission_info.h"
-#include "quiche/quic/core/session_notifier_interface.h"
 #include "quiche/quic/platform/api/quic_export.h"
 #include "quiche/quic/platform/api/quic_flags.h"
 #include "quiche/common/quiche_circular_deque.h"
@@ -226,7 +225,7 @@ class QUIC_EXPORT_PRIVATE QuicUnackedPacketMap {
   const QuicTransmissionInfo* GetFirstInFlightTransmissionInfoOfSpace(
       PacketNumberSpace packet_number_space) const;
 
-  void SetSessionNotifier(SessionNotifierInterface* session_notifier);
+//  void SetSessionNotifier(SessionNotifierInterface* session_notifier);
 
   void EnableMultiplePacketNumberSpacesSupport();
 
@@ -319,10 +318,10 @@ class QUIC_EXPORT_PRIVATE QuicUnackedPacketMap {
 
   // Aggregates acked stream data across multiple acked sent packets to save CPU
   // by reducing the number of calls to the session notifier.
-  QuicStreamFrame aggregated_stream_frame_;
+//  QuicStreamFrame aggregated_stream_frame_;
 
   // Receives notifications of frames being retransmitted or acknowledged.
-  SessionNotifierInterface* session_notifier_;
+//  SessionNotifierInterface* session_notifier_;
 
   // If true, supports multiple packet number spaces.
   bool supports_multiple_packet_number_spaces_;
