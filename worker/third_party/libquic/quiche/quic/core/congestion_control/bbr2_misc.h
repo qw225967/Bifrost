@@ -668,7 +668,7 @@ class QUIC_EXPORT_PRIVATE Bbr2ModeBase {
 
 QUIC_EXPORT_PRIVATE inline QuicByteCount BytesInFlight(
     const SendTimeState& send_state) {
-  QUICHE_DCHECK(send_state.is_valid);
+//  QUICHE_DCHECK(send_state.is_valid);
   if (send_state.bytes_in_flight != 0) {
     return send_state.bytes_in_flight;
   }

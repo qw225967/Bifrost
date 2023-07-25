@@ -11,12 +11,10 @@
 #include <string>
 
 #include "quiche/quic/core/congestion_control/cubic_bytes.h"
-#include "quiche/quic/core/congestion_control/hybrid_slow_start.h"
 #include "quiche/quic/core/congestion_control/prr_sender.h"
 #include "quiche/quic/core/congestion_control/send_algorithm_interface.h"
 #include "quiche/quic/core/quic_bandwidth.h"
 #include "quiche/quic/core/quic_connection_stats.h"
-#include "quiche/quic/core/quic_packets.h"
 #include "quiche/quic/core/quic_time.h"
 #include "quiche/quic/platform/api/quic_export.h"
 
@@ -42,8 +40,6 @@ class QUIC_EXPORT_PRIVATE TcpCubicSenderBytes : public SendAlgorithmInterface {
   ~TcpCubicSenderBytes() override;
 
   // Start implementation of SendAlgorithmInterface.
-  void ApplyConnectionOptions(
-      const QuicTagVector& /*connection_options*/) override {}
   void AdjustNetworkParameters(const NetworkParams& params) override;
   void SetNumEmulatedConnections(int num_connections);
   void SetInitialCongestionWindowInPackets(
@@ -102,7 +98,6 @@ class QUIC_EXPORT_PRIVATE TcpCubicSenderBytes : public SendAlgorithmInterface {
  private:
   friend class test::TcpCubicSenderBytesPeer;
 
-  HybridSlowStart hybrid_slow_start_;
   PrrSender prr_;
   const RttStats* rtt_stats_;
   QuicConnectionStats* stats_;

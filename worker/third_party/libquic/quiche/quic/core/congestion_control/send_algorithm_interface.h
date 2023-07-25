@@ -15,7 +15,6 @@
 #include "quiche/quic/core/quic_bandwidth.h"
 #include "quiche/quic/core/quic_clock.h"
 #include "quiche/quic/core/quic_connection_stats.h"
-#include "quiche/quic/core/quic_packets.h"
 #include "quiche/quic/core/quic_time.h"
 #include "quiche/quic/core/quic_types.h"
 #include "quiche/quic/core/quic_unacked_packet_map.h"
@@ -62,9 +61,6 @@ class QUIC_EXPORT_PRIVATE SendAlgorithmInterface {
       SendAlgorithmInterface* old_send_algorithm);
 
   virtual ~SendAlgorithmInterface() {}
-
-  virtual void ApplyConnectionOptions(
-      const QuicTagVector& connection_options) = 0;
 
   // Sets the initial congestion window in number of packets.  May be ignored
   // if called after the initial congestion window is no longer relevant.

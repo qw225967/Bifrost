@@ -15,45 +15,42 @@
 #include "quiche/quic/core/quic_types.h"
 #include "quiche/quic/platform/api/quic_flag_utils.h"
 #include "quiche/quic/platform/api/quic_flags.h"
-#include "quiche/quic/platform/api/quic_logging.h"
-#include "quiche/common/quiche_endian.h"
-#include "quiche/common/quiche_text_utils.h"
 
 namespace quic {
 namespace {
 
-QuicVersionLabel CreateRandomVersionLabelForNegotiation() {
-  QuicVersionLabel result;
-  if (!GetQuicFlag(quic_disable_version_negotiation_grease_randomness)) {
-    QuicRandom::GetInstance()->RandBytes(&result, sizeof(result));
-  } else {
-    result = MakeVersionLabel(0xd1, 0x57, 0x38, 0x3f);
-  }
-  result &= 0xf0f0f0f0;
-  result |= 0x0a0a0a0a;
-  return result;
-}
+//QuicVersionLabel CreateRandomVersionLabelForNegotiation() {
+//  QuicVersionLabel result;
+//  if (!GetQuicFlag(quic_disable_version_negotiation_grease_randomness)) {
+//    QuicRandom::GetInstance()->RandBytes(&result, sizeof(result));
+//  } else {
+//    result = MakeVersionLabel(0xd1, 0x57, 0x38, 0x3f);
+//  }
+//  result &= 0xf0f0f0f0;
+//  result |= 0x0a0a0a0a;
+//  return result;
+//}
 
-void SetVersionFlag(const ParsedQuicVersion& version, bool should_enable) {
-  static_assert(SupportedVersions().size() == 5u,
-                "Supported versions out of sync");
-  const bool enable = should_enable;
-  const bool disable = !should_enable;
-  if (version == ParsedQuicVersion::RFCv2()) {
-    SetQuicReloadableFlag(quic_enable_version_rfcv2, enable);
-  } else if (version == ParsedQuicVersion::RFCv1()) {
-    SetQuicReloadableFlag(quic_disable_version_rfcv1, disable);
-  } else if (version == ParsedQuicVersion::Draft29()) {
-    SetQuicReloadableFlag(quic_disable_version_draft_29, disable);
-  } else if (version == ParsedQuicVersion::Q050()) {
-    SetQuicReloadableFlag(quic_disable_version_q050, disable);
-  } else if (version == ParsedQuicVersion::Q046()) {
-    SetQuicReloadableFlag(quic_disable_version_q046, disable);
-  } else {
-//    QUIC_BUG(quic_bug_10589_1)
-//        << "Cannot " << (enable ? "en" : "dis") << "able version " << version;
-  }
-}
+//void SetVersionFlag(const ParsedQuicVersion& version, bool should_enable) {
+//  static_assert(SupportedVersions().size() == 5u,
+//                "Supported versions out of sync");
+//  const bool enable = should_enable;
+//  const bool disable = !should_enable;
+//  if (version == ParsedQuicVersion::RFCv2()) {
+//    SetQuicReloadableFlag(quic_enable_version_rfcv2, enable);
+//  } else if (version == ParsedQuicVersion::RFCv1()) {
+//    SetQuicReloadableFlag(quic_disable_version_rfcv1, disable);
+//  } else if (version == ParsedQuicVersion::Draft29()) {
+//    SetQuicReloadableFlag(quic_disable_version_draft_29, disable);
+//  } else if (version == ParsedQuicVersion::Q050()) {
+//    SetQuicReloadableFlag(quic_disable_version_q050, disable);
+//  } else if (version == ParsedQuicVersion::Q046()) {
+//    SetQuicReloadableFlag(quic_disable_version_q046, disable);
+//  } else {
+////    QUIC_BUG(quic_bug_10589_1)
+////        << "Cannot " << (enable ? "en" : "dis") << "able version " << version;
+//  }
+//}
 
 }  // namespace
 
@@ -171,13 +168,13 @@ bool ParsedQuicVersion::UsesV2PacketTypes() const {
 }
 
 bool ParsedQuicVersion::AlpnDeferToRFCv1() const {
-  QUICHE_DCHECK(IsKnown());
+//  QUICHE_DCHECK(IsKnown());
   return transport_version == QUIC_VERSION_IETF_RFC_V2;
 }
 
 bool VersionHasLengthPrefixedConnectionIds(
     QuicTransportVersion transport_version) {
-  QUICHE_DCHECK(transport_version != QUIC_VERSION_UNSUPPORTED);
+//  QUICHE_DCHECK(transport_version != QUIC_VERSION_UNSUPPORTED);
   // Length-prefixed connection IDs were added in version 49.
   return transport_version > QUIC_VERSION_46;
 }
@@ -223,7 +220,7 @@ QuicVersionLabel CreateQuicVersionLabel(ParsedQuicVersion parsed_version) {
   } else if (parsed_version == ParsedQuicVersion::Q046()) {
     return MakeVersionLabel('Q', '0', '4', '6');
   } else if (parsed_version == ParsedQuicVersion::ReservedForNegotiation()) {
-    return CreateRandomVersionLabelForNegotiation();
+//    return CreateRandomVersionLabelForNegotiation();
   }
 //  QUIC_BUG(quic_bug_10589_2)
 //      << "Unsupported version "
@@ -309,8 +306,8 @@ ParsedQuicVersion ParseQuicVersionLabel(QuicVersionLabel version_label) {
     }
   }
   // Reading from the client so this should not be considered an ERROR.
-  QUIC_DLOG(INFO) << "Unsupported QuicVersionLabel version: "
-                  << QuicVersionLabelToString(version_label);
+//  QUIC_DLOG(INFO) << "Unsupported QuicVersionLabel version: "
+//                  << QuicVersionLabelToString(version_label);
   return UnsupportedQuicVersion();
 }
 
@@ -363,8 +360,8 @@ ParsedQuicVersion ParseQuicVersionString(absl::string_view version_string) {
     return UnsupportedQuicVersion();
   }
   // Reading from the client so this should not be considered an ERROR.
-  QUIC_DLOG(INFO) << "Unsupported QUIC version string: \"" << version_string
-                  << "\".";
+//  QUIC_DLOG(INFO) << "Unsupported QUIC version string: \"" << version_string
+//                  << "\".";
   return UnsupportedQuicVersion();
 }
 
@@ -374,8 +371,8 @@ ParsedQuicVersionVector ParseQuicVersionVectorString(
   std::vector<absl::string_view> version_strings =
       absl::StrSplit(versions_string, ',');
   for (absl::string_view version_string : version_strings) {
-    quiche::QuicheTextUtils::RemoveLeadingAndTrailingWhitespace(
-        &version_string);
+//    quiche::QuicheTextUtils::RemoveLeadingAndTrailingWhitespace(
+//        &version_string);
     ParsedQuicVersion version = ParseQuicVersionString(version_string);
     if (!version.IsKnown() || std::find(versions.begin(), versions.end(),
                                         version) != versions.end()) {
@@ -404,44 +401,44 @@ ParsedQuicVersionVector AllSupportedVersions() {
 }
 
 ParsedQuicVersionVector CurrentSupportedVersions() {
-  return FilterSupportedVersions(AllSupportedVersions());
+//  return FilterSupportedVersions(AllSupportedVersions());
 }
 
-ParsedQuicVersionVector FilterSupportedVersions(
-    ParsedQuicVersionVector versions) {
-  static_assert(SupportedVersions().size() == 5u,
-                "Supported versions out of sync");
-  ParsedQuicVersionVector filtered_versions;
-  filtered_versions.reserve(versions.size());
-  for (const ParsedQuicVersion& version : versions) {
-    if (version == ParsedQuicVersion::RFCv2()) {
-      if (GetQuicReloadableFlag(quic_enable_version_rfcv2)) {
-        filtered_versions.push_back(version);
-      }
-    } else if (version == ParsedQuicVersion::RFCv1()) {
-      if (!GetQuicReloadableFlag(quic_disable_version_rfcv1)) {
-        filtered_versions.push_back(version);
-      }
-    } else if (version == ParsedQuicVersion::Draft29()) {
-      if (!GetQuicReloadableFlag(quic_disable_version_draft_29)) {
-        filtered_versions.push_back(version);
-      }
-    } else if (version == ParsedQuicVersion::Q050()) {
-      if (!GetQuicReloadableFlag(quic_disable_version_q050)) {
-        filtered_versions.push_back(version);
-      }
-    } else if (version == ParsedQuicVersion::Q046()) {
-      if (!GetQuicReloadableFlag(quic_disable_version_q046)) {
-        filtered_versions.push_back(version);
-      }
-    } else {
-//      QUIC_BUG(quic_bug_10589_7)
-//          << "QUIC version " << version << " has no flag protection";
-      filtered_versions.push_back(version);
-    }
-  }
-  return filtered_versions;
-}
+//ParsedQuicVersionVector FilterSupportedVersions(
+//    ParsedQuicVersionVector versions) {
+//  static_assert(SupportedVersions().size() == 5u,
+//                "Supported versions out of sync");
+//  ParsedQuicVersionVector filtered_versions;
+//  filtered_versions.reserve(versions.size());
+//  for (const ParsedQuicVersion& version : versions) {
+//    if (version == ParsedQuicVersion::RFCv2()) {
+//      if (GetQuicReloadableFlag(quic_enable_version_rfcv2)) {
+//        filtered_versions.push_back(version);
+//      }
+//    } else if (version == ParsedQuicVersion::RFCv1()) {
+//      if (!GetQuicReloadableFlag(quic_disable_version_rfcv1)) {
+//        filtered_versions.push_back(version);
+//      }
+//    } else if (version == ParsedQuicVersion::Draft29()) {
+//      if (!GetQuicReloadableFlag(quic_disable_version_draft_29)) {
+//        filtered_versions.push_back(version);
+//      }
+//    } else if (version == ParsedQuicVersion::Q050()) {
+//      if (!GetQuicReloadableFlag(quic_disable_version_q050)) {
+//        filtered_versions.push_back(version);
+//      }
+//    } else if (version == ParsedQuicVersion::Q046()) {
+//      if (!GetQuicReloadableFlag(quic_disable_version_q046)) {
+//        filtered_versions.push_back(version);
+//      }
+//    } else {
+////      QUIC_BUG(quic_bug_10589_7)
+////          << "QUIC version " << version << " has no flag protection";
+//      filtered_versions.push_back(version);
+//    }
+//  }
+//  return filtered_versions;
+//}
 
 ParsedQuicVersionVector ParsedVersionOfIndex(
     const ParsedQuicVersionVector& versions, int index) {
@@ -456,7 +453,7 @@ ParsedQuicVersionVector ParsedVersionOfIndex(
 }
 
 std::string QuicVersionLabelToString(QuicVersionLabel version_label) {
-  return QuicTagToString(quiche::QuicheEndian::HostToNet32(version_label));
+  return "";
 }
 
 ParsedQuicVersion ParseQuicVersionLabelString(
@@ -523,13 +520,13 @@ std::string ParsedQuicVersionToString(ParsedQuicVersion version) {
   if (version == UnsupportedQuicVersion()) {
     return "0";
   } else if (version == ParsedQuicVersion::RFCv2()) {
-    QUICHE_DCHECK(version.UsesHttp3());
+//    QUICHE_DCHECK(version.UsesHttp3());
     return "RFCv2";
   } else if (version == ParsedQuicVersion::RFCv1()) {
-    QUICHE_DCHECK(version.UsesHttp3());
+//    QUICHE_DCHECK(version.UsesHttp3());
     return "RFCv1";
   } else if (version == ParsedQuicVersion::Draft29()) {
-    QUICHE_DCHECK(version.UsesHttp3());
+//    QUICHE_DCHECK(version.UsesHttp3());
     return "draft29";
   }
 
@@ -622,17 +619,17 @@ std::string AlpnForVersion(ParsedQuicVersion parsed_version) {
   return "h3-" + ParsedQuicVersionToString(parsed_version);
 }
 
-void QuicVersionInitializeSupportForIetfDraft() {
-  // Enable necessary flags.
-  SetQuicRestartFlag(quic_receive_ecn2, true);
-}
+//void QuicVersionInitializeSupportForIetfDraft() {
+//  // Enable necessary flags.
+//  SetQuicRestartFlag(quic_receive_ecn2, true);
+//}
 
 void QuicEnableVersion(const ParsedQuicVersion& version) {
-  SetVersionFlag(version, /*should_enable=*/true);
+//  SetVersionFlag(version, /*should_enable=*/true);
 }
 
 void QuicDisableVersion(const ParsedQuicVersion& version) {
-  SetVersionFlag(version, /*should_enable=*/false);
+//  SetVersionFlag(version, /*should_enable=*/false);
 }
 
 bool QuicVersionIsEnabled(const ParsedQuicVersion& version) {

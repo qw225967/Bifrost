@@ -42,8 +42,6 @@ class QUIC_EXPORT_PRIVATE Bbr2Sender final : public SendAlgorithmInterface {
     return false;
   }
 
-  void ApplyConnectionOptions(const QuicTagVector& connection_options) override;
-
   void AdjustNetworkParameters(const NetworkParams& params) override;
 
   void SetInitialCongestionWindowInPackets(

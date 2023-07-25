@@ -420,8 +420,8 @@ QUIC_EXPORT_PRIVATE ParsedQuicVersionVector CurrentSupportedVersions();
 
 // Returns a vector of QUIC versions from |versions| which exclude any versions
 // which are disabled by flags.
-QUIC_EXPORT_PRIVATE ParsedQuicVersionVector
-FilterSupportedVersions(ParsedQuicVersionVector versions);
+//QUIC_EXPORT_PRIVATE ParsedQuicVersionVector
+//FilterSupportedVersions(ParsedQuicVersionVector versions);
 
 // Returns a subset of AllSupportedVersions() with
 // handshake_protocol == PROTOCOL_QUIC_CRYPTO, in the same order.
@@ -608,7 +608,7 @@ QUIC_EXPORT_PRIVATE std::string AlpnForVersion(
 
 // Initializes support for the provided IETF draft version by setting the
 // correct flags.
-QUIC_EXPORT_PRIVATE void QuicVersionInitializeSupportForIetfDraft();
+//QUIC_EXPORT_PRIVATE void QuicVersionInitializeSupportForIetfDraft();
 
 // Configures the flags required to enable support for this version of QUIC.
 QUIC_EXPORT_PRIVATE void QuicEnableVersion(const ParsedQuicVersion& version);

@@ -13,7 +13,6 @@
 #include "absl/strings/str_split.h"
 #include "quiche/quic/platform/api/quic_flag_utils.h"
 #include "quiche/quic/platform/api/quic_flags.h"
-#include "quiche/common/quiche_text_utils.h"
 
 namespace quic {
 
@@ -77,7 +76,6 @@ bool ContainsQuicTag(const QuicTagVector& tag_vector, QuicTag tag) {
 }
 
 QuicTag ParseQuicTag(absl::string_view tag_string) {
-  quiche::QuicheTextUtils::RemoveLeadingAndTrailingWhitespace(&tag_string);
   std::string tag_bytes;
   if (tag_string.length() == 8) {
     tag_bytes = absl::HexStringToBytes(tag_string);
@@ -96,7 +94,6 @@ QuicTag ParseQuicTag(absl::string_view tag_string) {
 
 QuicTagVector ParseQuicTagVector(absl::string_view tags_string) {
   QuicTagVector tag_vector;
-  quiche::QuicheTextUtils::RemoveLeadingAndTrailingWhitespace(&tags_string);
   if (!tags_string.empty()) {
     std::vector<absl::string_view> tag_strings =
         absl::StrSplit(tags_string, ',');

@@ -4,8 +4,6 @@
 
 #include "quiche/quic/core/congestion_control/prr_sender.h"
 
-#include "quiche/quic/core/quic_packets.h"
-
 namespace quic {
 
 PrrSender::PrrSender()

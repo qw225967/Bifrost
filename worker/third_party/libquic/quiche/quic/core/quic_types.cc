@@ -424,9 +424,6 @@ bool operator==(const ParsedClientHello& a, const ParsedClientHello& b) {
 
 std::ostream& operator<<(std::ostream& os,
                          const ParsedClientHello& parsed_chlo) {
-  os << "{ sni:" << parsed_chlo.sni << ", uaid:" << parsed_chlo.uaid
-     << ", alpns:" << quiche::PrintElements(parsed_chlo.alpns)
-     << ", len(retry_token):" << parsed_chlo.retry_token.size() << " }";
   return os;
 }
 

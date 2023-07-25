@@ -17,7 +17,6 @@
 #include "absl/types/optional.h"
 #include "absl/types/span.h"
 #include "quiche/quic/core/crypto/quic_random.h"
-#include "quiche/quic/core/frames/quic_frame.h"
 #include "quiche/quic/core/quic_connection_id.h"
 #include "quiche/quic/core/quic_error_codes.h"
 #include "quiche/quic/core/quic_types.h"
@@ -67,9 +66,6 @@ class QUIC_EXPORT_PRIVATE QuicUtils {
 
   // Determines and returns change type of address change from |old_address| to
   // |new_address|.
-  static AddressChangeType DetermineAddressChangeType(
-      const QuicSocketAddress& old_address,
-      const QuicSocketAddress& new_address);
 
   // Returns the opposite Perspective of the |perspective| passed in.
   static constexpr Perspective InvertPerspective(Perspective perspective) {
@@ -85,13 +81,6 @@ class QUIC_EXPORT_PRIVATE QuicUtils {
   // Returns true if frame with |type| is retransmittable. A retransmittable
   // frame should be retransmitted if it is detected as lost.
   static bool IsRetransmittableFrame(QuicFrameType type);
-
-  // Returns true if |frame| is a handshake frame in version |version|.
-  static bool IsHandshakeFrame(const QuicFrame& frame,
-                               QuicTransportVersion transport_version);
-
-  // Return true if any frame in |frames| is of |type|.
-  static bool ContainsFrameType(const QuicFrames& frames, QuicFrameType type);
 
   // Returns packet state corresponding to |retransmission_type|.
   static SentPacketState RetransmissionTypeToPacketState(
@@ -160,19 +149,19 @@ class QUIC_EXPORT_PRIVATE QuicUtils {
       QuicTransportVersion version);
 
   // Generates a random 64bit connection ID.
-  static QuicConnectionId CreateRandomConnectionId();
+//  static QuicConnectionId CreateRandomConnectionId();
 
   // Generates a random 64bit connection ID using the provided QuicRandom.
-  static QuicConnectionId CreateRandomConnectionId(QuicRandom* random);
+//  static QuicConnectionId CreateRandomConnectionId(QuicRandom* random);
 
   // Generates a random connection ID of the given length.
-  static QuicConnectionId CreateRandomConnectionId(
-      uint8_t connection_id_length);
+//  static QuicConnectionId CreateRandomConnectionId(
+//      uint8_t connection_id_length);
 
   // Generates a random connection ID of the given length using the provided
   // QuicRandom.
-  static QuicConnectionId CreateRandomConnectionId(uint8_t connection_id_length,
-                                                   QuicRandom* random);
+//  static QuicConnectionId CreateRandomConnectionId(uint8_t connection_id_length,
+//                                                   QuicRandom* random);
 
   // Returns true if the connection ID length is valid for this QUIC version.
   static bool IsConnectionIdLengthValidForVersion(
@@ -221,8 +210,6 @@ class QUIC_EXPORT_PRIVATE QuicUtils {
 bool IsValidWebTransportSessionId(WebTransportSessionId id,
                                   ParsedQuicVersion transport_version);
 
-QuicByteCount MemSliceSpanTotalSize(absl::Span<quiche::QuicheMemSlice> span);
-
 // Computes a SHA-256 hash and returns the raw bytes of the hash.
 QUIC_EXPORT_PRIVATE std::string RawSha256(absl::string_view input);
 
@@ -257,10 +244,6 @@ class QUIC_EXPORT_PRIVATE BitMask {
 
   // Returns the highest bit set, or nullopt if the mask is all zeroes.
   absl::optional<Index> Max() const {
-    if (!Any()) {
-      return absl::nullopt;
-    }
-    return static_cast<Index>(NumBits() - absl::countl_zero(mask_) - 1);
   }
 
   static constexpr size_t NumBits() { return 8 * sizeof(Mask); }

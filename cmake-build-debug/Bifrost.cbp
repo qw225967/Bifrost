@@ -62,12 +62,15 @@
 					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/json/include/nlohmann/thirdparty/hedley"/>
 					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/json/single_include"/>
 					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/json/single_include/nlohmann"/>
-					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/common"/>
-					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core"/>
-					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control"/>
-					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/crypto"/>
-					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/platform"/>
-					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/platform/api"/>
+					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/common"/>
+					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/common/platform/api"/>
+					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl"/>
+					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core"/>
+					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control"/>
+					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/crypto"/>
+					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/frames"/>
+					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/platform"/>
+					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/platform/api"/>
 					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libuv/docs/code/plugin"/>
 					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libuv/include"/>
 					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libuv/include/uv"/>
@@ -216,12 +219,15 @@
 					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/json/include/nlohmann/thirdparty/hedley"/>
 					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/json/single_include"/>
 					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/json/single_include/nlohmann"/>
-					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/common"/>
-					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core"/>
-					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control"/>
-					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/crypto"/>
-					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/platform"/>
-					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/platform/api"/>
+					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/common"/>
+					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/common/platform/api"/>
+					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl"/>
+					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core"/>
+					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control"/>
+					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/crypto"/>
+					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/frames"/>
+					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/platform"/>
+					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/platform/api"/>
 					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libuv/docs/code/plugin"/>
 					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libuv/include"/>
 					<Add directory="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libuv/include/uv"/>
@@ -625,196 +631,265 @@
 		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/json/single_include/nlohmann/json.hpp">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/common/quiche_circular_deque.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/common/platform/api/quiche_export.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/common/quiche_random.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/common/platform/api/quiche_flag_utils.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/common/quiche_random.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/common/platform/api/quiche_flags.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/common/platform/api/quiche_reference_counted.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_export_impl.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flag_utils_impl.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/common/quiche_circular_deque.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/common/quiche_protocol_flags_list.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/common/quiche_random.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/common/quiche_random.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/bbr_sender.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/bbr_sender.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/loss_detection_interface.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/pacing_sender.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/pacing_sender.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/prr_sender.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/prr_sender.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/rtt_stats.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/rtt_stats.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/loss_detection_interface.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/congestion_control/windowed_filter.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/crypto/quic_random.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/packet_number_indexed_queue.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/quic_bandwidth.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/quic_bandwidth.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/quic_clock.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/quic_config.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/quic_config.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/quic_connection_stats.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/quic_connection_stats.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/congestion_control/windowed_filter.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/quic_constants.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/crypto/crypto_protocol.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/quic_constants.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/crypto/quic_random.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/quic_packet_number.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/frames/quic_frame.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/quic_packet_number.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/frames/quic_frame.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/quic_packets.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/packet_number_indexed_queue.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/quic_packets.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/quic_time.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/quic_time.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_bandwidth.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/quic_types.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_bandwidth.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/quic_types.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_clock.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/quic_unacked_packet_map.cc">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_connection_id.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/core/quic_unacked_packet_map.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_connection_id.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/platform/api/quic_bug_tracker.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_connection_stats.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/platform/api/quic_export.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_connection_stats.h">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/platform/api/quic_flag_utils.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_constants.cc">
 			<Option target="Bifrost"/>
 		</Unit>
-		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quic/platform/api/quic_flags.h">
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_constants.h">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_error_codes.cc">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_error_codes.h">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_flags_list.h">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_packet_number.cc">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_packet_number.h">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_protocol_flags_list.h">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_tag.cc">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_tag.h">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_time.cc">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_time.h">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_time_accumulator.h">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_transmission_info.h">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_types.cc">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_types.h">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.cc">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.h">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_utils.cc">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_utils.h">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_versions.cc">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/core/quic_versions.h">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/platform/api/quic_export.h">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/platform/api/quic_flag_utils.h">
+			<Option target="Bifrost"/>
+		</Unit>
+		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libquic/quiche/quic/platform/api/quic_flags.h">
 			<Option target="Bifrost"/>
 		</Unit>
 		<Unit filename="/Users/admin/go/src/github.com/Bifrost/worker/third_party/libuv/docs/code/cgi/main.c">

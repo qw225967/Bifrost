@@ -202,19 +202,6 @@ bool BbrSender::InRecovery() const {
   return recovery_state_ != NOT_IN_RECOVERY;
 }
 
-void BbrSender::ApplyConnectionOptions(
-    const QuicTagVector& connection_options) {
-  if (ContainsQuicTag(connection_options, kBSAO)) {
-    sampler_.EnableOverestimateAvoidance();
-  }
-  if (ContainsQuicTag(connection_options, kBBRA)) {
-    sampler_.SetStartNewAggregationEpochAfterFullRound(true);
-  }
-  if (ContainsQuicTag(connection_options, kBBRB)) {
-    sampler_.SetLimitMaxAckHeightTrackerBySendRate(true);
-  }
-}
-
 void BbrSender::AdjustNetworkParameters(const NetworkParams& params) {
   const QuicBandwidth& bandwidth = params.bandwidth;
   const QuicTime::Delta& rtt = params.rtt;

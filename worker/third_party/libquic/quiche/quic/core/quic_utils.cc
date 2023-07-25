@@ -14,16 +14,12 @@
 #include "absl/base/optimization.h"
 #include "absl/numeric/int128.h"
 #include "absl/strings/string_view.h"
-#include "openssl/sha.h"
 #include "quiche/quic/core/quic_connection_id.h"
 #include "quiche/quic/core/quic_constants.h"
 #include "quiche/quic/core/quic_types.h"
 #include "quiche/quic/core/quic_versions.h"
 #include "quiche/quic/platform/api/quic_flag_utils.h"
 #include "quiche/quic/platform/api/quic_flags.h"
-#include "quiche/common/platform/api/quiche_logging.h"
-#include "quiche/common/platform/api/quiche_mem_slice.h"
-#include "quiche/common/quiche_endian.h"
 
 namespace quic {
 namespace {
@@ -201,39 +197,6 @@ const char* QuicUtils::AckResultToString(AckResult result) {
 }
 
 // static
-AddressChangeType QuicUtils::DetermineAddressChangeType(
-    const QuicSocketAddress& old_address,
-    const QuicSocketAddress& new_address) {
-  if (!old_address.IsInitialized() || !new_address.IsInitialized() ||
-      old_address == new_address) {
-    return NO_CHANGE;
-  }
-
-  if (old_address.host() == new_address.host()) {
-    return PORT_CHANGE;
-  }
-
-  bool old_ip_is_ipv4 = old_address.host().IsIPv4() ? true : false;
-  bool migrating_ip_is_ipv4 = new_address.host().IsIPv4() ? true : false;
-  if (old_ip_is_ipv4 && !migrating_ip_is_ipv4) {
-    return IPV4_TO_IPV6_CHANGE;
-  }
-
-  if (!old_ip_is_ipv4) {
-    return migrating_ip_is_ipv4 ? IPV6_TO_IPV4_CHANGE : IPV6_TO_IPV6_CHANGE;
-  }
-
-  const int kSubnetMaskLength = 24;
-  if (old_address.host().InSameSubnet(new_address.host(), kSubnetMaskLength)) {
-    // Subnet part does not change (here, we use /24), which is considered to be
-    // caused by NATs.
-    return IPV4_SUBNET_CHANGE;
-  }
-
-  return IPV4_TO_IPV4_CHANGE;
-}
-
-// static
 bool QuicUtils::IsAckable(SentPacketState state) {
   return state != NEVER_SENT && state != ACKED && state != UNACKABLE;
 }
@@ -253,27 +216,7 @@ bool QuicUtils::IsRetransmittableFrame(QuicFrameType type) {
   }
 }
 
-// static
-bool QuicUtils::IsHandshakeFrame(const QuicFrame& frame,
-                                 QuicTransportVersion transport_version) {
-  if (!QuicVersionUsesCryptoFrames(transport_version)) {
-    return frame.type == STREAM_FRAME &&
-           frame.stream_frame.stream_id == GetCryptoStreamId(transport_version);
-  } else {
-    return frame.type == CRYPTO_FRAME;
-  }
-}
 
-// static
-bool QuicUtils::ContainsFrameType(const QuicFrames& frames,
-                                  QuicFrameType type) {
-  for (const QuicFrame& frame : frames) {
-    if (frame.type == type) {
-      return true;
-    }
-  }
-  return false;
-}
 
 // static
 SentPacketState QuicUtils::RetransmissionTypeToPacketState(
@@ -443,32 +386,32 @@ QuicStreamId QuicUtils::GetMaxClientInitiatedBidirectionalStreamId(
 }
 
 // static
-QuicConnectionId QuicUtils::CreateRandomConnectionId() {
-  return CreateRandomConnectionId(kQuicDefaultConnectionIdLength,
-                                  QuicRandom::GetInstance());
-}
+//QuicConnectionId QuicUtils::CreateRandomConnectionId() {
+//  return CreateRandomConnectionId(kQuicDefaultConnectionIdLength,
+//                                  QuicRandom::GetInstance());
+//}
 
 // static
-QuicConnectionId QuicUtils::CreateRandomConnectionId(QuicRandom* random) {
-  return CreateRandomConnectionId(kQuicDefaultConnectionIdLength, random);
-}
+//QuicConnectionId QuicUtils::CreateRandomConnectionId(QuicRandom* random) {
+//  return CreateRandomConnectionId(kQuicDefaultConnectionIdLength, random);
+//}
 // static
-QuicConnectionId QuicUtils::CreateRandomConnectionId(
-    uint8_t connection_id_length) {
-  return CreateRandomConnectionId(connection_id_length,
-                                  QuicRandom::GetInstance());
-}
+//QuicConnectionId QuicUtils::CreateRandomConnectionId(
+//    uint8_t connection_id_length) {
+//  return CreateRandomConnectionId(connection_id_length,
+//                                  QuicRandom::GetInstance());
+//}
 
 // static
-QuicConnectionId QuicUtils::CreateRandomConnectionId(
-    uint8_t connection_id_length, QuicRandom* random) {
-  QuicConnectionId connection_id;
-  connection_id.set_length(connection_id_length);
-  if (connection_id.length() > 0) {
-    random->RandBytes(connection_id.mutable_data(), connection_id.length());
-  }
-  return connection_id;
-}
+//QuicConnectionId QuicUtils::CreateRandomConnectionId(
+//    uint8_t connection_id_length, QuicRandom* random) {
+//  QuicConnectionId connection_id;
+//  connection_id.set_length(connection_id_length);
+//  if (connection_id.length() > 0) {
+//    random->RandBytes(connection_id.mutable_data(), connection_id.length());
+//  }
+//  return connection_id;
+//}
 
 // static
 QuicConnectionId QuicUtils::CreateZeroConnectionId(
@@ -607,22 +550,6 @@ bool IsValidWebTransportSessionId(WebTransportSessionId id,
   return (id <= std::numeric_limits<QuicStreamId>::max()) &&
          QuicUtils::IsBidirectionalStreamId(id, version) &&
          QuicUtils::IsClientInitiatedStreamId(version.transport_version, id);
-}
-
-QuicByteCount MemSliceSpanTotalSize(absl::Span<quiche::QuicheMemSlice> span) {
-  QuicByteCount total = 0;
-  for (const quiche::QuicheMemSlice& slice : span) {
-    total += slice.length();
-  }
-  return total;
-}
-
-std::string RawSha256(absl::string_view input) {
-  std::string raw_hash;
-  raw_hash.resize(SHA256_DIGEST_LENGTH);
-  SHA256(reinterpret_cast<const uint8_t*>(input.data()), input.size(),
-         reinterpret_cast<uint8_t*>(&raw_hash[0]));
-  return raw_hash;
 }
 
 #undef RETURN_STRING_LITERAL  // undef for jumbo builds

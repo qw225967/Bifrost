@@ -71,12 +71,6 @@ void TcpCubicSenderBytes::OnCongestionEvent(
     const AckedPacketVector& acked_packets,
     const LostPacketVector& lost_packets, QuicPacketCount /*num_ect*/,
     QuicPacketCount /*num_ce*/) {
-  if (rtt_updated && InSlowStart() &&
-      hybrid_slow_start_.ShouldExitSlowStart(
-          rtt_stats_->latest_rtt(), rtt_stats_->min_rtt(),
-          GetCongestionWindow() / kDefaultTCPMSS)) {
-    ExitSlowstart();
-  }
   for (const LostPacket& lost_packet : lost_packets) {
     OnPacketLost(lost_packet.packet_number, lost_packet.bytes_lost,
                  prior_in_flight);
@@ -102,7 +96,6 @@ void TcpCubicSenderBytes::OnPacketAcked(QuicPacketNumber acked_packet_number,
   MaybeIncreaseCwnd(acked_packet_number, acked_bytes, prior_in_flight,
                     event_time);
   if (InSlowStart()) {
-    hybrid_slow_start_.OnPacketAcked(acked_packet_number);
   }
 }
 
@@ -124,7 +117,6 @@ void TcpCubicSenderBytes::OnPacketSent(
 //  QUICHE_DCHECK(!largest_sent_packet_number_.IsInitialized() ||
 //                largest_sent_packet_number_ < packet_number);
   largest_sent_packet_number_ = packet_number;
-  hybrid_slow_start_.OnPacketSent(packet_number);
 }
 
 bool TcpCubicSenderBytes::CanSend(QuicByteCount bytes_in_flight) {
@@ -188,7 +180,6 @@ void TcpCubicSenderBytes::OnRetransmissionTimeout(bool packets_retransmitted) {
   if (!packets_retransmitted) {
     return;
   }
-  hybrid_slow_start_.Restart();
   HandleRetransmissionTimeout();
 }
 
@@ -345,7 +336,6 @@ void TcpCubicSenderBytes::HandleRetransmissionTimeout() {
 }
 
 void TcpCubicSenderBytes::OnConnectionMigration() {
-  hybrid_slow_start_.Restart();
   prr_ = PrrSender();
   largest_sent_packet_number_.Clear();
   largest_acked_packet_number_.Clear();

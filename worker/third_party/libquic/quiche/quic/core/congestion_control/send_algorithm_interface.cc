@@ -8,8 +8,6 @@
 #include "quiche/quic/core/congestion_control/bbr2_sender.h"
 #include "quiche/quic/core/congestion_control/bbr_sender.h"
 #include "quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.h"
-#include "quiche/quic/core/quic_packets.h"
-#include "quiche/quic/platform/api/quic_flag_utils.h"
 #include "quiche/quic/platform/api/quic_flags.h"
 
 namespace quic {

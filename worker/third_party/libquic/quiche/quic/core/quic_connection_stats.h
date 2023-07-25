@@ -9,7 +9,6 @@
 #include <ostream>
 
 #include "quiche/quic/core/quic_bandwidth.h"
-#include "quiche/quic/core/quic_packets.h"
 #include "quiche/quic/core/quic_time.h"
 #include "quiche/quic/core/quic_time_accumulator.h"
 #include "quiche/quic/platform/api/quic_export.h"

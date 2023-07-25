@@ -10,7 +10,6 @@
 
 #include "absl/container/inlined_vector.h"
 #include "absl/strings/str_cat.h"
-#include "quiche/quic/core/quic_packets.h"
 #include "quiche/quic/core/quic_transmission_info.h"
 #include "quiche/quic/platform/api/quic_export.h"
 #include "quiche/quic/platform/api/quic_flags.h"
@@ -39,10 +38,6 @@ class QUIC_EXPORT_PRIVATE QuicUnackedPacketMap {
   // don't arrive, indicating the need for retransmission.
   // Any retransmittible_frames in |mutable_packet| are swapped from
   // |mutable_packet| into the QuicTransmissionInfo.
-  void AddSentPacket(SerializedPacket* mutable_packet,
-                     TransmissionType transmission_type, QuicTime sent_time,
-                     bool set_in_flight, bool measure_rtt,
-                     QuicEcnCodepoint ecn_codepoint);
 
   // Returns true if the packet |packet_number| is unacked.
   bool IsUnacked(QuicPacketNumber packet_number) const;
@@ -55,10 +50,6 @@ class QUIC_EXPORT_PRIVATE QuicUnackedPacketMap {
   // Notifies session_notifier that frames in |info| are considered as lost.
   void NotifyFramesLost(const QuicTransmissionInfo& info,
                         TransmissionType type);
-
-  // Notifies session_notifier to retransmit frames with |transmission_type|.
-  // Returns true if all data gets retransmitted.
-  bool RetransmitFrames(const QuicFrames& frames, TransmissionType type);
 
   // Marks |info| as no longer in flight.
   void RemoveFromInFlight(QuicTransmissionInfo* info);
@@ -154,7 +145,7 @@ class QUIC_EXPORT_PRIVATE QuicUnackedPacketMap {
 
   // Returns true if there is any unacked non-crypto stream data.
   bool HasUnackedStreamData() const {
-    return session_notifier_->HasUnackedStreamData();
+    return true;
   }
 
   // Removes any retransmittable frames from this transmission or an associated
@@ -224,8 +215,6 @@ class QUIC_EXPORT_PRIVATE QuicUnackedPacketMap {
   // |packet_number_space|.
   const QuicTransmissionInfo* GetFirstInFlightTransmissionInfoOfSpace(
       PacketNumberSpace packet_number_space) const;
-
-//  void SetSessionNotifier(SessionNotifierInterface* session_notifier);
 
   void EnableMultiplePacketNumberSpacesSupport();
 
@@ -315,13 +304,6 @@ class QUIC_EXPORT_PRIVATE QuicUnackedPacketMap {
 
   // Time that the last unacked crypto packet was sent.
   QuicTime last_crypto_packet_sent_time_;
-
-  // Aggregates acked stream data across multiple acked sent packets to save CPU
-  // by reducing the number of calls to the session notifier.
-//  QuicStreamFrame aggregated_stream_frame_;
-
-  // Receives notifications of frames being retransmitted or acknowledged.
-//  SessionNotifierInterface* session_notifier_;
 
   // If true, supports multiple packet number spaces.
   bool supports_multiple_packet_number_spaces_;

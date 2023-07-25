@@ -27,7 +27,7 @@ RttStats::RttStats()
       previous_srtt_(QuicTime::Delta::Zero()),
       mean_deviation_(QuicTime::Delta::Zero()),
       calculate_standard_deviation_(false),
-      initial_rtt_(QuicTime::Delta::FromMilliseconds(kInitialRttMs)),
+      initial_rtt_(QuicTime::Delta::FromMilliseconds(0)),
       last_update_time_(QuicTime::Zero()) {}
 
 void RttStats::ExpireSmoothedMetrics() {
@@ -99,7 +99,7 @@ void RttStats::OnConnectionMigration() {
   min_rtt_ = QuicTime::Delta::Zero();
   smoothed_rtt_ = QuicTime::Delta::Zero();
   mean_deviation_ = QuicTime::Delta::Zero();
-  initial_rtt_ = QuicTime::Delta::FromMilliseconds(kInitialRttMs);
+  initial_rtt_ = QuicTime::Delta::FromMilliseconds(0);
 }
 
 QuicTime::Delta RttStats::GetStandardOrMeanDeviation() const {

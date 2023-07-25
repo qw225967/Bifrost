@@ -753,653 +753,797 @@ worker/src/utils/utils.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/src/utils/utils.cpp.s
 .PHONY : worker/src/utils/utils.cpp.s
 
-worker/third_party/libquic/common/quiche_random.o: worker/third_party/libquic/common/quiche_random.cc.o
-.PHONY : worker/third_party/libquic/common/quiche_random.o
+worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.o: worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.cc.o
+.PHONY : worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.o
 
 # target to build an object file
-worker/third_party/libquic/common/quiche_random.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/common/quiche_random.cc.o
-.PHONY : worker/third_party/libquic/common/quiche_random.cc.o
+worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.cc.o
+.PHONY : worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.cc.o
 
-worker/third_party/libquic/common/quiche_random.i: worker/third_party/libquic/common/quiche_random.cc.i
-.PHONY : worker/third_party/libquic/common/quiche_random.i
+worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.i: worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.cc.i
+.PHONY : worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.i
 
 # target to preprocess a source file
-worker/third_party/libquic/common/quiche_random.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/common/quiche_random.cc.i
-.PHONY : worker/third_party/libquic/common/quiche_random.cc.i
+worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.cc.i
+.PHONY : worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.cc.i
 
-worker/third_party/libquic/common/quiche_random.s: worker/third_party/libquic/common/quiche_random.cc.s
-.PHONY : worker/third_party/libquic/common/quiche_random.s
+worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.s: worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.cc.s
+.PHONY : worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/common/quiche_random.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/common/quiche_random.cc.s
-.PHONY : worker/third_party/libquic/common/quiche_random.cc.s
+worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.cc.s
+.PHONY : worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.cc.s
 
-worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.o: worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.o
+worker/third_party/libquic/quiche/common/quiche_random.o: worker/third_party/libquic/quiche/common/quiche_random.cc.o
+.PHONY : worker/third_party/libquic/quiche/common/quiche_random.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.cc.o
+worker/third_party/libquic/quiche/common/quiche_random.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/common/quiche_random.cc.o
+.PHONY : worker/third_party/libquic/quiche/common/quiche_random.cc.o
 
-worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.i: worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.i
+worker/third_party/libquic/quiche/common/quiche_random.i: worker/third_party/libquic/quiche/common/quiche_random.cc.i
+.PHONY : worker/third_party/libquic/quiche/common/quiche_random.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.cc.i
+worker/third_party/libquic/quiche/common/quiche_random.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/common/quiche_random.cc.i
+.PHONY : worker/third_party/libquic/quiche/common/quiche_random.cc.i
 
-worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.s: worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.s
+worker/third_party/libquic/quiche/common/quiche_random.s: worker/third_party/libquic/quiche/common/quiche_random.cc.s
+.PHONY : worker/third_party/libquic/quiche/common/quiche_random.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.cc.s
+worker/third_party/libquic/quiche/common/quiche_random.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/common/quiche_random.cc.s
+.PHONY : worker/third_party/libquic/quiche/common/quiche_random.cc.s
 
-worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.o: worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.o: worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.cc.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.cc.o
 
-worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.i: worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.i: worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.cc.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.cc.i
 
-worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.s: worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.s: worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.cc.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.cc.s
 
-worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.o: worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.o: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.cc.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.cc.o
 
-worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.i: worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.i: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.cc.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.cc.i
 
-worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.s: worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.s: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.cc.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.cc.s
 
-worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.o: worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.o: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.cc.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.cc.o
 
-worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.i: worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.i: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.cc.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.cc.i
 
-worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.s: worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.s: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.cc.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.cc.s
 
-worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.o: worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.o: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.cc.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.cc.o
 
-worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.i: worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.i: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.cc.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.cc.i
 
-worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.s: worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.s: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.cc.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.cc.s
 
-worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.o: worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.o: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.cc.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.cc.o
 
-worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.i: worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.i: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.cc.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.cc.i
 
-worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.s: worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.s: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.cc.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.cc.s
 
-worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.o: worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.o: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.cc.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.cc.o
 
-worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.i: worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.i: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.cc.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.cc.i
 
-worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.s: worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.s: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.cc.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.cc.s
 
-worker/third_party/libquic/quic/core/congestion_control/bbr_sender.o: worker/third_party/libquic/quic/core/congestion_control/bbr_sender.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr_sender.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.o: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/congestion_control/bbr_sender.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr_sender.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr_sender.cc.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.cc.o
 
-worker/third_party/libquic/quic/core/congestion_control/bbr_sender.i: worker/third_party/libquic/quic/core/congestion_control/bbr_sender.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr_sender.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.i: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/congestion_control/bbr_sender.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr_sender.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr_sender.cc.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.cc.i
 
-worker/third_party/libquic/quic/core/congestion_control/bbr_sender.s: worker/third_party/libquic/quic/core/congestion_control/bbr_sender.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr_sender.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.s: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/congestion_control/bbr_sender.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/bbr_sender.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/bbr_sender.cc.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.cc.s
 
-worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.o: worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.o: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.cc.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.cc.o
 
-worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.i: worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.i: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.cc.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.cc.i
 
-worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.s: worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.s: worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.cc.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.cc.s
 
-worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.o: worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.o: worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.cc.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.cc.o
 
-worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.i: worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.i: worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.cc.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.cc.i
 
-worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.s: worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.s: worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.cc.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.cc.s
 
-worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.o: worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.o: worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.cc.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.cc.o
 
-worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.i: worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.i: worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.cc.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.cc.i
 
-worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.s: worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.s: worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.cc.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.cc.s
 
-worker/third_party/libquic/quic/core/congestion_control/pacing_sender.o: worker/third_party/libquic/quic/core/congestion_control/pacing_sender.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/pacing_sender.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.o: worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/congestion_control/pacing_sender.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/pacing_sender.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/pacing_sender.cc.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.cc.o
 
-worker/third_party/libquic/quic/core/congestion_control/pacing_sender.i: worker/third_party/libquic/quic/core/congestion_control/pacing_sender.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/pacing_sender.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.i: worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/congestion_control/pacing_sender.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/pacing_sender.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/pacing_sender.cc.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.cc.i
 
-worker/third_party/libquic/quic/core/congestion_control/pacing_sender.s: worker/third_party/libquic/quic/core/congestion_control/pacing_sender.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/pacing_sender.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.s: worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/congestion_control/pacing_sender.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/pacing_sender.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/pacing_sender.cc.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.cc.s
 
-worker/third_party/libquic/quic/core/congestion_control/prr_sender.o: worker/third_party/libquic/quic/core/congestion_control/prr_sender.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/prr_sender.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.o: worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/congestion_control/prr_sender.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/prr_sender.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/prr_sender.cc.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.cc.o
 
-worker/third_party/libquic/quic/core/congestion_control/prr_sender.i: worker/third_party/libquic/quic/core/congestion_control/prr_sender.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/prr_sender.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.i: worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/congestion_control/prr_sender.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/prr_sender.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/prr_sender.cc.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.cc.i
 
-worker/third_party/libquic/quic/core/congestion_control/prr_sender.s: worker/third_party/libquic/quic/core/congestion_control/prr_sender.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/prr_sender.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.s: worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/congestion_control/prr_sender.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/prr_sender.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/prr_sender.cc.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.cc.s
 
-worker/third_party/libquic/quic/core/congestion_control/rtt_stats.o: worker/third_party/libquic/quic/core/congestion_control/rtt_stats.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/rtt_stats.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.o: worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/congestion_control/rtt_stats.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/rtt_stats.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/rtt_stats.cc.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.cc.o
 
-worker/third_party/libquic/quic/core/congestion_control/rtt_stats.i: worker/third_party/libquic/quic/core/congestion_control/rtt_stats.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/rtt_stats.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.i: worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/congestion_control/rtt_stats.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/rtt_stats.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/rtt_stats.cc.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.cc.i
 
-worker/third_party/libquic/quic/core/congestion_control/rtt_stats.s: worker/third_party/libquic/quic/core/congestion_control/rtt_stats.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/rtt_stats.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.s: worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/congestion_control/rtt_stats.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/rtt_stats.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/rtt_stats.cc.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.cc.s
 
-worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.o: worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.o: worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.cc.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.cc.o
 
-worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.i: worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.i: worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.cc.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.cc.i
 
-worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.s: worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.s: worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.cc.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.cc.s
 
-worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.o: worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.o: worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.cc.o
 
-worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.i: worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.i: worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.cc.i
 
-worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.s: worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.s: worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.cc.s
 
-worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.o: worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.o: worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.cc.o
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.cc.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.o
 
-worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.i: worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.i: worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.cc.i
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.cc.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.i
 
-worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.s: worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.s: worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.cc.s
-.PHONY : worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.cc.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.cc.s
 
-worker/third_party/libquic/quic/core/quic_bandwidth.o: worker/third_party/libquic/quic/core/quic_bandwidth.cc.o
-.PHONY : worker/third_party/libquic/quic/core/quic_bandwidth.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.o: worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/quic_bandwidth.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_bandwidth.cc.o
-.PHONY : worker/third_party/libquic/quic/core/quic_bandwidth.cc.o
+worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.cc.o
 
-worker/third_party/libquic/quic/core/quic_bandwidth.i: worker/third_party/libquic/quic/core/quic_bandwidth.cc.i
-.PHONY : worker/third_party/libquic/quic/core/quic_bandwidth.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.i: worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/quic_bandwidth.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_bandwidth.cc.i
-.PHONY : worker/third_party/libquic/quic/core/quic_bandwidth.cc.i
+worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.cc.i
 
-worker/third_party/libquic/quic/core/quic_bandwidth.s: worker/third_party/libquic/quic/core/quic_bandwidth.cc.s
-.PHONY : worker/third_party/libquic/quic/core/quic_bandwidth.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.s: worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/quic_bandwidth.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_bandwidth.cc.s
-.PHONY : worker/third_party/libquic/quic/core/quic_bandwidth.cc.s
+worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.cc.s
 
-worker/third_party/libquic/quic/core/quic_config.o: worker/third_party/libquic/quic/core/quic_config.cc.o
-.PHONY : worker/third_party/libquic/quic/core/quic_config.o
+worker/third_party/libquic/quiche/quic/core/frames/quic_frame.o: worker/third_party/libquic/quiche/quic/core/frames/quic_frame.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/frames/quic_frame.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/quic_config.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_config.cc.o
-.PHONY : worker/third_party/libquic/quic/core/quic_config.cc.o
+worker/third_party/libquic/quiche/quic/core/frames/quic_frame.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/frames/quic_frame.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/frames/quic_frame.cc.o
 
-worker/third_party/libquic/quic/core/quic_config.i: worker/third_party/libquic/quic/core/quic_config.cc.i
-.PHONY : worker/third_party/libquic/quic/core/quic_config.i
+worker/third_party/libquic/quiche/quic/core/frames/quic_frame.i: worker/third_party/libquic/quiche/quic/core/frames/quic_frame.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/frames/quic_frame.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/quic_config.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_config.cc.i
-.PHONY : worker/third_party/libquic/quic/core/quic_config.cc.i
+worker/third_party/libquic/quiche/quic/core/frames/quic_frame.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/frames/quic_frame.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/frames/quic_frame.cc.i
 
-worker/third_party/libquic/quic/core/quic_config.s: worker/third_party/libquic/quic/core/quic_config.cc.s
-.PHONY : worker/third_party/libquic/quic/core/quic_config.s
+worker/third_party/libquic/quiche/quic/core/frames/quic_frame.s: worker/third_party/libquic/quiche/quic/core/frames/quic_frame.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/frames/quic_frame.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/quic_config.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_config.cc.s
-.PHONY : worker/third_party/libquic/quic/core/quic_config.cc.s
+worker/third_party/libquic/quiche/quic/core/frames/quic_frame.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/frames/quic_frame.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/frames/quic_frame.cc.s
 
-worker/third_party/libquic/quic/core/quic_connection_stats.o: worker/third_party/libquic/quic/core/quic_connection_stats.cc.o
-.PHONY : worker/third_party/libquic/quic/core/quic_connection_stats.o
+worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.o: worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/quic_connection_stats.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_connection_stats.cc.o
-.PHONY : worker/third_party/libquic/quic/core/quic_connection_stats.cc.o
+worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.cc.o
 
-worker/third_party/libquic/quic/core/quic_connection_stats.i: worker/third_party/libquic/quic/core/quic_connection_stats.cc.i
-.PHONY : worker/third_party/libquic/quic/core/quic_connection_stats.i
+worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.i: worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/quic_connection_stats.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_connection_stats.cc.i
-.PHONY : worker/third_party/libquic/quic/core/quic_connection_stats.cc.i
+worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.cc.i
 
-worker/third_party/libquic/quic/core/quic_connection_stats.s: worker/third_party/libquic/quic/core/quic_connection_stats.cc.s
-.PHONY : worker/third_party/libquic/quic/core/quic_connection_stats.s
+worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.s: worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/quic_connection_stats.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_connection_stats.cc.s
-.PHONY : worker/third_party/libquic/quic/core/quic_connection_stats.cc.s
+worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.cc.s
 
-worker/third_party/libquic/quic/core/quic_constants.o: worker/third_party/libquic/quic/core/quic_constants.cc.o
-.PHONY : worker/third_party/libquic/quic/core/quic_constants.o
+worker/third_party/libquic/quiche/quic/core/quic_bandwidth.o: worker/third_party/libquic/quiche/quic/core/quic_bandwidth.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_bandwidth.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/quic_constants.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_constants.cc.o
-.PHONY : worker/third_party/libquic/quic/core/quic_constants.cc.o
+worker/third_party/libquic/quiche/quic/core/quic_bandwidth.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_bandwidth.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_bandwidth.cc.o
 
-worker/third_party/libquic/quic/core/quic_constants.i: worker/third_party/libquic/quic/core/quic_constants.cc.i
-.PHONY : worker/third_party/libquic/quic/core/quic_constants.i
+worker/third_party/libquic/quiche/quic/core/quic_bandwidth.i: worker/third_party/libquic/quiche/quic/core/quic_bandwidth.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_bandwidth.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/quic_constants.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_constants.cc.i
-.PHONY : worker/third_party/libquic/quic/core/quic_constants.cc.i
+worker/third_party/libquic/quiche/quic/core/quic_bandwidth.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_bandwidth.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_bandwidth.cc.i
 
-worker/third_party/libquic/quic/core/quic_constants.s: worker/third_party/libquic/quic/core/quic_constants.cc.s
-.PHONY : worker/third_party/libquic/quic/core/quic_constants.s
+worker/third_party/libquic/quiche/quic/core/quic_bandwidth.s: worker/third_party/libquic/quiche/quic/core/quic_bandwidth.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_bandwidth.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/quic_constants.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_constants.cc.s
-.PHONY : worker/third_party/libquic/quic/core/quic_constants.cc.s
+worker/third_party/libquic/quiche/quic/core/quic_bandwidth.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_bandwidth.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_bandwidth.cc.s
 
-worker/third_party/libquic/quic/core/quic_packet_number.o: worker/third_party/libquic/quic/core/quic_packet_number.cc.o
-.PHONY : worker/third_party/libquic/quic/core/quic_packet_number.o
+worker/third_party/libquic/quiche/quic/core/quic_connection_id.o: worker/third_party/libquic/quiche/quic/core/quic_connection_id.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_connection_id.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/quic_packet_number.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_packet_number.cc.o
-.PHONY : worker/third_party/libquic/quic/core/quic_packet_number.cc.o
+worker/third_party/libquic/quiche/quic/core/quic_connection_id.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_connection_id.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_connection_id.cc.o
 
-worker/third_party/libquic/quic/core/quic_packet_number.i: worker/third_party/libquic/quic/core/quic_packet_number.cc.i
-.PHONY : worker/third_party/libquic/quic/core/quic_packet_number.i
+worker/third_party/libquic/quiche/quic/core/quic_connection_id.i: worker/third_party/libquic/quiche/quic/core/quic_connection_id.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_connection_id.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/quic_packet_number.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_packet_number.cc.i
-.PHONY : worker/third_party/libquic/quic/core/quic_packet_number.cc.i
+worker/third_party/libquic/quiche/quic/core/quic_connection_id.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_connection_id.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_connection_id.cc.i
 
-worker/third_party/libquic/quic/core/quic_packet_number.s: worker/third_party/libquic/quic/core/quic_packet_number.cc.s
-.PHONY : worker/third_party/libquic/quic/core/quic_packet_number.s
+worker/third_party/libquic/quiche/quic/core/quic_connection_id.s: worker/third_party/libquic/quiche/quic/core/quic_connection_id.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_connection_id.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/quic_packet_number.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_packet_number.cc.s
-.PHONY : worker/third_party/libquic/quic/core/quic_packet_number.cc.s
+worker/third_party/libquic/quiche/quic/core/quic_connection_id.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_connection_id.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_connection_id.cc.s
 
-worker/third_party/libquic/quic/core/quic_packets.o: worker/third_party/libquic/quic/core/quic_packets.cc.o
-.PHONY : worker/third_party/libquic/quic/core/quic_packets.o
+worker/third_party/libquic/quiche/quic/core/quic_connection_stats.o: worker/third_party/libquic/quiche/quic/core/quic_connection_stats.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_connection_stats.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/quic_packets.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_packets.cc.o
-.PHONY : worker/third_party/libquic/quic/core/quic_packets.cc.o
+worker/third_party/libquic/quiche/quic/core/quic_connection_stats.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_connection_stats.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_connection_stats.cc.o
 
-worker/third_party/libquic/quic/core/quic_packets.i: worker/third_party/libquic/quic/core/quic_packets.cc.i
-.PHONY : worker/third_party/libquic/quic/core/quic_packets.i
+worker/third_party/libquic/quiche/quic/core/quic_connection_stats.i: worker/third_party/libquic/quiche/quic/core/quic_connection_stats.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_connection_stats.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/quic_packets.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_packets.cc.i
-.PHONY : worker/third_party/libquic/quic/core/quic_packets.cc.i
+worker/third_party/libquic/quiche/quic/core/quic_connection_stats.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_connection_stats.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_connection_stats.cc.i
 
-worker/third_party/libquic/quic/core/quic_packets.s: worker/third_party/libquic/quic/core/quic_packets.cc.s
-.PHONY : worker/third_party/libquic/quic/core/quic_packets.s
+worker/third_party/libquic/quiche/quic/core/quic_connection_stats.s: worker/third_party/libquic/quiche/quic/core/quic_connection_stats.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_connection_stats.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/quic_packets.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_packets.cc.s
-.PHONY : worker/third_party/libquic/quic/core/quic_packets.cc.s
+worker/third_party/libquic/quiche/quic/core/quic_connection_stats.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_connection_stats.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_connection_stats.cc.s
 
-worker/third_party/libquic/quic/core/quic_time.o: worker/third_party/libquic/quic/core/quic_time.cc.o
-.PHONY : worker/third_party/libquic/quic/core/quic_time.o
+worker/third_party/libquic/quiche/quic/core/quic_constants.o: worker/third_party/libquic/quiche/quic/core/quic_constants.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_constants.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/quic_time.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_time.cc.o
-.PHONY : worker/third_party/libquic/quic/core/quic_time.cc.o
+worker/third_party/libquic/quiche/quic/core/quic_constants.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_constants.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_constants.cc.o
 
-worker/third_party/libquic/quic/core/quic_time.i: worker/third_party/libquic/quic/core/quic_time.cc.i
-.PHONY : worker/third_party/libquic/quic/core/quic_time.i
+worker/third_party/libquic/quiche/quic/core/quic_constants.i: worker/third_party/libquic/quiche/quic/core/quic_constants.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_constants.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/quic_time.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_time.cc.i
-.PHONY : worker/third_party/libquic/quic/core/quic_time.cc.i
+worker/third_party/libquic/quiche/quic/core/quic_constants.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_constants.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_constants.cc.i
 
-worker/third_party/libquic/quic/core/quic_time.s: worker/third_party/libquic/quic/core/quic_time.cc.s
-.PHONY : worker/third_party/libquic/quic/core/quic_time.s
+worker/third_party/libquic/quiche/quic/core/quic_constants.s: worker/third_party/libquic/quiche/quic/core/quic_constants.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_constants.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/quic_time.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_time.cc.s
-.PHONY : worker/third_party/libquic/quic/core/quic_time.cc.s
+worker/third_party/libquic/quiche/quic/core/quic_constants.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_constants.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_constants.cc.s
 
-worker/third_party/libquic/quic/core/quic_types.o: worker/third_party/libquic/quic/core/quic_types.cc.o
-.PHONY : worker/third_party/libquic/quic/core/quic_types.o
+worker/third_party/libquic/quiche/quic/core/quic_error_codes.o: worker/third_party/libquic/quiche/quic/core/quic_error_codes.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_error_codes.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/quic_types.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_types.cc.o
-.PHONY : worker/third_party/libquic/quic/core/quic_types.cc.o
+worker/third_party/libquic/quiche/quic/core/quic_error_codes.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_error_codes.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_error_codes.cc.o
 
-worker/third_party/libquic/quic/core/quic_types.i: worker/third_party/libquic/quic/core/quic_types.cc.i
-.PHONY : worker/third_party/libquic/quic/core/quic_types.i
+worker/third_party/libquic/quiche/quic/core/quic_error_codes.i: worker/third_party/libquic/quiche/quic/core/quic_error_codes.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_error_codes.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/quic_types.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_types.cc.i
-.PHONY : worker/third_party/libquic/quic/core/quic_types.cc.i
+worker/third_party/libquic/quiche/quic/core/quic_error_codes.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_error_codes.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_error_codes.cc.i
 
-worker/third_party/libquic/quic/core/quic_types.s: worker/third_party/libquic/quic/core/quic_types.cc.s
-.PHONY : worker/third_party/libquic/quic/core/quic_types.s
+worker/third_party/libquic/quiche/quic/core/quic_error_codes.s: worker/third_party/libquic/quiche/quic/core/quic_error_codes.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_error_codes.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/quic_types.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_types.cc.s
-.PHONY : worker/third_party/libquic/quic/core/quic_types.cc.s
+worker/third_party/libquic/quiche/quic/core/quic_error_codes.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_error_codes.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_error_codes.cc.s
 
-worker/third_party/libquic/quic/core/quic_unacked_packet_map.o: worker/third_party/libquic/quic/core/quic_unacked_packet_map.cc.o
-.PHONY : worker/third_party/libquic/quic/core/quic_unacked_packet_map.o
+worker/third_party/libquic/quiche/quic/core/quic_packet_number.o: worker/third_party/libquic/quiche/quic/core/quic_packet_number.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_packet_number.o
 
 # target to build an object file
-worker/third_party/libquic/quic/core/quic_unacked_packet_map.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_unacked_packet_map.cc.o
-.PHONY : worker/third_party/libquic/quic/core/quic_unacked_packet_map.cc.o
+worker/third_party/libquic/quiche/quic/core/quic_packet_number.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_packet_number.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_packet_number.cc.o
 
-worker/third_party/libquic/quic/core/quic_unacked_packet_map.i: worker/third_party/libquic/quic/core/quic_unacked_packet_map.cc.i
-.PHONY : worker/third_party/libquic/quic/core/quic_unacked_packet_map.i
+worker/third_party/libquic/quiche/quic/core/quic_packet_number.i: worker/third_party/libquic/quiche/quic/core/quic_packet_number.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_packet_number.i
 
 # target to preprocess a source file
-worker/third_party/libquic/quic/core/quic_unacked_packet_map.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_unacked_packet_map.cc.i
-.PHONY : worker/third_party/libquic/quic/core/quic_unacked_packet_map.cc.i
+worker/third_party/libquic/quiche/quic/core/quic_packet_number.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_packet_number.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_packet_number.cc.i
 
-worker/third_party/libquic/quic/core/quic_unacked_packet_map.s: worker/third_party/libquic/quic/core/quic_unacked_packet_map.cc.s
-.PHONY : worker/third_party/libquic/quic/core/quic_unacked_packet_map.s
+worker/third_party/libquic/quiche/quic/core/quic_packet_number.s: worker/third_party/libquic/quiche/quic/core/quic_packet_number.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_packet_number.s
 
 # target to generate assembly for a file
-worker/third_party/libquic/quic/core/quic_unacked_packet_map.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quic/core/quic_unacked_packet_map.cc.s
-.PHONY : worker/third_party/libquic/quic/core/quic_unacked_packet_map.cc.s
+worker/third_party/libquic/quiche/quic/core/quic_packet_number.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_packet_number.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_packet_number.cc.s
+
+worker/third_party/libquic/quiche/quic/core/quic_tag.o: worker/third_party/libquic/quiche/quic/core/quic_tag.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_tag.o
+
+# target to build an object file
+worker/third_party/libquic/quiche/quic/core/quic_tag.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_tag.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_tag.cc.o
+
+worker/third_party/libquic/quiche/quic/core/quic_tag.i: worker/third_party/libquic/quiche/quic/core/quic_tag.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_tag.i
+
+# target to preprocess a source file
+worker/third_party/libquic/quiche/quic/core/quic_tag.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_tag.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_tag.cc.i
+
+worker/third_party/libquic/quiche/quic/core/quic_tag.s: worker/third_party/libquic/quiche/quic/core/quic_tag.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_tag.s
+
+# target to generate assembly for a file
+worker/third_party/libquic/quiche/quic/core/quic_tag.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_tag.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_tag.cc.s
+
+worker/third_party/libquic/quiche/quic/core/quic_time.o: worker/third_party/libquic/quiche/quic/core/quic_time.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_time.o
+
+# target to build an object file
+worker/third_party/libquic/quiche/quic/core/quic_time.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_time.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_time.cc.o
+
+worker/third_party/libquic/quiche/quic/core/quic_time.i: worker/third_party/libquic/quiche/quic/core/quic_time.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_time.i
+
+# target to preprocess a source file
+worker/third_party/libquic/quiche/quic/core/quic_time.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_time.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_time.cc.i
+
+worker/third_party/libquic/quiche/quic/core/quic_time.s: worker/third_party/libquic/quiche/quic/core/quic_time.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_time.s
+
+# target to generate assembly for a file
+worker/third_party/libquic/quiche/quic/core/quic_time.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_time.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_time.cc.s
+
+worker/third_party/libquic/quiche/quic/core/quic_types.o: worker/third_party/libquic/quiche/quic/core/quic_types.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_types.o
+
+# target to build an object file
+worker/third_party/libquic/quiche/quic/core/quic_types.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_types.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_types.cc.o
+
+worker/third_party/libquic/quiche/quic/core/quic_types.i: worker/third_party/libquic/quiche/quic/core/quic_types.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_types.i
+
+# target to preprocess a source file
+worker/third_party/libquic/quiche/quic/core/quic_types.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_types.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_types.cc.i
+
+worker/third_party/libquic/quiche/quic/core/quic_types.s: worker/third_party/libquic/quiche/quic/core/quic_types.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_types.s
+
+# target to generate assembly for a file
+worker/third_party/libquic/quiche/quic/core/quic_types.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_types.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_types.cc.s
+
+worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.o: worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.o
+
+# target to build an object file
+worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.cc.o
+
+worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.i: worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.i
+
+# target to preprocess a source file
+worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.cc.i
+
+worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.s: worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.s
+
+# target to generate assembly for a file
+worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.cc.s
+
+worker/third_party/libquic/quiche/quic/core/quic_utils.o: worker/third_party/libquic/quiche/quic/core/quic_utils.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_utils.o
+
+# target to build an object file
+worker/third_party/libquic/quiche/quic/core/quic_utils.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_utils.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_utils.cc.o
+
+worker/third_party/libquic/quiche/quic/core/quic_utils.i: worker/third_party/libquic/quiche/quic/core/quic_utils.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_utils.i
+
+# target to preprocess a source file
+worker/third_party/libquic/quiche/quic/core/quic_utils.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_utils.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_utils.cc.i
+
+worker/third_party/libquic/quiche/quic/core/quic_utils.s: worker/third_party/libquic/quiche/quic/core/quic_utils.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_utils.s
+
+# target to generate assembly for a file
+worker/third_party/libquic/quiche/quic/core/quic_utils.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_utils.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_utils.cc.s
+
+worker/third_party/libquic/quiche/quic/core/quic_versions.o: worker/third_party/libquic/quiche/quic/core/quic_versions.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_versions.o
+
+# target to build an object file
+worker/third_party/libquic/quiche/quic/core/quic_versions.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_versions.cc.o
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_versions.cc.o
+
+worker/third_party/libquic/quiche/quic/core/quic_versions.i: worker/third_party/libquic/quiche/quic/core/quic_versions.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_versions.i
+
+# target to preprocess a source file
+worker/third_party/libquic/quiche/quic/core/quic_versions.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_versions.cc.i
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_versions.cc.i
+
+worker/third_party/libquic/quiche/quic/core/quic_versions.s: worker/third_party/libquic/quiche/quic/core/quic_versions.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_versions.s
+
+# target to generate assembly for a file
+worker/third_party/libquic/quiche/quic/core/quic_versions.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Bifrost.dir/build.make CMakeFiles/Bifrost.dir/worker/third_party/libquic/quiche/quic/core/quic_versions.cc.s
+.PHONY : worker/third_party/libquic/quiche/quic/core/quic_versions.cc.s
 
 worker/third_party/libuv/docs/code/cgi/main.o: worker/third_party/libuv/docs/code/cgi/main.c.o
 .PHONY : worker/third_party/libuv/docs/code/cgi/main.o
@@ -28584,87 +28728,105 @@ help:
 	@echo "... worker/src/utils/utils.o"
 	@echo "... worker/src/utils/utils.i"
 	@echo "... worker/src/utils/utils.s"
-	@echo "... worker/third_party/libquic/common/quiche_random.o"
-	@echo "... worker/third_party/libquic/common/quiche_random.i"
-	@echo "... worker/third_party/libquic/common/quiche_random.s"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.o"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.i"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bandwidth_sampler.s"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.o"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.i"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr2_drain.s"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.o"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.i"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr2_misc.s"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.o"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.i"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_bw.s"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.o"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.i"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr2_probe_rtt.s"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.o"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.i"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr2_sender.s"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.o"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.i"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr2_startup.s"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr_sender.o"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr_sender.i"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/bbr_sender.s"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.o"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.i"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/cubic_bytes.s"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.o"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.i"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/general_loss_algorithm.s"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.o"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.i"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/hybrid_slow_start.s"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/pacing_sender.o"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/pacing_sender.i"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/pacing_sender.s"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/prr_sender.o"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/prr_sender.i"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/prr_sender.s"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/rtt_stats.o"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/rtt_stats.i"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/rtt_stats.s"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.o"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.i"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/send_algorithm_interface.s"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.o"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.i"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/tcp_cubic_sender_bytes.s"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.o"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.i"
-	@echo "... worker/third_party/libquic/quic/core/congestion_control/uber_loss_algorithm.s"
-	@echo "... worker/third_party/libquic/quic/core/quic_bandwidth.o"
-	@echo "... worker/third_party/libquic/quic/core/quic_bandwidth.i"
-	@echo "... worker/third_party/libquic/quic/core/quic_bandwidth.s"
-	@echo "... worker/third_party/libquic/quic/core/quic_config.o"
-	@echo "... worker/third_party/libquic/quic/core/quic_config.i"
-	@echo "... worker/third_party/libquic/quic/core/quic_config.s"
-	@echo "... worker/third_party/libquic/quic/core/quic_connection_stats.o"
-	@echo "... worker/third_party/libquic/quic/core/quic_connection_stats.i"
-	@echo "... worker/third_party/libquic/quic/core/quic_connection_stats.s"
-	@echo "... worker/third_party/libquic/quic/core/quic_constants.o"
-	@echo "... worker/third_party/libquic/quic/core/quic_constants.i"
-	@echo "... worker/third_party/libquic/quic/core/quic_constants.s"
-	@echo "... worker/third_party/libquic/quic/core/quic_packet_number.o"
-	@echo "... worker/third_party/libquic/quic/core/quic_packet_number.i"
-	@echo "... worker/third_party/libquic/quic/core/quic_packet_number.s"
-	@echo "... worker/third_party/libquic/quic/core/quic_packets.o"
-	@echo "... worker/third_party/libquic/quic/core/quic_packets.i"
-	@echo "... worker/third_party/libquic/quic/core/quic_packets.s"
-	@echo "... worker/third_party/libquic/quic/core/quic_time.o"
-	@echo "... worker/third_party/libquic/quic/core/quic_time.i"
-	@echo "... worker/third_party/libquic/quic/core/quic_time.s"
-	@echo "... worker/third_party/libquic/quic/core/quic_types.o"
-	@echo "... worker/third_party/libquic/quic/core/quic_types.i"
-	@echo "... worker/third_party/libquic/quic/core/quic_types.s"
-	@echo "... worker/third_party/libquic/quic/core/quic_unacked_packet_map.o"
-	@echo "... worker/third_party/libquic/quic/core/quic_unacked_packet_map.i"
-	@echo "... worker/third_party/libquic/quic/core/quic_unacked_packet_map.s"
+	@echo "... worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.o"
+	@echo "... worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.i"
+	@echo "... worker/third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.s"
+	@echo "... worker/third_party/libquic/quiche/common/quiche_random.o"
+	@echo "... worker/third_party/libquic/quiche/common/quiche_random.i"
+	@echo "... worker/third_party/libquic/quiche/common/quiche_random.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_misc.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_bw.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_probe_rtt.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_sender.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr2_startup.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/bbr_sender.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/prr_sender.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/rtt_stats.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/send_algorithm_interface.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/frames/quic_frame.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/frames/quic_frame.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/frames/quic_frame.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_ack_listener_interface.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_bandwidth.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_bandwidth.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_bandwidth.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_connection_id.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_connection_id.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_connection_id.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_connection_stats.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_connection_stats.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_connection_stats.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_constants.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_constants.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_constants.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_error_codes.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_error_codes.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_error_codes.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_packet_number.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_packet_number.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_packet_number.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_tag.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_tag.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_tag.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_time.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_time.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_time.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_types.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_types.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_types.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_unacked_packet_map.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_utils.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_utils.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_utils.s"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_versions.o"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_versions.i"
+	@echo "... worker/third_party/libquic/quiche/quic/core/quic_versions.s"
 	@echo "... worker/third_party/libuv/docs/code/cgi/main.o"
 	@echo "... worker/third_party/libuv/docs/code/cgi/main.i"
 	@echo "... worker/third_party/libuv/docs/code/cgi/main.s"

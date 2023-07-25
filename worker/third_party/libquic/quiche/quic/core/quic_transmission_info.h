@@ -7,7 +7,6 @@
 
 #include <list>
 
-#include "quiche/quic/core/frames/quic_frame.h"
 #include "quiche/quic/core/quic_ack_listener_interface.h"
 #include "quiche/quic/core/quic_types.h"
 #include "quiche/quic/platform/api/quic_export.h"
@@ -32,7 +31,7 @@ struct QUIC_EXPORT_PRIVATE QuicTransmissionInfo {
 
   std::string DebugString() const;
 
-  QuicFrames retransmittable_frames;
+//  QuicFrames retransmittable_frames;
   QuicTime sent_time;
   QuicPacketLength bytes_sent;
   EncryptionLevel encryption_level;

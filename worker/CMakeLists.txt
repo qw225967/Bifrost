@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
-project(worker)
+project(.)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 set(WEBRTC_DIR third_party/libwebrtc/libwebrtc)
 set(WEBRTC_MODULES ${WEBRTC_DIR}/modules)
@@ -415,9 +415,15 @@ add_executable(worker
         third_party/json/single_include/nlohmann/json.hpp
 
         # libquic
+        third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.h
+        third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_export_impl.h
+        third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flag_utils_impl.h
+        third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.cc
+        third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_reference_counted_impl.h
         third_party/libquic/quiche/common/quiche_circular_deque.h
-        third_party/libquic/quiche/common/quiche_random.cc
         third_party/libquic/quiche/common/quiche_random.h
+        third_party/libquic/quiche/common/quiche_random.cc
+        third_party/libquic/quiche/common/quiche_protocol_flags_list.h
         third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.cc
         third_party/libquic/quiche/quic/core/congestion_control/bandwidth_sampler.h
         third_party/libquic/quiche/quic/core/congestion_control/bbr2_drain.cc
@@ -438,8 +444,6 @@ add_executable(worker
         third_party/libquic/quiche/quic/core/congestion_control/cubic_bytes.h
         third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.cc
         third_party/libquic/quiche/quic/core/congestion_control/general_loss_algorithm.h
-        third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.cc
-        third_party/libquic/quiche/quic/core/congestion_control/hybrid_slow_start.h
         third_party/libquic/quiche/quic/core/congestion_control/loss_detection_interface.h
         third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.cc
         third_party/libquic/quiche/quic/core/congestion_control/pacing_sender.h
@@ -454,25 +458,41 @@ add_executable(worker
         third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.cc
         third_party/libquic/quiche/quic/core/congestion_control/uber_loss_algorithm.h
         third_party/libquic/quiche/quic/core/congestion_control/windowed_filter.h
+        third_party/libquic/quiche/quic/core/crypto/crypto_protocol.h
         third_party/libquic/quiche/quic/core/crypto/quic_random.h
         third_party/libquic/quiche/quic/core/packet_number_indexed_queue.h
+        third_party/libquic/quiche/quic/core/quic_ack_listener_interface.cc
+        third_party/libquic/quiche/quic/core/quic_ack_listener_interface.h
         third_party/libquic/quiche/quic/core/quic_bandwidth.cc
         third_party/libquic/quiche/quic/core/quic_bandwidth.h
         third_party/libquic/quiche/quic/core/quic_clock.h
+        third_party/libquic/quiche/quic/core/quic_connection_id.cc
+        third_party/libquic/quiche/quic/core/quic_connection_id.h
         third_party/libquic/quiche/quic/core/quic_connection_stats.cc
         third_party/libquic/quiche/quic/core/quic_connection_stats.h
         third_party/libquic/quiche/quic/core/quic_constants.cc
         third_party/libquic/quiche/quic/core/quic_constants.h
+        third_party/libquic/quiche/quic/core/quic_error_codes.cc
+        third_party/libquic/quiche/quic/core/quic_error_codes.h
+        third_party/libquic/quiche/quic/core/quic_flags_list.h
         third_party/libquic/quiche/quic/core/quic_packet_number.cc
         third_party/libquic/quiche/quic/core/quic_packet_number.h
-        third_party/libquic/quiche/quic/core/quic_packets.cc
-        third_party/libquic/quiche/quic/core/quic_packets.h
+        third_party/libquic/quiche/quic/core/quic_protocol_flags_list.h
+        third_party/libquic/quiche/quic/core/quic_tag.cc
+        third_party/libquic/quiche/quic/core/quic_tag.h
         third_party/libquic/quiche/quic/core/quic_time.cc
         third_party/libquic/quiche/quic/core/quic_time.h
+        third_party/libquic/quiche/quic/core/quic_time_accumulator.h
+        third_party/libquic/quiche/quic/core/quic_transmission_info.cc
+        third_party/libquic/quiche/quic/core/quic_transmission_info.h
         third_party/libquic/quiche/quic/core/quic_types.cc
         third_party/libquic/quiche/quic/core/quic_types.h
         third_party/libquic/quiche/quic/core/quic_unacked_packet_map.cc
         third_party/libquic/quiche/quic/core/quic_unacked_packet_map.h
+        third_party/libquic/quiche/quic/core/quic_utils.cc
+        third_party/libquic/quiche/quic/core/quic_utils.h
+        third_party/libquic/quiche/quic/core/quic_versions.cc
+        third_party/libquic/quiche/quic/core/quic_versions.h
         third_party/libquic/quiche/quic/platform/api/quic_export.h
         third_party/libquic/quiche/quic/platform/api/quic_flag_utils.h
         third_party/libquic/quiche/quic/platform/api/quic_flags.h

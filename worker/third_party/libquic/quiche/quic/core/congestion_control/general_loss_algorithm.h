@@ -9,7 +9,6 @@
 #include <map>
 
 #include "quiche/quic/core/congestion_control/loss_detection_interface.h"
-#include "quiche/quic/core/quic_packets.h"
 #include "quiche/quic/core/quic_time.h"
 #include "quiche/quic/core/quic_types.h"
 #include "quiche/quic/core/quic_unacked_packet_map.h"
