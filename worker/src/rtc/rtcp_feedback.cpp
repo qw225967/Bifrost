@@ -13,6 +13,7 @@
 
 #include "rtcp_nack.h"
 #include "rtcp_tcc.h"
+#include "rtcp_quic_feedback.h"
 
 namespace bifrost {
 /* Class methods. */
@@ -168,7 +169,8 @@ Type FeedbackPacket<FeedbackRtp>::rtcpType = Type::RTPFB;
         { FeedbackRtp::MessageType::ECN,    "ECN"    },
         { FeedbackRtp::MessageType::PS,     "PS"     },
         { FeedbackRtp::MessageType::EXT,    "EXT"    },
-        { FeedbackRtp::MessageType::TCC,    "TCC"    }
+        { FeedbackRtp::MessageType::TCC,    "TCC"    },
+        { FeedbackRtp::MessageType::QUICFB, "QUICFB" }
         };
 // clang-format on
 
@@ -220,6 +222,10 @@ std::shared_ptr<FeedbackPacket<FeedbackRtp>> FeedbackPacket<FeedbackRtp>::Parse(
 
     case FeedbackRtp::MessageType::TCC:
       packet = FeedbackRtpTransportPacket::Parse(data, len);
+      break;
+
+    case FeedbackRtp::MessageType::QUICFB:
+      packet = QuicAckFeedbackPacket::Parse(data, len);
       break;
 
     default:

@@ -210,8 +210,10 @@ void Publisher::OnReceiveReceiverReport(ReceiverReport* report) {
         quic::QuicTimeDelta::FromMilliseconds((int64_t)this->rtt_), now);
   }
 
-  this->tcc_client_->ReceiveRtcpReceiverReport(
-      webrtc_report, this->rtt_, this->uv_loop_->get_time_ms_int64());
+  if (this->tcc_client_ != nullptr) {
+    this->tcc_client_->ReceiveRtcpReceiverReport(
+        webrtc_report, this->rtt_, this->uv_loop_->get_time_ms_int64());
+  }
 }
 
 SenderReport* Publisher::GetRtcpSenderReport(uint64_t nowMs) {
