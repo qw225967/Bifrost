@@ -27,6 +27,8 @@ TransportCongestionControlServer::TransportCongestionControlServer(
   this->transportCcFeedbackPacket =
       std::make_shared<FeedbackRtpTransportPacket>(0u, 0u);
 
+  this->quicFeedbackPacket = std::make_shared<QuicAckFeedbackPacket>(0u, 0u);
+
   // Set initial packet count.
   this->transportCcFeedbackPacket->SetFeedbackPacketCount(
       this->transportCcFeedbackPacketCount);
@@ -46,6 +48,58 @@ TransportCongestionControlServer::~TransportCongestionControlServer() {
   // Delete REMB server.
   delete this->rembServer;
   this->rembServer = nullptr;
+
+  packet_recv_time_map_.clear();
+}
+
+void TransportCongestionControlServer::QuicCountIncomingPacket(
+    uint64_t nowMs, const RtpPacket* packet) {
+  uint16_t wideSeqNumber;
+
+  if (!packet->ReadTransportWideCc01(wideSeqNumber)) return;
+
+  this->quicFeedbackPacket->SetSenderSsrc(0u);
+  this->quicFeedbackPacket->SetMediaSsrc(this->transportCcFeedbackMediaSsrc);
+
+  RecvPacketInfo temp;
+  temp.recv_time = nowMs;
+  temp.sequence = wideSeqNumber;
+  temp.recv_bytes = packet->GetSize();
+  this->packet_recv_time_map_[wideSeqNumber] = temp;
+}
+
+void TransportCongestionControlServer::SendQuicAckFeedback() {
+
+  auto nowMs = this->uv_loop_->get_time_ms_int64();
+
+  auto it = this->packet_recv_time_map_.begin();
+  while (it != this->packet_recv_time_map_.end()) {
+    auto feedbackItem = new QuicAckFeedbackItem(it->second.sequence, nowMs - it->second.recv_time, it->second.recv_bytes);
+    this->quicFeedbackPacket->AddItem(feedbackItem);
+
+    if (this->quicFeedbackPacket->GetSize() > BufferSize) {
+      this->quicFeedbackPacket->Serialize(Buffer);
+
+      this->observer_->OnTransportCongestionControlServerSendRtcpPacket(
+          this, this->quicFeedbackPacket);
+
+      this->quicFeedbackPacket.reset();
+      this->quicFeedbackPacket = std::make_shared<QuicAckFeedbackPacket>(
+          this->transportCcFeedbackSenderSsrc, this->transportCcFeedbackMediaSsrc);
+    }
+
+    it = this->packet_recv_time_map_.erase(it);
+  }
+
+  this->quicFeedbackPacket->Serialize(Buffer);
+
+  this->observer_->OnTransportCongestionControlServerSendRtcpPacket(
+      this, this->quicFeedbackPacket);
+
+  this->quicFeedbackPacket.reset();
+
+  this->quicFeedbackPacket = std::make_shared<QuicAckFeedbackPacket>(
+      this->transportCcFeedbackSenderSsrc, this->transportCcFeedbackMediaSsrc);
 }
 
 void TransportCongestionControlServer::IncomingPacket(uint64_t nowMs,
@@ -65,6 +119,7 @@ void TransportCongestionControlServer::IncomingPacket(uint64_t nowMs,
   // Provide the feedback packet with the RTP packet info. If it fails,
   // send current feedback and add the packet info to a new one.
   if (this->transportCcFeedbackPacket == nullptr) return;
+  if (this->quicFeedbackPacket == nullptr) return;
 
   auto result = this->transportCcFeedbackPacket->AddPacket(
       wideSeqNumber, nowMs, this->maxRtcpPacketLen);
@@ -201,6 +256,7 @@ inline void TransportCongestionControlServer::OnRembServerAvailableBitrate(
 inline void TransportCongestionControlServer::OnTimer(UvTimer* timer) {
   if (timer == this->transportCcFeedbackSendPeriodicTimer) {
     SendTransportCcFeedback();
+    SendQuicAckFeedback();
   }
 }
 }  // namespace bifrost

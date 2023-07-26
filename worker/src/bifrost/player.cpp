@@ -81,6 +81,8 @@ void Player::OnReceiveRtpPacket(RtpPacketPtr packet) {
   this->nack_->OnReceiveRtpPacket(packet);
   this->tcc_server_->IncomingPacket(this->uv_loop_->get_time_ms_int64(),
                                     packet.get());
+  this->tcc_server_->QuicCountIncomingPacket(this->uv_loop_->get_time_ms_int64(),
+                                             packet.get());
   receive_packet_count_++;
 }
 

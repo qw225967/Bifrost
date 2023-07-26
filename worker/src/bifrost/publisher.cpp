@@ -9,6 +9,7 @@
 
 #include "publisher.h"
 
+#include "quiche/quic/core/congestion_control/rtt_stats.h"
 #include "rtcp_compound_packet.h"
 
 namespace bifrost {
@@ -19,7 +20,8 @@ const uint32_t IntervalSendReport = 2000u;
 
 Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
                      Observer* observer, uint8_t number,
-                     ExperimentManagerPtr& experiment_manager)
+                     ExperimentManagerPtr& experiment_manager,
+                     quic::CongestionControlType congestion_type)
     : remote_addr_config_(remote_config),
       uv_loop_(*uv_loop),
       observer_(observer),
@@ -49,12 +51,56 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
   this->data_producer_ =
       std::make_shared<DataProducer>(remote_addr_config_.ssrc);
 
-  // 6.tcc client
-  this->tcc_client_ = std::make_shared<TransportCongestionControlClient>(
-      this, InitialAvailableBitrate, &this->uv_loop_);
+  // 6.congestion control
+  switch (congestion_type) {
+    case quic::kGoogCC:
+      this->tcc_client_ = std::make_shared<TransportCongestionControlClient>(
+          this, InitialAvailableBitrate, &this->uv_loop_);
+      break;
+    case quic::kCubicBytes:
+    case quic::kRenoBytes:
+    case quic::kBBR:
+    case quic::kPCC:
+    case quic::kBBRv2:
+      clock_ = new QuicClockAdapter(uv_loop);
+      rtt_stats_ = new quic::RttStats();
+      rtt_stats_->set_initial_rtt(quic::QuicTimeDelta::FromMilliseconds(0));
+      unacked_packet_map_ =
+          new quic::QuicUnackedPacketMap(quic::Perspective::IS_CLIENT);
+      random_ = quiche::QuicheRandom::GetInstance();
+      connection_stats_ = new quic::QuicConnectionStats();
+      send_algorithm_interface_ = quic::SendAlgorithmInterface::Create(
+          clock_, rtt_stats_, unacked_packet_map_, congestion_type, random_,
+          connection_stats_, 0, nullptr);
+      break;
+    default:
+      this->tcc_client_ = std::make_shared<TransportCongestionControlClient>(
+          this, InitialAvailableBitrate, &this->uv_loop_);
+      break;
+  }
 
   // 7. ssrc
   ssrc_ = remote_addr_config_.ssrc;
+}
+
+void Publisher::ReceiveSendAlgorithmFeedback(QuicAckFeedbackPacket* feedback) {
+  auto now_ms = this->uv_loop_->get_time_ms_int64();
+  for (auto it = feedback->Begin(); it != feedback->End(); ++it) {
+    QuicAckFeedbackItem* item = *it;
+    quic::QuicTime recv_time =
+        quic::QuicTime::Zero() +
+        quic::QuicTimeDelta::FromMilliseconds(now_ms - item->GetDelta());
+
+    acked_packets_.push_back(
+        quic::AckedPacket(quic::QuicPacketNumber(item->GetSequence()),
+                          item->GetRecvBytes(), recv_time));
+
+    auto map_it = has_send_map_.find(item->GetSequence());
+    if (map_it != has_send_map_.end()) {
+      bytes_in_flight_ -= map_it->second.send_bytes;
+      has_send_map_.erase(map_it);
+    }
+  }
 }
 
 void Publisher::GetRtpExtensions(RtpPacketPtr packet) {
@@ -79,26 +125,36 @@ void Publisher::GetRtpExtensions(RtpPacketPtr packet) {
 uint32_t Publisher::TccClientSendRtpPacket(const uint8_t* data, size_t len) {
   RtpPacketPtr packet = RtpPacket::Parse(data, len);
 
-  this->OnSendPacketInNack(packet);
+  SendPacketInfo temp;
+  temp.sequence = this->tcc_seq_;
+  temp.send_time = this->uv_loop_->get_time_ms_int64();
+  temp.send_bytes = packet->GetSize();
+
+  this->has_send_map_[this->tcc_seq_] = temp;
+  bytes_in_flight_++;
+
+  this->OnSendPacketInNack(packet, this->tcc_seq_);
 
   this->GetRtpExtensions(packet);
   packet->UpdateTransportWideCc01(++this->tcc_seq_);
 
-  webrtc::RtpPacketSendInfo packetInfo;
+  if (this->tcc_client_ != nullptr) {
+    webrtc::RtpPacketSendInfo packetInfo;
 
-  packetInfo.ssrc = packet->GetSsrc();
-  packetInfo.transport_sequence_number = this->tcc_seq_;
-  packetInfo.has_rtp_sequence_number = true;
-  packetInfo.rtp_sequence_number = packet->GetSequenceNumber();
-  packetInfo.length = packet->GetSize();
-  packetInfo.pacing_info = this->tcc_client_->GetPacingInfo();
+    packetInfo.ssrc = packet->GetSsrc();
+    packetInfo.transport_sequence_number = this->tcc_seq_;
+    packetInfo.has_rtp_sequence_number = true;
+    packetInfo.rtp_sequence_number = packet->GetSequenceNumber();
+    packetInfo.length = packet->GetSize();
+    packetInfo.pacing_info = this->tcc_client_->GetPacingInfo();
 
-  // webrtc中发送和进入发送状态有一小段等待时间
-  // 因此分开了两个函数 insert 和 sent 函数
-  this->tcc_client_->InsertPacket(packetInfo);
+    // webrtc中发送和进入发送状态有一小段等待时间
+    // 因此分开了两个函数 insert 和 sent 函数
+    this->tcc_client_->InsertPacket(packetInfo);
 
-  this->tcc_client_->PacketSent(packetInfo,
-                                this->uv_loop_->get_time_ms_int64());
+    this->tcc_client_->PacketSent(packetInfo,
+                                  this->uv_loop_->get_time_ms_int64());
+  }
 
   observer_->OnPublisherSendPacket(packet, this->udp_remote_address_.get());
   return packet->GetSize();
@@ -145,6 +201,15 @@ void Publisher::OnReceiveReceiverReport(ReceiverReport* report) {
 
   this->nack_->UpdateRtt(uint32_t(this->rtt_));
 
+  quic::QuicTime now = quic::QuicTime::Zero() +
+                       quic::QuicTimeDelta::FromMilliseconds(
+                           (int64_t)this->uv_loop_->get_time_ms_int64());
+  if (this->rtt_stats_) {
+    this->rtt_stats_->UpdateRtt(
+        quic::QuicTimeDelta::FromMilliseconds(0),
+        quic::QuicTimeDelta::FromMilliseconds((int64_t)this->rtt_), now);
+  }
+
   this->tcc_client_->ReceiveRtcpReceiverReport(
       webrtc_report, this->rtt_, this->uv_loop_->get_time_ms_int64());
 }
@@ -185,6 +250,7 @@ void Publisher::OnTimer(UvTimer* timer) {
         this->max_packet_ts_ = this->uv_loop_->get_time_ms_int64();
         auto send_size = this->TccClientSendRtpPacket(
             packet->data(), packet->capacity() + packet->size());
+
         available -= int32_t(send_size * 8);
         this->send_bits_prior_ += (send_size * 8);
         this->send_packet_bytes_ += send_size;
@@ -197,18 +263,20 @@ void Publisher::OnTimer(UvTimer* timer) {
   }
 
   if (timer == this->data_dump_timer_) {
-    auto gcc_available = this->tcc_client_->get_available_bitrate();
-    std::vector<double> trends = this->tcc_client_->get_trend();
+    if (this->tcc_client_ != nullptr) {
+      auto gcc_available = this->tcc_client_->get_available_bitrate();
+      std::vector<double> trends = this->tcc_client_->get_trend();
 
-    for (auto i = 0; i < trends.size(); i++) {
-      ExperimentGccData gcc_data_temp(0, 0, trends[i]);
-      this->experiment_manager_->DumpGccDataToCsv(this->number_, i + 1, trends.size(),
-                                                  gcc_data_temp);
+      for (auto i = 0; i < trends.size(); i++) {
+        ExperimentGccData gcc_data_temp(0, 0, trends[i]);
+        this->experiment_manager_->DumpGccDataToCsv(this->number_, i + 1,
+                                                    trends.size(), gcc_data_temp);
+      }
+
+      ExperimentGccData gcc_data(gcc_available, this->send_bits_prior_, 0);
+      this->send_bits_prior_ = 0;
+      this->experiment_manager_->DumpGccDataToCsv(this->number_, 1, 1, gcc_data);
     }
-
-    ExperimentGccData gcc_data(gcc_available, this->send_bits_prior_, 0);
-    this->send_bits_prior_ = 0;
-    this->experiment_manager_->DumpGccDataToCsv(this->number_, 1, 1, gcc_data);
   }
 
   if (timer == this->send_report_timer_) {

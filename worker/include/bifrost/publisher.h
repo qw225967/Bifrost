@@ -10,10 +10,14 @@
 #ifndef WORKER_PUBLISHER_H
 #define WORKER_PUBLISHER_H
 
-#include <unordered_map>
+#include <map>
 
 #include "data_producer.h"
+#include "experiment_manager.h"
 #include "nack.h"
+#include "quic_clock_adapter.h"
+#include "quiche/quic/core/congestion_control/send_algorithm_interface.h"
+#include "rtcp_quic_feedback.h"
 #include "rtcp_rr.h"
 #include "rtcp_sr.h"
 #include "rtcp_tcc.h"
@@ -21,7 +25,6 @@
 #include "tcc_client.h"
 #include "uv_loop.h"
 #include "uv_timer.h"
-#include "experiment_manager.h"
 
 namespace bifrost {
 typedef std::shared_ptr<sockaddr> SockAddressPtr;
@@ -31,30 +34,49 @@ typedef std::shared_ptr<TransportCongestionControlClient>
 typedef std::shared_ptr<Nack> NackPtr;
 class Publisher : public UvTimer::Listener,
                   public TransportCongestionControlClient::Observer {
+ private:
+  struct SendPacketInfo {
+    uint16_t sequence;
+    uint16_t send_time;
+    uint32_t send_bytes;
+  };
+
  public:
   class Observer {
    public:
     virtual void OnPublisherSendPacket(RtpPacketPtr packet,
                                        const struct sockaddr* remote_addr) = 0;
-    virtual void OnPublisherSendRtcpPacket(CompoundPacketPtr packet,
-                                       const struct sockaddr* remote_addr) = 0;
+    virtual void OnPublisherSendRtcpPacket(
+        CompoundPacketPtr packet, const struct sockaddr* remote_addr) = 0;
   };
 
  public:
   void ReceiveFeedbackTransport(const FeedbackRtpTransportPacket* feedback) {
-    this->tcc_client_->ReceiveRtcpTransportFeedback(feedback);
-    this->pacer_bits_ = this->tcc_client_->get_available_bitrate();
+    if (this->tcc_client_ != nullptr) {
+      this->tcc_client_->ReceiveRtcpTransportFeedback(feedback);
+      this->pacer_bits_ = this->tcc_client_->get_available_bitrate();
+    }
   }
+  void ReceiveSendAlgorithmFeedback(QuicAckFeedbackPacket* feedback);
   void OnReceiveNack(FeedbackRtpNackPacket* packet) {
-    auto packets = this->nack_->ReceiveNack(packet);
+    auto packets = this->nack_->ReceiveNack(packet, this->losted_packets_,
+                                            this->bytes_in_flight_);
     for (auto& pkt : packets) {
       this->observer_->OnPublisherSendPacket(pkt,
                                              this->udp_remote_address_.get());
     }
+    auto it = this->losted_packets_.begin();
+    for (; it != this->losted_packets_.end(); it++) {
+      auto map_it =
+          this->has_send_map_.find(uint16_t(it->packet_number.ToUint64()));
+      if (map_it != this->has_send_map_.end()) {
+        this->has_send_map_.erase(map_it);
+      }
+    }
   }
   void OnReceiveReceiverReport(ReceiverReport* report);
-  void OnSendPacketInNack(RtpPacketPtr& packet) {
-    nack_->OnSendRtpPacket(packet);
+  void OnSendPacketInNack(RtpPacketPtr& packet, uint16_t ext_seq) {
+    nack_->OnSendRtpPacket(packet, ext_seq);
   }
 
   SenderReport* GetRtcpSenderReport(uint64_t nowMs);
@@ -62,12 +84,27 @@ class Publisher : public UvTimer::Listener,
  public:
   Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
             Observer* observer, uint8_t number,
-            ExperimentManagerPtr& experiment_manager);
+            ExperimentManagerPtr& experiment_manager,
+            quic::CongestionControlType quic_congestion_type);
   ~Publisher() {
     delete producer_timer_;
     delete data_dump_timer_;
     delete send_report_timer_;
-    tcc_client_.reset();
+
+    if (clock_ != nullptr) delete clock_;
+
+    if (send_algorithm_interface_ != nullptr) delete send_algorithm_interface_;
+
+    if (rtt_stats_ != nullptr) delete rtt_stats_;
+
+    if (unacked_packet_map_ != nullptr) delete unacked_packet_map_;
+
+    if (random_ != nullptr) delete random_;
+
+    if (connection_stats_ != nullptr) delete connection_stats_;
+
+    if (tcc_client_ != nullptr) tcc_client_.reset();
+
     data_producer_.reset();
   }
   // UvTimer
@@ -125,6 +162,18 @@ class Publisher : public UvTimer::Listener,
   uint32_t send_bits_prior_ = 0;
   // nack
   NackPtr nack_;
+  // quic send algorithm interface
+  quic::SendAlgorithmInterface* send_algorithm_interface_{nullptr};
+  quic::QuicClock* clock_{nullptr};
+  quic::RttStats* rtt_stats_{nullptr};
+  quic::QuicUnackedPacketMap* unacked_packet_map_{nullptr};
+  quic::QuicRandom* random_{nullptr};
+  quic::QuicConnectionStats* connection_stats_{nullptr};
+  quic::AckedPacketVector acked_packets_;
+  quic::LostPacketVector losted_packets_;
+  quic::QuicByteCount bytes_in_flight_;
+  std::map<uint16_t, SendPacketInfo> has_send_map_;
+
   /* ------------ experiment ------------ */
 };
 }  // namespace bifrost

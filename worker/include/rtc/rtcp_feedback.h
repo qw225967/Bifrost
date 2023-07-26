@@ -98,6 +98,7 @@ class FeedbackRtp {
     ECN = 8,
     PS = 9,
     TCC = 15,
+    QUICFB = 16,
     EXT = 31
   };
 };

@@ -14,6 +14,7 @@
 #include <vector>
 
 #include "common.h"
+#include "quiche/quic/core/quic_types.h"
 #include "rtcp_nack.h"
 #include "uv_loop.h"
 #include "uv_timer.h"
@@ -43,6 +44,8 @@ class Nack : UvTimer::Listener {
     uint64_t sent_time_ms{0u};
     // Number of times this packet was resent.
     uint8_t sent_times{0u};
+    // tcc extension seq
+    uint16_t extension_seq{0u};
   };
 
  public:
@@ -55,8 +58,10 @@ class Nack : UvTimer::Listener {
 
  public:
   // send
-  void OnSendRtpPacket(RtpPacketPtr rtp_packet);
-  std::vector<RtpPacketPtr> ReceiveNack(FeedbackRtpNackPacket* packet);
+  void OnSendRtpPacket(RtpPacketPtr rtp_packet, uint16_t ext_seq);
+  std::vector<RtpPacketPtr> ReceiveNack(FeedbackRtpNackPacket* packet,
+                                        quic::LostPacketVector& lost_packet,
+                                        quic::QuicByteCount& bytes_in_flight);
 
   // recv
   void OnReceiveRtpPacket(RtpPacketPtr rtp_packet);
@@ -78,7 +83,9 @@ class Nack : UvTimer::Listener {
  private:
   // send
   void FillRetransmissionContainer(uint16_t seq, uint16_t bitmask,
-                                   std::vector<RtpPacketPtr>& vec);
+                                   std::vector<RtpPacketPtr>& vec,
+                                   quic::LostPacketVector& lost_packet,
+                                   quic::QuicByteCount& bytes_in_flight);
 
   // recv
   void AddPacketsToNackList(uint16_t seqStart, uint16_t seqEnd);

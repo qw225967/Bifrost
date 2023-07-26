@@ -11,10 +11,12 @@
 
 #include "rtcp_compound_packet.h"
 #include "rtcp_nack.h"
+#include "rtcp_quic_feedback.h"
 
 namespace bifrost {
 Transport::Transport(TransportModel model, uint8_t number,
-                     ExperimentManagerPtr& experiment_manager)
+                     ExperimentManagerPtr& experiment_manager,
+                     quic::CongestionControlType quic_congestion_type)
     : model_(model), number_(number), experiment_manager_(experiment_manager) {
   this->uv_loop_ = new UvLoop;
 
@@ -32,7 +34,7 @@ Transport::Transport(TransportModel model, uint8_t number,
     case SinglePublish: {
       // 2.publisher
       this->publisher_ = std::make_shared<Publisher>(
-          remote_config, &this->uv_loop_, this, number, experiment_manager);
+          remote_config, &this->uv_loop_, this, number, experiment_manager, quic_congestion_type);
       break;
     }
   }
@@ -129,6 +131,11 @@ void Transport::OnUdpRouterRtcpPacketReceived(
         case FeedbackRtp::MessageType::NACK: {
           auto* nackPacket = static_cast<FeedbackRtpNackPacket*>(rtp_fb);
           this->publisher_->OnReceiveNack(nackPacket);
+          break;
+        }
+        case FeedbackRtp::MessageType::QUICFB: {
+          auto* feddbackPacket = static_cast<QuicAckFeedbackPacket *>(rtp_fb);
+          this->publisher_->ReceiveSendAlgorithmFeedback(feddbackPacket);
           break;
         }
       }

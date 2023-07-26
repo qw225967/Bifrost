@@ -39,7 +39,7 @@ Nack::~Nack() {
   delete this->nack_timer_;
 }
 
-void Nack::OnSendRtpPacket(RtpPacketPtr rtp_packet) {
+void Nack::OnSendRtpPacket(RtpPacketPtr rtp_packet, uint16_t ext_seq) {
   auto seq = rtp_packet->GetSequenceNumber();
 
   if (!send_init_) {
@@ -51,24 +51,30 @@ void Nack::OnSendRtpPacket(RtpPacketPtr rtp_packet) {
   item.packet = rtp_packet;
   item.sent_times = 0;
   item.sent_time_ms = ts;
+  item.extension_seq = ext_seq;
 
   this->max_send_ms_ = (max_send_ms_ > ts ? max_send_ms_ : ts);
 
   this->send_rtp_packet_map_[seq] = item;
 }
 
-std::vector<RtpPacketPtr> Nack::ReceiveNack(FeedbackRtpNackPacket* packet) {
+std::vector<RtpPacketPtr> Nack::ReceiveNack(
+    FeedbackRtpNackPacket* packet, quic::LostPacketVector& lost_packet,
+    quic::QuicByteCount& bytes_in_flight) {
   std::vector<RtpPacketPtr> result;
   for (auto it = packet->Begin(); it != packet->End(); ++it) {
     FeedbackRtpNackItem* item = *it;
     FillRetransmissionContainer(item->GetPacketId(),
-                                item->GetLostPacketBitmask(), result);
+                                item->GetLostPacketBitmask(), result,
+                                lost_packet, bytes_in_flight);
   }
   return result;
 }
 
 void Nack::FillRetransmissionContainer(uint16_t seq, uint16_t bitmask,
-                                       std::vector<RtpPacketPtr>& vec) {
+                                       std::vector<RtpPacketPtr>& vec,
+                                       quic::LostPacketVector& lost_packet,
+                                       quic::QuicByteCount& bytes_in_flight) {
   // Look for each requested packet.
   uint64_t now_ms = this->uv_loop_->get_time_ms();
   uint16_t rtt = (this->rtt_ != 0u ? this->rtt_ : DefaultRtt);
@@ -86,6 +92,11 @@ void Nack::FillRetransmissionContainer(uint16_t seq, uint16_t bitmask,
         diff_ms = this->max_send_ms_ - iter->second.sent_time_ms;
 
         if (diff_ms > MaxRetransmissionDelay) {
+          quic::LostPacket(quic::LostPacket(
+              quic::QuicPacketNumber(iter->second.extension_seq),
+              iter->second.packet->GetSize()));
+          bytes_in_flight -= iter->second.packet->GetSize();
+
           this->send_rtp_packet_map_.erase(iter);
         } else if (now_ms - iter->second.sent_time_ms <=
                    static_cast<uint64_t>(rtt / 4)) {

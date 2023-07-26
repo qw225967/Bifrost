@@ -4,7 +4,6 @@
 
 #include "quiche/quic/core/congestion_control/send_algorithm_interface.h"
 
-#include "absl/base/attributes.h"
 #include "quiche/quic/core/congestion_control/bbr2_sender.h"
 #include "quiche/quic/core/congestion_control/bbr_sender.h"
 #include "quiche/quic/core/congestion_control/tcp_cubic_sender_bytes.h"

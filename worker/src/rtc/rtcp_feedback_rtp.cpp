@@ -11,6 +11,7 @@
 
 #include "rtcp_feedback_item.h"
 #include "rtcp_nack.h"
+#include "rtcp_quic_feedback.h"
 
 namespace bifrost {
 /* Class methods. */
@@ -68,4 +69,5 @@ void FeedbackRtpItemsPacket<Item>::Dump() const {}
 // Explicit instantiation to have all FeedbackRtpPacket definitions in this
 // file.
 template class FeedbackRtpItemsPacket<FeedbackRtpNackItem>;
+template class FeedbackRtpItemsPacket<QuicAckFeedbackItem>;
 }  // namespace bifrost

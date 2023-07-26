@@ -17,6 +17,7 @@
 #include "udp_router.h"
 #include "unordered_map"
 #include "uv_loop.h"
+#include "quiche/quic/core/quic_types.h"
 
 namespace bifrost {
 typedef std::shared_ptr<Player> PlayerPtr;
@@ -34,7 +35,8 @@ class Transport : public UdpRouter::UdpRouterObServer,
 
  public:
   Transport(TransportModel model, uint8_t number,
-            ExperimentManagerPtr& experiment_manager);
+            ExperimentManagerPtr& experiment_manager,
+            quic::CongestionControlType quic_congestion_type);
   ~Transport();
 
  public:
