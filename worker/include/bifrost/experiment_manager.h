@@ -16,6 +16,7 @@
 #include <unordered_map>
 #include <vector>
 #include <mutex>
+#include <memory>
 
 #include "experiment_data.h"
 

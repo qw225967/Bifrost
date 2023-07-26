@@ -39,6 +39,8 @@ cmake --build build
 Clion must use lldb. 
 
 #### 3.2 Linux
+You can use the ***Bifrost/worker/build.sh*** or build anything by yourself.
+
 ```
 cd Bifrost/worker
 
