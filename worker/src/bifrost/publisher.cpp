@@ -85,6 +85,8 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
 
 void Publisher::ReceiveSendAlgorithmFeedback(QuicAckFeedbackPacket* feedback) {
   auto now_ms = this->uv_loop_->get_time_ms_int64();
+  int64_t transport_rtt_sum = 0;
+  int64_t transport_rtt_count = 0;
   for (auto it = feedback->Begin(); it != feedback->End(); ++it) {
     QuicAckFeedbackItem* item = *it;
     quic::QuicTime recv_time =
@@ -94,13 +96,41 @@ void Publisher::ReceiveSendAlgorithmFeedback(QuicAckFeedbackPacket* feedback) {
     acked_packets_.push_back(
         quic::AckedPacket(quic::QuicPacketNumber(item->GetSequence()),
                           item->GetRecvBytes(), recv_time));
-
+    bytes_in_flight_ -= item->GetRecvBytes();
     auto map_it = has_send_map_.find(item->GetSequence());
     if (map_it != has_send_map_.end()) {
-      bytes_in_flight_ -= map_it->second.send_bytes;
+      transport_rtt_sum += map_it->second.send_time - now_ms - item->GetDelta();
+      transport_rtt_count++;
       has_send_map_.erase(map_it);
     }
   }
+  auto transport_rtt = transport_rtt_sum / transport_rtt_count;
+  transport_rtt_ = transport_rtt > 0 ? transport_rtt : transport_rtt_;
+  if (rtt_stats_ != nullptr) {
+    rtt_stats_->set_initial_rtt(
+        quic::QuicTimeDelta::FromMilliseconds(transport_rtt));
+  }
+
+  quic::QuicTime quic_now =
+      quic::QuicTime::Zero() + quic::QuicTimeDelta::FromMilliseconds(now_ms);
+  if (this->send_algorithm_interface_ != nullptr) {
+    // bbr v1 无需最后两个数据，随意给个值
+    this->send_algorithm_interface_->OnCongestionEvent(
+        true, this->bytes_in_flight_, quic_now, this->acked_packets_,
+        this->losted_packets_, quic::QuicPacketCount(0),
+        quic::QuicPacketCount(0));
+
+    if (!this->send_algorithm_interface_->PacingRate(this->bytes_in_flight_)
+             .IsZero()) {
+      this->pacer_bits_ =
+          this->send_algorithm_interface_->PacingRate(this->bytes_in_flight_)
+              .ToBitsPerSecond() *
+          1000;
+    }
+  }
+
+  acked_packets_.clear();
+  losted_packets_.clear();
 }
 
 void Publisher::GetRtpExtensions(RtpPacketPtr packet) {
@@ -131,9 +161,18 @@ uint32_t Publisher::TccClientSendRtpPacket(const uint8_t* data, size_t len) {
   temp.send_bytes = packet->GetSize();
 
   this->has_send_map_[this->tcc_seq_] = temp;
-  bytes_in_flight_++;
+  bytes_in_flight_ += packet->GetSize();
 
   this->OnSendPacketInNack(packet, this->tcc_seq_);
+
+  if (this->send_algorithm_interface_ != nullptr) {
+    quic::QuicTime ts =
+        quic::QuicTime::Zero() + quic::QuicTimeDelta::FromMilliseconds(
+                                     this->uv_loop_->get_time_ms_int64());
+    this->send_algorithm_interface_->OnPacketSent(
+        ts, bytes_in_flight_, quic::QuicPacketNumber(this->tcc_seq_),
+        packet->GetSize(), quic::HAS_RETRANSMITTABLE_DATA);
+  }
 
   this->GetRtpExtensions(packet);
   packet->UpdateTransportWideCc01(++this->tcc_seq_);
@@ -265,19 +304,39 @@ void Publisher::OnTimer(UvTimer* timer) {
   }
 
   if (timer == this->data_dump_timer_) {
+    if (this->send_algorithm_interface_) {
+      this->send_algorithm_interface_->DebugShow();
+    }
+
     if (this->tcc_client_ != nullptr) {
       auto gcc_available = this->tcc_client_->get_available_bitrate();
       std::vector<double> trends = this->tcc_client_->get_trend();
 
       for (auto i = 0; i < trends.size(); i++) {
         ExperimentGccData gcc_data_temp(0, 0, trends[i]);
-        this->experiment_manager_->DumpGccDataToCsv(this->number_, i + 1,
-                                                    trends.size(), gcc_data_temp);
+        this->experiment_manager_->DumpGccDataToCsv(
+            this->number_, i + 1, trends.size(), gcc_data_temp);
       }
 
       ExperimentGccData gcc_data(gcc_available, this->send_bits_prior_, 0);
       this->send_bits_prior_ = 0;
-      this->experiment_manager_->DumpGccDataToCsv(this->number_, 1, 1, gcc_data);
+      this->experiment_manager_->DumpGccDataToCsv(this->number_, 1, 1,
+                                                  gcc_data);
+    }
+    if (this->send_algorithm_interface_ != nullptr) {
+      auto available = this->send_algorithm_interface_->BandwidthEstimate()
+                           .ToBitsPerSecond();
+      std::vector<double> trends = {};
+
+      for (auto i = 0; i < trends.size(); i++) {
+        ExperimentGccData gcc_data_temp(0, 0, trends[i]);
+        this->experiment_manager_->DumpGccDataToCsv(
+            this->number_, i + 1, trends.size(), gcc_data_temp);
+      }
+
+      ExperimentGccData data(available, this->send_bits_prior_, 0);
+      this->send_bits_prior_ = 0;
+      this->experiment_manager_->DumpGccDataToCsv(this->number_, 1, 1, data);
     }
   }
 

@@ -8,6 +8,7 @@
 #define QUICHE_QUIC_CORE_CONGESTION_CONTROL_BBR_SENDER_H_
 
 #include <cstdint>
+#include <iostream>
 #include <ostream>
 #include <string>
 
@@ -96,6 +97,57 @@ class QUIC_EXPORT_PRIVATE BbrSender : public SendAlgorithmInterface {
   BbrSender& operator=(const BbrSender&) = delete;
   ~BbrSender() override;
 
+  void DebugShow() override {
+    switch (mode_) {
+      case STARTUP: {
+        std::cout << "mode:STARTUP"
+                  << ", max_bandwidth_:"
+                  << max_bandwidth_.GetBest().ToBitsPerSecond()
+                  << ", RTT:" << min_rtt_.ToMilliseconds()
+                  << ", congestion_window_:" << congestion_window_
+                  << ", pacing_rate_:" << pacing_rate_.ToBitsPerSecond()
+                  << ", congestion_window_gain_:" << congestion_window_gain_
+                  << std::endl;
+        break;
+      }
+      case DRAIN: {
+        std::cout << "mode:DRAIN"
+                  << ", max_bandwidth_:"
+                  << max_bandwidth_.GetBest().ToBitsPerSecond()
+                  << ", RTT:" << min_rtt_.ToMilliseconds()
+                  << ", congestion_window_:" << congestion_window_
+                  << ", pacing_rate_:" << pacing_rate_.ToBitsPerSecond()
+                  << ", congestion_window_gain_:" << congestion_window_gain_
+                  << std::endl;
+        break;
+      }
+      case PROBE_BW: {
+        std::cout << "mode:PROBE_BW"
+                  << ", max_bandwidth_:"
+                  << max_bandwidth_.GetBest().ToBitsPerSecond()
+                  << ", RTT:" << min_rtt_.ToMilliseconds()
+                  << ", congestion_window_:" << congestion_window_
+                  << ", pacing_rate_:" << pacing_rate_.ToBitsPerSecond()
+                  << ", congestion_window_gain_:" << congestion_window_gain_
+                  << std::endl;
+        break;
+      }
+      case PROBE_RTT: {
+        std::cout << "mode:PROBE_RTT"
+                  << ", max_bandwidth_:"
+                  << max_bandwidth_.GetBest().ToBitsPerSecond()
+                  << ", RTT:" << min_rtt_.ToMilliseconds()
+                  << ", congestion_window_:" << congestion_window_
+                  << ", pacing_rate_:" << pacing_rate_.ToBitsPerSecond()
+                  << ", congestion_window_gain_:" << congestion_window_gain_
+                  << std::endl;
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
   // Start implementation of SendAlgorithmInterface.
   bool InSlowStart() const override;
   bool InRecovery() const override;
@@ -139,7 +191,7 @@ class QUIC_EXPORT_PRIVATE BbrSender : public SendAlgorithmInterface {
 
   // Sets the pacing gain used in STARTUP.  Must be greater than 1.
   void set_high_gain(float high_gain) {
-//    QUICHE_DCHECK_LT(1.0f, high_gain);
+    //    QUICHE_DCHECK_LT(1.0f, high_gain);
     high_gain_ = high_gain;
     if (mode_ == STARTUP) {
       pacing_gain_ = high_gain;
@@ -148,7 +200,7 @@ class QUIC_EXPORT_PRIVATE BbrSender : public SendAlgorithmInterface {
 
   // Sets the CWND gain used in STARTUP.  Must be greater than 1.
   void set_high_cwnd_gain(float high_cwnd_gain) {
-//    QUICHE_DCHECK_LT(1.0f, high_cwnd_gain);
+    //    QUICHE_DCHECK_LT(1.0f, high_cwnd_gain);
     high_cwnd_gain_ = high_cwnd_gain;
     if (mode_ == STARTUP) {
       congestion_window_gain_ = high_cwnd_gain;
@@ -157,7 +209,7 @@ class QUIC_EXPORT_PRIVATE BbrSender : public SendAlgorithmInterface {
 
   // Sets the gain used in DRAIN.  Must be less than 1.
   void set_drain_gain(float drain_gain) {
-//    QUICHE_DCHECK_GT(1.0f, drain_gain);
+    //    QUICHE_DCHECK_GT(1.0f, drain_gain);
     drain_gain_ = drain_gain;
   }
 

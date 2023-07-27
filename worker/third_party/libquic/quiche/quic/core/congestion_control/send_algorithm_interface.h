@@ -92,6 +92,8 @@ class QUIC_EXPORT_PRIVATE SendAlgorithmInterface {
                             QuicPacketNumber packet_number, QuicByteCount bytes,
                             HasRetransmittableData is_retransmittable) = 0;
 
+  virtual void DebugShow() = 0;
+
   // Inform that |packet_number| has been neutered.
   virtual void OnPacketNeutered(QuicPacketNumber packet_number) = 0;
 

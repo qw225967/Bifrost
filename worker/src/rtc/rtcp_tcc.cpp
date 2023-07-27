@@ -359,6 +359,12 @@ FeedbackRtpTransportPacket::GetPacketResults() const {
 
   uint16_t currentSequenceNumber = this->baseSequenceNumber - 1;
 
+  if (this->baseSequenceNumber == 0)
+  {
+    std::cout << "range seq" << std::endl;
+    return {};
+  }
+
   for (auto* chunk : this->chunks) {
     if (chunk)
       chunk->FillResults(packetResults, currentSequenceNumber);

@@ -64,6 +64,7 @@ class Publisher : public UvTimer::Listener,
     for (auto& pkt : packets) {
       this->observer_->OnPublisherSendPacket(pkt,
                                              this->udp_remote_address_.get());
+      this->bytes_in_flight_ += pkt->GetSize();
     }
     auto it = this->losted_packets_.begin();
     for (; it != this->losted_packets_.end(); it++) {
@@ -171,9 +172,9 @@ class Publisher : public UvTimer::Listener,
   quic::QuicConnectionStats* connection_stats_{nullptr};
   quic::AckedPacketVector acked_packets_;
   quic::LostPacketVector losted_packets_;
-  quic::QuicByteCount bytes_in_flight_;
+  quic::QuicByteCount bytes_in_flight_{0u};
   std::map<uint16_t, SendPacketInfo> has_send_map_;
-
+  int64_t transport_rtt_{0u};
   /* ------------ experiment ------------ */
 };
 }  // namespace bifrost

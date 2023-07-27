@@ -25,7 +25,7 @@
   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
   |                          recv_bytes                           |
   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-  |                            ......                            |
+  |                            ......                             |
   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  */
 
@@ -61,7 +61,7 @@ class QuicAckFeedbackItem : public FeedbackItem {
     return uint16_t{ntohs(this->header->delta)};
   }
   uint32_t GetRecvBytes() const {
-    return uint32_t{ntohs(this->header->recv_bytes)};
+    return uint32_t{ntohl(this->header->recv_bytes)};
   }
   /* Virtual methods inherited from FeedbackItem. */
 

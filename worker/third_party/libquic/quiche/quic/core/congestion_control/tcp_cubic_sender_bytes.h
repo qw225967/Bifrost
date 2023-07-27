@@ -51,6 +51,7 @@ class QUIC_EXPORT_PRIVATE TcpCubicSenderBytes : public SendAlgorithmInterface {
                          const LostPacketVector& lost_packets,
                          QuicPacketCount num_ect,
                          QuicPacketCount num_ce) override;
+  void DebugShow() override {}
   void OnPacketSent(QuicTime sent_time, QuicByteCount bytes_in_flight,
                     QuicPacketNumber packet_number, QuicByteCount bytes,
                     HasRetransmittableData is_retransmittable) override;

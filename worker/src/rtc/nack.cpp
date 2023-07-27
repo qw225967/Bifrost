@@ -88,15 +88,14 @@ void Nack::FillRetransmissionContainer(uint16_t seq, uint16_t bitmask,
         uint32_t diff_ms;
 
         auto packet = iter->second.packet;
+        bytes_in_flight -= iter->second.packet->GetSize();
 
         diff_ms = this->max_send_ms_ - iter->second.sent_time_ms;
 
         if (diff_ms > MaxRetransmissionDelay) {
-          quic::LostPacket(quic::LostPacket(
+          lost_packet.push_back(quic::LostPacket(quic::LostPacket(
               quic::QuicPacketNumber(iter->second.extension_seq),
-              iter->second.packet->GetSize()));
-          bytes_in_flight -= iter->second.packet->GetSize();
-
+              iter->second.packet->GetSize())));
           this->send_rtp_packet_map_.erase(iter);
         } else if (now_ms - iter->second.sent_time_ms <=
                    static_cast<uint64_t>(rtt / 4)) {
