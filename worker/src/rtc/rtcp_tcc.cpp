@@ -309,7 +309,7 @@ FeedbackRtpTransportPacket::AddPacket(uint16_t sequenceNumber,
   {
     std::cout
         << "[feedback tcc packet] RTP packet delta exceeded [latestTimestamp:"
-        << this->latestTimestamp << ", timestamp:%" << timestamp << "]"
+        << this->latestTimestamp << ", timestamp:" << timestamp << "]"
         << std::endl;
 
     return AddPacketResult::FATAL;

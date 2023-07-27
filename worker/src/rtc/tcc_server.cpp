@@ -69,12 +69,13 @@ void TransportCongestionControlServer::QuicCountIncomingPacket(
 }
 
 void TransportCongestionControlServer::SendQuicAckFeedback() {
-
   auto nowMs = this->uv_loop_->get_time_ms_int64();
 
   auto it = this->packet_recv_time_map_.begin();
   while (it != this->packet_recv_time_map_.end()) {
-    auto feedbackItem = new QuicAckFeedbackItem(it->second.sequence, nowMs - it->second.recv_time, it->second.recv_bytes);
+    auto feedbackItem = new QuicAckFeedbackItem(it->second.sequence,
+                                                nowMs - it->second.recv_time,
+                                                it->second.recv_bytes);
     this->quicFeedbackPacket->AddItem(feedbackItem);
 
     if (this->quicFeedbackPacket->GetSize() > BufferSize) {
@@ -85,7 +86,8 @@ void TransportCongestionControlServer::SendQuicAckFeedback() {
 
       this->quicFeedbackPacket.reset();
       this->quicFeedbackPacket = std::make_shared<QuicAckFeedbackPacket>(
-          this->transportCcFeedbackSenderSsrc, this->transportCcFeedbackMediaSsrc);
+          this->transportCcFeedbackSenderSsrc,
+          this->transportCcFeedbackMediaSsrc);
     }
 
     it = this->packet_recv_time_map_.erase(it);
@@ -188,6 +190,14 @@ inline void TransportCongestionControlServer::SendTransportCcFeedback() {
   auto latestWideSeqNumber =
       this->transportCcFeedbackPacket->GetLatestSequenceNumber();
   auto latestTimestamp = this->transportCcFeedbackPacket->GetLatestTimestamp();
+
+  std::cout << "SendTransportCcFeedback latestWideSeqNumber:"
+            << latestWideSeqNumber << ", latestTimestamp:" << latestTimestamp
+            << ", base seq:"
+            << this->transportCcFeedbackPacket->GetBaseSequenceNumber()
+            << ", feedback count:"
+            << this->transportCcFeedbackPacket->GetFeedbackPacketCount()
+            << std::endl;
 
   // Notify the listener.
   this->observer_->OnTransportCongestionControlServerSendRtcpPacket(
