@@ -100,46 +100,50 @@ class QUIC_EXPORT_PRIVATE BbrSender : public SendAlgorithmInterface {
   void DebugShow() override {
     switch (mode_) {
       case STARTUP: {
-        std::cout << "mode:STARTUP"
+        std::cout << "[bbr sender] mode:STARTUP"
                   << ", max_bandwidth_:"
                   << max_bandwidth_.GetBest().ToBitsPerSecond()
                   << ", RTT:" << min_rtt_.ToMilliseconds()
                   << ", congestion_window_:" << congestion_window_
                   << ", pacing_rate_:" << pacing_rate_.ToBitsPerSecond()
                   << ", congestion_window_gain_:" << congestion_window_gain_
+                  << ", unacked_packets:" << unacked_packets_->DebugString()
                   << std::endl;
         break;
       }
       case DRAIN: {
-        std::cout << "mode:DRAIN"
+        std::cout << "[bbr sender] mode:DRAIN"
                   << ", max_bandwidth_:"
                   << max_bandwidth_.GetBest().ToBitsPerSecond()
                   << ", RTT:" << min_rtt_.ToMilliseconds()
                   << ", congestion_window_:" << congestion_window_
                   << ", pacing_rate_:" << pacing_rate_.ToBitsPerSecond()
                   << ", congestion_window_gain_:" << congestion_window_gain_
+                  << ", unacked_packets:" << unacked_packets_->DebugString()
                   << std::endl;
         break;
       }
       case PROBE_BW: {
-        std::cout << "mode:PROBE_BW"
+        std::cout << "[bbr sender] mode:PROBE_BW"
                   << ", max_bandwidth_:"
                   << max_bandwidth_.GetBest().ToBitsPerSecond()
                   << ", RTT:" << min_rtt_.ToMilliseconds()
                   << ", congestion_window_:" << congestion_window_
                   << ", pacing_rate_:" << pacing_rate_.ToBitsPerSecond()
                   << ", congestion_window_gain_:" << congestion_window_gain_
+                  << ", unacked_packets:" << unacked_packets_->DebugString()
                   << std::endl;
         break;
       }
       case PROBE_RTT: {
-        std::cout << "mode:PROBE_RTT"
+        std::cout << "[bbr sender] mode:PROBE_RTT"
                   << ", max_bandwidth_:"
                   << max_bandwidth_.GetBest().ToBitsPerSecond()
                   << ", RTT:" << min_rtt_.ToMilliseconds()
                   << ", congestion_window_:" << congestion_window_
                   << ", pacing_rate_:" << pacing_rate_.ToBitsPerSecond()
                   << ", congestion_window_gain_:" << congestion_window_gain_
+                  << ", unacked_packets:" << unacked_packets_->DebugString()
                   << std::endl;
         break;
       }

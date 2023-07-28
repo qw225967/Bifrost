@@ -93,6 +93,8 @@ void Publisher::ReceiveSendAlgorithmFeedback(QuicAckFeedbackPacket* feedback) {
         quic::QuicTime::Zero() +
         quic::QuicTimeDelta::FromMilliseconds(now_ms - item->GetDelta());
 
+//    std::cout << "seq:" << item->GetSequence() << std::endl;
+
     acked_packets_.push_back(
         quic::AckedPacket(quic::QuicPacketNumber(item->GetSequence()),
                           item->GetRecvBytes(), recv_time));
@@ -103,7 +105,19 @@ void Publisher::ReceiveSendAlgorithmFeedback(QuicAckFeedbackPacket* feedback) {
       transport_rtt_count++;
       has_send_map_.erase(map_it);
     }
+    if (this->unacked_packet_map_ != nullptr) {
+      std::cout << "acked seq:" << item->GetSequence() << std::endl;
+      this->unacked_packet_map_->RemoveFromInFlight(
+          quic::QuicPacketNumber(item->GetSequence()));
+      this->unacked_packet_map_->RemoveObsoletePackets();
+    }
+    largest_acked_seq_ = item->GetSequence();
   }
+  if (this->unacked_packet_map_ != nullptr) {
+    this->unacked_packet_map_->IncreaseLargestAcked(
+        quic::QuicPacketNumber(this->largest_acked_seq_));
+  }
+
   auto transport_rtt = transport_rtt_sum / transport_rtt_count;
   transport_rtt_ = transport_rtt > 0 ? transport_rtt : transport_rtt_;
   if (rtt_stats_ != nullptr) {
@@ -152,9 +166,37 @@ void Publisher::GetRtpExtensions(RtpPacketPtr packet) {
   packet->SetTransportWideCc01ExtensionId(7);
 }
 
+void Publisher::OnReceiveNack(FeedbackRtpNackPacket* packet) {
+  auto packets = this->nack_->ReceiveNack(packet, this->losted_packets_,
+                                          this->bytes_in_flight_);
+  quic::QuicTime ts =
+      quic::QuicTime::Zero() + quic::QuicTimeDelta::FromMilliseconds(
+                                   this->uv_loop_->get_time_ms_int64());
+  for (auto& pkt : packets) {
+    if (this->unacked_packet_map_ != nullptr) {
+      this->unacked_packet_map_->AddSentPacket(
+          pkt, this->tcc_seq_, this->largest_acked_seq_,
+          quic::LOSS_RETRANSMISSION, ts, true, false, quic::ECN_NOT_ECT);
+    }
+
+    this->observer_->OnPublisherSendPacket(pkt,
+                                           this->udp_remote_address_.get());
+    this->bytes_in_flight_ += pkt->GetSize();
+  }
+  auto it = this->losted_packets_.begin();
+  for (; it != this->losted_packets_.end(); it++) {
+    auto map_it =
+        this->has_send_map_.find(uint16_t(it->packet_number.ToUint64()));
+    if (map_it != this->has_send_map_.end()) {
+      this->has_send_map_.erase(map_it);
+    }
+  }
+}
+
 uint32_t Publisher::TccClientSendRtpPacket(const uint8_t* data, size_t len) {
   RtpPacketPtr packet = RtpPacket::Parse(data, len);
 
+  // 1.quic 记录发送信息
   SendPacketInfo temp;
   temp.sequence = this->tcc_seq_;
   temp.send_time = this->uv_loop_->get_time_ms_int64();
@@ -163,19 +205,27 @@ uint32_t Publisher::TccClientSendRtpPacket(const uint8_t* data, size_t len) {
   this->has_send_map_[this->tcc_seq_] = temp;
   bytes_in_flight_ += packet->GetSize();
 
-  this->OnSendPacketInNack(packet, this->tcc_seq_);
+  quic::QuicTime ts =
+      quic::QuicTime::Zero() + quic::QuicTimeDelta::FromMilliseconds(
+                                   this->uv_loop_->get_time_ms_int64());
+  if (this->unacked_packet_map_ != nullptr) {
+    this->unacked_packet_map_->AddSentPacket(
+        packet, this->tcc_seq_, this->largest_acked_seq_,
+        quic::NOT_RETRANSMISSION, ts, true, true, quic::ECN_NOT_ECT);
+  }
 
   if (this->send_algorithm_interface_ != nullptr) {
-    quic::QuicTime ts =
-        quic::QuicTime::Zero() + quic::QuicTimeDelta::FromMilliseconds(
-                                     this->uv_loop_->get_time_ms_int64());
     this->send_algorithm_interface_->OnPacketSent(
         ts, bytes_in_flight_, quic::QuicPacketNumber(this->tcc_seq_),
         packet->GetSize(), quic::HAS_RETRANSMITTABLE_DATA);
   }
 
+  // 2.nack模块
+  this->OnSendPacketInNack(packet, this->tcc_seq_);
+
+  // 3.tcc
   this->GetRtpExtensions(packet);
-  packet->UpdateTransportWideCc01(++this->tcc_seq_);
+  packet->UpdateTransportWideCc01(this->tcc_seq_++);
 
   if (this->tcc_client_ != nullptr) {
     webrtc::RtpPacketSendInfo packetInfo;

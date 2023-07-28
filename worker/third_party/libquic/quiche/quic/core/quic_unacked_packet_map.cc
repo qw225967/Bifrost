@@ -129,6 +129,63 @@ QuicUnackedPacketMap::~QuicUnackedPacketMap() {
   }
 }
 
+void QuicUnackedPacketMap::AddSentPacket(std::shared_ptr<bifrost::RtpPacket> mutable_packet,
+                                         uint16_t ext_seq, uint16_t largest_acked,
+                                         TransmissionType transmission_type,
+                                         QuicTime sent_time, bool set_in_flight,
+                                         bool measure_rtt,
+                                         QuicEcnCodepoint ecn_codepoint) {
+  QuicPacketNumber packet_number(ext_seq);
+  QuicPacketLength bytes_sent(mutable_packet->GetSize());
+//  QUIC_BUG_IF(quic_bug_12645_1, largest_sent_packet_.IsInitialized() &&
+//  largest_sent_packet_ >= packet_number)
+//  << "largest_sent_packet_: " << largest_sent_packet_
+//  << ", packet_number: " << packet_number;
+//  QUICHE_DCHECK_GE(packet_number, least_unacked_ + unacked_packets_.size());
+  while (least_unacked_ + unacked_packets_.size() < packet_number) {
+    unacked_packets_.push_back(QuicTransmissionInfo());
+    unacked_packets_.back().state = NEVER_SENT;
+  }
+
+  const bool has_crypto_handshake = false;
+  QuicTransmissionInfo info(ENCRYPTION_INITIAL, transmission_type,
+                            sent_time, bytes_sent, has_crypto_handshake,
+                            false, ecn_codepoint);
+  info.largest_acked = QuicPacketNumber(largest_acked);
+  largest_sent_largest_acked_.UpdateMax(QuicPacketNumber(largest_acked));
+
+  if (!measure_rtt) {
+//    QUIC_BUG_IF(quic_bug_12645_2, set_in_flight)
+//    << "Packet " << mutable_packet->packet_number << ", transmission type "
+//    << TransmissionTypeToString(mutable_packet->transmission_type)
+//    << ", retransmittable frames: "
+//    << QuicFramesToString(mutable_packet->retransmittable_frames)
+//    << ", nonretransmittable_frames: "
+//    << QuicFramesToString(mutable_packet->nonretransmittable_frames);
+    info.state = NOT_CONTRIBUTING_RTT;
+  }
+
+  largest_sent_packet_ = packet_number;
+  if (set_in_flight) {
+    const PacketNumberSpace packet_number_space =
+        GetPacketNumberSpace(info.encryption_level);
+    bytes_in_flight_ += bytes_sent;
+    bytes_in_flight_per_packet_number_space_[packet_number_space] += bytes_sent;
+    ++packets_in_flight_;
+    info.in_flight = true;
+    largest_sent_retransmittable_packets_[packet_number_space] = packet_number;
+    last_inflight_packet_sent_time_ = sent_time;
+    last_inflight_packets_sent_time_[packet_number_space] = sent_time;
+  }
+  unacked_packets_.push_back(std::move(info));
+  // Swap the retransmittable frames to avoid allocations.
+  // TODO(ianswett): Could use emplace_back when Chromium can.
+//  if (has_crypto_handshake) {
+//    last_crypto_packet_sent_time_ = sent_time;
+//  }
+}
+
+
 void QuicUnackedPacketMap::RemoveObsoletePackets() {
   while (!unacked_packets_.empty()) {
     if (!IsPacketUseless(least_unacked_, unacked_packets_.front())) {
@@ -199,6 +256,7 @@ bool QuicUnackedPacketMap::IsPacketUsefulForMeasuringRtt(
 bool QuicUnackedPacketMap::IsPacketUsefulForCongestionControl(
     const QuicTransmissionInfo& info) const {
   // Packet contributes to congestion control if it is considered inflight.
+  std::cout << "info:" << info.DebugString() << std::endl;
   return info.in_flight;
 }
 

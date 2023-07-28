@@ -7,13 +7,15 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 
 #include "absl/container/inlined_vector.h"
 #include "absl/strings/str_cat.h"
+#include "quiche/common/quiche_circular_deque.h"
 #include "quiche/quic/core/quic_transmission_info.h"
 #include "quiche/quic/platform/api/quic_export.h"
 #include "quiche/quic/platform/api/quic_flags.h"
-#include "quiche/common/quiche_circular_deque.h"
+#include "rtp_packet.h"
 
 namespace quic {
 
@@ -38,7 +40,11 @@ class QUIC_EXPORT_PRIVATE QuicUnackedPacketMap {
   // don't arrive, indicating the need for retransmission.
   // Any retransmittible_frames in |mutable_packet| are swapped from
   // |mutable_packet| into the QuicTransmissionInfo.
-
+  void AddSentPacket(std::shared_ptr<bifrost::RtpPacket> mutable_packet,
+                     uint16_t ext_seq, uint16_t largest_acked,
+                     TransmissionType transmission_type, QuicTime sent_time,
+                     bool set_in_flight, bool measure_rtt,
+                     QuicEcnCodepoint ecn_codepoint);
   // Returns true if the packet |packet_number| is unacked.
   bool IsUnacked(QuicPacketNumber packet_number) const;
 
@@ -144,9 +150,7 @@ class QUIC_EXPORT_PRIVATE QuicUnackedPacketMap {
   bool HasPendingCryptoPackets() const;
 
   // Returns true if there is any unacked non-crypto stream data.
-  bool HasUnackedStreamData() const {
-    return true;
-  }
+  bool HasUnackedStreamData() const { return true; }
 
   // Removes any retransmittable frames from this transmission or an associated
   // transmission.  It removes now useless transmissions, and disconnects any

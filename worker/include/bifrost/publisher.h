@@ -58,23 +58,7 @@ class Publisher : public UvTimer::Listener,
     }
   }
   void ReceiveSendAlgorithmFeedback(QuicAckFeedbackPacket* feedback);
-  void OnReceiveNack(FeedbackRtpNackPacket* packet) {
-    auto packets = this->nack_->ReceiveNack(packet, this->losted_packets_,
-                                            this->bytes_in_flight_);
-    for (auto& pkt : packets) {
-      this->observer_->OnPublisherSendPacket(pkt,
-                                             this->udp_remote_address_.get());
-      this->bytes_in_flight_ += pkt->GetSize();
-    }
-    auto it = this->losted_packets_.begin();
-    for (; it != this->losted_packets_.end(); it++) {
-      auto map_it =
-          this->has_send_map_.find(uint16_t(it->packet_number.ToUint64()));
-      if (map_it != this->has_send_map_.end()) {
-        this->has_send_map_.erase(map_it);
-      }
-    }
-  }
+  void OnReceiveNack(FeedbackRtpNackPacket* packet);
   void OnReceiveReceiverReport(ReceiverReport* report);
   void OnSendPacketInNack(RtpPacketPtr& packet, uint16_t ext_seq) {
     nack_->OnSendRtpPacket(packet, ext_seq);
@@ -175,6 +159,7 @@ class Publisher : public UvTimer::Listener,
   quic::QuicByteCount bytes_in_flight_{0u};
   std::map<uint16_t, SendPacketInfo> has_send_map_;
   int64_t transport_rtt_{0u};
+  uint16_t largest_acked_seq_{0u};
   /* ------------ experiment ------------ */
 };
 }  // namespace bifrost

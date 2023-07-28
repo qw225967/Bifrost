@@ -67,14 +67,6 @@ void Transport::Run() { this->uv_loop_->RunLoop(); }
 void Transport::OnUdpRouterRtpPacketReceived(
     bifrost::UdpRouter* socket, RtpPacketPtr rtp_packet,
     const struct sockaddr* remote_addr) {
-  uint16_t wideSeqNumber;
-  rtp_packet->ReadTransportWideCc01(wideSeqNumber);
-
-  //  std::cout << "ssrc:" << rtp_packet->GetSsrc()
-  //            << ", seq:" << rtp_packet->GetSequenceNumber()
-  //            << ", payload_type:" << rtp_packet->GetPayloadType()
-  //            << ", tcc seq:" << wideSeqNumber << ", this:" << this <<
-  //            std::endl;
   if (model_ == SinglePublish) return;
   auto player_iter = this->players_.find(rtp_packet->GetSsrc());
   if (player_iter != this->players_.end()) {
