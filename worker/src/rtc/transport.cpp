@@ -76,6 +76,7 @@ void Transport::OnUdpRouterRtpPacketReceived(
                                            rtp_packet->GetSsrc(), this->number_,
                                            this->experiment_manager_);
     this->players_[rtp_packet->GetSsrc()] = player;
+    player->OnReceiveRtpPacket(rtp_packet);
   }
 }
 
