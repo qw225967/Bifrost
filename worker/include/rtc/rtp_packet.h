@@ -137,6 +137,7 @@ class RtpPacket {
   }
 
   static std::shared_ptr<RtpPacket> Parse(const uint8_t* data, size_t len);
+  static std::shared_ptr<RtpPacket> Parse(std::shared_ptr<uint8_t> data, size_t len);
 
   RtpPacket(Header* header, HeaderExtension* headerExtension,
             const uint8_t* payload, size_t payloadLength,
@@ -460,6 +461,10 @@ class RtpPacket {
     }
   }
 
+  void SetSharedData(std::shared_ptr<uint8_t> temp_data) {
+    data = temp_data;
+  }
+
   bool SetExtensionLength(uint8_t id, uint8_t len);
 
   uint8_t* GetPayload() const {
@@ -535,6 +540,7 @@ class RtpPacket {
   size_t size{0u};  // Full size of the packet in bytes.
   // Codecs
   std::unique_ptr<codecs::PayloadDescriptorHandler> payloadDescriptorHandler;
+  std::shared_ptr<uint8_t> data{nullptr};
 };
 }  // namespace bifrost
 

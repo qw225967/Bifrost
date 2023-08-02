@@ -107,6 +107,7 @@ class QUIC_EXPORT_PRIVATE BbrSender : public SendAlgorithmInterface {
                   << ", congestion_window_:" << congestion_window_
                   << ", pacing_rate_:" << pacing_rate_.ToBitsPerSecond()
                   << ", congestion_window_gain_:" << congestion_window_gain_
+                  << ", bytes_lost_in_round_:" << bytes_lost_in_round_
                   << ", unacked_packets:" << unacked_packets_->DebugString()
                   << std::endl;
         break;
@@ -119,6 +120,7 @@ class QUIC_EXPORT_PRIVATE BbrSender : public SendAlgorithmInterface {
                   << ", congestion_window_:" << congestion_window_
                   << ", pacing_rate_:" << pacing_rate_.ToBitsPerSecond()
                   << ", congestion_window_gain_:" << congestion_window_gain_
+                  << ", bytes_lost_in_round_:" << bytes_lost_in_round_
                   << ", unacked_packets:" << unacked_packets_->DebugString()
                   << std::endl;
         break;
@@ -131,6 +133,7 @@ class QUIC_EXPORT_PRIVATE BbrSender : public SendAlgorithmInterface {
                   << ", congestion_window_:" << congestion_window_
                   << ", pacing_rate_:" << pacing_rate_.ToBitsPerSecond()
                   << ", congestion_window_gain_:" << congestion_window_gain_
+                  << ", bytes_lost_in_round_:" << bytes_lost_in_round_
                   << ", unacked_packets:" << unacked_packets_->DebugString()
                   << std::endl;
         break;
@@ -143,6 +146,7 @@ class QUIC_EXPORT_PRIVATE BbrSender : public SendAlgorithmInterface {
                   << ", congestion_window_:" << congestion_window_
                   << ", pacing_rate_:" << pacing_rate_.ToBitsPerSecond()
                   << ", congestion_window_gain_:" << congestion_window_gain_
+                  << ", bytes_lost_in_round_:" << bytes_lost_in_round_
                   << ", unacked_packets:" << unacked_packets_->DebugString()
                   << std::endl;
         break;

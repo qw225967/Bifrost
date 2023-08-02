@@ -165,6 +165,7 @@ void UdpSocket::Send(const uint8_t* data, size_t len,
   else if (sent != UV_EAGAIN) {
     std::cout << "[udp_socket] uv_udp_try_send failed, trying uv_udp_send(): "
               << uv_strerror(sent) << std::endl;
+    return;
   }
 
   auto* sendData = new UvSendData(len);

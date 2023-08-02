@@ -348,7 +348,6 @@ BandwidthSampler::OnCongestionEvent(QuicTime ack_time,
   event_sample.extra_acked =
       OnAckEventEnd(std::min(est_bandwidth_upper_bound, max_bandwidth),
                     is_new_max_bandwidth, round_trip_count);
-
   return event_sample;
 }
 

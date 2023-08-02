@@ -11,6 +11,7 @@
 #include <map>
 #include <ostream>
 #include <vector>
+#include <iostream>
 
 #include "absl/container/inlined_vector.h"
 #include "absl/strings/str_format.h"

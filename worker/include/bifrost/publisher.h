@@ -60,8 +60,8 @@ class Publisher : public UvTimer::Listener,
   void ReceiveSendAlgorithmFeedback(QuicAckFeedbackPacket* feedback);
   void OnReceiveNack(FeedbackRtpNackPacket* packet);
   void OnReceiveReceiverReport(ReceiverReport* report);
-  void OnSendPacketInNack(RtpPacketPtr& packet, uint16_t ext_seq) {
-    nack_->OnSendRtpPacket(packet, ext_seq);
+  void OnSendPacketInNack(RtpPacketPtr& packet) {
+    nack_->OnSendRtpPacket(packet);
   }
 
   SenderReport* GetRtcpSenderReport(uint64_t nowMs);
@@ -104,8 +104,8 @@ class Publisher : public UvTimer::Listener,
       const webrtc::PacedPacketInfo& pacing_info) override {}
 
  private:
-  void GetRtpExtensions(RtpPacketPtr packet);
-  uint32_t TccClientSendRtpPacket(const uint8_t* data, size_t len);
+  void GetRtpExtensions(RtpPacketPtr &packet);
+  uint32_t TccClientSendRtpPacket(std::shared_ptr<uint8_t> data, size_t len);
 
  private:
   /* ------------ base ------------ */
@@ -138,6 +138,8 @@ class Publisher : public UvTimer::Listener,
   DataProducerPtr data_producer_;
   // send report
   float rtt_ = 0;
+  // congestion_type
+  quic::CongestionControlType congestion_type_;
   // tcc
   uint16_t tcc_seq_ = 0;
   TransportCongestionControlClientPtr tcc_client_{nullptr};

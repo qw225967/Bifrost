@@ -54,18 +54,15 @@ TransportCongestionControlServer::~TransportCongestionControlServer() {
 
 void TransportCongestionControlServer::QuicCountIncomingPacket(
     uint64_t nowMs, const RtpPacket* packet) {
-  uint16_t wideSeqNumber;
-
-  if (!packet->ReadTransportWideCc01(wideSeqNumber)) return;
 
   this->quicFeedbackPacket->SetSenderSsrc(0u);
   this->quicFeedbackPacket->SetMediaSsrc(this->transportCcFeedbackMediaSsrc);
 
   RecvPacketInfo temp;
   temp.recv_time = nowMs;
-  temp.sequence = wideSeqNumber;
+  temp.sequence = packet->GetSequenceNumber();
   temp.recv_bytes = packet->GetSize();
-  this->packet_recv_time_map_[wideSeqNumber] = temp;
+  this->packet_recv_time_map_[temp.sequence] = temp;
 }
 
 void TransportCongestionControlServer::SendQuicAckFeedback() {
@@ -196,7 +193,7 @@ inline void TransportCongestionControlServer::SendTransportCcFeedback() {
             << ", base seq:"
             << this->transportCcFeedbackPacket->GetBaseSequenceNumber()
             << ", feedback count:"
-            << this->transportCcFeedbackPacket->GetFeedbackPacketCount()
+            << (uint32_t)this->transportCcFeedbackPacket->GetFeedbackPacketCount()
             << std::endl;
 
   // Notify the listener.

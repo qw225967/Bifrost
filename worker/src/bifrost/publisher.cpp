@@ -26,9 +26,10 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
       uv_loop_(*uv_loop),
       observer_(observer),
       pacer_bits_(InitialAvailableBitrate),
-      rtt_(100),
+      rtt_(20),
       experiment_manager_(experiment_manager),
-      number_(number) {
+      number_(number),
+      congestion_type_(congestion_type) {
   std::cout << "publish experiment manager:" << experiment_manager << std::endl;
 
   // 1.remote address set
@@ -64,7 +65,7 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
     case quic::kBBRv2:
       clock_ = new QuicClockAdapter(uv_loop);
       rtt_stats_ = new quic::RttStats();
-      rtt_stats_->set_initial_rtt(quic::QuicTimeDelta::FromMilliseconds(0));
+      rtt_stats_->set_initial_rtt(quic::QuicTimeDelta::FromMilliseconds(rtt_));
       unacked_packet_map_ =
           new quic::QuicUnackedPacketMap(quic::Perspective::IS_CLIENT);
       random_ = quiche::QuicheRandom::GetInstance();
@@ -87,18 +88,37 @@ void Publisher::ReceiveSendAlgorithmFeedback(QuicAckFeedbackPacket* feedback) {
   auto now_ms = this->uv_loop_->get_time_ms_int64();
   int64_t transport_rtt_sum = 0;
   int64_t transport_rtt_count = 0;
-  for (auto it = feedback->Begin(); it != feedback->End(); ++it) {
+
+  uint32_t ack_bytes = 0;
+  auto it = feedback->Begin();
+  uint16_t pre_seq = 0;
+  if (it != feedback->End())
+    pre_seq = (*it)->GetSequence();
+
+  for (; it != feedback->End(); ++it) {
     QuicAckFeedbackItem* item = *it;
     quic::QuicTime recv_time =
         quic::QuicTime::Zero() +
         quic::QuicTimeDelta::FromMilliseconds(now_ms - item->GetDelta());
 
-//    std::cout << "seq:" << item->GetSequence() << std::endl;
-
     acked_packets_.push_back(
         quic::AckedPacket(quic::QuicPacketNumber(item->GetSequence()),
                           item->GetRecvBytes(), recv_time));
+    ack_bytes += item->GetRecvBytes();
     bytes_in_flight_ -= item->GetRecvBytes();
+
+    if (item->GetSequence() > pre_seq + 1) {
+      for (int i= pre_seq + 1; i < item->GetSequence(); i++) {
+        auto map_it = has_send_map_.find(item->GetSequence());
+        if (map_it != has_send_map_.end()) {
+          losted_packets_.push_back(
+              quic::LostPacket(quic::QuicPacketNumber(map_it->second.sequence),
+                               map_it->second.send_bytes));
+          has_send_map_.erase(map_it);
+        }
+      }
+    }
+
     auto map_it = has_send_map_.find(item->GetSequence());
     if (map_it != has_send_map_.end()) {
       transport_rtt_sum += map_it->second.send_time - now_ms - item->GetDelta();
@@ -106,27 +126,27 @@ void Publisher::ReceiveSendAlgorithmFeedback(QuicAckFeedbackPacket* feedback) {
       has_send_map_.erase(map_it);
     }
     if (this->unacked_packet_map_ != nullptr) {
-      std::cout << "acked seq:" << item->GetSequence() << std::endl;
       this->unacked_packet_map_->RemoveFromInFlight(
           quic::QuicPacketNumber(item->GetSequence()));
       this->unacked_packet_map_->RemoveObsoletePackets();
     }
     largest_acked_seq_ = item->GetSequence();
   }
+
   if (this->unacked_packet_map_ != nullptr) {
     this->unacked_packet_map_->IncreaseLargestAcked(
         quic::QuicPacketNumber(this->largest_acked_seq_));
   }
 
+  quic::QuicTime quic_now =
+      quic::QuicTime::Zero() + quic::QuicTimeDelta::FromMilliseconds(now_ms);
   auto transport_rtt = transport_rtt_sum / transport_rtt_count;
   transport_rtt_ = transport_rtt > 0 ? transport_rtt : transport_rtt_;
   if (rtt_stats_ != nullptr) {
-    rtt_stats_->set_initial_rtt(
-        quic::QuicTimeDelta::FromMilliseconds(transport_rtt));
+    rtt_stats_->UpdateRtt(quic::QuicTimeDelta::FromMilliseconds(5),
+                          quic::QuicTimeDelta::FromMilliseconds(transport_rtt),
+                          quic_now);
   }
-
-  quic::QuicTime quic_now =
-      quic::QuicTime::Zero() + quic::QuicTimeDelta::FromMilliseconds(now_ms);
   if (this->send_algorithm_interface_ != nullptr) {
     // bbr v1 无需最后两个数据，随意给个值
     this->send_algorithm_interface_->OnCongestionEvent(
@@ -138,8 +158,7 @@ void Publisher::ReceiveSendAlgorithmFeedback(QuicAckFeedbackPacket* feedback) {
              .IsZero()) {
       this->pacer_bits_ =
           this->send_algorithm_interface_->PacingRate(this->bytes_in_flight_)
-              .ToBitsPerSecond() *
-          1000;
+              .ToBitsPerSecond();
     }
   }
 
@@ -147,7 +166,7 @@ void Publisher::ReceiveSendAlgorithmFeedback(QuicAckFeedbackPacket* feedback) {
   losted_packets_.clear();
 }
 
-void Publisher::GetRtpExtensions(RtpPacketPtr packet) {
+void Publisher::GetRtpExtensions(RtpPacketPtr& packet) {
   static uint8_t buffer[4096];
   uint8_t extenLen = 2u;
   static std::vector<RtpPacket::GenericExtension> extensions;
@@ -167,42 +186,43 @@ void Publisher::GetRtpExtensions(RtpPacketPtr packet) {
 }
 
 void Publisher::OnReceiveNack(FeedbackRtpNackPacket* packet) {
-  auto packets = this->nack_->ReceiveNack(packet, this->losted_packets_,
-                                          this->bytes_in_flight_);
+  std::vector<RtpPacketPtr> packets;
+  this->nack_->ReceiveNack(packet, packets);
   quic::QuicTime ts =
       quic::QuicTime::Zero() + quic::QuicTimeDelta::FromMilliseconds(
                                    this->uv_loop_->get_time_ms_int64());
-  for (auto& pkt : packets) {
+  for (auto pkt : packets) {
     if (this->unacked_packet_map_ != nullptr) {
       this->unacked_packet_map_->AddSentPacket(
-          pkt, this->tcc_seq_, this->largest_acked_seq_,
+          pkt, pkt->GetSequenceNumber(), this->largest_acked_seq_,
           quic::LOSS_RETRANSMISSION, ts, true, false, quic::ECN_NOT_ECT);
     }
+
+    this->GetRtpExtensions(pkt);
+    pkt->UpdateTransportWideCc01(this->tcc_seq_++);
 
     this->observer_->OnPublisherSendPacket(pkt,
                                            this->udp_remote_address_.get());
     this->bytes_in_flight_ += pkt->GetSize();
-  }
-  auto it = this->losted_packets_.begin();
-  for (; it != this->losted_packets_.end(); it++) {
-    auto map_it =
-        this->has_send_map_.find(uint16_t(it->packet_number.ToUint64()));
-    if (map_it != this->has_send_map_.end()) {
-      this->has_send_map_.erase(map_it);
+    if (this->send_algorithm_interface_ != nullptr) {
+      this->send_algorithm_interface_->OnPacketSent(
+          ts, bytes_in_flight_, quic::QuicPacketNumber(pkt->GetSequenceNumber()),
+          packet->GetSize(), quic::HAS_RETRANSMITTABLE_DATA);
     }
   }
 }
 
-uint32_t Publisher::TccClientSendRtpPacket(const uint8_t* data, size_t len) {
+uint32_t Publisher::TccClientSendRtpPacket(std::shared_ptr<uint8_t> data,
+                                           size_t len) {
   RtpPacketPtr packet = RtpPacket::Parse(data, len);
 
   // 1.quic 记录发送信息
   SendPacketInfo temp;
-  temp.sequence = this->tcc_seq_;
+  temp.sequence = packet->GetSequenceNumber();
   temp.send_time = this->uv_loop_->get_time_ms_int64();
   temp.send_bytes = packet->GetSize();
 
-  this->has_send_map_[this->tcc_seq_] = temp;
+  this->has_send_map_[temp.sequence] = temp;
   bytes_in_flight_ += packet->GetSize();
 
   quic::QuicTime ts =
@@ -210,18 +230,18 @@ uint32_t Publisher::TccClientSendRtpPacket(const uint8_t* data, size_t len) {
                                    this->uv_loop_->get_time_ms_int64());
   if (this->unacked_packet_map_ != nullptr) {
     this->unacked_packet_map_->AddSentPacket(
-        packet, this->tcc_seq_, this->largest_acked_seq_,
+        packet, temp.sequence, this->largest_acked_seq_,
         quic::NOT_RETRANSMISSION, ts, true, true, quic::ECN_NOT_ECT);
   }
 
   if (this->send_algorithm_interface_ != nullptr) {
     this->send_algorithm_interface_->OnPacketSent(
-        ts, bytes_in_flight_, quic::QuicPacketNumber(this->tcc_seq_),
-        packet->GetSize(), quic::HAS_RETRANSMITTABLE_DATA);
+        ts, bytes_in_flight_, quic::QuicPacketNumber(temp.sequence),
+        packet->GetSize(), quic::NO_RETRANSMITTABLE_DATA);
   }
 
   // 2.nack模块
-  this->OnSendPacketInNack(packet, this->tcc_seq_);
+  this->OnSendPacketInNack(packet);
 
   // 3.tcc
   this->GetRtpExtensions(packet);
@@ -279,14 +299,15 @@ void Publisher::OnReceiveReceiverReport(ReceiverReport* report) {
   webrtc_report.jitter = report->GetDelaySinceLastSenderReport();
   webrtc_report.fraction_lost = report->GetFractionLost();
   webrtc_report.packets_lost = report->GetTotalLost();
-
-  std::cout << "receive rr "
-            << "last_sender_report_timestamp:" << report->GetLastSenderReport()
-            << ", ssrc:" << report->GetSsrc()
-            << ", jitter:" << report->GetDelaySinceLastSenderReport()
-            << ", fraction_lost:" << uint32_t(report->GetFractionLost())
-            << ", packets_lost:" << report->GetTotalLost()
-            << ", rtt:" << this->rtt_ << std::endl;
+  //
+  //  std::cout << "receive rr "
+  //            << "last_sender_report_timestamp:" <<
+  //            report->GetLastSenderReport()
+  //            << ", ssrc:" << report->GetSsrc()
+  //            << ", jitter:" << report->GetDelaySinceLastSenderReport()
+  //            << ", fraction_lost:" << uint32_t(report->GetFractionLost())
+  //            << ", packets_lost:" << report->GetTotalLost()
+  //            << ", rtt:" << this->rtt_ << std::endl;
 
   this->nack_->UpdateRtt(uint32_t(this->rtt_));
 
@@ -329,6 +350,9 @@ void Publisher::OnTimer(UvTimer* timer) {
     int32_t available =
         int32_t(this->pacer_bits_ * 1.25 / 200) +
         pre_remind_bits_;  // 5ms 一次发送定时，但每次多发25%数据
+    if (congestion_type_ == quic::kBBR) {
+      available *= 1.25;
+    }
 
     available = available > (1200000 / 200) ? (1200000 / 200) : available;
     while (available > 0) {
@@ -339,8 +363,12 @@ void Publisher::OnTimer(UvTimer* timer) {
         }
         this->max_packet_ms_ = this->uv_loop_->get_time_ms_int64();
         this->max_packet_ts_ = this->uv_loop_->get_time_ms_int64();
+        std::shared_ptr<uint8_t> temp_data(
+            new uint8_t[packet->capacity() + packet->size()]);
+        memcpy(temp_data.get(), packet->data(),
+               packet->capacity() + packet->size());
         auto send_size = this->TccClientSendRtpPacket(
-            packet->data(), packet->capacity() + packet->size());
+            temp_data, packet->capacity() + packet->size());
 
         available -= int32_t(send_size * 8);
         this->send_bits_prior_ += (send_size * 8);
@@ -355,6 +383,7 @@ void Publisher::OnTimer(UvTimer* timer) {
 
   if (timer == this->data_dump_timer_) {
     if (this->send_algorithm_interface_) {
+      std::cout << "show bytes_in_flight_:" << bytes_in_flight_ << std::endl;
       this->send_algorithm_interface_->DebugShow();
     }
 

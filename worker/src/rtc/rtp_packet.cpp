@@ -15,6 +15,13 @@
 #include <sstream>   // std::ostringstream
 
 namespace bifrost {
+
+std::shared_ptr<RtpPacket> RtpPacket::Parse(std::shared_ptr<uint8_t> data, size_t len)  {
+  auto packet = RtpPacket::Parse(data.get(), len);
+  packet->SetSharedData(data);
+  return packet;
+}
+
 /* Class methods. */
 std::shared_ptr<RtpPacket> RtpPacket::Parse(const uint8_t* data, size_t len) {
   if (!RtpPacket::IsRtp(data, len)) return nullptr;
@@ -140,7 +147,8 @@ RtpPacket::RtpPacket(Header* header, HeaderExtension* headerExtension,
   ParseExtensions();
 }
 
-RtpPacket::~RtpPacket() {}
+RtpPacket::~RtpPacket() {
+}
 
 void RtpPacket::Dump() const {}
 

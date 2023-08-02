@@ -39,7 +39,7 @@ Nack::~Nack() {
   delete this->nack_timer_;
 }
 
-void Nack::OnSendRtpPacket(RtpPacketPtr rtp_packet, uint16_t ext_seq) {
+void Nack::OnSendRtpPacket(RtpPacketPtr& rtp_packet) {
   auto seq = rtp_packet->GetSequenceNumber();
 
   if (!send_init_) {
@@ -51,51 +51,45 @@ void Nack::OnSendRtpPacket(RtpPacketPtr rtp_packet, uint16_t ext_seq) {
   item.packet = rtp_packet;
   item.sent_times = 0;
   item.sent_time_ms = ts;
-  item.extension_seq = ext_seq;
 
   this->max_send_ms_ = (max_send_ms_ > ts ? max_send_ms_ : ts);
 
   this->send_rtp_packet_map_[seq] = item;
 }
 
-std::vector<RtpPacketPtr> Nack::ReceiveNack(
-    FeedbackRtpNackPacket* packet, quic::LostPacketVector& lost_packet,
-    quic::QuicByteCount& bytes_in_flight) {
-  std::vector<RtpPacketPtr> result;
+void Nack::ReceiveNack(FeedbackRtpNackPacket* packet,
+                       std::vector<RtpPacketPtr>& vec) {
   for (auto it = packet->Begin(); it != packet->End(); ++it) {
     FeedbackRtpNackItem* item = *it;
     FillRetransmissionContainer(item->GetPacketId(),
-                                item->GetLostPacketBitmask(), result,
-                                lost_packet, bytes_in_flight);
+                                item->GetLostPacketBitmask(), vec);
   }
-  return result;
 }
 
 void Nack::FillRetransmissionContainer(uint16_t seq, uint16_t bitmask,
-                                       std::vector<RtpPacketPtr>& vec,
-                                       quic::LostPacketVector& lost_packet,
-                                       quic::QuicByteCount& bytes_in_flight) {
+                                       std::vector<RtpPacketPtr>& vec) {
   // Look for each requested packet.
   uint64_t now_ms = this->uv_loop_->get_time_ms();
   uint16_t rtt = (this->rtt_ != 0u ? this->rtt_ : DefaultRtt);
   uint16_t current_seq = seq;
+  uint16_t sentBitmask{0b0000000000000000};
+  bool isFirstPacket{true};
   bool requested{true};
+  uint8_t bitmaskCounter{0};
 
   while (requested || bitmask != 0) {
+    bool sent = false;
+
     if (requested) {
       auto iter = this->send_rtp_packet_map_.find(current_seq);
       if (iter != this->send_rtp_packet_map_.end()) {
         uint32_t diff_ms;
 
-        auto packet = iter->second.packet;
-        bytes_in_flight -= iter->second.packet->GetSize();
+        RtpPacketPtr packet = iter->second.packet;
 
         diff_ms = this->max_send_ms_ - iter->second.sent_time_ms;
 
         if (diff_ms > MaxRetransmissionDelay) {
-          lost_packet.push_back(quic::LostPacket(quic::LostPacket(
-              quic::QuicPacketNumber(iter->second.extension_seq),
-              iter->second.packet->GetSize())));
           this->send_rtp_packet_map_.erase(iter);
         } else if (now_ms - iter->second.sent_time_ms <=
                    static_cast<uint64_t>(rtt / 4)) {
@@ -106,8 +100,9 @@ void Nack::FillRetransmissionContainer(uint16_t seq, uint16_t bitmask,
 
           // Increase the number of times this packet was sent.
           iter->second.sent_times++;
-
           vec.push_back(packet);
+
+          sent = true;
         }
       }
     }
@@ -115,6 +110,13 @@ void Nack::FillRetransmissionContainer(uint16_t seq, uint16_t bitmask,
     requested = (bitmask & 1) != 0;
     bitmask >>= 1;
     ++current_seq;
+
+    if (!isFirstPacket) {
+      sentBitmask |= (sent ? 1 : 0) << bitmaskCounter;
+      ++bitmaskCounter;
+    } else {
+      isFirstPacket = false;
+    }
   }
 }
 

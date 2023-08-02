@@ -39,13 +39,11 @@ class Nack : UvTimer::Listener {
 
   struct StorageItem {
     // Cloned packet.
-    RtpPacketPtr packet{nullptr};
+    RtpPacketPtr packet;
     // Last time this packet was resent.
     uint64_t sent_time_ms{0u};
     // Number of times this packet was resent.
     uint8_t sent_times{0u};
-    // tcc extension seq
-    uint16_t extension_seq{0u};
   };
 
  public:
@@ -58,10 +56,9 @@ class Nack : UvTimer::Listener {
 
  public:
   // send
-  void OnSendRtpPacket(RtpPacketPtr rtp_packet, uint16_t ext_seq);
-  std::vector<RtpPacketPtr> ReceiveNack(FeedbackRtpNackPacket* packet,
-                                        quic::LostPacketVector& lost_packet,
-                                        quic::QuicByteCount& bytes_in_flight);
+  void OnSendRtpPacket(RtpPacketPtr& rtp_packet);
+  void ReceiveNack(FeedbackRtpNackPacket* packet,
+                   std::vector<RtpPacketPtr>& vec);
 
   // recv
   void OnReceiveRtpPacket(RtpPacketPtr rtp_packet);
@@ -83,9 +80,7 @@ class Nack : UvTimer::Listener {
  private:
   // send
   void FillRetransmissionContainer(uint16_t seq, uint16_t bitmask,
-                                   std::vector<RtpPacketPtr>& vec,
-                                   quic::LostPacketVector& lost_packet,
-                                   quic::QuicByteCount& bytes_in_flight);
+                                   std::vector<RtpPacketPtr>& vec);
 
   // recv
   void AddPacketsToNackList(uint16_t seqStart, uint16_t seqEnd);

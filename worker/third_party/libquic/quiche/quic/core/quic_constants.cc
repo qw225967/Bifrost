@@ -18,7 +18,7 @@ QuicPacketNumber MaxRandomInitialPacketNumber() {
 }
 
 QuicPacketNumber FirstSendingPacketNumber() {
-  static const QuicPacketNumber kFirstSendingPacketNumber = QuicPacketNumber(1);
+  static const QuicPacketNumber kFirstSendingPacketNumber = QuicPacketNumber(0);
   return kFirstSendingPacketNumber;
 }
 
