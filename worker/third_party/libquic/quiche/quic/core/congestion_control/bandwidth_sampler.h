@@ -5,6 +5,7 @@
 #ifndef QUICHE_QUIC_CORE_CONGESTION_CONTROL_BANDWIDTH_SAMPLER_H_
 #define QUICHE_QUIC_CORE_CONGESTION_CONTROL_BANDWIDTH_SAMPLER_H_
 
+#include "quiche/common/quiche_circular_deque.h"
 #include "quiche/quic/core/congestion_control/send_algorithm_interface.h"
 #include "quiche/quic/core/congestion_control/windowed_filter.h"
 #include "quiche/quic/core/packet_number_indexed_queue.h"
@@ -15,7 +16,6 @@
 #include "quiche/quic/core/quic_unacked_packet_map.h"
 #include "quiche/quic/platform/api/quic_export.h"
 #include "quiche/quic/platform/api/quic_flags.h"
-#include "quiche/common/quiche_circular_deque.h"
 
 namespace quic {
 
@@ -46,6 +46,16 @@ struct QUIC_EXPORT_PRIVATE SendTimeState {
 
   SendTimeState(const SendTimeState& other) = default;
   SendTimeState& operator=(const SendTimeState& other) = default;
+
+  void DebugShow() {
+    std::cout << "SendTimeState{"
+    << "total_bytes_sent:" << total_bytes_sent
+    << ", total_bytes_acked:" << total_bytes_acked
+    << ", total_bytes_lost:" << total_bytes_lost
+    << ", bytes_in_flight:" << bytes_in_flight
+    << "}"
+    << std::endl;
+  }
 
   friend QUIC_EXPORT_PRIVATE std::ostream& operator<<(std::ostream& os,
                                                       const SendTimeState& s);
@@ -94,8 +104,8 @@ struct QUIC_NO_EXPORT ExtraAckedEvent {
 };
 
 struct QUIC_EXPORT_PRIVATE BandwidthSample {
-  // The bandwidth at that particular sample. Zero if no valid bandwidth sample
-  // is available.
+  // The bandwidth at that particular sample. Zero if no valid bandwidth
+  // sampleUpdateAckAggregationBytes is available.
   QuicBandwidth bandwidth = QuicBandwidth::Zero();
 
   // The RTT measurement at this particular sample.  Zero if no RTT sample is
@@ -199,6 +209,16 @@ class QUIC_EXPORT_PRIVATE BandwidthSamplerInterface {
   virtual void OnPacketNeutered(QuicPacketNumber packet_number) = 0;
 
   struct QUIC_NO_EXPORT CongestionEventSample {
+    void DebugShow() {
+      std::cout << "CongestionEventSample{"
+                << "sample_max_bandwidth:" << sample_max_bandwidth.ToBitsPerSecond()
+                << ", sample_is_app_limited:" << (sample_is_app_limited ? "true" : "false")
+                << ", sample_rtt:" << sample_rtt.ToMilliseconds()
+                << ", sample_max_inflight:" << sample_max_inflight
+                << ", extra_acked:" << extra_acked << "}"
+                << std::endl;
+      last_packet_send_state.DebugShow();
+    }
     // The maximum bandwidth sample from all acked packets.
     // QuicBandwidth::Zero() if no samples are available.
     QuicBandwidth sample_max_bandwidth = QuicBandwidth::Zero();
@@ -356,6 +376,9 @@ class QUIC_EXPORT_PRIVATE BandwidthSampler : public BandwidthSamplerInterface {
                               QuicRoundTripCount round_trip_count);
 
   void OnAppLimited() override;
+  void LeaveApplicationLimited() {
+      is_app_limited_ = false;
+  };
 
   void RemoveObsoletePackets(QuicPacketNumber least_unacked) override;
 
@@ -410,7 +433,8 @@ class QUIC_EXPORT_PRIVATE BandwidthSampler : public BandwidthSamplerInterface {
   class QUIC_NO_EXPORT RecentAckPoints {
    public:
     void Update(QuicTime ack_time, QuicByteCount total_bytes_acked) {
-//      QUICHE_DCHECK_GE(total_bytes_acked, ack_points_[1].total_bytes_acked);
+      //      QUICHE_DCHECK_GE(total_bytes_acked,
+      //      ack_points_[1].total_bytes_acked);
 
       if (ack_time < ack_points_[1].ack_time) {
         // This can only happen when time goes backwards, we use the smaller

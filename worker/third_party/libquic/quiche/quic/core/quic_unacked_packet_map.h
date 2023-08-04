@@ -40,7 +40,7 @@ class QUIC_EXPORT_PRIVATE QuicUnackedPacketMap {
   // don't arrive, indicating the need for retransmission.
   // Any retransmittible_frames in |mutable_packet| are swapped from
   // |mutable_packet| into the QuicTransmissionInfo.
-  void AddSentPacket(std::shared_ptr<bifrost::RtpPacket> mutable_packet,
+  void AddSentPacket(std::shared_ptr<bifrost::RtpPacket> &mutable_packet,
                      uint16_t ext_seq, uint16_t largest_acked,
                      TransmissionType transmission_type, QuicTime sent_time,
                      bool set_in_flight, bool measure_rtt,

@@ -55,6 +55,13 @@ class RtcpPacket;
 typedef std::shared_ptr<RtcpPacket> RtcpPacketPtr;
 class CompoundPacket;
 typedef std::shared_ptr<CompoundPacket> CompoundPacketPtr;
+
+struct SendPacketInfo {
+  uint16_t sequence;
+  uint32_t send_time;
+  uint32_t send_bytes;
+  bool is_retrans = false;
+};
 }  // namespace bifrost
 
 #endif  // WORKER_COMMON_H

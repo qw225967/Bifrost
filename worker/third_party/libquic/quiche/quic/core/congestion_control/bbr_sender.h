@@ -108,6 +108,7 @@ class QUIC_EXPORT_PRIVATE BbrSender : public SendAlgorithmInterface {
                   << ", pacing_rate_:" << pacing_rate_.ToBitsPerSecond()
                   << ", congestion_window_gain_:" << congestion_window_gain_
                   << ", bytes_lost_in_round_:" << bytes_lost_in_round_
+                  << ", pacing_gain_:" << pacing_gain_
                   << ", unacked_packets:" << unacked_packets_->DebugString()
                   << std::endl;
         break;
@@ -121,6 +122,7 @@ class QUIC_EXPORT_PRIVATE BbrSender : public SendAlgorithmInterface {
                   << ", pacing_rate_:" << pacing_rate_.ToBitsPerSecond()
                   << ", congestion_window_gain_:" << congestion_window_gain_
                   << ", bytes_lost_in_round_:" << bytes_lost_in_round_
+                  << ", pacing_gain_:" << pacing_gain_
                   << ", unacked_packets:" << unacked_packets_->DebugString()
                   << std::endl;
         break;
@@ -134,6 +136,7 @@ class QUIC_EXPORT_PRIVATE BbrSender : public SendAlgorithmInterface {
                   << ", pacing_rate_:" << pacing_rate_.ToBitsPerSecond()
                   << ", congestion_window_gain_:" << congestion_window_gain_
                   << ", bytes_lost_in_round_:" << bytes_lost_in_round_
+                  << ", pacing_gain_:" << pacing_gain_
                   << ", unacked_packets:" << unacked_packets_->DebugString()
                   << std::endl;
         break;
@@ -147,6 +150,7 @@ class QUIC_EXPORT_PRIVATE BbrSender : public SendAlgorithmInterface {
                   << ", pacing_rate_:" << pacing_rate_.ToBitsPerSecond()
                   << ", congestion_window_gain_:" << congestion_window_gain_
                   << ", bytes_lost_in_round_:" << bytes_lost_in_round_
+                  << ", pacing_gain_:" << pacing_gain_
                   << ", unacked_packets:" << unacked_packets_->DebugString()
                   << std::endl;
         break;
@@ -186,6 +190,7 @@ class QUIC_EXPORT_PRIVATE BbrSender : public SendAlgorithmInterface {
   CongestionControlType GetCongestionControlType() const override;
   std::string GetDebugState() const override;
   void OnApplicationLimited(QuicByteCount bytes_in_flight) override;
+  void LeaveApplicationLimited() override { sampler_.LeaveApplicationLimited(); }
   void PopulateConnectionStats(QuicConnectionStats* stats) const override;
   bool SupportsECT0() const override { return false; }
   bool SupportsECT1() const override { return false; }

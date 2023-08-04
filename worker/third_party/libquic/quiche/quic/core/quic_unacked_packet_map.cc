@@ -129,7 +129,7 @@ QuicUnackedPacketMap::~QuicUnackedPacketMap() {
   }
 }
 
-void QuicUnackedPacketMap::AddSentPacket(std::shared_ptr<bifrost::RtpPacket> mutable_packet,
+void QuicUnackedPacketMap::AddSentPacket(std::shared_ptr<bifrost::RtpPacket> &mutable_packet,
                                          uint16_t ext_seq, uint16_t largest_acked,
                                          TransmissionType transmission_type,
                                          QuicTime sent_time, bool set_in_flight,
@@ -221,6 +221,7 @@ bool QuicUnackedPacketMap::HasRetransmittableFrames(
 
 void QuicUnackedPacketMap::RemoveRetransmittability(
     QuicTransmissionInfo* info) {
+  info->first_sent_after_loss.Clear();
 }
 
 void QuicUnackedPacketMap::RemoveRetransmittability(
@@ -285,6 +286,9 @@ bool QuicUnackedPacketMap::IsUnacked(QuicPacketNumber packet_number) const {
 }
 
 void QuicUnackedPacketMap::RemoveFromInFlight(QuicTransmissionInfo* info) {
+  if (info == nullptr)
+    return;
+
   if (info->in_flight) {
 //    QUIC_BUG_IF(quic_bug_12645_3, bytes_in_flight_ < info->bytes_sent);
 //    QUIC_BUG_IF(quic_bug_12645_4, packets_in_flight_ == 0);

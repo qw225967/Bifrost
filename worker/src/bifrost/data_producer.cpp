@@ -105,7 +105,7 @@ constexpr uint8_t kPacketWithH264[]{
     0x0d, 0x23, 0xd2, 0x5d, 0x9d, 0x74, 0x44, 0xbe, 0x11, 0x31, 0xcd, 0x20,
     0xce, 0xbd, 0xfb, 0xa1, 0xeb};
 
-DataProducer::DataProducer(uint32_t ssrc) : ssrc_(ssrc), sequence_(65000) {
+DataProducer::DataProducer(uint32_t ssrc) : ssrc_(ssrc), sequence_(1) {
 #ifdef USING_LOCAL_FILE_DATA
   data_file_.open(LOCAL_DATA_FILE_PATH_STRING, std::ios::binary);
 #endif

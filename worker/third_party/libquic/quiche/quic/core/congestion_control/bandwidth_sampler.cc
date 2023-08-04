@@ -36,6 +36,7 @@ QuicByteCount MaxAckHeightTracker::Update(
     ExtraAckedEvent third_best = max_ack_height_filter_.GetThirdBest();
     max_ack_height_filter_.Clear();
 
+
     // Reinsert the heights into the filter after recalculating.
     QuicByteCount expected_bytes_acked = bandwidth_estimate * best.time_delta;
     if (expected_bytes_acked < best.bytes_acked) {
@@ -190,7 +191,6 @@ void BandwidthSampler::OnPacketSent(
     QuicByteCount bytes_in_flight,
     HasRetransmittableData has_retransmittable_data) {
   last_sent_packet_ = packet_number;
-
   if (has_retransmittable_data != HAS_RETRANSMITTABLE_DATA) {
     return;
   }
@@ -348,6 +348,7 @@ BandwidthSampler::OnCongestionEvent(QuicTime ack_time,
   event_sample.extra_acked =
       OnAckEventEnd(std::min(est_bandwidth_upper_bound, max_bandwidth),
                     is_new_max_bandwidth, round_trip_count);
+
   return event_sample;
 }
 

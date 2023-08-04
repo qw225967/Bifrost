@@ -68,6 +68,7 @@ class QUIC_EXPORT_PRIVATE TcpCubicSenderBytes : public SendAlgorithmInterface {
   bool InRecovery() const override;
   std::string GetDebugState() const override;
   void OnApplicationLimited(QuicByteCount bytes_in_flight) override;
+  void LeaveApplicationLimited() override {}
   void PopulateConnectionStats(QuicConnectionStats* /*stats*/) const override {}
   bool SupportsECT0() const override { return false; }
   bool SupportsECT1() const override { return false; }

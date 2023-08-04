@@ -13,10 +13,13 @@
 #include "rtcp_compound_packet.h"
 
 namespace bifrost {
-const uint32_t InitialAvailableBitrate = 1000000u;
+const uint32_t InitialAvailableGccBitrate = 1000000u;
+const uint32_t InitialAvailableBBRBitrate = 1000000u;
 const uint16_t IntervalSendTime = 5u;
 const uint32_t IntervalDataDump = 1000u;
 const uint32_t IntervalSendReport = 2000u;
+const uint32_t MaxIntervalSendPacketRemove = 200u; // 一个feedback时间
+const uint32_t MaxFeedbackAckDoNotTransTime = 4000u;
 
 Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
                      Observer* observer, uint8_t number,
@@ -25,7 +28,10 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
     : remote_addr_config_(remote_config),
       uv_loop_(*uv_loop),
       observer_(observer),
-      pacer_bits_(InitialAvailableBitrate),
+      pacer_bits_(
+          (congestion_type == quic::kBBR || congestion_type == quic::kBBRv2)
+              ? InitialAvailableBBRBitrate
+              : InitialAvailableGccBitrate),
       rtt_(20),
       experiment_manager_(experiment_manager),
       number_(number),
@@ -56,7 +62,7 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
   switch (congestion_type) {
     case quic::kGoogCC:
       this->tcc_client_ = std::make_shared<TransportCongestionControlClient>(
-          this, InitialAvailableBitrate, &this->uv_loop_);
+          this, InitialAvailableGccBitrate, &this->uv_loop_);
       break;
     case quic::kCubicBytes:
     case quic::kRenoBytes:
@@ -76,7 +82,7 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
       break;
     default:
       this->tcc_client_ = std::make_shared<TransportCongestionControlClient>(
-          this, InitialAvailableBitrate, &this->uv_loop_);
+          this, InitialAvailableGccBitrate, &this->uv_loop_);
       break;
   }
 
@@ -90,54 +96,47 @@ void Publisher::ReceiveSendAlgorithmFeedback(QuicAckFeedbackPacket* feedback) {
   int64_t transport_rtt_count = 0;
 
   uint32_t ack_bytes = 0;
-  auto it = feedback->Begin();
-  uint16_t pre_seq = 0;
-  if (it != feedback->End())
-    pre_seq = (*it)->GetSequence();
 
-  for (; it != feedback->End(); ++it) {
+  for (auto it = feedback->Begin(); it != feedback->End(); ++it) {
     QuicAckFeedbackItem* item = *it;
+
     quic::QuicTime recv_time =
         quic::QuicTime::Zero() +
         quic::QuicTimeDelta::FromMilliseconds(now_ms - item->GetDelta());
 
-    acked_packets_.push_back(
-        quic::AckedPacket(quic::QuicPacketNumber(item->GetSequence()),
-                          item->GetRecvBytes(), recv_time));
-    ack_bytes += item->GetRecvBytes();
-    bytes_in_flight_ -= item->GetRecvBytes();
+    auto ack_it = has_send_map_.find(item->GetSequence());
+    if (ack_it != has_send_map_.end()) {
 
-    if (item->GetSequence() > pre_seq + 1) {
-      for (int i= pre_seq + 1; i < item->GetSequence(); i++) {
-        auto map_it = has_send_map_.find(item->GetSequence());
-        if (map_it != has_send_map_.end()) {
-          losted_packets_.push_back(
-              quic::LostPacket(quic::QuicPacketNumber(map_it->second.sequence),
-                               map_it->second.send_bytes));
-          has_send_map_.erase(map_it);
-        }
+      // 1.确认数据
+      acked_packets_.push_back(
+          quic::AckedPacket(quic::QuicPacketNumber(ack_it->second.sequence),
+                            ack_it->second.send_bytes, recv_time));
+      ack_bytes += ack_it->second.send_bytes;
+      bytes_in_flight_ -= ack_it->second.send_bytes;
+
+      // 2.移除确认的数据
+      if (this->unacked_packet_map_ != nullptr) {
+        this->unacked_packet_map_->RemoveFromInFlight(
+            quic::QuicPacketNumber(item->GetSequence()));
       }
+
+      transport_rtt_sum += ack_it->second.send_time - now_ms - item->GetDelta();
+      transport_rtt_count++;
+
+      has_send_map_.erase(ack_it);
     }
 
-    auto map_it = has_send_map_.find(item->GetSequence());
-    if (map_it != has_send_map_.end()) {
-      transport_rtt_sum += map_it->second.send_time - now_ms - item->GetDelta();
-      transport_rtt_count++;
-      has_send_map_.erase(map_it);
-    }
-    if (this->unacked_packet_map_ != nullptr) {
-      this->unacked_packet_map_->RemoveFromInFlight(
-          quic::QuicPacketNumber(item->GetSequence()));
-      this->unacked_packet_map_->RemoveObsoletePackets();
-    }
     largest_acked_seq_ = item->GetSequence();
   }
 
+  // 3.确认当前最新seq
   if (this->unacked_packet_map_ != nullptr) {
     this->unacked_packet_map_->IncreaseLargestAcked(
         quic::QuicPacketNumber(this->largest_acked_seq_));
+    this->unacked_packet_map_->RemoveObsoletePackets();
   }
 
+  // 4.更新rtt
   quic::QuicTime quic_now =
       quic::QuicTime::Zero() + quic::QuicTimeDelta::FromMilliseconds(now_ms);
   auto transport_rtt = transport_rtt_sum / transport_rtt_count;
@@ -147,17 +146,31 @@ void Publisher::ReceiveSendAlgorithmFeedback(QuicAckFeedbackPacket* feedback) {
                           quic::QuicTimeDelta::FromMilliseconds(transport_rtt),
                           quic_now);
   }
+
+  // 5.进行拥塞事件触发
   if (this->send_algorithm_interface_ != nullptr) {
+    // 5.1 删除旧数据,并更新当前周期丢包数据
+    this->RemoveOldSendPacket();
+
+    if (is_app_limit_) {
+      this->send_algorithm_interface_->OnApplicationLimited(
+          this->unacked_packet_map_->bytes_in_flight());
+    } else {
+      this->send_algorithm_interface_->LeaveApplicationLimited();
+    }
+
     // bbr v1 无需最后两个数据，随意给个值
     this->send_algorithm_interface_->OnCongestionEvent(
-        true, this->bytes_in_flight_, quic_now, this->acked_packets_,
-        this->losted_packets_, quic::QuicPacketCount(0),
+        true, this->unacked_packet_map_->bytes_in_flight(), quic_now,
+        this->acked_packets_, this->losted_packets_, quic::QuicPacketCount(0),
         quic::QuicPacketCount(0));
 
-    if (!this->send_algorithm_interface_->PacingRate(this->bytes_in_flight_)
+    if (!this->send_algorithm_interface_
+             ->PacingRate(this->unacked_packet_map_->bytes_in_flight())
              .IsZero()) {
       this->pacer_bits_ =
-          this->send_algorithm_interface_->PacingRate(this->bytes_in_flight_)
+          this->send_algorithm_interface_
+              ->PacingRate(this->unacked_packet_map_->bytes_in_flight())
               .ToBitsPerSecond();
     }
   }
@@ -187,86 +200,121 @@ void Publisher::GetRtpExtensions(RtpPacketPtr& packet) {
 
 void Publisher::OnReceiveNack(FeedbackRtpNackPacket* packet) {
   std::vector<RtpPacketPtr> packets;
-  this->nack_->ReceiveNack(packet, packets);
-  quic::QuicTime ts =
-      quic::QuicTime::Zero() + quic::QuicTimeDelta::FromMilliseconds(
-                                   this->uv_loop_->get_time_ms_int64());
-  for (auto pkt : packets) {
-    if (this->unacked_packet_map_ != nullptr) {
-      this->unacked_packet_map_->AddSentPacket(
-          pkt, pkt->GetSequenceNumber(), this->largest_acked_seq_,
-          quic::LOSS_RETRANSMISSION, ts, true, false, quic::ECN_NOT_ECT);
-    }
+  this->nack_->ReceiveNack(packet, packets, &this->unacked_packet_map_,
+                           this->bytes_in_flight_, this->has_send_map_);
 
-    this->GetRtpExtensions(pkt);
-    pkt->UpdateTransportWideCc01(this->tcc_seq_++);
-
-    this->observer_->OnPublisherSendPacket(pkt,
-                                           this->udp_remote_address_.get());
-    this->bytes_in_flight_ += pkt->GetSize();
-    if (this->send_algorithm_interface_ != nullptr) {
-      this->send_algorithm_interface_->OnPacketSent(
-          ts, bytes_in_flight_, quic::QuicPacketNumber(pkt->GetSequenceNumber()),
-          packet->GetSize(), quic::HAS_RETRANSMITTABLE_DATA);
-    }
+  for (auto& pkt : packets) {
+    pkt->SetIsReTrans();
+    this->pacer_vec_.push_back(pkt);
   }
 }
 
-uint32_t Publisher::TccClientSendRtpPacket(std::shared_ptr<uint8_t> data,
-                                           size_t len) {
-  RtpPacketPtr packet = RtpPacket::Parse(data, len);
+void Publisher::RemoveOldSendPacket() {
+  auto now = this->uv_loop_->get_time_ms_int64();
+  int64_t remove_interval = MaxIntervalSendPacketRemove + transport_rtt_/2; // 1个feedback时间+传输的rtt/2
 
-  // 1.quic 记录发送信息
-  SendPacketInfo temp;
-  temp.sequence = packet->GetSequenceNumber();
-  temp.send_time = this->uv_loop_->get_time_ms_int64();
-  temp.send_bytes = packet->GetSize();
+  // 1.把重传时间内的丢失数据统计出来
+  auto it = has_send_map_.begin();
+  while (it != has_send_map_.end()) {
+    // 大于周重传未确认则判定丢失
+    if (now - it->second.send_time > remove_interval) {
+      this->losted_packets_.push_back(quic::LostPacket(
+          quic::QuicPacketNumber(it->second.sequence), it->second.send_bytes));
 
-  this->has_send_map_[temp.sequence] = temp;
-  bytes_in_flight_ += packet->GetSize();
-
-  quic::QuicTime ts =
-      quic::QuicTime::Zero() + quic::QuicTimeDelta::FromMilliseconds(
-                                   this->uv_loop_->get_time_ms_int64());
-  if (this->unacked_packet_map_ != nullptr) {
-    this->unacked_packet_map_->AddSentPacket(
-        packet, temp.sequence, this->largest_acked_seq_,
-        quic::NOT_RETRANSMISSION, ts, true, true, quic::ECN_NOT_ECT);
+      feedback_lost_no_count_packet_vec_.push_back(it->second);
+      it = has_send_map_.erase(it);
+    } else {
+      it++;
+    }
   }
 
-  if (this->send_algorithm_interface_ != nullptr) {
-    this->send_algorithm_interface_->OnPacketSent(
-        ts, bytes_in_flight_, quic::QuicPacketNumber(temp.sequence),
-        packet->GetSize(), quic::NO_RETRANSMITTABLE_DATA);
+  // 2.存在上行feedback丢失，把丢失的ack信令中回复的feedback数据去掉
+  auto vec_it = feedback_lost_no_count_packet_vec_.begin();
+  while (vec_it != feedback_lost_no_count_packet_vec_.end()) {
+    if (now - vec_it->send_time > MaxFeedbackAckDoNotTransTime) {
+      if (this->unacked_packet_map_ != nullptr) {
+        this->unacked_packet_map_->RemoveFromInFlight(
+            quic::QuicPacketNumber(vec_it->sequence));
+      }
+      this->bytes_in_flight_ -= vec_it->send_bytes;
+      vec_it = feedback_lost_no_count_packet_vec_.erase(vec_it);
+    } else {
+      vec_it++;
+    }
+  }
+  if (this->unacked_packet_map_)
+    this->unacked_packet_map_->RemoveObsoletePackets();
+}
+
+void Publisher::TimerSendPacket(int32_t available) {
+  available += this->pre_remind_bits_;
+
+  auto now = this->uv_loop_->get_time_ms_int64();
+  auto it = pacer_vec_.begin();
+  while (it != pacer_vec_.end() && available > 0) {
+
+    quic::QuicTime ts =
+        quic::QuicTime::Zero() + quic::QuicTimeDelta::FromMilliseconds(now);
+
+    if (!(*it)->IsReTrans()) {
+      // 1 quic 记录发送信息
+      SendPacketInfo temp;
+      temp.sequence = (*it)->GetSequenceNumber();
+      temp.send_time = now;
+      temp.send_bytes = (*it)->GetSize();
+      temp.is_retrans = (*it)->IsReTrans();
+      this->has_send_map_[temp.sequence] = temp;
+
+      // 4.放入unack，此处不统计重复数据，使用无重传模式
+      if (this->unacked_packet_map_ != nullptr) {
+        this->unacked_packet_map_->AddSentPacket(
+            (*it), (*it)->GetSequenceNumber(),
+            this->largest_acked_seq_, quic::NOT_RETRANSMISSION, ts, true,
+            true, quic::ECN_NOT_ECT);
+      }
+      this->bytes_in_flight_ += temp.send_bytes;
+    }
+
+    // 1.2 算法记录发送
+    if (this->send_algorithm_interface_ != nullptr) {
+      this->send_algorithm_interface_->OnPacketSent(
+          ts, this->unacked_packet_map_->bytes_in_flight(),
+          quic::QuicPacketNumber((*it)->GetSequenceNumber()), (*it)->GetSize(),
+          quic::HAS_RETRANSMITTABLE_DATA);
+    }
+
+    // 2.tcc
+    this->GetRtpExtensions((*it));
+    (*it)->UpdateTransportWideCc01(this->tcc_seq_++);
+
+    if (this->tcc_client_ != nullptr) {
+      webrtc::RtpPacketSendInfo packetInfo;
+
+      packetInfo.ssrc = (*it)->GetSsrc();
+      packetInfo.transport_sequence_number = this->tcc_seq_;
+      packetInfo.has_rtp_sequence_number = true;
+      packetInfo.rtp_sequence_number = (*it)->GetSequenceNumber();
+      packetInfo.length = (*it)->GetSize();
+      packetInfo.pacing_info = this->tcc_client_->GetPacingInfo();
+
+      // webrtc中发送和进入发送状态有一小段等待时间
+      // 因此分开了两个函数 insert 和 sent 函数
+      this->tcc_client_->InsertPacket(packetInfo);
+
+      this->tcc_client_->PacketSent(packetInfo, now);
+    }
+
+    observer_->OnPublisherSendPacket((*it), this->udp_remote_address_.get());
+
+    this->send_bits_prior_ += (*it)->GetSize() * 8;
+    this->send_packet_bytes_ += (*it)->GetSize();
+    available -= int32_t((*it)->GetSize() * 8);
+    this->send_packet_count_++;
+
+    it = pacer_vec_.erase(it);
   }
 
-  // 2.nack模块
-  this->OnSendPacketInNack(packet);
-
-  // 3.tcc
-  this->GetRtpExtensions(packet);
-  packet->UpdateTransportWideCc01(this->tcc_seq_++);
-
-  if (this->tcc_client_ != nullptr) {
-    webrtc::RtpPacketSendInfo packetInfo;
-
-    packetInfo.ssrc = packet->GetSsrc();
-    packetInfo.transport_sequence_number = this->tcc_seq_;
-    packetInfo.has_rtp_sequence_number = true;
-    packetInfo.rtp_sequence_number = packet->GetSequenceNumber();
-    packetInfo.length = packet->GetSize();
-    packetInfo.pacing_info = this->tcc_client_->GetPacingInfo();
-
-    // webrtc中发送和进入发送状态有一小段等待时间
-    // 因此分开了两个函数 insert 和 sent 函数
-    this->tcc_client_->InsertPacket(packetInfo);
-
-    this->tcc_client_->PacketSent(packetInfo,
-                                  this->uv_loop_->get_time_ms_int64());
-  }
-
-  observer_->OnPublisherSendPacket(packet, this->udp_remote_address_.get());
-  return packet->GetSize();
+  this->pre_remind_bits_ = available;
 }
 
 void Publisher::OnReceiveReceiverReport(ReceiverReport* report) {
@@ -347,46 +395,48 @@ SenderReport* Publisher::GetRtcpSenderReport(uint64_t nowMs) {
 
 void Publisher::OnTimer(UvTimer* timer) {
   if (timer == this->producer_timer_) {
-    int32_t available =
-        int32_t(this->pacer_bits_ * 1.25 / 200) +
-        pre_remind_bits_;  // 5ms 一次发送定时，但每次多发25%数据
-    if (congestion_type_ == quic::kBBR) {
-      available *= 1.25;
-    }
+    int32_t available = int32_t(this->pacer_bits_ * 5 * 1.2 / 1000);
+    int32_t limit = 1200000 * 5 * 1.2 / 1000;
 
-    available = available > (1200000 / 200) ? (1200000 / 200) : available;
+    if (available > limit) {
+      is_app_limit_ = true;
+    } else {
+      is_app_limit_ = false;
+    }
+    available = available > (limit) ? (limit) : available;
+    auto send_available = available;
+
     while (available > 0) {
       if (this->data_producer_ != nullptr) {
         auto packet = this->data_producer_->CreateData(available);
         if (packet == nullptr) {
           break;
         }
-        this->max_packet_ms_ = this->uv_loop_->get_time_ms_int64();
-        this->max_packet_ts_ = this->uv_loop_->get_time_ms_int64();
-        std::shared_ptr<uint8_t> temp_data(
-            new uint8_t[packet->capacity() + packet->size()]);
-        memcpy(temp_data.get(), packet->data(),
-               packet->capacity() + packet->size());
-        auto send_size = this->TccClientSendRtpPacket(
-            temp_data, packet->capacity() + packet->size());
+        auto now = this->uv_loop_->get_time_ms_int64();
+        this->max_packet_ms_ = now;
+        this->max_packet_ts_ = now;
 
-        available -= int32_t(send_size * 8);
-        this->send_bits_prior_ += (send_size * 8);
-        this->send_packet_bytes_ += send_size;
-        this->send_packet_count_++;
+        // 1.webrtc 内部会把空间删除，在这里做个拷贝
+        auto len = packet->capacity() + packet->size();
+        auto* payload_data = new uint8_t[len];
+        memcpy(payload_data, packet->data(), len);
+        RtpPacketPtr rtp_packet = RtpPacket::Parse(payload_data, len);
+        rtp_packet->SetPayloadDataPtr(&payload_data);
+        // 2.nack模块
+        this->OnSendPacketInNack(rtp_packet);
+
+        pacer_vec_.push_back(rtp_packet);
+
+        available -= int32_t((packet->capacity() + packet->size()) * 8);
 
         delete packet;
       }
     }
-    pre_remind_bits_ = available;
+
+    this->TimerSendPacket(send_available);
   }
 
   if (timer == this->data_dump_timer_) {
-    if (this->send_algorithm_interface_) {
-      std::cout << "show bytes_in_flight_:" << bytes_in_flight_ << std::endl;
-      this->send_algorithm_interface_->DebugShow();
-    }
-
     if (this->tcc_client_ != nullptr) {
       auto gcc_available = this->tcc_client_->get_available_bitrate();
       std::vector<double> trends = this->tcc_client_->get_trend();
@@ -403,6 +453,9 @@ void Publisher::OnTimer(UvTimer* timer) {
                                                   gcc_data);
     }
     if (this->send_algorithm_interface_ != nullptr) {
+      std::cout << "show bytes_in_flight_:" << bytes_in_flight_ << std::endl;
+      this->send_algorithm_interface_->DebugShow();
+
       auto available = this->send_algorithm_interface_->BandwidthEstimate()
                            .ToBitsPerSecond();
       std::vector<double> trends = {};

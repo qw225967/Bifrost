@@ -58,16 +58,23 @@ void Nack::OnSendRtpPacket(RtpPacketPtr& rtp_packet) {
 }
 
 void Nack::ReceiveNack(FeedbackRtpNackPacket* packet,
-                       std::vector<RtpPacketPtr>& vec) {
+                       std::vector<RtpPacketPtr>& vec,
+                       quic::QuicUnackedPacketMap** unacked_packets,
+                       quic::QuicByteCount &bytes_in_flight,
+                       std::map<uint16_t, SendPacketInfo> &has_send_map) {
   for (auto it = packet->Begin(); it != packet->End(); ++it) {
     FeedbackRtpNackItem* item = *it;
     FillRetransmissionContainer(item->GetPacketId(),
-                                item->GetLostPacketBitmask(), vec);
+                                item->GetLostPacketBitmask(), vec,
+                                unacked_packets,bytes_in_flight, has_send_map);
   }
 }
 
 void Nack::FillRetransmissionContainer(uint16_t seq, uint16_t bitmask,
-                                       std::vector<RtpPacketPtr>& vec) {
+                                       std::vector<RtpPacketPtr>& vec,
+                                       quic::QuicUnackedPacketMap** unacked_packets,
+                                       quic::QuicByteCount &bytes_in_flight,
+                                       std::map<uint16_t, SendPacketInfo> &has_send_map) {
   // Look for each requested packet.
   uint64_t now_ms = this->uv_loop_->get_time_ms();
   uint16_t rtt = (this->rtt_ != 0u ? this->rtt_ : DefaultRtt);
@@ -90,6 +97,18 @@ void Nack::FillRetransmissionContainer(uint16_t seq, uint16_t bitmask,
         diff_ms = this->max_send_ms_ - iter->second.sent_time_ms;
 
         if (diff_ms > MaxRetransmissionDelay) {
+
+          // 网络中传输真正丢失
+          auto map_it = has_send_map.find(packet->GetSequenceNumber());
+          if (map_it != has_send_map.end() && map_it->second.is_retrans) {
+            if (*unacked_packets) {
+              (*unacked_packets)->RemoveFromInFlight(quic::QuicPacketNumber(map_it->second.sequence));
+              (*unacked_packets)->RemoveRetransmittability(quic::QuicPacketNumber(map_it->second.sequence));
+              (*unacked_packets)->RemoveObsoletePackets();
+            }
+            bytes_in_flight -= map_it->second.send_bytes;
+          }
+
           this->send_rtp_packet_map_.erase(iter);
         } else if (now_ms - iter->second.sent_time_ms <=
                    static_cast<uint64_t>(rtt / 4)) {

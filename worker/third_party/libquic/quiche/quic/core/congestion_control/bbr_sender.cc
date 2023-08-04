@@ -288,7 +288,6 @@ void BbrSender::OnCongestionEvent(bool /*rtt_updated*/,
                                  max_bandwidth_.GetBest(),
                                  QuicBandwidth::Infinite(), round_trip_count_);
 
-
 //  std::cout << "OnCongestionEvent:" << pacing_rate_.ToBitsPerSecond() << ", max bandwidth:" << sample.sample_max_bandwidth << std::endl;
   if (sample.last_packet_send_state.is_valid) {
     last_sample_is_app_limited_ = sample.last_packet_send_state.is_app_limited;
@@ -308,6 +307,8 @@ void BbrSender::OnCongestionEvent(bool /*rtt_updated*/,
 //        << " packets have been acked, but sample_max_bandwidth is zero.";
     if (!sample.sample_is_app_limited ||
         sample.sample_max_bandwidth > max_bandwidth_.GetBest()) {
+//      sample.DebugShow();
+//      std::cout << "round_trip_count_:" << round_trip_count_ << ", max bw:" << sample.sample_max_bandwidth << std::endl;
       max_bandwidth_.Update(sample.sample_max_bandwidth, round_trip_count_);
     }
   }

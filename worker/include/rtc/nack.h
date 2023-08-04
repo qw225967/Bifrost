@@ -15,6 +15,7 @@
 
 #include "common.h"
 #include "quiche/quic/core/quic_types.h"
+#include "quiche/quic/core/quic_unacked_packet_map.h"
 #include "rtcp_nack.h"
 #include "uv_loop.h"
 #include "uv_timer.h"
@@ -58,7 +59,10 @@ class Nack : UvTimer::Listener {
   // send
   void OnSendRtpPacket(RtpPacketPtr& rtp_packet);
   void ReceiveNack(FeedbackRtpNackPacket* packet,
-                   std::vector<RtpPacketPtr>& vec);
+                   std::vector<RtpPacketPtr>& vec,
+                   quic::QuicUnackedPacketMap** unacked_packets,
+                   quic::QuicByteCount &bytes_in_flight,
+                   std::map<uint16_t, SendPacketInfo> &has_send_map);
 
   // recv
   void OnReceiveRtpPacket(RtpPacketPtr rtp_packet);
@@ -80,7 +84,10 @@ class Nack : UvTimer::Listener {
  private:
   // send
   void FillRetransmissionContainer(uint16_t seq, uint16_t bitmask,
-                                   std::vector<RtpPacketPtr>& vec);
+                                   std::vector<RtpPacketPtr>& vec,
+                                   quic::QuicUnackedPacketMap** unacked_packets,
+                                   quic::QuicByteCount &bytes_in_flight,
+                                   std::map<uint16_t, SendPacketInfo> &has_send_map);
 
   // recv
   void AddPacketsToNackList(uint16_t seqStart, uint16_t seqEnd);

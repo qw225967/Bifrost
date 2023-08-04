@@ -34,13 +34,6 @@ typedef std::shared_ptr<TransportCongestionControlClient>
 typedef std::shared_ptr<Nack> NackPtr;
 class Publisher : public UvTimer::Listener,
                   public TransportCongestionControlClient::Observer {
- private:
-  struct SendPacketInfo {
-    uint16_t sequence;
-    uint16_t send_time;
-    uint32_t send_bytes;
-  };
-
  public:
   class Observer {
    public:
@@ -72,6 +65,8 @@ class Publisher : public UvTimer::Listener,
             ExperimentManagerPtr& experiment_manager,
             quic::CongestionControlType quic_congestion_type);
   ~Publisher() {
+    feedback_lost_no_count_packet_vec_.clear();
+    pacer_vec_.clear();
     delete producer_timer_;
     delete data_dump_timer_;
     delete send_report_timer_;
@@ -104,8 +99,9 @@ class Publisher : public UvTimer::Listener,
       const webrtc::PacedPacketInfo& pacing_info) override {}
 
  private:
+  void TimerSendPacket(int32_t available);
+  void RemoveOldSendPacket();
   void GetRtpExtensions(RtpPacketPtr &packet);
-  uint32_t TccClientSendRtpPacket(std::shared_ptr<uint8_t> data, size_t len);
 
  private:
   /* ------------ base ------------ */
@@ -129,6 +125,8 @@ class Publisher : public UvTimer::Listener,
   /* ------------ base ------------ */
 
   /* ------------ experiment ------------ */
+  // pacer vec
+  std::vector<RtpPacketPtr> pacer_vec_;
   // sr
   uint32_t send_packet_count_{0u};
   uint64_t send_packet_bytes_{0u};
@@ -150,6 +148,7 @@ class Publisher : public UvTimer::Listener,
   // nack
   NackPtr nack_;
   // quic send algorithm interface
+  bool is_app_limit_{false};
   quic::SendAlgorithmInterface* send_algorithm_interface_{nullptr};
   quic::QuicClock* clock_{nullptr};
   quic::RttStats* rtt_stats_{nullptr};
@@ -160,6 +159,7 @@ class Publisher : public UvTimer::Listener,
   quic::LostPacketVector losted_packets_;
   quic::QuicByteCount bytes_in_flight_{0u};
   std::map<uint16_t, SendPacketInfo> has_send_map_;
+  std::vector<SendPacketInfo> feedback_lost_no_count_packet_vec_;
   int64_t transport_rtt_{0u};
   uint16_t largest_acked_seq_{0u};
   /* ------------ experiment ------------ */
