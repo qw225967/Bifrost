@@ -42,17 +42,17 @@ int main() {
       bifrost::Transport::SinglePublish, 0, ptr,
       quic::CongestionControlType::kBBR);
   ptr->AddTransportNumber(0);
-  auto temp1 = std::make_shared<bifrost::Transport>(
-      bifrost::Transport::SinglePublish, 1, ptr,
-      quic::CongestionControlType::kGoogCC);
-  ptr->AddTransportNumber(1);
+//  auto temp1 = std::make_shared<bifrost::Transport>(
+//      bifrost::Transport::SinglePublish, 1, ptr,
+//      quic::CongestionControlType::kGoogCC);
+//  ptr->AddTransportNumber(1);
   ptr->InitTransportColumn();
 
   std::thread publish0(ThreadPublish0, ref(temp0));
-  std::thread publish1(ThreadPublish1, ref(temp1), ref(ptr));
+//  std::thread publish1(ThreadPublish1, ref(temp1), ref(ptr));
 
   publish0.join();
-  publish1.join();
+//  publish1.join();
 
   return 0;
 }

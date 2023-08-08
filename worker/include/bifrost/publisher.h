@@ -45,6 +45,9 @@ class Publisher : public UvTimer::Listener,
 
  public:
   void ReceiveFeedbackTransport(const FeedbackRtpTransportPacket* feedback) {
+    if (this->congestion_type_ != quic::kGoogCC)
+      return;
+
     if (this->tcc_client_ != nullptr) {
       this->tcc_client_->ReceiveRtcpTransportFeedback(feedback);
       this->pacer_bits_ = this->tcc_client_->get_available_bitrate();
@@ -162,6 +165,7 @@ class Publisher : public UvTimer::Listener,
   std::vector<SendPacketInfo> feedback_lost_no_count_packet_vec_;
   int64_t transport_rtt_{0u};
   uint16_t largest_acked_seq_{0u};
+  int32_t cwnd_{6000u};
   /* ------------ experiment ------------ */
 };
 }  // namespace bifrost

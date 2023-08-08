@@ -194,7 +194,6 @@ void BandwidthSampler::OnPacketSent(
   if (has_retransmittable_data != HAS_RETRANSMITTABLE_DATA) {
     return;
   }
-
   total_bytes_sent_ += bytes;
 
   // If there are no packets in flight, the time at which the new transmission
@@ -385,6 +384,7 @@ BandwidthSample BandwidthSampler::OnPacketAcknowledged(
     // See the TODO below.
     return BandwidthSample();
   }
+
   BandwidthSample sample =
       OnPacketAcknowledgedInner(ack_time, packet_number, *sent_packet_pointer);
   return sample;
@@ -393,6 +393,7 @@ BandwidthSample BandwidthSampler::OnPacketAcknowledged(
 BandwidthSample BandwidthSampler::OnPacketAcknowledgedInner(
     QuicTime ack_time, QuicPacketNumber packet_number,
     const ConnectionStateOnSentPacket& sent_packet) {
+
   total_bytes_acked_ += sent_packet.size;
   total_bytes_sent_at_last_acked_packet_ =
       sent_packet.send_time_state.total_bytes_sent;

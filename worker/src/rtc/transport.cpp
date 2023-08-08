@@ -25,6 +25,7 @@ Transport::Transport(TransportModel model, uint8_t number,
 
   auto remote_config = Settings::config_.remote_send_configuration_;
   remote_config.ssrc += number;
+  remote_config.rtcPort += number; // 临时测试
 
   auto local_config = Settings::config_.local_receive_configuration_;
   local_config.rtcPort += number;
