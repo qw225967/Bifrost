@@ -102,7 +102,7 @@ class Publisher : public UvTimer::Listener,
       const webrtc::PacedPacketInfo& pacing_info) override {}
 
  private:
-  void TimerSendPacket(int32_t available);
+  uint32_t TimerSendPacket(int32_t available);
   void RemoveOldSendPacket();
   void GetRtpExtensions(RtpPacketPtr &packet);
 
@@ -146,7 +146,7 @@ class Publisher : public UvTimer::Listener,
   TransportCongestionControlClientPtr tcc_client_{nullptr};
   // pacer bytes
   uint32_t pacer_bits_;
-  int32_t pre_remind_bits_ = 0;
+  int32_t pre_remind_bytes_ = 0;
   uint32_t send_bits_prior_ = 0;
   // nack
   NackPtr nack_;

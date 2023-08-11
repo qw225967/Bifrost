@@ -59,10 +59,7 @@ class Nack : UvTimer::Listener {
   // send
   void OnSendRtpPacket(RtpPacketPtr& rtp_packet);
   void ReceiveNack(FeedbackRtpNackPacket* packet,
-                   std::vector<RtpPacketPtr>& vec,
-                   quic::QuicUnackedPacketMap** unacked_packets,
-                   quic::QuicByteCount &bytes_in_flight,
-                   std::map<uint16_t, SendPacketInfo> &has_send_map);
+                   std::vector<RtpPacketPtr>& vec);
 
   // recv
   void OnReceiveRtpPacket(RtpPacketPtr rtp_packet);
@@ -84,10 +81,7 @@ class Nack : UvTimer::Listener {
  private:
   // send
   void FillRetransmissionContainer(uint16_t seq, uint16_t bitmask,
-                                   std::vector<RtpPacketPtr>& vec,
-                                   quic::QuicUnackedPacketMap** unacked_packets,
-                                   quic::QuicByteCount &bytes_in_flight,
-                                   std::map<uint16_t, SendPacketInfo> &has_send_map);
+                                   std::vector<RtpPacketPtr>& vec);
 
   // recv
   void AddPacketsToNackList(uint16_t seqStart, uint16_t seqEnd);

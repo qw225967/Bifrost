@@ -78,7 +78,7 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
       connection_stats_ = new quic::QuicConnectionStats();
       send_algorithm_interface_ = quic::SendAlgorithmInterface::Create(
           clock_, rtt_stats_, unacked_packet_map_, congestion_type, random_,
-          connection_stats_, 4000, nullptr);
+          connection_stats_, 1, nullptr);
       break;
     default:
       this->tcc_client_ = std::make_shared<TransportCongestionControlClient>(
@@ -170,7 +170,9 @@ void Publisher::ReceiveSendAlgorithmFeedback(QuicAckFeedbackPacket* feedback) {
               ->PacingRate(this->unacked_packet_map_->bytes_in_flight())
               .ToBitsPerSecond();
       if (send_algorithm_interface_->GetCongestionWindow() != 0) {
-        this->cwnd_ = this->send_algorithm_interface_->GetCongestionWindow() * 8;
+        this->cwnd_ = this->send_algorithm_interface_->GetCongestionWindow();
+      } else {
+        this->cwnd_ = 6000;
       }
     }
   }
@@ -200,8 +202,7 @@ void Publisher::GetRtpExtensions(RtpPacketPtr& packet) {
 
 void Publisher::OnReceiveNack(FeedbackRtpNackPacket* packet) {
   std::vector<RtpPacketPtr> packets;
-  this->nack_->ReceiveNack(packet, packets, &this->unacked_packet_map_,
-                           this->bytes_in_flight_, this->has_send_map_);
+  this->nack_->ReceiveNack(packet, packets);
 
   for (auto& pkt : packets) {
     pkt->SetIsReTrans();
@@ -247,9 +248,9 @@ void Publisher::RemoveOldSendPacket() {
     this->unacked_packet_map_->RemoveObsoletePackets();
 }
 
-void Publisher::TimerSendPacket(int32_t available_bytes) {
-  available_bytes = this->cwnd_ < available_bytes ? this->cwnd_ : available_bytes;
-  available_bytes += this->pre_remind_bits_ / 8;
+uint32_t Publisher::TimerSendPacket(int32_t available_bytes) {
+  uint32_t used_bytes = 0;
+  available_bytes += this->pre_remind_bytes_;
   auto now = this->uv_loop_->get_time_ms_int64();
   auto it = pacer_vec_.begin();
   while (it != pacer_vec_.end() && available_bytes > 0) {
@@ -263,7 +264,8 @@ void Publisher::TimerSendPacket(int32_t available_bytes) {
       temp.send_time = now;
       temp.send_bytes = (*it)->GetSize();
       temp.is_retrans = (*it)->IsReTrans();
-      this->has_send_map_[temp.sequence] = temp;
+      if (has_send_map_.find(temp.sequence) == has_send_map_.end())
+        this->has_send_map_[temp.sequence] = temp;
 
       // 4.放入unack，此处不统计重复数据，使用无重传模式
       if (this->unacked_packet_map_ != nullptr) {
@@ -273,7 +275,6 @@ void Publisher::TimerSendPacket(int32_t available_bytes) {
       }
       this->bytes_in_flight_ += temp.send_bytes;
     }
-    this->cwnd_ -= (*it)->GetSize();
 
     // 1.2 算法记录发送
     if (this->send_algorithm_interface_ != nullptr) {
@@ -308,13 +309,14 @@ void Publisher::TimerSendPacket(int32_t available_bytes) {
 
     this->send_bits_prior_ += (*it)->GetSize() * 8;
     this->send_packet_bytes_ += (*it)->GetSize();
-    available_bytes -= int32_t((*it)->GetSize() * 8);
+    available_bytes -= int32_t((*it)->GetSize());
+    used_bytes += (*it)->GetSize();
     this->send_packet_count_++;
 
     it = pacer_vec_.erase(it);
   }
-
-  this->pre_remind_bits_ = available_bytes * 8;
+  this->pre_remind_bytes_ = available_bytes;
+  return used_bytes;
 }
 
 void Publisher::OnReceiveReceiverReport(ReceiverReport* report) {
@@ -432,8 +434,14 @@ void Publisher::OnTimer(UvTimer* timer) {
         delete packet;
       }
     }
-
-    this->TimerSendPacket(send_available);
+    if (this->send_algorithm_interface_ != nullptr) {
+      if (this->cwnd_ > 0) {
+        uint32_t used_bytes = this->TimerSendPacket(send_available);
+        this->cwnd_ -= (int32_t)used_bytes;
+      }
+    } else {
+      this->TimerSendPacket(send_available);
+    }
   }
 
   if (timer == this->data_dump_timer_) {
