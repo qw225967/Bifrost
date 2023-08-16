@@ -8,6 +8,7 @@
 
 #include <deque>
 
+#include "bifrost/bifrost_send_algorithm/bifrost_send_algorithm_interface.h"
 #include "common.h"
 #include "rtcp_tcc.h"
 #include "rtp_packet.h"
@@ -15,7 +16,8 @@
 
 namespace bifrost {
 class TransportCongestionControlClient
-    : public webrtc::PacketRouter,
+    : public BifrostSendAlgorithmInterface,
+      public webrtc::PacketRouter,
       public webrtc::TargetTransferRateObserver,
       public UvTimer::Listener {
  public:
@@ -42,6 +44,13 @@ class TransportCongestionControlClient
         TransportCongestionControlClient* tcc_client, RtpPacket* packet,
         const webrtc::PacedPacketInfo& pacing_info) = 0;
   };
+ public:
+  // BifrostSendAlgorithmInterface
+  void OnRtpPacketSend(RtpPacket rtp_packet) {}
+
+  void OnReceiveRtcpFeedback(RtcpPacketPtr rtcp_packet) {}
+  void OnReceiveReceiverReport(ReceiverReport* report) {}
+  uint32_t GetPacingRate() { return 0; }
 
  public:
   TransportCongestionControlClient(

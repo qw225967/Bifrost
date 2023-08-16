@@ -11,7 +11,7 @@
 #include <string>
 #include <thread>
 
-#include "experiment_manager.h"
+#include "bifrost/experiment_manager/experiment_manager.h"
 #include "quiche/quic/core/quic_types.h"
 #include "setting.h"
 #include "transport.h"

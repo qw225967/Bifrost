@@ -15,8 +15,8 @@
 #include <string>
 #include <vector>
 
+#include "bifrost/experiment_manager/experiment_manager.h"
 #include "common.h"
-#include "experiment_manager.h"
 
 namespace bifrost {
 class Settings {

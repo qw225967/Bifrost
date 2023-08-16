@@ -7,7 +7,7 @@
  * @description : TODO
  *******************************************************/
 
-#include "experiment_manager.h"
+#include "bifrost/experiment_manager/experiment_manager.h"
 
 #include <cstring>
 #include <ctime>

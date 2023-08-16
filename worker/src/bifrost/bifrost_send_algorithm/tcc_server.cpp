@@ -1,7 +1,7 @@
 #define MS_CLASS "RTC::TransportCongestionControlServer"
 // #define MS_LOG_DEV_LEVEL 3
 
-#include "tcc_server.h"
+#include "bifrost/bifrost_send_algorithm/tcc_server.h"
 
 #include <iterator>  // std::ostream_iterator
 #include <sstream>   // std::ostringstream

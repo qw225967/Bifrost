@@ -501,8 +501,8 @@ add_executable(worker
         include/bifrost/data_producer.h
         include/bifrost/player.h
         include/bifrost/publisher.h
-        include/bifrost/experiment_manager.h
-        include/bifrost/experiment_data.h
+        include/bifrost/experiment_manager/experiment_manager.h
+        include/bifrost/experiment_manager/experiment_data.h
         include/io/uv_timer.h
         include/io/port_manager.h
         include/io/udp_socket.h
@@ -514,8 +514,8 @@ add_executable(worker
         include/rtc/rtcp_packet.h
         include/rtc/rtcp_feedback.h
         include/rtc/rtcp_tcc.h
-        include/rtc/tcc_client.h
-        include/rtc/tcc_server.h
+        include/bifrost/bifrost_send_algorithm/tcc_client.h
+        include/bifrost/bifrost_send_algorithm/tcc_server.h
         include/rtc/sequence_manager.h
         include/rtc/nack.h
         include/rtc/rtcp_nack.h
@@ -533,13 +533,13 @@ add_executable(worker
         src/bifrost/data_producer.cpp
         src/bifrost/player.cpp
         src/bifrost/publisher.cpp
-        src/bifrost/experiment_manager.cpp
+        src/bifrost/experiment_manager/experiment_manager.cpp
         src/io/uv_timer.cpp
         src/io/port_manager.cpp
         src/io/udp_socket.cpp
         src/io/uv_loop.cpp
-        src/rtc/tcc_client.cpp
-        src/rtc/tcc_server.cpp
+        src/bifrost/bifrost_send_algorithm/tcc_client.cpp
+        src/bifrost/bifrost_send_algorithm/tcc_server.cpp
         src/rtc/rtcp_packet.cpp
         src/rtc/rtcp_feedback.cpp
         src/rtc/rtcp_tcc.cpp

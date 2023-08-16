@@ -128,8 +128,8 @@ void Transport::OnUdpRouterRtcpPacketReceived(
           break;
         }
         case FeedbackRtp::MessageType::QUICFB: {
-          auto* feddbackPacket = static_cast<QuicAckFeedbackPacket *>(rtp_fb);
-          this->publisher_->ReceiveSendAlgorithmFeedback(feddbackPacket);
+          auto* feddback = static_cast<QuicAckFeedbackPacket *>(rtp_fb);
+          this->publisher_->ReceiveSendAlgorithmFeedback(feddback);
           break;
         }
       }

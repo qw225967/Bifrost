@@ -12,17 +12,15 @@
 
 #include <map>
 
+
+#include "bifrost/bifrost_send_algorithm/tcc_client.h"
+#include "bifrost/experiment_manager/experiment_manager.h"
 #include "data_producer.h"
-#include "experiment_manager.h"
 #include "nack.h"
-#include "quic_clock_adapter.h"
-#include "quiche/quic/core/congestion_control/send_algorithm_interface.h"
-#include "rtcp_quic_feedback.h"
 #include "rtcp_rr.h"
 #include "rtcp_sr.h"
 #include "rtcp_tcc.h"
 #include "setting.h"
-#include "tcc_client.h"
 #include "uv_loop.h"
 #include "uv_timer.h"
 
@@ -53,7 +51,6 @@ class Publisher : public UvTimer::Listener,
       this->pacer_bits_ = this->tcc_client_->get_available_bitrate();
     }
   }
-  void ReceiveSendAlgorithmFeedback(QuicAckFeedbackPacket* feedback);
   void OnReceiveNack(FeedbackRtpNackPacket* packet);
   void OnReceiveReceiverReport(ReceiverReport* report);
   void OnSendPacketInNack(RtpPacketPtr& packet) {
@@ -68,23 +65,10 @@ class Publisher : public UvTimer::Listener,
             ExperimentManagerPtr& experiment_manager,
             quic::CongestionControlType quic_congestion_type);
   ~Publisher() {
-    feedback_lost_no_count_packet_vec_.clear();
     pacer_vec_.clear();
     delete producer_timer_;
     delete data_dump_timer_;
     delete send_report_timer_;
-
-    if (clock_ != nullptr) delete clock_;
-
-    if (send_algorithm_interface_ != nullptr) delete send_algorithm_interface_;
-
-    if (rtt_stats_ != nullptr) delete rtt_stats_;
-
-    if (unacked_packet_map_ != nullptr) delete unacked_packet_map_;
-
-    if (random_ != nullptr) delete random_;
-
-    if (connection_stats_ != nullptr) delete connection_stats_;
 
     if (tcc_client_ != nullptr) tcc_client_.reset();
 
@@ -150,22 +134,7 @@ class Publisher : public UvTimer::Listener,
   uint32_t send_bits_prior_ = 0;
   // nack
   NackPtr nack_;
-  // quic send algorithm interface
-  bool is_app_limit_{false};
-  quic::SendAlgorithmInterface* send_algorithm_interface_{nullptr};
-  quic::QuicClock* clock_{nullptr};
-  quic::RttStats* rtt_stats_{nullptr};
-  quic::QuicUnackedPacketMap* unacked_packet_map_{nullptr};
-  quic::QuicRandom* random_{nullptr};
-  quic::QuicConnectionStats* connection_stats_{nullptr};
-  quic::AckedPacketVector acked_packets_;
-  quic::LostPacketVector losted_packets_;
-  quic::QuicByteCount bytes_in_flight_{0u};
-  std::map<uint16_t, SendPacketInfo> has_send_map_;
-  std::vector<SendPacketInfo> feedback_lost_no_count_packet_vec_;
-  int64_t transport_rtt_{0u};
-  uint16_t largest_acked_seq_{0u};
-  int32_t cwnd_{6000u};
+
   /* ------------ experiment ------------ */
 };
 }  // namespace bifrost
