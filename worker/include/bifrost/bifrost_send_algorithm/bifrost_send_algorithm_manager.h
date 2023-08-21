@@ -13,22 +13,27 @@
 #include <memory>
 
 #include "bifrost_send_algorithm_interface.h"
+#include "quiche/quic/core/quic_types.h"
 
 namespace bifrost {
 typedef std::shared_ptr<BifrostSendAlgorithmInterface>
     BifrostSendAlgorithmInterfacePtr;
 
-class BifrostSendAlgorithm {
+class BifrostSendAlgorithmManager {
  public:
-  BifrostSendAlgorithm();
-  ~BifrostSendAlgorithm();
+  BifrostSendAlgorithmManager(quic::CongestionControlType congestion_algorithm_type,
+                       UvLoop** uv_loop);
+  ~BifrostSendAlgorithmManager();
 
  public:
-
+  void OnRtpPacketSend(RtpPacket rtp_packet, int64_t now);
+  void OnReceiveRtcpFeedback(const FeedbackRtpPacket* fb);
+  void OnReceiveReceiverReport(ReceiverReport* report);
+  void UpdateRtt(float rtt);
  private:
   BifrostSendAlgorithmInterfacePtr algorithm_interface_;
 };
 
-}
+}  // namespace bifrost
 
 #endif  //_BIFROST_SEND_ALGORITHM_H

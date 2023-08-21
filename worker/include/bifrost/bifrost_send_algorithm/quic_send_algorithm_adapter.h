@@ -24,9 +24,23 @@ class QuicSendAlgorithmAdapter : public BifrostSendAlgorithmInterface {
 
  public:
   // BifrostSendAlgorithmInterface
-  void OnRtpPacketSend(RtpPacket rtp_packet);
-  void OnReceiveRtcpFeedback(RtcpPacketPtr rtcp_packet);
-  void OnReceiveReceiverReport(ReceiverReport* report);
+  void OnRtpPacketSend(RtpPacket rtp_packet, int64_t now);
+  void OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) {
+    auto* feedback = dynamic_cast<QuicAckFeedbackPacket*>(fb);
+    this->OnReceiveQuicAckFeedback(feedback);
+  }
+  void OnReceiveReceiverReport(webrtc::RTCPReportBlock report,
+                               float rtt, int64_t nowMs);
+  void UpdateRtt(float rtt) {
+    quic::QuicTime now = quic::QuicTime::Zero() +
+        quic::QuicTimeDelta::FromMilliseconds(
+            (int64_t)this->uv_loop_->get_time_ms_int64());
+    if (this->rtt_stats_) {
+      this->rtt_stats_->UpdateRtt(
+          quic::QuicTimeDelta::FromMilliseconds(0),
+          quic::QuicTimeDelta::FromMilliseconds((int64_t)rtt), now);
+    }
+  }
   uint32_t GetPacingRate() { return 0; }
 
  private:

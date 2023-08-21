@@ -38,7 +38,7 @@ QuicSendAlgorithmAdapter::~QuicSendAlgorithmAdapter() {
   delete this->send_algorithm_interface_;
 }
 
-void QuicSendAlgorithmAdapter::OnRtpPacketSend(RtpPacket rtp_packet) {
+void QuicSendAlgorithmAdapter::OnRtpPacketSend(RtpPacket rtp_packet, int64_t now) {
   quic::QuicTime ts =
       quic::QuicTime::Zero() + quic::QuicTimeDelta::FromMilliseconds(now);
 
