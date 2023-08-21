@@ -498,7 +498,7 @@ add_executable(worker
         third_party/libquic/quiche/quic/platform/api/quic_flags.h
 
         # bifrost include
-        include/bifrost/data_producer.h
+        include/bifrost/experiment_manager/fake_data_producer.h
         include/bifrost/player.h
         include/bifrost/publisher.h
         include/bifrost/experiment_manager/experiment_manager.h
@@ -530,7 +530,7 @@ add_executable(worker
         include/utils/utils.h
 
         # bifrost src
-        src/bifrost/data_producer.cpp
+        src/bifrost/experiment_manager/fake_data_producer.cpp
         src/bifrost/player.cpp
         src/bifrost/publisher.cpp
         src/bifrost/experiment_manager/experiment_manager.cpp

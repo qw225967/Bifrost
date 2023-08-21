@@ -10,23 +10,30 @@
 #ifndef _BIFROST_PACER_H
 #define _BIFROST_PACER_H
 
+#include "bifrost/experiment_manager/experiment_data.h"
+#include "common.h"
+#include "uv_loop.h"
 #include "uv_timer.h"
-#include "rtp_packet.h"
 
 namespace bifrost {
+typedef std::shared_ptr<ExperimentDataProducerInterface> ExperimentDataProducerInterfacePtr;
 class BifrostPacer : public UvTimer{
-  BifrostPacer();
+  BifrostPacer(uint32_t ssrc, UvLoop* uv_loop);
   ~BifrostPacer();
  public:
   void OnTimer(UvTimer* timer);
 
  public:
-  void PacketReadyToSend(RtpPacketPtr rtp_packet);
-
   void set_pacing_rate(uint32_t pacing_rate);
 
  private:
-  uint16_t tcc_ext_seq_ = 0;
+  // fake date
+  ExperimentDataProducerInterfacePtr data_producer_;
+  std::vector<RtpPacketPtr> ready_send_vec_;
+
+  // timer
+  UvTimer *pacer_timer_;
+  uint16_t pacer_timer_interval_{ 0u };
 };
 }
 

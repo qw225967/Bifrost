@@ -12,6 +12,9 @@
 
 #include <iostream>
 
+#include "common.h"
+#include "rtp_packet.h"
+
 namespace bifrost {
 struct ExperimentGccData {
   ExperimentGccData(uint32_t available_bitrate=0, uint32_t sent_bitrate=0,
@@ -22,6 +25,11 @@ struct ExperimentGccData {
   uint32_t AvailableBitrate;
   uint32_t SentBitrate;
   double Trend;
+};
+
+class ExperimentDataProducerInterface {
+ public:
+  virtual RtpPacketPtr CreateData(uint32_t available) = 0;
 };
 }  // namespace bifrost
 

@@ -7,9 +7,9 @@
  * @description : TODO
  *******************************************************/
 
-#include "bifrost/data_producer.h"
-
+#include "bifrost/experiment_manager/fake_data_producer.h"
 #include "modules/rtp_rtcp/source/rtp_packet.h"
+#include "modules/rtp_rtcp/source/rtp_packet_to_send.h"
 #include "utils.h"
 
 namespace bifrost {
@@ -105,13 +105,19 @@ constexpr uint8_t kPacketWithH264[]{
     0x0d, 0x23, 0xd2, 0x5d, 0x9d, 0x74, 0x44, 0xbe, 0x11, 0x31, 0xcd, 0x20,
     0xce, 0xbd, 0xfb, 0xa1, 0xeb};
 
-DataProducer::DataProducer(uint32_t ssrc) : ssrc_(ssrc), sequence_(1) {
+FakeDataProducer::FakeDataProducer(uint32_t ssrc) : ssrc_(ssrc), sequence_(1) {
 #ifdef USING_LOCAL_FILE_DATA
   data_file_.open(LOCAL_DATA_FILE_PATH_STRING, std::ios::binary);
 #endif
 }
 
-webrtc::RtpPacketToSend* DataProducer::CreateData(uint32_t available) {
+FakeDataProducer::~FakeDataProducer() {
+#ifdef USING_LOCAL_FILE_DATA
+  data_file_.close();
+#endif
+}
+
+RtpPacketPtr FakeDataProducer::CreateData(uint32_t available) {
   // 使用webrtc中rtp包初始化方式
   auto* send_paket =
       new webrtc::RtpPacketToSend(nullptr, sizeof(kPacketWithH264));
@@ -125,12 +131,35 @@ webrtc::RtpPacketToSend* DataProducer::CreateData(uint32_t available) {
   memcpy(send_paket->Buffer().data(), kPacketWithH264, sizeof(kPacketWithH264));
   send_paket->SetPayloadSize(sizeof(kPacketWithH264));
 
-  return send_paket;
+  // 转回 rtp packet
+  auto len = send_paket->capacity() + send_paket->size();
+  auto* payload_data = new uint8_t[len];
+  memcpy(payload_data, send_paket->data(), len);
+  RtpPacketPtr rtp_packet = RtpPacket::Parse(payload_data, len);
+  // mediasoup parse 内部只new了包结构，没有new payload空间，payload空间使用了一个共享的静态区域
+  rtp_packet->SetPayloadDataPtr(&payload_data);
+
+ this->GetRtpExtensions(rtp_packet);
+
+  return rtp_packet;
 }
 
-DataProducer::~DataProducer() {
-#ifdef USING_LOCAL_FILE_DATA
-  data_file_.close();
-#endif
+void FakeDataProducer::GetRtpExtensions(RtpPacketPtr& packet) {
+  static uint8_t buffer[4096];
+  uint8_t extenLen = 2u;
+  static std::vector<RtpPacket::GenericExtension> extensions;
+  // This happens just once.
+  if (extensions.capacity() != 24) extensions.reserve(24);
+
+  extensions.clear();
+
+  uint8_t* bufferPtr{buffer};
+  // NOTE: Add value 0. The sending Transport will update it.
+  uint16_t wideSeqNumber{0u};
+
+  Byte::set_2_bytes(bufferPtr, 0, wideSeqNumber);
+  extensions.emplace_back(static_cast<uint8_t>(7), extenLen, bufferPtr);
+  packet->SetExtensions(2, extensions);
+  packet->SetTransportWideCc01ExtensionId(7);
 }
 }  // namespace bifrost

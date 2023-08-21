@@ -12,11 +12,10 @@
 
 #include <map>
 
-
 #include "bifrost/bifrost_send_algorithm/tcc_client.h"
 #include "bifrost/experiment_manager/experiment_manager.h"
+#include "bifrost/experiment_manager/fake_data_producer.h"
 #include "bifrost_send_algorithm/bifrost_send_algorithm_manager.h"
-#include "data_producer.h"
 #include "nack.h"
 #include "rtcp_rr.h"
 #include "rtcp_sr.h"
@@ -70,11 +69,6 @@ class Publisher : public UvTimer::Listener,
       const webrtc::PacedPacketInfo& pacing_info) override {}
 
  private:
-  uint32_t TimerSendPacket(int32_t available);
-  void RemoveOldSendPacket();
-  void GetRtpExtensions(RtpPacketPtr &packet);
-
- private:
   /* ------------ base ------------ */
   // observer
   Observer* observer_;
@@ -89,11 +83,9 @@ class Publisher : public UvTimer::Listener,
   uint32_t ssrc_;
   // number
   uint8_t number_;
-  /* ------------ base ------------ */
 
   /* ------------ bifrost send algorithm manager ------------ */
   BifrostSendAlgorithmManagerPtr bifrost_send_algorithm_manager_;
-  /* ------------ bifrost send algorithm manager ------------ */
 
   /* ------------ experiment ------------ */
   // experiment manager
@@ -107,8 +99,6 @@ class Publisher : public UvTimer::Listener,
   float rtt_ = 0;
   // nack
   NackPtr nack_;
-
-  /* ------------ experiment ------------ */
 };
 }  // namespace bifrost
 

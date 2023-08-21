@@ -50,25 +50,6 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
       std::make_shared<BifrostSendAlgorithmManager>(congestion_type, uv_loop);
 }
 
-void Publisher::GetRtpExtensions(RtpPacketPtr& packet) {
-  static uint8_t buffer[4096];
-  uint8_t extenLen = 2u;
-  static std::vector<RtpPacket::GenericExtension> extensions;
-  // This happens just once.
-  if (extensions.capacity() != 24) extensions.reserve(24);
-
-  extensions.clear();
-
-  uint8_t* bufferPtr{buffer};
-  // NOTE: Add value 0. The sending Transport will update it.
-  uint16_t wideSeqNumber{0u};
-
-  Byte::set_2_bytes(bufferPtr, 0, wideSeqNumber);
-  extensions.emplace_back(static_cast<uint8_t>(7), extenLen, bufferPtr);
-  packet->SetExtensions(2, extensions);
-  packet->SetTransportWideCc01ExtensionId(7);
-}
-
 void Publisher::OnReceiveNack(FeedbackRtpNackPacket* packet) {
   std::vector<RtpPacketPtr> packets;
   this->nack_->ReceiveNack(packet, packets);

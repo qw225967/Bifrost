@@ -11,20 +11,19 @@
 #define WORKER_DATA_PRODUCER_H
 
 #include <fstream>
-
-#include "common.h"
-#include "modules/rtp_rtcp/source/rtp_packet_to_send.h"
-#include "rtp_packet.h"
-
+#include "experiment_data.h"
 namespace bifrost {
 typedef std::shared_ptr<RtpPacket> RtpPacketPtr;
-class DataProducer {
+class FakeDataProducer : public ExperimentDataProducerInterface {
  public:
-  DataProducer(uint32_t ssrc);
-  ~DataProducer();
+  FakeDataProducer(uint32_t ssrc);
+  ~FakeDataProducer();
 
  public:
-  webrtc::RtpPacketToSend* CreateData(uint32_t available);
+  RtpPacketPtr CreateData(uint32_t available);
+
+ private:
+  void GetRtpExtensions(RtpPacketPtr &packet);
 
  private:
   std::ifstream data_file_;
