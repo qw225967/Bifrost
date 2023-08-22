@@ -20,7 +20,7 @@ class FakeDataProducer : public ExperimentDataProducerInterface {
   ~FakeDataProducer();
 
  public:
-  RtpPacketPtr CreateData(uint32_t available);
+  RtpPacketPtr CreateData() override ;
 
  private:
   void GetRtpExtensions(RtpPacketPtr &packet);
@@ -29,7 +29,7 @@ class FakeDataProducer : public ExperimentDataProducerInterface {
   std::ifstream data_file_;
 
   uint32_t ssrc_;
-  uint16_t sequence_;
+  uint16_t sequence_{ 0u };
 };
 }  // namespace bifrost
 

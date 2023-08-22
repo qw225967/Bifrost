@@ -57,6 +57,24 @@ TransportCongestionControlClient::~TransportCongestionControlClient() {
   DestroyController();
 }
 
+void TransportCongestionControlClient::OnRtpPacketSend(RtpPacketPtr rtp_packet, int64_t now) {
+  uint16_t wideSeqNumber;
+  rtp_packet->ReadTransportWideCc01(wideSeqNumber);
+
+  webrtc::RtpPacketSendInfo packetInfo;
+  packetInfo.ssrc = rtp_packet->GetSsrc();
+  packetInfo.transport_sequence_number = wideSeqNumber;
+  packetInfo.has_rtp_sequence_number = true;
+  packetInfo.rtp_sequence_number = rtp_packet->GetSequenceNumber();
+  packetInfo.length = rtp_packet->GetSize();
+  packetInfo.pacing_info = this->GetPacingInfo();
+
+  // webrtc中发送和进入发送状态有一小段等待时间
+  // 因此分开了两个函数 insert 和 sent 函数
+  this->InsertPacket(packetInfo);
+  this->PacketSent(packetInfo, now);
+}
+
 RtpPacket* TransportCongestionControlClient::GeneratePadding(
     size_t target_size_bytes) {
   uint8_t data[1400u];

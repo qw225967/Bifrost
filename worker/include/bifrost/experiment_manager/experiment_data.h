@@ -17,19 +17,19 @@
 
 namespace bifrost {
 struct ExperimentGccData {
-  ExperimentGccData(uint32_t available_bitrate=0, uint32_t sent_bitrate=0,
-                    double trend=0)
+  ExperimentGccData(uint32_t available_bitrate, uint32_t sent_bitrate,
+                    std::vector<double> trend)
       : AvailableBitrate(available_bitrate),
         SentBitrate(sent_bitrate),
         Trend(trend) {}
   uint32_t AvailableBitrate;
   uint32_t SentBitrate;
-  double Trend;
+  std::vector<double> Trend;
 };
 
 class ExperimentDataProducerInterface {
  public:
-  virtual RtpPacketPtr CreateData(uint32_t available) = 0;
+  virtual RtpPacketPtr CreateData() = 0;
 };
 }  // namespace bifrost
 

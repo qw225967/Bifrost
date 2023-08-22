@@ -117,14 +117,13 @@ FakeDataProducer::~FakeDataProducer() {
 #endif
 }
 
-RtpPacketPtr FakeDataProducer::CreateData(uint32_t available) {
+RtpPacketPtr FakeDataProducer::CreateData() {
   // 使用webrtc中rtp包初始化方式
   auto* send_paket =
       new webrtc::RtpPacketToSend(nullptr, sizeof(kPacketWithH264));
 #ifdef USING_LOCAL_FILE_DATA
   data_file_.read((char*)data, sizeof(kPacketWithH264));
 #endif
-  if (available < sizeof(kPacketWithH264)) return nullptr;
   send_paket->SetSequenceNumber(this->sequence_++);
   send_paket->SetPayloadType(101);
   send_paket->SetSsrc(this->ssrc_);

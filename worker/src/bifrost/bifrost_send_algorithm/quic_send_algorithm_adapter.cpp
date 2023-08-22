@@ -12,14 +12,17 @@
 #include "quiche/quic/core/congestion_control/rtt_stats.h"
 
 namespace bifrost {
+const uint32_t DefaultInitRtt = 10u;
+const uint32_t MaxIntervalSendPacketRemove = 200u;  // 一个feedback时间
+const uint32_t MaxFeedbackAckDoNotTransTime = 4000u;
 
-QuicSendAlgorithmAdapter::QuicSendAlgorithmAdapter(UvLoop** uv_loop) {
+QuicSendAlgorithmAdapter::QuicSendAlgorithmAdapter(UvLoop** uv_loop, quic::CongestionControlType congestion_type) {
   uv_loop_ = *uv_loop;
 
   this->clock_ = new QuicClockAdapter(uv_loop);
   this->rtt_stats_ = new quic::RttStats();
   this->rtt_stats_->set_initial_rtt(
-      quic::QuicTimeDelta::FromMilliseconds(rtt_));
+      quic::QuicTimeDelta::FromMilliseconds(DefaultInitRtt));
   this->unacked_packet_map_ =
       new quic::QuicUnackedPacketMap(quic::Perspective::IS_CLIENT);
   this->random_ = quiche::QuicheRandom::GetInstance();
@@ -38,11 +41,22 @@ QuicSendAlgorithmAdapter::~QuicSendAlgorithmAdapter() {
   delete this->send_algorithm_interface_;
 }
 
-void QuicSendAlgorithmAdapter::OnRtpPacketSend(RtpPacket rtp_packet, int64_t now) {
+void QuicSendAlgorithmAdapter::UpdateRtt(float rtt) {
+  quic::QuicTime now = quic::QuicTime::Zero() +
+      quic::QuicTimeDelta::FromMilliseconds(
+          (int64_t)this->uv_loop_->get_time_ms_int64());
+  if (this->rtt_stats_) {
+    this->rtt_stats_->UpdateRtt(
+        quic::QuicTimeDelta::FromMilliseconds(0),
+        quic::QuicTimeDelta::FromMilliseconds((int64_t)rtt), now);
+  }
+}
+
+void QuicSendAlgorithmAdapter::OnRtpPacketSend(RtpPacketPtr rtp_packet, int64_t now) {
   quic::QuicTime ts =
       quic::QuicTime::Zero() + quic::QuicTimeDelta::FromMilliseconds(now);
 
-  if (!(*it)->IsReTrans()) {
+  if (!rtp_packet->IsReTrans()) {
     // 1 quic 记录发送信息
     SendPacketInfo temp;
     temp.sequence = rtp_packet->GetSequenceNumber();
@@ -55,7 +69,7 @@ void QuicSendAlgorithmAdapter::OnRtpPacketSend(RtpPacket rtp_packet, int64_t now
     // 4.放入unack，此处不统计重复数据，使用无重传模式
     if (this->unacked_packet_map_ != nullptr) {
       this->unacked_packet_map_->AddSentPacket(
-          (*it), (*it)->GetSequenceNumber(), this->largest_acked_seq_,
+          rtp_packet, rtp_packet->GetSequenceNumber(), this->largest_acked_seq_,
           quic::NOT_RETRANSMISSION, ts, true, true, quic::ECN_NOT_ECT);
     }
     this->bytes_in_flight_ += temp.send_bytes;
@@ -143,10 +157,10 @@ void QuicSendAlgorithmAdapter::OnReceiveQuicAckFeedback(QuicAckFeedbackPacket* f
     if (!this->send_algorithm_interface_
     ->PacingRate(this->unacked_packet_map_->bytes_in_flight())
     .IsZero()) {
-      this->pacer_bits_ =
-          this->send_algorithm_interface_
-          ->PacingRate(this->unacked_packet_map_->bytes_in_flight())
-          .ToBitsPerSecond();
+//      this->pacer_bits_ =
+//          this->send_algorithm_interface_
+//          ->PacingRate(this->unacked_packet_map_->bytes_in_flight())
+//          .ToBitsPerSecond();
       if (send_algorithm_interface_->GetCongestionWindow() != 0) {
         this->cwnd_ = this->send_algorithm_interface_->GetCongestionWindow();
       } else {

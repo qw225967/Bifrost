@@ -118,15 +118,15 @@ void Transport::OnUdpRouterRtcpPacketReceived(
       auto* rtp_fb = static_cast<FeedbackRtpPacket*>(rtcp_packet.get());
       switch (rtp_fb->GetMessageType()) {
         case FeedbackRtp::MessageType::TCC:
-        case FeedbackRtp::MessageType::QUICFB: {
           this->publisher_->OnReceiveRtcpFeedback(rtp_fb);
           break;
-        }
-        case FeedbackRtp::MessageType::NACK: {
+        case FeedbackRtp::MessageType::QUICFB:
+          this->publisher_->OnReceiveRtcpFeedback(rtp_fb);
+          break;
+        case FeedbackRtp::MessageType::NACK:
           auto* nackPacket = static_cast<FeedbackRtpNackPacket*>(rtp_fb);
           this->publisher_->OnReceiveNack(nackPacket);
           break;
-        }
       }
       break;
     }

@@ -8,7 +8,6 @@
  *******************************************************/
 
 #include "publisher.h"
-
 #include "rtcp_compound_packet.h"
 
 namespace bifrost {
@@ -16,8 +15,6 @@ namespace bifrost {
 const uint16_t IntervalSendTime = 5u;
 const uint32_t IntervalDataDump = 1000u;
 const uint32_t IntervalSendReport = 2000u;
-const uint32_t MaxIntervalSendPacketRemove = 200u;  // 一个feedback时间
-const uint32_t MaxFeedbackAckDoNotTransTime = 4000u;
 
 Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
                      Observer* observer, uint8_t number,
@@ -26,9 +23,7 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
     : remote_addr_config_(remote_config),
       uv_loop_(*uv_loop),
       observer_(observer),
-      rtt_(20),
-      experiment_manager_(experiment_manager),
-      number_(number) {
+      rtt_(20) {
   std::cout << "publish experiment manager:" << experiment_manager << std::endl;
 
   // 1.remote address set
@@ -43,16 +38,30 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
   // 4.nack
   nack_ = std::make_shared<Nack>(remote_addr_config_.ssrc, uv_loop);
 
-  // 5. ssrc
+  // 5.ssrc
   ssrc_ = remote_addr_config_.ssrc;
 
+  // 6.send algorithm
   bifrost_send_algorithm_manager_ =
       std::make_shared<BifrostSendAlgorithmManager>(congestion_type, uv_loop);
+
+  // 7.pacer
+  pacer_ = std::make_shared<BifrostPacer>(ssrc_, *uv_loop, this);
+}
+
+void Publisher::OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) {
+  bifrost_send_algorithm_manager_->OnReceiveRtcpFeedback(fb);
+  pacer_->set_pacing_rate(bifrost_send_algorithm_manager_->get_pacing_rate());
 }
 
 void Publisher::OnReceiveNack(FeedbackRtpNackPacket* packet) {
   std::vector<RtpPacketPtr> packets;
   this->nack_->ReceiveNack(packet, packets);
+
+  auto ite = packets.begin();
+  while (ite != packets.end()) {
+    this->pacer_->NackReadyToSendPacket(*ite);
+  }
 }
 
 void Publisher::OnReceiveReceiverReport(ReceiverReport* report) {
@@ -98,9 +107,11 @@ void Publisher::OnReceiveReceiverReport(ReceiverReport* report) {
   this->nack_->UpdateRtt(uint32_t(this->rtt_));
 
   this->bifrost_send_algorithm_manager_->UpdateRtt(this->rtt_);
+  this->bifrost_send_algorithm_manager_->OnReceiveReceiverReport(
+      webrtc_report, this->rtt_, nowMs);
 }
 
-SenderReport* Publisher::GetRtcpSenderReport(uint64_t nowMs) {
+SenderReport* Publisher::GetRtcpSenderReport(uint64_t nowMs) const {
   auto ntp = Time::TimeMs2Ntp(nowMs);
   auto* report = new SenderReport();
 

@@ -10,38 +10,32 @@
 #ifndef _QUICSENDALGORITHMADAPTER_H
 #define _QUICSENDALGORITHMADAPTER_H
 
-#include "bifrost_send_algorithm_interface.h"
 #include "bifrost/bifrost_send_algorithm/quic_clock_adapter.h"
+#include "bifrost_send_algorithm_interface.h"
 #include "quiche/quic/core/congestion_control/send_algorithm_interface.h"
-
 #include "rtcp_quic_feedback.h"
 
-namespace bifrost{
+namespace bifrost {
 class QuicSendAlgorithmAdapter : public BifrostSendAlgorithmInterface {
  public:
-  QuicSendAlgorithmAdapter(UvLoop** uv_loop);
+  QuicSendAlgorithmAdapter(UvLoop** uv_loop, quic::CongestionControlType congestion_type);
   ~QuicSendAlgorithmAdapter();
 
  public:
   // BifrostSendAlgorithmInterface
-  void OnRtpPacketSend(RtpPacket rtp_packet, int64_t now);
-  void OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) {
-    auto* feedback = dynamic_cast<QuicAckFeedbackPacket*>(fb);
-    this->OnReceiveQuicAckFeedback(feedback);
-  }
-  void OnReceiveReceiverReport(webrtc::RTCPReportBlock report,
-                               float rtt, int64_t nowMs);
-  void UpdateRtt(float rtt) {
-    quic::QuicTime now = quic::QuicTime::Zero() +
-        quic::QuicTimeDelta::FromMilliseconds(
-            (int64_t)this->uv_loop_->get_time_ms_int64());
-    if (this->rtt_stats_) {
-      this->rtt_stats_->UpdateRtt(
-          quic::QuicTimeDelta::FromMilliseconds(0),
-          quic::QuicTimeDelta::FromMilliseconds((int64_t)rtt), now);
+  void OnRtpPacketSend(RtpPacketPtr rtp_packet, int64_t now) override;
+  void OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) override {
+    if (fb->GetMessageType() == FeedbackRtp::MessageType::QUICFB) {
+      auto* feedback = dynamic_cast<QuicAckFeedbackPacket*>(fb);
+      this->OnReceiveQuicAckFeedback(feedback);
     }
   }
-  uint32_t GetPacingRate() { return 0; }
+  void OnReceiveReceiverReport(webrtc::RTCPReportBlock report, float rtt,
+                               int64_t nowMs) override {}
+  void UpdateRtt(float rtt) override;
+  uint32_t get_pacing_rate() override {
+    return send_algorithm_interface_->PacingRate(0).ToBitsPerSecond();
+  }
 
  private:
   void OnReceiveQuicAckFeedback(QuicAckFeedbackPacket* feedback);
@@ -49,7 +43,7 @@ class QuicSendAlgorithmAdapter : public BifrostSendAlgorithmInterface {
 
  private:
   // uv_loop
-  UvLoop* uv_loop_{ nullptr };
+  UvLoop* uv_loop_{nullptr};
 
   // quic send algorithm interface
   bool is_app_limit_{false};
@@ -68,6 +62,6 @@ class QuicSendAlgorithmAdapter : public BifrostSendAlgorithmInterface {
   uint16_t largest_acked_seq_{0u};
   int32_t cwnd_{6000u};
 };
-} // namespace bifrost
+}  // namespace bifrost
 
 #endif  //_QUICSENDALGORITHMADAPTER_H

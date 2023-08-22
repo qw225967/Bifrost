@@ -16,25 +16,50 @@
 #include "uv_timer.h"
 
 namespace bifrost {
-typedef std::shared_ptr<ExperimentDataProducerInterface> ExperimentDataProducerInterfacePtr;
-class BifrostPacer : public UvTimer{
-  BifrostPacer(uint32_t ssrc, UvLoop* uv_loop);
-  ~BifrostPacer();
+typedef std::shared_ptr<ExperimentDataProducerInterface>
+    ExperimentDataProducerInterfacePtr;
+class BifrostPacer : public UvTimer::Listener {
  public:
-  void OnTimer(UvTimer* timer);
+  class Observer {
+   public:
+    virtual void OnPublisherSendPacket(RtpPacketPtr packet) = 0;
+    virtual void OnPublisherSendRtcpPacket(CompoundPacketPtr packet) = 0;
+  };
 
  public:
-  void set_pacing_rate(uint32_t pacing_rate);
+  BifrostPacer(uint32_t ssrc, UvLoop* uv_loop, Observer* observer);
+  ~BifrostPacer() override;
+
+ public:
+  // UvTimer
+  void OnTimer(UvTimer* timer) override;
+
+ public:
+  void set_pacing_rate(uint32_t pacing_rate) {
+    pacing_rate_ = pacing_rate;
+  }  // bps
+  void NackReadyToSendPacket(RtpPacketPtr packet) {
+    this->ready_send_vec_.push_back(packet);
+  }
 
  private:
+  // observer
+  Observer* observer_;
+
   // fake date
   ExperimentDataProducerInterfacePtr data_producer_;
+  uint16_t tcc_seq_{0u};
+
+  // ready send
   std::vector<RtpPacketPtr> ready_send_vec_;
 
   // timer
-  UvTimer *pacer_timer_;
-  uint16_t pacer_timer_interval_{ 0u };
+  UvTimer* create_timer_;
+  UvTimer* pacer_timer_;
+  uint32_t pacing_rate_;
+  uint16_t pacer_timer_interval_{0u};
+  int32_t pre_remainder_bytes_{0u};
 };
-}
+}  // namespace bifrost
 
 #endif  //_BIFROST_PACER_H

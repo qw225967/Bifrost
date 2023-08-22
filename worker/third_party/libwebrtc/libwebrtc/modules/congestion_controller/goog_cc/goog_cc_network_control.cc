@@ -414,6 +414,7 @@ NetworkControlUpdate GoogCcNetworkController::OnTransportPacketsFeedback(
   Timestamp max_recv_time = Timestamp::MinusInfinity();
 
   std::vector<PacketResult> feedbacks = report.ReceivedWithSendInfo();
+
   for (const auto& feedback : feedbacks)
     max_recv_time = std::max(max_recv_time, feedback.receive_time);
 

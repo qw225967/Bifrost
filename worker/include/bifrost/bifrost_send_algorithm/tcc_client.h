@@ -46,39 +46,26 @@ class TransportCongestionControlClient
   };
  public:
   // BifrostSendAlgorithmInterface
-  void OnRtpPacketSend(RtpPacketPtr rtp_packet, int64_t now) {
-    rtp_packet->UpdateTransportWideCc01(this->tcc_seq_++);
+  void OnRtpPacketSend(RtpPacketPtr rtp_packet, int64_t now) override;
+  void UpdateRtt(float rtt) override {}
 
-      webrtc::RtpPacketSendInfo packetInfo;
-
-      packetInfo.ssrc = rtp_packet->GetSsrc();
-      packetInfo.transport_sequence_number = this->tcc_seq_;
-      packetInfo.has_rtp_sequence_number = true;
-      packetInfo.rtp_sequence_number = rtp_packet->GetSequenceNumber();
-      packetInfo.length = rtp_packet->GetSize();
-      packetInfo.pacing_info = this->GetPacingInfo();
-
-      // webrtc中发送和进入发送状态有一小段等待时间
-      // 因此分开了两个函数 insert 和 sent 函数
-      this->InsertPacket(packetInfo);
-      this->PacketSent(packetInfo, now);
-  }
-
-  void OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) {
-    auto* feedback = dynamic_cast<FeedbackRtpTransportPacket*>(fb);
-    this->ReceiveRtcpTransportFeedback(feedback);
+  void OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) override {
+    if (fb->GetMessageType() == FeedbackRtp::MessageType::TCC) {
+      auto* feedback = dynamic_cast<FeedbackRtpTransportPacket*>(fb);
+      this->ReceiveRtcpTransportFeedback(feedback);
+    }
   }
   void OnReceiveReceiverReport(webrtc::RTCPReportBlock report,
-                               float rtt, int64_t nowMs) {
+                               float rtt, int64_t nowMs) override {
     this->ReceiveRtcpReceiverReport(report, rtt, nowMs);
   }
-  uint32_t GetPacingRate() { return 0; }
+  uint32_t get_pacing_rate() override { return this->get_available_bitrate(); }
 
  public:
   TransportCongestionControlClient(
       TransportCongestionControlClient::Observer* observer,
       uint32_t initial_available_bitrate, UvLoop** uv_loop);
-  virtual ~TransportCongestionControlClient();
+  ~TransportCongestionControlClient() override;
 
  public:
   const Bitrates& get_bit_rates() const { return this->bitrates_; }
@@ -130,9 +117,6 @@ class TransportCongestionControlClient
  private:
   // uv loop
   UvLoop* uv_loop_;
-
-  // tcc_seq
-  uint16_t tcc_seq_ = 0;
 
   // Passed by argument.
   Observer* observer_{nullptr};

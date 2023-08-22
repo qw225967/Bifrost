@@ -12,9 +12,7 @@
 
 #include <map>
 
-#include "bifrost/bifrost_send_algorithm/tcc_client.h"
-#include "bifrost/experiment_manager/experiment_manager.h"
-#include "bifrost/experiment_manager/fake_data_producer.h"
+#include "bifrost_send_algorithm/bifrost_pacer.h"
 #include "bifrost_send_algorithm/bifrost_send_algorithm_manager.h"
 #include "nack.h"
 #include "rtcp_rr.h"
@@ -25,12 +23,13 @@
 #include "uv_timer.h"
 
 namespace bifrost {
-typedef std::shared_ptr<sockaddr> SockAddressPtr;
-typedef std::shared_ptr<BifrostSendAlgorithmManager>
+typedef std::shared_ptr<sockaddr> SockAddressPtr;     // 发送的socket
+typedef std::shared_ptr<BifrostSendAlgorithmManager>  // 发送算法管理
     BifrostSendAlgorithmManagerPtr;
-typedef std::shared_ptr<Nack> NackPtr;
-class Publisher : public UvTimer::Listener,
-                  public TransportCongestionControlClient::Observer {
+typedef std::shared_ptr<Nack> NackPtr;                  // nack 管理
+typedef std::shared_ptr<BifrostPacer> BifrostPacerPtr;  // 发送类
+
+class Publisher : public UvTimer::Listener, public BifrostPacer::Observer {
  public:
   class Observer {
    public:
@@ -41,32 +40,39 @@ class Publisher : public UvTimer::Listener,
   };
 
  public:
-  void OnReceiveRtcpFeedback(const FeedbackRtpPacket* fb) {
-    bifrost_send_algorithm_manager_->OnReceiveRtcpFeedback(fb);
+  // BifrostPacer::Observer
+  void OnPublisherSendPacket(RtpPacketPtr packet) override {
+    // 发送算法需要记录发送内容
+    this->bifrost_send_algorithm_manager_->OnRtpPacketSend(
+        packet, this->uv_loop_->get_time_ms_int64());
+    this->nack_->OnSendRtpPacket(packet);
+
+    this->observer_->OnPublisherSendPacket(packet,
+                                           this->udp_remote_address_.get());
   }
+  void OnPublisherSendRtcpPacket(CompoundPacketPtr packet) override {
+    this->observer_->OnPublisherSendRtcpPacket(packet,
+                                               this->udp_remote_address_.get());
+  }
+
+ public:
+  void OnReceiveRtcpFeedback(FeedbackRtpPacket* fb);
   void OnReceiveNack(FeedbackRtpNackPacket* packet);
   void OnReceiveReceiverReport(ReceiverReport* report);
 
-  SenderReport* GetRtcpSenderReport(uint64_t nowMs);
+  SenderReport* GetRtcpSenderReport(uint64_t nowMs) const;
 
  public:
   Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
             Observer* observer, uint8_t number,
             ExperimentManagerPtr& experiment_manager,
             quic::CongestionControlType quic_congestion_type);
-  ~Publisher() {
+  ~Publisher() override {
     delete send_report_timer_;
+    pacer_.reset();
   }
   // UvTimer
   void OnTimer(UvTimer* timer) override;
-
-  // TransportCongestionControlClient::Observer
-  void OnTransportCongestionControlClientBitrates(
-      TransportCongestionControlClient* tcc_client,
-      TransportCongestionControlClient::Bitrates& bitrates) override {}
-  void OnTransportCongestionControlClientSendRtpPacket(
-      TransportCongestionControlClient* tcc_client, RtpPacket* packet,
-      const webrtc::PacedPacketInfo& pacing_info) override {}
 
  private:
   /* ------------ base ------------ */
@@ -81,15 +87,12 @@ class Publisher : public UvTimer::Listener,
   UvTimer* send_report_timer_;
   // ssrc
   uint32_t ssrc_;
-  // number
-  uint8_t number_;
-
   /* ------------ bifrost send algorithm manager ------------ */
   BifrostSendAlgorithmManagerPtr bifrost_send_algorithm_manager_;
 
-  /* ------------ experiment ------------ */
-  // experiment manager
-  ExperimentManagerPtr experiment_manager_;
+  /* ------------ pacer ------------ */
+  BifrostPacerPtr pacer_;
+
   // sr
   uint32_t send_packet_count_{0u};
   uint64_t send_packet_bytes_{0u};

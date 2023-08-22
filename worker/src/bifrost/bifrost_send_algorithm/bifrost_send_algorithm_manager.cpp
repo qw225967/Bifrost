@@ -8,14 +8,10 @@
  *******************************************************/
 
 #include "bifrost_send_algorithm/bifrost_send_algorithm_manager.h"
-#include "bifrost_send_algorithm/quic_send_algorithm_adapter.h"
-#include "bifrost_send_algorithm/tcc_client.h"
-
 #include "rtcp_feedback.h"
 
 namespace bifrost {
-const uint32_t InitialAvailableGccBitrate = 1000000u;
-const uint32_t InitialAvailableBBRBitrate = 1000000u;
+const uint32_t InitialAvailableGccBitrate = 600000u;
 
 BifrostSendAlgorithmManager::BifrostSendAlgorithmManager(
     quic::CongestionControlType congestion_algorithm_type, UvLoop** uv_loop) {
@@ -25,7 +21,7 @@ BifrostSendAlgorithmManager::BifrostSendAlgorithmManager(
     case quic::kBBR:
     case quic::kPCC:
     case quic::kBBRv2:
-      this->algorithm_interface_= std::make_shared<QuicSendAlgorithmAdapter>(uv_loop);
+      this->algorithm_interface_ = std::make_shared<QuicSendAlgorithmAdapter>(uv_loop, congestion_algorithm_type);
       break;
     case quic::kGoogCC:
       this->algorithm_interface_ = std::make_shared<TransportCongestionControlClient>(
@@ -34,19 +30,20 @@ BifrostSendAlgorithmManager::BifrostSendAlgorithmManager(
   }
 }
 
-inline void BifrostSendAlgorithmManager::OnRtpPacketSend(RtpPacket rtp_packet, int64_t now) {
-  this->algorithm_interface_->OnRtpPacketSend(rtp_packet, now);
+void BifrostSendAlgorithmManager::OnRtpPacketSend(RtpPacketPtr rtp_packet, int64_t nowMs) {
+  this->algorithm_interface_->OnRtpPacketSend(rtp_packet, nowMs);
 }
 
-inline void BifrostSendAlgorithmManager::OnReceiveRtcpFeedback(const FeedbackRtpPacket* fb) {
-  this->algorithm_interface_->OnReceiveRtcpFeedback(rtcp_packet);
+void BifrostSendAlgorithmManager::OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) {
+  this->algorithm_interface_->OnReceiveRtcpFeedback(fb);
 }
 
-inline void BifrostSendAlgorithmManager::OnReceiveReceiverReport(ReceiverReport* report) {
-  this->algorithm_interface_->OnReceiveReceiverReport(report);
+void BifrostSendAlgorithmManager::OnReceiveReceiverReport(webrtc::RTCPReportBlock report,
+                                                                 float rtt, int64_t nowMs) {
+  this->algorithm_interface_->OnReceiveReceiverReport(report, rtt, nowMs);
 }
 
-inline void BifrostSendAlgorithmManager::UpdateRtt(float rtt) {
+void BifrostSendAlgorithmManager::UpdateRtt(float rtt) {
   this->algorithm_interface_->UpdateRtt(rtt);
 }
 }  // namespace bifrost
