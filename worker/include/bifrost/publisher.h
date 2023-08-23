@@ -87,11 +87,17 @@ class Publisher : public UvTimer::Listener, public BifrostPacer::Observer {
   UvTimer* send_report_timer_;
   // ssrc
   uint32_t ssrc_;
+  // number
+  uint8_t number_;
   /* ------------ bifrost send algorithm manager ------------ */
   BifrostSendAlgorithmManagerPtr bifrost_send_algorithm_manager_;
 
   /* ------------ pacer ------------ */
   BifrostPacerPtr pacer_;
+  int64_t pre_update_pacing_rate_time_{0u};
+
+  /* ------------ experiment manger ------------ */
+  ExperimentManagerPtr experiment_manager_;
 
   // sr
   uint32_t send_packet_count_{0u};

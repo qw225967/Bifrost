@@ -11,17 +11,20 @@
 #define WORKER_EXPERIMENT_MANAGER_H
 
 #include <stdlib.h>
+
 #include <fstream>
 #include <iostream>
+#include <memory>
+#include <mutex>
 #include <unordered_map>
 #include <vector>
-#include <mutex>
-#include <memory>
 
 #include "experiment_data.h"
+#include "uv_loop.h"
+#include "uv_timer.h"
 
 namespace bifrost {
-class ExperimentManager {
+class ExperimentManager : public UvTimer::Listener {
  public:
   struct GccExperimentConfig {
     // GCC拥塞检测计算趋势的窗口值。
@@ -36,9 +39,27 @@ class ExperimentManager {
   ExperimentManager();
   ~ExperimentManager();
 
-  void PostDataToShow();
+  void RunDumpData() { this->uv_loop_->RunLoop(); }
+
+  // UvTimer
+  void OnTimer(UvTimer* timer);
+
+  void PostDataToShow(uint8_t number, ExperimentDumpData &data);
 
  private:
+  std::vector<double> ComplementTrendVecWithSize(size_t max_size,
+                                                 std::vector<double> trends);
+
+ private:
+  // uv 自己一个定时落地能力
+  UvLoop* uv_loop_;
+  UvTimer* dump_data_timer_;
+
+  // 每个周期落地的数据记录
+  std::unordered_map<uint8_t, ExperimentDumpData> dump_data_map_;
+  std::string current_cycle_time_str_;
+  uint8_t cycle_trend_ms_fraction_;
+
   // 估计码率展示和发送码率展示
   std::ofstream gcc_data_file_;
   // gcc趋势展示

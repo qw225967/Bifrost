@@ -262,6 +262,8 @@ class String {
   static uint8_t* Base64Decode(const std::string& str, size_t& outLen);
 
   static std::vector<std::string> Split(std::string s, std::string seperator);
+
+  static std::string get_now_str_s();
 };
 
 class Time {

@@ -78,7 +78,6 @@ class Player : public UvTimer::Listener,
   uint8_t number_;
   // experiment manager
   ExperimentManagerPtr experiment_manager_;
-  /* ------------ base ------------ */
 
   /* ------------ experiment ------------ */
   // sr
@@ -100,7 +99,6 @@ class Player : public UvTimer::Listener,
   NackPtr nack_;
   // tcc
   TransportCongestionControlServerPtr tcc_server_{nullptr};
-  /* ------------ experiment ------------ */
 };
 }  // namespace bifrost
 

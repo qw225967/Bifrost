@@ -41,6 +41,17 @@ class BifrostPacer : public UvTimer::Listener {
   void NackReadyToSendPacket(RtpPacketPtr packet) {
     this->ready_send_vec_.push_back(packet);
   }
+  uint32_t get_pacing_packet_count() {
+    auto tmp = pacing_packet_count_;
+    pacing_packet_count_ = 0;
+    return tmp;
+  }
+  uint32_t get_pacing_bytes() {
+    return pacing_bytes_;
+  }
+  uint32_t get_pacing_bitrate_bps() {
+    return pacing_bitrate_bps_;
+  }
 
  private:
   // observer
@@ -53,7 +64,14 @@ class BifrostPacer : public UvTimer::Listener {
   // ready send
   std::vector<RtpPacketPtr> ready_send_vec_;
 
+  // statistics
+  uint32_t pacing_bytes_;
+  uint32_t pacing_bitrate_;
+  uint32_t pacing_bitrate_bps_;
+  uint32_t pacing_packet_count_;
+
   // timer
+  UvTimer* statistics_timer_;
   UvTimer* create_timer_;
   UvTimer* pacer_timer_;
   uint32_t pacing_rate_;

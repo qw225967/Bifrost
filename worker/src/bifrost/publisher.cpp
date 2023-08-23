@@ -8,6 +8,7 @@
  *******************************************************/
 
 #include "publisher.h"
+
 #include "rtcp_compound_packet.h"
 
 namespace bifrost {
@@ -23,7 +24,9 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
     : remote_addr_config_(remote_config),
       uv_loop_(*uv_loop),
       observer_(observer),
-      rtt_(20) {
+      rtt_(20),
+      experiment_manager_(experiment_manager),
+      number_(number) {
   std::cout << "publish experiment manager:" << experiment_manager << std::endl;
 
   // 1.remote address set
@@ -50,8 +53,19 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
 }
 
 void Publisher::OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) {
-  bifrost_send_algorithm_manager_->OnReceiveRtcpFeedback(fb);
-  pacer_->set_pacing_rate(bifrost_send_algorithm_manager_->get_pacing_rate());
+  if (bifrost_send_algorithm_manager_->OnReceiveRtcpFeedback(fb)) {
+    pacer_->set_pacing_rate(bifrost_send_algorithm_manager_->get_pacing_rate());
+
+    send_packet_bytes_ = pacer_->get_pacing_bytes();
+
+    // 投递数据落地
+    ExperimentDumpData data(bifrost_send_algorithm_manager_->get_pacing_rate(),
+                            pacer_->get_pacing_bitrate_bps(),
+                            bifrost_send_algorithm_manager_->get_trends());
+    experiment_manager_->PostDataToShow(this->number_, data);
+
+    pre_update_pacing_rate_time_ = this->uv_loop_->get_time_ms_int64();
+  }
 }
 
 void Publisher::OnReceiveNack(FeedbackRtpNackPacket* packet) {
@@ -61,6 +75,7 @@ void Publisher::OnReceiveNack(FeedbackRtpNackPacket* packet) {
   auto ite = packets.begin();
   while (ite != packets.end()) {
     this->pacer_->NackReadyToSendPacket(*ite);
+    ite = packets.erase(ite);
   }
 }
 

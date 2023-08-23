@@ -35,7 +35,7 @@ Transport::Transport(TransportModel model, uint8_t number,
     case SinglePublish: {
       // 2.publisher
       this->publisher_ = std::make_shared<Publisher>(
-          remote_config, &this->uv_loop_, this, number, experiment_manager, quic_congestion_type);
+          remote_config, &this->uv_loop_, this, number, experiment_manager_, quic_congestion_type);
       break;
     }
   }

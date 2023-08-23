@@ -34,8 +34,8 @@ void BifrostSendAlgorithmManager::OnRtpPacketSend(RtpPacketPtr rtp_packet, int64
   this->algorithm_interface_->OnRtpPacketSend(rtp_packet, nowMs);
 }
 
-void BifrostSendAlgorithmManager::OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) {
-  this->algorithm_interface_->OnReceiveRtcpFeedback(fb);
+bool BifrostSendAlgorithmManager::OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) {
+  return this->algorithm_interface_->OnReceiveRtcpFeedback(fb);
 }
 
 void BifrostSendAlgorithmManager::OnReceiveReceiverReport(webrtc::RTCPReportBlock report,

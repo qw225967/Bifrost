@@ -24,11 +24,13 @@ class QuicSendAlgorithmAdapter : public BifrostSendAlgorithmInterface {
  public:
   // BifrostSendAlgorithmInterface
   void OnRtpPacketSend(RtpPacketPtr rtp_packet, int64_t now) override;
-  void OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) override {
+  bool OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) override {
     if (fb->GetMessageType() == FeedbackRtp::MessageType::QUICFB) {
       auto* feedback = dynamic_cast<QuicAckFeedbackPacket*>(fb);
       this->OnReceiveQuicAckFeedback(feedback);
+      return true;
     }
+    return false;
   }
   void OnReceiveReceiverReport(webrtc::RTCPReportBlock report, float rtt,
                                int64_t nowMs) override {}
@@ -36,6 +38,7 @@ class QuicSendAlgorithmAdapter : public BifrostSendAlgorithmInterface {
   uint32_t get_pacing_rate() override {
     return send_algorithm_interface_->PacingRate(0).ToBitsPerSecond();
   }
+  std::vector<double> get_trends() override {}
 
  private:
   void OnReceiveQuicAckFeedback(QuicAckFeedbackPacket* feedback);

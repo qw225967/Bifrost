@@ -14,6 +14,8 @@
 #include <iomanip>
 #include <iostream>
 #include <sstream>
+#include <cstring>
+#include <ctime>
 
 namespace bifrost {
 std::string Byte::bytes_to_hex(const uint8_t* buf, std::size_t len,
@@ -32,6 +34,33 @@ std::string Byte::bytes_to_hex(const uint8_t* buf, std::size_t len,
     oss << '\n';
   }
   return oss.str();
+}
+
+std::string String::get_now_str_s() {
+  time_t t = time(nullptr);
+  struct tm* now = localtime(&t);
+  std::stringstream timeStr;
+  char temp_str[1024];
+
+  // 以下依次把年月日的数据加入到字符串中
+  timeStr << now->tm_year + 1900 << "-";
+  memset(temp_str, 0, 1024);
+  sprintf(temp_str, "%02d", now->tm_mon + 1);
+  timeStr << temp_str << "-";
+  memset(temp_str, 0, 1024);
+  sprintf(temp_str, "%02d", now->tm_mday);
+  timeStr << temp_str << "T";
+  memset(temp_str, 0, 1024);
+  sprintf(temp_str, "%02d", now->tm_hour);
+  timeStr << temp_str << ":";
+  memset(temp_str, 0, 1024);
+  sprintf(temp_str, "%02d", now->tm_min);
+  timeStr << temp_str << ":";
+  memset(temp_str, 0, 1024);
+  sprintf(temp_str, "%02d", now->tm_sec);
+  timeStr << temp_str;
+
+  return timeStr.str();
 }
 
 int IP::get_family(const std::string& ip) {

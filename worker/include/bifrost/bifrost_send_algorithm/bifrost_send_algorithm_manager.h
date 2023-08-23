@@ -40,11 +40,12 @@ class BifrostSendAlgorithmManager : public TransportCongestionControlClient::Obs
 
  public:
   void OnRtpPacketSend(RtpPacketPtr rtp_packet, int64_t nowMs);
-  void OnReceiveRtcpFeedback(FeedbackRtpPacket* fb);
+  bool OnReceiveRtcpFeedback(FeedbackRtpPacket* fb);
   void OnReceiveReceiverReport(webrtc::RTCPReportBlock report,
                                float rtt, int64_t nowMs);
   void UpdateRtt(float rtt);
   uint32_t get_pacing_rate() { return algorithm_interface_->get_pacing_rate(); }
+  std::vector<double> get_trends() { return algorithm_interface_->get_trends(); }
  private:
   BifrostSendAlgorithmInterfacePtr algorithm_interface_;
 };

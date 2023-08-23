@@ -16,6 +16,11 @@
 #include "setting.h"
 #include "transport.h"
 
+void ThreadRunExperimentDataDump(std::shared_ptr<bifrost::ExperimentManager> &ptr) {
+  std::cout << "ThreadRunExperimentDataDump" << std::endl;
+  ptr->RunDumpData();
+}
+
 int main() {
   // 读取配置文件
   std::string config_path(PUBLISHER_CONFIG_FILE_PATH_STRING);
@@ -23,9 +28,12 @@ int main() {
 
   bifrost::ExperimentManagerPtr ptr =
       std::make_shared<bifrost::ExperimentManager>();
+
+  std::thread experiment_runner(ThreadRunExperimentDataDump, ref(ptr));
+
   auto temp = std::make_shared<bifrost::Transport>(
       bifrost::Transport::SinglePublish, 0, ptr,
-      quic::CongestionControlType::kGoogCC);
+      quic::CongestionControlType::kGoogCC); // number 为传输标号，从 0 开始
 
   temp->Run();
 
