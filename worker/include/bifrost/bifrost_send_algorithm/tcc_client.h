@@ -8,6 +8,7 @@
 
 #include <deque>
 
+#include "bifrost/bifrost_send_algorithm/bifrost_send_algorithm_interface.h"
 #include "common.h"
 #include "rtcp_tcc.h"
 #include "rtp_packet.h"
@@ -15,7 +16,8 @@
 
 namespace bifrost {
 class TransportCongestionControlClient
-    : public webrtc::PacketRouter,
+    : public BifrostSendAlgorithmInterface,
+      public webrtc::PacketRouter,
       public webrtc::TargetTransferRateObserver,
       public UvTimer::Listener {
  public:
@@ -42,12 +44,33 @@ class TransportCongestionControlClient
         TransportCongestionControlClient* tcc_client, RtpPacket* packet,
         const webrtc::PacedPacketInfo& pacing_info) = 0;
   };
+ public:
+  // BifrostSendAlgorithmInterface
+  void OnRtpPacketSend(RtpPacketPtr rtp_packet, int64_t now) override;
+  void UpdateRtt(float rtt) override {}
+
+  bool OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) override {
+    if (fb->GetMessageType() == FeedbackRtp::MessageType::TCC) {
+      auto* feedback = dynamic_cast<FeedbackRtpTransportPacket*>(fb);
+      this->ReceiveRtcpTransportFeedback(feedback);
+      return true;
+    }
+    return false;
+  }
+  void OnReceiveReceiverReport(webrtc::RTCPReportBlock report,
+                               float rtt, int64_t nowMs) override {
+    this->ReceiveRtcpReceiverReport(report, rtt, nowMs);
+  }
+  uint32_t get_pacing_rate() override { return this->get_available_bitrate(); }
+  std::vector<double> get_trends() override {
+    return this->get_trend();
+  }
 
  public:
   TransportCongestionControlClient(
       TransportCongestionControlClient::Observer* observer,
       uint32_t initial_available_bitrate, UvLoop** uv_loop);
-  virtual ~TransportCongestionControlClient();
+  ~TransportCongestionControlClient() override;
 
  public:
   const Bitrates& get_bit_rates() const { return this->bitrates_; }

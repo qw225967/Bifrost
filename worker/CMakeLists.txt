@@ -498,11 +498,18 @@ add_executable(worker
         third_party/libquic/quiche/quic/platform/api/quic_flags.h
 
         # bifrost include
-        include/bifrost/data_producer.h
+        include/bifrost/experiment_manager/fake_data_producer.h
+        include/bifrost/experiment_manager/experiment_manager.h
+        include/bifrost/experiment_manager/experiment_data.h
+        include/bifrost/bifrost_send_algorithm/tcc_client.h
+        include/bifrost/bifrost_send_algorithm/tcc_server.h
+        include/bifrost/bifrost_send_algorithm/bifrost_pacer.h
+        include/bifrost/bifrost_send_algorithm/bifrost_send_algorithm_interface.h
+        include/bifrost/bifrost_send_algorithm/bifrost_send_algorithm_manager.h
+        include/bifrost/bifrost_send_algorithm/quic_send_algorithm_adapter.h
+        include/bifrost/bifrost_send_algorithm/quic_clock_adapter.h
         include/bifrost/player.h
         include/bifrost/publisher.h
-        include/bifrost/experiment_manager.h
-        include/bifrost/experiment_data.h
         include/io/uv_timer.h
         include/io/port_manager.h
         include/io/udp_socket.h
@@ -514,8 +521,6 @@ add_executable(worker
         include/rtc/rtcp_packet.h
         include/rtc/rtcp_feedback.h
         include/rtc/rtcp_tcc.h
-        include/rtc/tcc_client.h
-        include/rtc/tcc_server.h
         include/rtc/sequence_manager.h
         include/rtc/nack.h
         include/rtc/rtcp_nack.h
@@ -530,16 +535,19 @@ add_executable(worker
         include/utils/utils.h
 
         # bifrost src
-        src/bifrost/data_producer.cpp
+        src/bifrost/experiment_manager/fake_data_producer.cpp
+        src/bifrost/experiment_manager/experiment_manager.cpp
+        src/bifrost/bifrost_send_algorithm/bifrost_pacer.cpp
+        src/bifrost/bifrost_send_algorithm/bifrost_send_algorithm_manager.cpp
+        src/bifrost/bifrost_send_algorithm/quic_send_algorithm_adapter.cpp
+        src/bifrost/bifrost_send_algorithm/tcc_client.cpp
+        src/bifrost/bifrost_send_algorithm/tcc_server.cpp
         src/bifrost/player.cpp
         src/bifrost/publisher.cpp
-        src/bifrost/experiment_manager.cpp
         src/io/uv_timer.cpp
         src/io/port_manager.cpp
         src/io/udp_socket.cpp
         src/io/uv_loop.cpp
-        src/rtc/tcc_client.cpp
-        src/rtc/tcc_server.cpp
         src/rtc/rtcp_packet.cpp
         src/rtc/rtcp_feedback.cpp
         src/rtc/rtcp_tcc.cpp

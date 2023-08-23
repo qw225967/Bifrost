@@ -12,16 +12,24 @@
 
 #include <iostream>
 
+#include "common.h"
+#include "rtp_packet.h"
+
 namespace bifrost {
-struct ExperimentGccData {
-  ExperimentGccData(uint32_t available_bitrate=0, uint32_t sent_bitrate=0,
-                    double trend=0)
+struct ExperimentDumpData {
+  ExperimentDumpData(uint32_t available_bitrate, uint32_t sent_bitrate,
+                    std::vector<double> trends)
       : AvailableBitrate(available_bitrate),
         SentBitrate(sent_bitrate),
-        Trend(trend) {}
+        Trends(trends) {}
   uint32_t AvailableBitrate;
   uint32_t SentBitrate;
-  double Trend;
+  std::vector<double> Trends;
+};
+
+class ExperimentDataProducerInterface {
+ public:
+  virtual RtpPacketPtr CreateData() = 0;
 };
 }  // namespace bifrost
 

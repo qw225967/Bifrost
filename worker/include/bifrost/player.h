@@ -10,12 +10,12 @@
 #ifndef WORKER_PLAYER_H
 #define WORKER_PLAYER_H
 
-#include "experiment_manager.h"
+#include "bifrost/bifrost_send_algorithm/tcc_server.h"
+#include "bifrost/experiment_manager/experiment_manager.h"
 #include "nack.h"
 #include "rtcp_rr.h"
 #include "rtcp_sr.h"
 #include "setting.h"
-#include "tcc_server.h"
 
 namespace bifrost {
 typedef std::shared_ptr<sockaddr> SockAddressPtr;
@@ -78,7 +78,6 @@ class Player : public UvTimer::Listener,
   uint8_t number_;
   // experiment manager
   ExperimentManagerPtr experiment_manager_;
-  /* ------------ base ------------ */
 
   /* ------------ experiment ------------ */
   // sr
@@ -100,7 +99,6 @@ class Player : public UvTimer::Listener,
   NackPtr nack_;
   // tcc
   TransportCongestionControlServerPtr tcc_server_{nullptr};
-  /* ------------ experiment ------------ */
 };
 }  // namespace bifrost
 
