@@ -46,6 +46,9 @@ class BifrostPacer : public UvTimer::Listener {
   void set_bytes_in_flight(uint32_t bytes_in_flight) {
     bytes_in_flight_ = bytes_in_flight;
   }
+  void set_pacing_transfer_time(uint32_t pacing_transfer_time) {
+    pacing_transfer_time_ = pacing_transfer_time;
+  }
   void NackReadyToSendPacket(RtpPacketPtr packet) {
     this->ready_send_vec_.push_back(packet);
   }
@@ -80,7 +83,8 @@ class BifrostPacer : public UvTimer::Listener {
   UvTimer* pacer_timer_;
   uint32_t pacing_rate_;
   uint32_t pacing_congestion_windows_; // bbr会使用拥塞窗口
-  uint32_t bytes_in_flight_; // quic使用统计飞行数据
+  uint32_t bytes_in_flight_; // quic 使用统计飞行数据
+  uint32_t pacing_transfer_time_; // quic 根据发送码率计算出发送间隔
   uint16_t pacer_timer_interval_{0u};
   int32_t pre_remainder_bytes_{0u};
 

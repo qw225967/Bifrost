@@ -50,9 +50,6 @@ void BifrostPacer::OnTimer(UvTimer* timer) {
   if (timer == pacer_timer_) {
     if (this->pacing_congestion_windows_ > 0 && this->bytes_in_flight_ > 0 &&
         this->pacing_congestion_windows_ < this->bytes_in_flight_) {
-
-      this->pacing_congestion_windows_ = 0;
-      this->bytes_in_flight_ = 0;
     } else {
       int32_t interval_pacing_bytes =
           int32_t((pacing_rate_ * 1.25 /* 乘上每次间隔码率加减的损失 */ /

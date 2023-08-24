@@ -47,6 +47,7 @@ class BifrostSendAlgorithmManager : public TransportCongestionControlClient::Obs
   uint32_t get_pacing_rate() { return algorithm_interface_->get_pacing_rate(); }
   uint32_t get_congestion_windows() { return algorithm_interface_->get_congestion_windows(); }
   uint32_t get_bytes_in_flight() { return algorithm_interface_->get_bytes_in_flight(); }
+  uint32_t get_pacing_transfer_time(uint32_t bytes) { return algorithm_interface_->get_pacing_transfer_time(bytes); }
   std::vector<double> get_trends() { return algorithm_interface_->get_trends(); }
  private:
   BifrostSendAlgorithmInterfacePtr algorithm_interface_;

@@ -13,8 +13,7 @@
 
 namespace bifrost {
 const uint32_t DefaultInitRtt = 10u;
-const uint32_t MaxIntervalSendPacketRemove = 200u;  // 一个feedback时间
-const uint32_t MaxFeedbackAckDoNotTransTime = 4000u;
+const uint32_t MaxIntervalSendPacketRemove = 400u;  // 两个 feedback 来回的时间
 
 QuicSendAlgorithmAdapter::QuicSendAlgorithmAdapter(
     UvLoop** uv_loop, quic::CongestionControlType congestion_type)
@@ -159,30 +158,18 @@ void QuicSendAlgorithmAdapter::RemoveOldSendPacket() {
   int64_t remove_interval = MaxIntervalSendPacketRemove +
                             transport_rtt_ / 2;  // 1个feedback时间+传输的rtt/2
 
-  // 1.把重传时间内的丢失数据统计出来
   auto it = has_send_map_.begin();
   while (it != has_send_map_.end()) {
     // 大于周重传未确认则判定丢失
     if (now - it->second.send_time > remove_interval) {
       this->losted_packets_.push_back(quic::LostPacket(
           quic::QuicPacketNumber(it->second.sequence), it->second.send_bytes));
-      feedback_lost_no_count_packet_vec_.push_back(it->second);
+      this->unacked_packet_map_->RemoveFromInFlight(
+          quic::QuicPacketNumber(it->second.sequence));
+      this->bytes_in_flight_ -= it->second.send_bytes;
       it = has_send_map_.erase(it);
     } else {
       it++;
-    }
-  }
-
-  // 2.存在上行feedback丢失，把丢失的ack信令中回复的feedback数据去掉
-  auto vec_it = feedback_lost_no_count_packet_vec_.begin();
-  while (vec_it != feedback_lost_no_count_packet_vec_.end()) {
-    if (now - vec_it->send_time > MaxFeedbackAckDoNotTransTime) {
-      this->unacked_packet_map_->RemoveFromInFlight(
-          quic::QuicPacketNumber(vec_it->sequence));
-      this->bytes_in_flight_ -= vec_it->send_bytes;
-      vec_it = feedback_lost_no_count_packet_vec_.erase(vec_it);
-    } else {
-      vec_it++;
     }
   }
   this->unacked_packet_map_->RemoveObsoletePackets();
