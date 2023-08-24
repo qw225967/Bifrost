@@ -18,7 +18,8 @@
 namespace bifrost {
 class QuicSendAlgorithmAdapter : public BifrostSendAlgorithmInterface {
  public:
-  QuicSendAlgorithmAdapter(UvLoop** uv_loop, quic::CongestionControlType congestion_type);
+  QuicSendAlgorithmAdapter(UvLoop** uv_loop,
+                           quic::CongestionControlType congestion_type);
   ~QuicSendAlgorithmAdapter();
 
  public:
@@ -38,7 +39,21 @@ class QuicSendAlgorithmAdapter : public BifrostSendAlgorithmInterface {
   uint32_t get_pacing_rate() override {
     return send_algorithm_interface_->PacingRate(0).ToBitsPerSecond();
   }
-  std::vector<double> get_trends() override {}
+  uint32_t get_congestion_windows() {
+    return send_algorithm_interface_->GetCongestionWindow();
+  }
+  uint32_t get_bytes_in_flight() {
+    return unacked_packet_map_->bytes_in_flight();
+  }
+  uint32_t get_pacing_transfer_time(uint32_t bytes) {
+    return send_algorithm_interface_->PacingRate(bytes)
+        .TransferTime(bytes)
+        .ToMilliseconds();
+  }
+  std::vector<double> get_trends() override {
+    std::vector<double> result;
+    return result;
+  }
 
  private:
   void OnReceiveQuicAckFeedback(QuicAckFeedbackPacket* feedback);
@@ -60,7 +75,6 @@ class QuicSendAlgorithmAdapter : public BifrostSendAlgorithmInterface {
   quic::LostPacketVector losted_packets_;
   quic::QuicByteCount bytes_in_flight_{0u};
   std::map<uint16_t, SendPacketInfo> has_send_map_;
-  std::vector<SendPacketInfo> feedback_lost_no_count_packet_vec_;
   int64_t transport_rtt_{0u};
   uint16_t largest_acked_seq_{0u};
   int32_t cwnd_{6000u};

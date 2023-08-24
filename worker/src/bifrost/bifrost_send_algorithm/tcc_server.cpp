@@ -55,12 +55,15 @@ TransportCongestionControlServer::~TransportCongestionControlServer() {
 void TransportCongestionControlServer::QuicCountIncomingPacket(
     uint64_t nowMs, const RtpPacket* packet) {
 
+  uint16_t wideSeqNumber;
+  if (!packet->ReadTransportWideCc01(wideSeqNumber)) return;
+
   this->quicFeedbackPacket->SetSenderSsrc(0u);
   this->quicFeedbackPacket->SetMediaSsrc(this->transportCcFeedbackMediaSsrc);
 
   RecvPacketInfo temp;
   temp.recv_time = nowMs;
-  temp.sequence = packet->GetSequenceNumber();
+  temp.sequence = wideSeqNumber;
   temp.recv_bytes = packet->GetSize();
   this->packet_recv_time_map_[temp.sequence] = temp;
 }

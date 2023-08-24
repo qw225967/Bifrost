@@ -62,6 +62,9 @@ class TransportCongestionControlClient
     this->ReceiveRtcpReceiverReport(report, rtt, nowMs);
   }
   uint32_t get_pacing_rate() override { return this->get_available_bitrate(); }
+  uint32_t get_congestion_windows() { return 0; }
+  uint32_t get_bytes_in_flight() { return 0; }
+  uint32_t get_pacing_transfer_time(uint32_t bytes) { return 0; }
   std::vector<double> get_trends() override {
     return this->get_trend();
   }

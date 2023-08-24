@@ -93,7 +93,10 @@ class NetworkControllerInterface {
 
   virtual void ChangeDynamicMinThreshold(double threshold) {}
 
-  virtual std::vector<double> GetPrevTrend() {}
+  virtual std::vector<double> GetPrevTrend() {
+    std::vector<double> result;
+    return result;
+  }
 
   virtual void SetNoBitrateIncreaseInAlr(bool flag) {}
 };

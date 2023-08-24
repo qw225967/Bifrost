@@ -34,7 +34,10 @@ class DelayIncreaseDetectorInterface {
 
   virtual void ChangeDynamicMinThreshold(double threshold) {}
 
-  virtual std::vector<double> GetPrevTrend() {}
+  virtual std::vector<double> GetPrevTrend() {
+    std::vector<double> result;
+    return result;
+  }
 
   RTC_DISALLOW_COPY_AND_ASSIGN(DelayIncreaseDetectorInterface);
 };

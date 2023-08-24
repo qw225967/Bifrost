@@ -54,7 +54,15 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
 
 void Publisher::OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) {
   if (bifrost_send_algorithm_manager_->OnReceiveRtcpFeedback(fb)) {
-    pacer_->set_pacing_rate(bifrost_send_algorithm_manager_->get_pacing_rate());
+    this->pacer_->set_pacing_rate(
+        bifrost_send_algorithm_manager_->get_pacing_rate());
+    this->pacer_->set_pacing_congestion_windows(
+        this->bifrost_send_algorithm_manager_->get_congestion_windows());
+    this->pacer_->set_bytes_in_flight(
+        this->bifrost_send_algorithm_manager_->get_bytes_in_flight());
+    this->pacer_->set_pacing_transfer_time(
+        this->bifrost_send_algorithm_manager_->get_pacing_transfer_time(
+            this->bifrost_send_algorithm_manager_->get_congestion_windows()));
 
     send_packet_bytes_ = pacer_->get_pacing_bytes();
 
@@ -63,8 +71,6 @@ void Publisher::OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) {
                             pacer_->get_pacing_bitrate_bps(),
                             bifrost_send_algorithm_manager_->get_trends());
     experiment_manager_->PostDataToShow(this->number_, data);
-
-    pre_update_pacing_rate_time_ = this->uv_loop_->get_time_ms_int64();
   }
 }
 

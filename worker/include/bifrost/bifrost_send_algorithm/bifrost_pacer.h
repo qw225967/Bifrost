@@ -18,6 +18,7 @@
 namespace bifrost {
 typedef std::shared_ptr<ExperimentDataProducerInterface>
     ExperimentDataProducerInterfacePtr;
+
 class BifrostPacer : public UvTimer::Listener {
  public:
   class Observer {
@@ -36,8 +37,18 @@ class BifrostPacer : public UvTimer::Listener {
 
  public:
   void set_pacing_rate(uint32_t pacing_rate) {
-    pacing_rate_ = pacing_rate;
+    pacing_rate_ =
+        pacing_rate > MaxPacingDataLimit ? MaxPacingDataLimit : pacing_rate;
   }  // bps
+  void set_pacing_congestion_windows(uint32_t congestion_windows) {
+    pacing_congestion_windows_ = congestion_windows;
+  }
+  void set_bytes_in_flight(uint32_t bytes_in_flight) {
+    bytes_in_flight_ = bytes_in_flight;
+  }
+  void set_pacing_transfer_time(uint32_t pacing_transfer_time) {
+    pacing_transfer_time_ = pacing_transfer_time;
+  }
   void NackReadyToSendPacket(RtpPacketPtr packet) {
     this->ready_send_vec_.push_back(packet);
   }
@@ -46,12 +57,8 @@ class BifrostPacer : public UvTimer::Listener {
     pacing_packet_count_ = 0;
     return tmp;
   }
-  uint32_t get_pacing_bytes() {
-    return pacing_bytes_;
-  }
-  uint32_t get_pacing_bitrate_bps() {
-    return pacing_bitrate_bps_;
-  }
+  uint32_t get_pacing_bytes() { return pacing_bytes_; }
+  uint32_t get_pacing_bitrate_bps() { return pacing_bitrate_bps_; }
 
  private:
   // observer
@@ -75,8 +82,14 @@ class BifrostPacer : public UvTimer::Listener {
   UvTimer* create_timer_;
   UvTimer* pacer_timer_;
   uint32_t pacing_rate_;
+  uint32_t pacing_congestion_windows_; // bbr会使用拥塞窗口
+  uint32_t bytes_in_flight_; // quic 使用统计飞行数据
+  uint32_t pacing_transfer_time_; // quic 根据发送码率计算出发送间隔
   uint16_t pacer_timer_interval_{0u};
   int32_t pre_remainder_bytes_{0u};
+
+  // max pacing limit
+  static uint32_t MaxPacingDataLimit;
 };
 }  // namespace bifrost
 

@@ -25,6 +25,9 @@ class BifrostSendAlgorithmInterface {
                                        float rtt, int64_t nowMs) = 0;
   virtual void UpdateRtt(float rtt) = 0;
   virtual uint32_t get_pacing_rate() = 0;
+  virtual uint32_t get_congestion_windows() = 0;
+  virtual uint32_t get_bytes_in_flight() = 0;
+  virtual uint32_t get_pacing_transfer_time(uint32_t bytes) = 0;
   virtual std::vector<double> get_trends() = 0;
 };
 }  // namespace bifrost
