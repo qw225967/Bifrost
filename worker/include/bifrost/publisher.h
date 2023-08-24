@@ -94,7 +94,6 @@ class Publisher : public UvTimer::Listener, public BifrostPacer::Observer {
 
   /* ------------ pacer ------------ */
   BifrostPacerPtr pacer_;
-  int64_t pre_update_pacing_rate_time_{0u};
 
   /* ------------ experiment manger ------------ */
   ExperimentManagerPtr experiment_manager_;

@@ -38,7 +38,12 @@ class QuicSendAlgorithmAdapter : public BifrostSendAlgorithmInterface {
   uint32_t get_pacing_rate() override {
     return send_algorithm_interface_->PacingRate(0).ToBitsPerSecond();
   }
-  std::vector<double> get_trends() override {}
+  uint32_t get_congestion_windows() { return send_algorithm_interface_->GetCongestionWindow(); }
+  uint32_t get_bytes_in_flight() { return unacked_packet_map_->bytes_in_flight(); }
+  std::vector<double> get_trends() override {
+    std::vector<double> result;
+    return result;
+  }
 
  private:
   void OnReceiveQuicAckFeedback(QuicAckFeedbackPacket* feedback);
