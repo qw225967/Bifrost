@@ -81,7 +81,7 @@ class BifrostPacer : public UvTimer::Listener {
   UvTimer* statistics_timer_;
   UvTimer* create_timer_;
   UvTimer* pacer_timer_;
-  uint32_t pacing_rate_;
+  uint32_t pacing_rate_{600000u};
   uint32_t pacing_congestion_windows_; // bbr会使用拥塞窗口
   uint32_t bytes_in_flight_; // quic 使用统计飞行数据
   uint32_t pacing_transfer_time_; // quic 根据发送码率计算出发送间隔

@@ -52,6 +52,8 @@ class TransportCongestionControlClient
   bool OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) override {
     if (fb->GetMessageType() == FeedbackRtp::MessageType::TCC) {
       auto* feedback = dynamic_cast<FeedbackRtpTransportPacket*>(fb);
+      if (feedback == nullptr) return false;
+
       this->ReceiveRtcpTransportFeedback(feedback);
       return true;
     }

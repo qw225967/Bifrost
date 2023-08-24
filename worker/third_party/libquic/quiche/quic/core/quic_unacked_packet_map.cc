@@ -286,8 +286,6 @@ bool QuicUnackedPacketMap::IsUnacked(QuicPacketNumber packet_number) const {
 }
 
 void QuicUnackedPacketMap::RemoveFromInFlight(QuicTransmissionInfo* info) {
-  if (info == nullptr)
-    return;
 
   if (info->in_flight) {
 //    QUIC_BUG_IF(quic_bug_12645_3, bytes_in_flight_ < info->bytes_sent);
@@ -321,6 +319,7 @@ void QuicUnackedPacketMap::RemoveFromInFlight(QuicTransmissionInfo* info) {
 void QuicUnackedPacketMap::RemoveFromInFlight(QuicPacketNumber packet_number) {
 //  QUICHE_DCHECK_GE(packet_number, least_unacked_);
 //  QUICHE_DCHECK_LT(packet_number, least_unacked_ + unacked_packets_.size());
+  if (packet_number.ToUint64() == 0) return;
   QuicTransmissionInfo* info =
       &unacked_packets_[packet_number - least_unacked_];
   RemoveFromInFlight(info);

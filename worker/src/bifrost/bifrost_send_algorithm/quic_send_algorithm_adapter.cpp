@@ -32,7 +32,7 @@ QuicSendAlgorithmAdapter::QuicSendAlgorithmAdapter(
   // bbr算法需要使用 拥塞窗口计算发送bytes，使用pacing_rate计算发送间隔
   this->send_algorithm_interface_ = quic::SendAlgorithmInterface::Create(
       this->clock_, this->rtt_stats_, this->unacked_packet_map_,
-      congestion_type, this->random_, this->connection_stats_, 1, nullptr);
+      congestion_type, this->random_, this->connection_stats_, 0, nullptr);
 }
 
 QuicSendAlgorithmAdapter::~QuicSendAlgorithmAdapter() {

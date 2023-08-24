@@ -59,6 +59,11 @@ ExperimentManager::~ExperimentManager() {
 void ExperimentManager::PostDataToShow(uint8_t number,
                                        ExperimentDumpData& data) {
   locker.lock();
+  auto ite = dump_data_map_.find(number);
+  if (ite != dump_data_map_.end()) {
+    dump_data_map_.erase(ite);
+  }
+
   dump_data_map_.insert(std::make_pair(number, data));
   locker.unlock();
 }
@@ -114,7 +119,6 @@ void ExperimentManager::OnTimer(UvTimer* timer) {
     // 1.加锁拷贝一份，不多做循环加锁
     locker.lock();
     auto tmp_map = dump_data_map_;
-    dump_data_map_.clear();
     locker.unlock();
 
     // 2.上个周期没更新则返回
@@ -185,7 +189,8 @@ void ExperimentManager::OnTimer(UvTimer* timer) {
         auto ite = tmp_map.find(j);
         if (ite != tmp_map.end()) {
           // 同步所有行
-          trend = ite->second.Trends[i];
+          if (!ite->second.Trends.empty())
+            trend = ite->second.Trends[i];
         }
         this->gcc_trend_data_file_ << "," << trend;
         trend = 0;
