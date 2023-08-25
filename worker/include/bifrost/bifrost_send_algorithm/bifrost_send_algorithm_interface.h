@@ -18,7 +18,7 @@
 namespace bifrost {
 class BifrostSendAlgorithmInterface {
  public:
-  virtual void OnRtpPacketSend(RtpPacketPtr rtp_packet, int64_t now) = 0;
+  virtual void OnRtpPacketSend(RtpPacketPtr &rtp_packet, int64_t now) = 0;
 
   virtual bool OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) = 0;
   virtual void OnReceiveReceiverReport(webrtc::RTCPReportBlock report,

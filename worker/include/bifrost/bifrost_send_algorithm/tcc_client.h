@@ -46,7 +46,7 @@ class TransportCongestionControlClient
   };
  public:
   // BifrostSendAlgorithmInterface
-  void OnRtpPacketSend(RtpPacketPtr rtp_packet, int64_t now) override;
+  void OnRtpPacketSend(RtpPacketPtr &rtp_packet, int64_t now) override;
   void UpdateRtt(float rtt) override {}
 
   bool OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) override {

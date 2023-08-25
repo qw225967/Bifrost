@@ -62,9 +62,11 @@ void BifrostPacer::OnTimer(UvTimer* timer) {
           while (ite != ready_send_vec_.end() && interval_pacing_bytes > 0) {
             auto packet = (*ite);
             // 发送时更新tcc拓展序号，nack的rtp和普通rtp序号是连续的
-            packet->UpdateTransportWideCc01(this->tcc_seq_++);
+            if (packet->UpdateTransportWideCc01(this->tcc_seq_)) {
+              this->tcc_seq_++;
+              observer_->OnPublisherSendPacket(packet);
+            }
 
-            observer_->OnPublisherSendPacket(packet);
             interval_pacing_bytes -= int32_t(packet->GetSize());
 
             // 统计相关

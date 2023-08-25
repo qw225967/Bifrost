@@ -187,6 +187,9 @@ void QuicUnackedPacketMap::AddSentPacket(std::shared_ptr<bifrost::RtpPacket> &mu
 
 
 void QuicUnackedPacketMap::RemoveObsoletePackets() {
+  for (auto a : unacked_packets_) {
+//    std::cout << "number:" << a.DebugString() << std::endl;
+  }
   while (!unacked_packets_.empty()) {
     if (!IsPacketUseless(least_unacked_, unacked_packets_.front())) {
       break;
@@ -319,7 +322,6 @@ void QuicUnackedPacketMap::RemoveFromInFlight(QuicTransmissionInfo* info) {
 void QuicUnackedPacketMap::RemoveFromInFlight(QuicPacketNumber packet_number) {
 //  QUICHE_DCHECK_GE(packet_number, least_unacked_);
 //  QUICHE_DCHECK_LT(packet_number, least_unacked_ + unacked_packets_.size());
-  if (packet_number.ToUint64() == 0) return;
   QuicTransmissionInfo* info =
       &unacked_packets_[packet_number - least_unacked_];
   RemoveFromInFlight(info);

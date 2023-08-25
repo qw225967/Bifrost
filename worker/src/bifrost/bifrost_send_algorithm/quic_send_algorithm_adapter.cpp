@@ -55,7 +55,7 @@ void QuicSendAlgorithmAdapter::UpdateRtt(float rtt) {
   }
 }
 
-void QuicSendAlgorithmAdapter::OnRtpPacketSend(RtpPacketPtr rtp_packet,
+void QuicSendAlgorithmAdapter::OnRtpPacketSend(RtpPacketPtr &rtp_packet,
                                                int64_t now) {
   quic::QuicTime ts =
       quic::QuicTime::Zero() + quic::QuicTimeDelta::FromMilliseconds(now);
@@ -71,6 +71,7 @@ void QuicSendAlgorithmAdapter::OnRtpPacketSend(RtpPacketPtr rtp_packet,
   temp.is_retrans = rtp_packet->IsReTrans();
   this->has_send_map_[temp.sequence] = temp;
 
+  // 序号反转检验
   // 2.放入unack，此处不统计重复数据，使用无重传模式
   this->unacked_packet_map_->AddSentPacket(
       rtp_packet, wide_seq_number, this->largest_acked_seq_,
@@ -124,7 +125,6 @@ void QuicSendAlgorithmAdapter::OnReceiveQuicAckFeedback(
   // 3.确认当前最新seq
   this->unacked_packet_map_->IncreaseLargestAcked(
       quic::QuicPacketNumber(this->largest_acked_seq_));
-  this->unacked_packet_map_->RemoveObsoletePackets();
 
   // 4.更新rtt
   quic::QuicTime quic_now =
@@ -164,14 +164,17 @@ void QuicSendAlgorithmAdapter::RemoveOldSendPacket() {
     if (now - it->second.send_time > remove_interval) {
       this->losted_packets_.push_back(quic::LostPacket(
           quic::QuicPacketNumber(it->second.sequence), it->second.send_bytes));
+
       this->unacked_packet_map_->RemoveFromInFlight(
           quic::QuicPacketNumber(it->second.sequence));
+
       this->bytes_in_flight_ -= it->second.send_bytes;
       it = has_send_map_.erase(it);
     } else {
       it++;
     }
   }
+  // 4.清除旧数据
   this->unacked_packet_map_->RemoveObsoletePackets();
 }
 }  // namespace bifrost

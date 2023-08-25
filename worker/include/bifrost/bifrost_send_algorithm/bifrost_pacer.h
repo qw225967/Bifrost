@@ -66,7 +66,7 @@ class BifrostPacer : public UvTimer::Listener {
 
   // fake date
   ExperimentDataProducerInterfacePtr data_producer_;
-  uint16_t tcc_seq_{0u};
+  uint16_t tcc_seq_{1u};
 
   // ready send
   std::vector<RtpPacketPtr> ready_send_vec_;

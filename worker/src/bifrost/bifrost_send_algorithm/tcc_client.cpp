@@ -57,7 +57,7 @@ TransportCongestionControlClient::~TransportCongestionControlClient() {
   DestroyController();
 }
 
-void TransportCongestionControlClient::OnRtpPacketSend(RtpPacketPtr rtp_packet, int64_t now) {
+void TransportCongestionControlClient::OnRtpPacketSend(RtpPacketPtr &rtp_packet, int64_t now) {
   uint16_t wideSeqNumber;
   rtp_packet->ReadTransportWideCc01(wideSeqNumber);
 

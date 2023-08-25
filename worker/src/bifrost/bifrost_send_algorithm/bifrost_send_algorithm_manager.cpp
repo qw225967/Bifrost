@@ -30,7 +30,7 @@ BifrostSendAlgorithmManager::BifrostSendAlgorithmManager(
   }
 }
 
-void BifrostSendAlgorithmManager::OnRtpPacketSend(RtpPacketPtr rtp_packet, int64_t nowMs) {
+void BifrostSendAlgorithmManager::OnRtpPacketSend(RtpPacketPtr &rtp_packet, int64_t nowMs) {
   this->algorithm_interface_->OnRtpPacketSend(rtp_packet, nowMs);
 }
 

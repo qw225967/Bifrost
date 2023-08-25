@@ -13,8 +13,7 @@
 
 namespace bifrost {
 
-const uint16_t IntervalSendTime = 5u;
-const uint32_t IntervalDataDump = 1000u;
+const uint32_t IntervalUpdatePacingInfo = 100u;
 const uint32_t IntervalSendReport = 2000u;
 
 Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
@@ -37,6 +36,9 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
   this->send_report_timer_ =
       new UvTimer(this, this->uv_loop_->get_loop().get());
   this->send_report_timer_->Start(IntervalSendReport, IntervalSendReport);
+
+  this->update_pacing_info_timer_ = new UvTimer(this, this->uv_loop_->get_loop().get());
+  this->update_pacing_info_timer_->Start(IntervalUpdatePacingInfo, IntervalUpdatePacingInfo);
 
   // 4.nack
   nack_ = std::make_shared<Nack>(remote_addr_config_.ssrc, uv_loop);
@@ -163,6 +165,21 @@ void Publisher::OnTimer(UvTimer* timer) {
     packet->Serialize(Buffer);
     this->observer_->OnPublisherSendRtcpPacket(packet,
                                                this->udp_remote_address_.get());
+  }
+
+  if (timer == this->update_pacing_info_timer_) {
+    auto pacing_rate = bifrost_send_algorithm_manager_->get_pacing_rate();
+    if (pacing_rate > 0) this->pacer_->set_pacing_rate(pacing_rate);
+
+    this->pacer_->set_pacing_congestion_windows(
+        this->bifrost_send_algorithm_manager_->get_congestion_windows());
+    this->pacer_->set_bytes_in_flight(
+        this->bifrost_send_algorithm_manager_->get_bytes_in_flight());
+    this->pacer_->set_pacing_transfer_time(
+        this->bifrost_send_algorithm_manager_->get_pacing_transfer_time(
+            this->bifrost_send_algorithm_manager_->get_congestion_windows()));
+
+    send_packet_bytes_ = pacer_->get_pacing_bytes();
   }
 }
 }  // namespace bifrost

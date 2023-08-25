@@ -39,7 +39,7 @@ class BifrostSendAlgorithmManager : public TransportCongestionControlClient::Obs
       const webrtc::PacedPacketInfo& pacing_info) override {}
 
  public:
-  void OnRtpPacketSend(RtpPacketPtr rtp_packet, int64_t nowMs);
+  void OnRtpPacketSend(RtpPacketPtr &rtp_packet, int64_t nowMs);
   bool OnReceiveRtcpFeedback(FeedbackRtpPacket* fb);
   void OnReceiveReceiverReport(webrtc::RTCPReportBlock report,
                                float rtt, int64_t nowMs);

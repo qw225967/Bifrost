@@ -69,6 +69,7 @@ class Publisher : public UvTimer::Listener, public BifrostPacer::Observer {
             quic::CongestionControlType quic_congestion_type);
   ~Publisher() override {
     delete send_report_timer_;
+    delete update_pacing_info_timer_;
     pacer_.reset();
   }
   // UvTimer
@@ -85,6 +86,7 @@ class Publisher : public UvTimer::Listener, public BifrostPacer::Observer {
   // uv
   UvLoop* uv_loop_;
   UvTimer* send_report_timer_;
+  UvTimer* update_pacing_info_timer_;
   // ssrc
   uint32_t ssrc_;
   // number

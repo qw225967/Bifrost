@@ -24,7 +24,7 @@ class QuicSendAlgorithmAdapter : public BifrostSendAlgorithmInterface {
 
  public:
   // BifrostSendAlgorithmInterface
-  void OnRtpPacketSend(RtpPacketPtr rtp_packet, int64_t now) override;
+  void OnRtpPacketSend(RtpPacketPtr &rtp_packet, int64_t now) override;
   bool OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) override {
     if (fb->GetMessageType() == FeedbackRtp::MessageType::QUICFB) {
       auto* feedback = dynamic_cast<QuicAckFeedbackPacket*>(fb);
