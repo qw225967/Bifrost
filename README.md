@@ -51,6 +51,11 @@ cd build && cmake ..
 make
 ```
 
+## Run
+Bifrost requires the use of two terminals for end-to-end testing, and if only one machine is used, weak network restrictions cannot be achieved through the network.
+
+Please refer to **worker/conf/README.md** for usage and Configuration
+
 ## Display
 
 This demo uses grafana-based data display, using the CSV file path as the data source.
@@ -85,8 +90,6 @@ Use ***ps -ef | grep grafana*** command to view the default startup configuratio
 [plugin.marcusolsson-csv-datasource]
 allow_local_mode = true
 ```
-
-Please refer to **worker/conf/README.md** for usage
 
 ### 2.Show
 The figure below shows the trend of the slope in the trend line module of the GCC algorithm during the transmission 
