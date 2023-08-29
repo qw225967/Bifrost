@@ -86,6 +86,8 @@ Use ***ps -ef | grep grafana*** command to view the default startup configuratio
 allow_local_mode = true
 ```
 
+Please refer to **worker/conf/README.md** for usage
+
 ### 2.Show
 The figure below shows the trend of the slope in the trend line module of the GCC algorithm during the transmission 
 process.
