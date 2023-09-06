@@ -53,31 +53,30 @@ void BifrostPacer::OnTimer(UvTimer* timer) {
     } else {
       int32_t interval_pacing_bytes =
           int32_t((pacing_rate_ * 1.25 /* 乘上每次间隔码率加减的损失 */ /
-          1000) /* 转换ms */
-          * pacer_timer_interval_ /* 该间隔发送速率 */ /
-          8 /* 转换bytes */) +
+                   1000) /* 转换ms */
+                  * pacer_timer_interval_ /* 该间隔发送速率 */ /
+                  8 /* 转换bytes */) +
           pre_remainder_bytes_ /* 上个周期剩余bytes */;
 
-          auto ite = ready_send_vec_.begin();
-          while (ite != ready_send_vec_.end() && interval_pacing_bytes > 0) {
-            auto packet = (*ite);
-            // 发送时更新tcc拓展序号，nack的rtp和普通rtp序号是连续的
-            if (packet->UpdateTransportWideCc01(this->tcc_seq_)) {
-              this->tcc_seq_++;
-              observer_->OnPublisherSendPacket(packet);
-            }
+      auto ite = ready_send_vec_.begin();
+      while (ite != ready_send_vec_.end() && interval_pacing_bytes > 0) {
+        auto packet = (*ite);
+        // 发送时更新tcc拓展序号，nack的rtp和普通rtp序号是连续的
+        if (packet->UpdateTransportWideCc01(this->tcc_seq_)) {
+          this->tcc_seq_++;
+          observer_->OnPublisherSendPacket(packet);
+        }
 
-            interval_pacing_bytes -= int32_t(packet->GetSize());
+        interval_pacing_bytes -= int32_t(packet->GetSize());
 
-            // 统计相关
-            pacing_bitrate_ += packet->GetSize() * 8;
-            pacing_bytes_ += packet->GetSize();
-            pacing_packet_count_++;
+        // 统计相关
+        pacing_bitrate_ += packet->GetSize() * 8;
+        pacing_bytes_ += packet->GetSize();
+        pacing_packet_count_++;
 
-            ite = ready_send_vec_.erase(ite);
-          }
-          pre_remainder_bytes_ = interval_pacing_bytes;
-
+        ite = ready_send_vec_.erase(ite);
+      }
+      pre_remainder_bytes_ = interval_pacing_bytes;
     }
     pacer_timer_->Start(pacer_timer_interval_);
   }

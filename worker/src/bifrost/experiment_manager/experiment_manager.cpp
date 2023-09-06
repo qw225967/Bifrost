@@ -74,7 +74,7 @@ std::vector<double> ExperimentManager::ComplementTrendVecWithSize(
   std::vector<double> result;
 
   size_t current_size = trends.size();
-  if (current_size == 0 || current_size == max_size) return result;
+  if (current_size == 0 || current_size == max_size) return trends;
 
   /*  1.可整除，
    *    max = 6， size = 2 ——> 0,x,x,3,x,x
@@ -177,10 +177,11 @@ void ExperimentManager::OnTimer(UvTimer* timer) {
       // 换算毫秒
       auto now_str_ms = now_str;
       char temp_str[4096];
-      sprintf(temp_str, "%03d",
-              int((1000 / DefaultDumpDataInterval - cycle_trend_ms_fraction_) *
-                      DefaultDumpDataInterval +
-                  i * (DefaultDumpDataInterval / (max_trend_size - 1))));
+      auto ms = int((1000 / DefaultDumpDataInterval - cycle_trend_ms_fraction_) *
+          DefaultDumpDataInterval +
+          i * (DefaultDumpDataInterval / (max_trend_size - 1)));
+      if (ms == 1000) continue;
+      sprintf(temp_str, "%03d",ms);
       now_str_ms = now_str_ms + "." + temp_str;
       this->gcc_trend_data_file_ << now_str_ms;
 
