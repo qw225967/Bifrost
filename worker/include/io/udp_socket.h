@@ -16,6 +16,9 @@
 #include <string>
 
 namespace bifrost {
+/* Static. */
+static constexpr size_t ReadBufferSize{65536};
+
 class UdpSocket {
  protected:
   using onSendCallback = const std::function<void(bool sent)>;
@@ -94,6 +97,8 @@ class UdpSocket {
   bool closed_{false};
   size_t recv_bytes_{0u};
   size_t sent_bytes_{0u};
+
+  uint8_t ReadBuffer[ReadBufferSize];
 };
 
 }  // namespace bifrost
