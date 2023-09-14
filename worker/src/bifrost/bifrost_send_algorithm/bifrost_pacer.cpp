@@ -87,6 +87,7 @@ void BifrostPacer::OnTimer(UvTimer* timer) {
     // 每10ms产生3个包
     for (int i = 0; i < 3; i++) {
       auto packet = this->data_producer_->CreateData();
+      auto size = packet -> GetSize();
       this->ready_send_vec_.push_back(packet);
     }
   }

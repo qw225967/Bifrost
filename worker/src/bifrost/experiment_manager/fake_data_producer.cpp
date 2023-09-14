@@ -106,9 +106,6 @@ constexpr uint8_t kPacketWithH264[]{
     0xce, 0xbd, 0xfb, 0xa1, 0xeb};
 
 FakeDataProducer::FakeDataProducer(uint32_t ssrc) : ssrc_(ssrc), sequence_(1) {
-#ifdef USING_LOCAL_FILE_DATA
-  data_file_.open(LOCAL_DATA_FILE_PATH_STRING, std::ios::binary);
-#endif
 }
 
 FakeDataProducer::~FakeDataProducer() {
@@ -138,7 +135,7 @@ RtpPacketPtr FakeDataProducer::CreateData() {
   // mediasoup parse 内部只new了包结构，没有new payload空间，payload空间使用了一个共享的静态区域
   rtp_packet->SetPayloadDataPtr(&payload_data);
 
- this->GetRtpExtensions(rtp_packet);
+  this->GetRtpExtensions(rtp_packet);
 
   return rtp_packet;
 }
