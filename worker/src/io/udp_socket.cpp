@@ -14,10 +14,6 @@
 #include "utils.h"
 
 namespace bifrost {
-/* Static. */
-
-static constexpr size_t ReadBufferSize{65536};
-static uint8_t ReadBuffer[ReadBufferSize];
 
 /* Static methods for UV callbacks. */
 
@@ -221,7 +217,7 @@ bool UdpSocket::SetLocalAddress() {
 
 inline void UdpSocket::OnUvRecvAlloc(size_t /*suggested_size*/, uv_buf_t* buf) {
   // Tell UV to write into the static buffer.
-  buf->base = reinterpret_cast<char*>(ReadBuffer);
+  buf->base = reinterpret_cast<char*>(this->ReadBuffer);
   // Give UV all the buffer space.
   buf->len = ReadBufferSize;
 }
