@@ -10,6 +10,7 @@
 #include "bifrost_send_algorithm/bifrost_pacer.h"
 
 #include "experiment_manager/fake_data_producer.h"
+#include "experiment_manager/h264_file_data_producer.h"
 
 namespace bifrost {
 
@@ -25,7 +26,8 @@ BifrostPacer::BifrostPacer(uint32_t ssrc, UvLoop* uv_loop, Observer* observer)
       pacer_timer_interval_(DefaultPacingTimeInterval),
       pacing_rate_(InitialPacingGccBitrate) {
   // 1.数据生产者
-  data_producer_ = std::make_shared<FakeDataProducer>(ssrc);
+//  data_producer_ = std::make_shared<FakeDataProducer>(ssrc);
+  data_producer_ = std::make_shared<H264FileDataProducer>(ssrc);
 
   // 2.发送定时器
   pacer_timer_ = new UvTimer(this, uv_loop->get_loop().get());
@@ -84,9 +86,10 @@ void BifrostPacer::OnTimer(UvTimer* timer) {
   }
 
   if (timer == create_timer_) {
-    // 每10ms产生3个包
+    // 每10ms产生3次
     for (int i = 0; i < 3; i++) {
       auto packet = this->data_producer_->CreateData();
+      if (packet == nullptr)continue;
       auto size = packet -> GetSize();
       this->ready_send_vec_.push_back(packet);
     }

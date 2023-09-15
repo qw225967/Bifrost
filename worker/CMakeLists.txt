@@ -503,6 +503,7 @@ add_executable(worker
         include/bifrost/experiment_manager/fake_data_producer.h
         include/bifrost/experiment_manager/experiment_manager.h
         include/bifrost/experiment_manager/experiment_data.h
+        include/bifrost/experiment_manager/h264_file_data_producer.h
         include/bifrost/bifrost_send_algorithm/tcc_client.h
         include/bifrost/bifrost_send_algorithm/tcc_server.h
         include/bifrost/bifrost_send_algorithm/bifrost_pacer.h
@@ -539,6 +540,7 @@ add_executable(worker
         # bifrost src
         src/bifrost/experiment_manager/fake_data_producer.cpp
         src/bifrost/experiment_manager/experiment_manager.cpp
+        src/bifrost/experiment_manager/h264_file_data_producer.cpp
         src/bifrost/bifrost_send_algorithm/bifrost_pacer.cpp
         src/bifrost/bifrost_send_algorithm/bifrost_send_algorithm_manager.cpp
         src/bifrost/bifrost_send_algorithm/quic_send_algorithm_adapter.cpp
