@@ -497,6 +497,9 @@ add_executable(worker
         third_party/libquic/quiche/quic/platform/api/quic_flag_utils.h
         third_party/libquic/quiche/quic/platform/api/quic_flags.h
 
+        # lib ns-3-dev : ns-3.33
+        third_party/
+
         # bifrost include
         include/bifrost/experiment_manager/fake_data_producer.h
         include/bifrost/experiment_manager/experiment_manager.h
