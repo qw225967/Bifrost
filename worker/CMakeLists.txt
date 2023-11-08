@@ -35,6 +35,8 @@ include_directories(
         third_party/libwebrtc/deps/abseil-cpp/abseil-cpp
         third_party/libwebrtc/libwebrtc
         third_party/libquic
+        third_party/libns3/include # lib ns-3-dev : ns-3.29
+        third_party/libns3
 )
 
 add_subdirectory(third_party/libwebrtc/deps/abseil-cpp/abseil-cpp)
@@ -496,9 +498,6 @@ add_executable(worker
         third_party/libquic/quiche/quic/platform/api/quic_export.h
         third_party/libquic/quiche/quic/platform/api/quic_flag_utils.h
         third_party/libquic/quiche/quic/platform/api/quic_flags.h
-
-        # lib ns-3-dev : ns-3.33
-        third_party/
 
         # bifrost include
         include/bifrost/experiment_manager/fake_data_producer.h

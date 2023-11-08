@@ -1,0 +1,135 @@
+set(source_files
+    model/apps/syncodecs/traces-reader.cc
+    model/apps/syncodecs/syncodecs.cc
+    model/apps/webrtc-sender.cc
+    model/apps/webrtc-receiver.cc
+    model/apps/video_packet_assembler.cc
+    model/packet/msg_header.cc
+    model/packet/video_header.cc
+    model/packet/fec_header.cc
+    model/packet/ack_header.cc
+    model/packet/nack_header.cc
+    model/packet/echo_header.cc
+    model/fec/flex_fec_sender.cc
+    model/fec/flex_fec_receiver.cc
+    model/fec/mask_generator.cc
+    model/fec/webrtc_mask_bursty_table.cc
+    model/fec/webrtc_mask_generator.cc
+    model/fec/webrtc_mask_random_table.cc    
+    model/congestion-control/alr-detector/interval_budget.cc
+    model/congestion-control/alr-detector/alr_detector.cc
+    model/congestion-control/loss-based-bwe/loss_based_bwe_v0.cc
+    model/congestion-control/loss-based-bwe/loss_based_bwe_v1.cc
+    model/congestion-control/loss-based-bwe/loss_based_bwe_v2.cc
+    model/congestion-control/probe/probe_controller.cc
+    model/congestion-control/probe/probe_bitrate_estimator.cc
+    model/congestion-control/pacer/bitrate_prober.cc
+    model/congestion-control/pacer/paced_sender.cc
+    model/congestion-control/pacer/pacing_controller.cc
+    model/congestion-control/pacer/packet_queue.cc
+    model/congestion-control/pacer/packet_router.cc
+    model/congestion-control/nack/nack_requester.cc    
+    model/congestion-control/acknowledged_bitrate_estimator.cc
+    model/congestion-control/aimd_rate_controller.cc
+    model/congestion-control/bitrate_estimator.cc
+    model/congestion-control/common.cc
+    model/congestion-control/congestion_window_pushback_controller.cc
+    model/congestion-control/delay_based_bwe.cc
+    model/congestion-control/goog_cc_network_controller.cc
+    model/congestion-control/inter_arrival_delta.cc
+    model/congestion-control/link_capacity_estimator.cc    
+    model/congestion-control/trendline_estimator.cc
+    model/transport/transport_feedback_adapter.cc
+    model/transport/transport_controller.cc
+    model/transport/webrtc_udp_socket.cc
+    model/topo/webrtc_topo.cc
+    model/topo/webrtc_wifi_topo.cc
+    model/topo/webrtc_wired_topo.cc
+)
+
+set(header_files
+model/apps/syncodecs/traces-reader.h
+model/apps/syncodecs/syncodecs.h
+model/apps/video_packet_assembler.h
+model/apps/video_packet_observer.h
+model/packet/msg_header.h
+model/packet/video_header.h
+model/packet/fec_header.h
+model/packet/ack_header.h
+model/packet/nack_header.h
+model/packet/echo_header.h
+model/fec/fec_sender.h
+model/fec/fec_observer.h
+model/fec/flex_fec_sender.h
+model/fec/flex_fec_receiver.h
+model/fec/mask_generator.h
+model/fec/webrtc_mask_bursty_table.h
+model/fec/webrtc_mask_generator.h
+model/fec/webrtc_mask_random_table.h
+model/apps/webrtc-constants.h
+model/apps/webrtc-sender.h
+model/apps/webrtc-receiver.h
+model/congestion-control/alr-detector/interval_budget.h
+model/congestion-control/alr-detector/alr_detector.h
+model/congestion-control/loss-based-bwe/loss_based_bwe_v0.h
+model/congestion-control/loss-based-bwe/loss_based_bwe_v1.h
+model/congestion-control/loss-based-bwe/loss_based_bwe_v2.h
+model/congestion-control/probe/probe_controller.h
+model/congestion-control/probe/probe_bitrate_estimator.h
+model/congestion-control/utils/base/array_view.h
+model/congestion-control/utils/base/container.h
+model/congestion-control/utils/base/mod_ops.h
+model/congestion-control/utils/base/safe_conversions_impl.h
+model/congestion-control/utils/base/safe_conversions.h
+model/congestion-control/utils/base/sequence_number_util.h 
+model/congestion-control/utils/base/type_traits.h
+model/congestion-control/utils/units/data_rate.h 
+model/congestion-control/utils/units/data_size.h
+model/congestion-control/utils/units/frequency.h 
+model/congestion-control/utils/units/time_delta.h  
+model/congestion-control/utils/units/timestamp.h 
+model/congestion-control/utils/units/unit_base.h
+model/congestion-control/pacer/bitrate_prober.h
+model/congestion-control/pacer/pacing_controller.h
+model/congestion-control/pacer/paced_sender.h
+model/congestion-control/pacer/packet_queue.h
+model/congestion-control/pacer/packet_router.h
+model/congestion-control/nack/nack_sender.h
+model/congestion-control/nack/nack_requester.h
+model/congestion-control/acknowledged_bitrate_estimator.h
+model/congestion-control/aimd_rate_controller.h
+model/congestion-control/bitrate_estimator.h
+model/congestion-control/common.h
+model/congestion-control/congestion_window_pushback_controller.h
+model/congestion-control/delay_based_bwe.h
+model/congestion-control/goog_cc_network_controller.h
+model/congestion-control/inter_arrival_delta.h
+model/congestion-control/link_capacity_estimator.h
+model/congestion-control/trendline_estimator.h
+model/transport/transport_feedback_adapter.h
+model/transport/transport_controller.h
+model/transport/webrtc_udp_socket.h
+model/topo/webrtc_topo.h
+model/topo/webrtc_wifi_topo.h
+model/topo/webrtc_wired_topo.h
+)
+
+build_lib(
+  LIBNAME webrtc
+  SOURCE_FILES ${source_files}
+  HEADER_FILES ${header_files}
+  LIBRARIES_TO_LINK ${libcore}
+                    ${libnetwork}
+                    ${libwifi}
+                    ${libpoint-to-point}
+                    ${libinternet}                    
+                    ${libapplications}
+                    ${libmobility}
+  TEST_SOURCES
+  test/webrtc-common-test.cc
+  test/webrtc-wifi-test-case.cc
+  test/webrtc-wifi-test-suite.cc
+  test/webrtc-wired-test-case.cc
+  test/webrtc-wired-test-suite.cc
+  test/webrtc-wired-varyparam-test-suite.cc
+)

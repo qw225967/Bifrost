@@ -1,0 +1,20 @@
+## -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
+
+def build(bld):
+    module = bld.create_ns3_module('bifrost', ['fd-net-device','core', 'internet'])
+    module.source = [
+        'helper/BifrostTapNetDeviceHelper.cpp',
+        ]
+
+    headers = bld(features='ns3header')
+    headers.module = 'bifrost'
+    headers.source = [
+        'helper/BifrostTapNetDeviceHelper.h',
+	'TopologyInterface/TopologyInterface.h',
+        ]
+
+    if (bld.env['ENABLE_EXAMPLES']):
+        bld.recurse('examples')
+
+    bld.ns3_python_bindings()
+
