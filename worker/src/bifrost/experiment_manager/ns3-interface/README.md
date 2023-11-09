@@ -23,7 +23,7 @@ We proxy physical network transmission based on docker and nginx. Input the data
 +---------------+    client |           |   |       Bifrost       |   |           | server    +---------------+    
 |   virtually   |           |           |   |                     |   |           |           |   virtually   |    
 +               +           +   nginx   +---+         NS-3        +---+  nginx    +           +               +
-|   10.0.0.2    |           |           |   |                     |   |           |           |  10.100.0.100 |
+|   10.0.0.2    |           |           |   |                     |   |           |           |   10.100.0.2  |
 +---------------+           |           |   |      Simulation     |   |           |           +---------------+    
             |               +-----+-----+   |                     |   +-----+-----+               |
             |      10.0.0.100     |         |                     |         |     10.100.0.100    |
@@ -57,4 +57,6 @@ docker exec -it client /bin/bash
 
 ping 10.100.0.100
 ```
-The default P2P topology network is set with a delay of 20ms，so the RTT is 40ms：
+The default P2P topology network is set with a delay of 20ms，so the RTT is near 40ms：
+
+![img.png](../../../../../draw/ns3ping.png)
