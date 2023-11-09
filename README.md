@@ -98,3 +98,10 @@ process.
 
 The figure below shows the target code rate and sending code rate of the GCC algorithm during transmission.
 ![img.png](draw/img.png)
+
+## Expand
+
+This project also provides the ability to use NS3 simulation for network simulation.
+It provides the ability to convert physical and virtual networks, and provides an interface for developing network topology.
+
+For details, please refer to **src/bifrost/experience_Manager/ns3-interface/README.md**.
