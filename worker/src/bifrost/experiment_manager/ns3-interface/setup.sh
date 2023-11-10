@@ -5,7 +5,7 @@ docker kill bifrost-ns3 client server
 docker system prune --force
 
 echo "Building NS3 container..."
-cd bifrost-ns3
+cd src
 docker build . -t qns
 cd ..
 
