@@ -16,7 +16,7 @@ int main() {
 
   std::shared_ptr<ns3proxy::ProxyManager> manager = std::make_shared<ns3proxy::ProxyManager>();
 
-  manager->RunProxy()
+  manager->RunProxy();
 
   return 0;
 }
