@@ -99,12 +99,12 @@ void ProxyOut::UserOnUdpDatagramReceived(const uint8_t* data, size_t len,
 ProxyManager::ProxyManager() {
   this->loop_ = new uv_loop_t;
 
-  int err = uv_loop_init(loop);
+  int err = uv_loop_init(loop_);
   if (err != 0) std::cout << "[proxy] initialization failed" << std::endl;
 
   std::string ip("0.0.0.0");
-  this->proxy_in_ = std::make_shared<ProxyIn>(ip, 9099, this, this->loop_in_);
-  this->proxy_out_ = std::make_shared<ProxyOut>(ip, 9098, this, this->loop_out_);
+  this->proxy_in_ = std::make_shared<ProxyIn>(ip, 9099, this, this->loop_);
+  this->proxy_out_ = std::make_shared<ProxyOut>(ip, 9098, this, this->loop_);
 
   // 设置代理ip、端口
   struct sockaddr_storage remote_addr;
