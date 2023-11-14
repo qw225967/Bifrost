@@ -4,6 +4,12 @@
     "rtcPort": 7777,
     "rtcIp": "0.0.0.0"
   },
+  "RemoteSendConfigs": {
+    "userName": "remote_client_1",
+    "rtcPort": 9099,
+    "rtcIp": "101.42.42.53",
+    "ssrc": 12341234
+  },
   "ExperimentConfig": {
     "NackExperiment": {
     },
