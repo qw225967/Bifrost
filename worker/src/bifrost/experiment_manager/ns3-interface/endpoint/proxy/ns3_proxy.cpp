@@ -100,9 +100,9 @@ ProxyManager::ProxyManager() {
   this->loop_in_ = new uv_loop_t;
   this->loop_out_ = new uv_loop_t;
 
-  std::string ip("101.42.42.53");
+  std::string ip("0.0.0.0");
   this->proxy_in_ = std::make_shared<ProxyIn>(ip, 9999, this, this->loop_in_);
-  this->proxy_out_ = std::make_shared<ProxyOut>(ip, 7777, this, this->loop_out_);
+  this->proxy_out_ = std::make_shared<ProxyOut>(ip, 9998, this, this->loop_out_);
 
   // 设置代理ip、端口
   struct sockaddr_storage remote_addr;

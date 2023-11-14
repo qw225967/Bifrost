@@ -7,6 +7,8 @@
  * @description : TODO
  *******************************************************/
 
+#define USENS3TEST 1
+
 #include "player.h"
 
 namespace bifrost {
@@ -25,8 +27,30 @@ Player::Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
       number_(number) {
   std::cout << "player experiment manager:" << experiment_manager << std::endl;
 
+#ifdef USENS3TEST
+  // 设置代理ip、端口
+  struct sockaddr_storage temp_addr;
+  int family = IP::get_family("10.100.0.100");
+  switch (family) {
+    case AF_INET: {
+      int err = uv_ip4_addr("10.100.0.100", 0,
+                            reinterpret_cast<struct sockaddr_in*>(&temp_addr));
+      std::cout << "[proxy] remote uv_ip4_addr" << std::endl;
+      if (err != 0)
+        std::cout << "[proxy] remote uv_ip4_addr() failed: " << uv_strerror(err)
+        << std::endl;
+
+      (reinterpret_cast<struct sockaddr_in*>(&temp_addr))->sin_port =
+          htons(8887);
+      break;
+    }
+  }
+  auto temp_sockaddr =  reinterpret_cast<struct sockaddr*>(&temp_addr);
+  this->udp_remote_address_ = std::make_shared<sockaddr>(*temp_sockaddr);
+#else
   // 1.remote address set
   this->udp_remote_address_ = std::make_shared<sockaddr>(*remote_addr);
+#endif
 
   // 2.nack
   this->nack_ = std::make_shared<Nack>(ssrc, uv_loop, this);

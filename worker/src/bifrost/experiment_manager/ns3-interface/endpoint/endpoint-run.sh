@@ -23,7 +23,7 @@ elif [ $1 = "server" ]; then
   udp_in_server="10.0.0.100:8887"
   udp_in_listen="0.0.0.0:8887"
   # 配置输出的流向
-  udp_out_server="10.100.0.1:7777"
+  udp_out_server="10.100.0.1:9998"
   udp_out_listen="0.0.0.0:8889"
 else
   echo "endpoint name err!"

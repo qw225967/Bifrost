@@ -8,7 +8,7 @@
  *******************************************************/
 
 #include "udp_socket.h"
-
+#include <cstring>
 #include <iostream>
 
 namespace ns3proxy {
