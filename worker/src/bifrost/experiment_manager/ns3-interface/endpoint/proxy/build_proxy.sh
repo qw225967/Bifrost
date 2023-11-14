@@ -9,5 +9,5 @@ cd ./libuv/build/ && cmake .. -DBUILD_TESTING=ON
 cd ../ && cmake --build build
 
 # 2.编译worker
-cd ../../build/ && cmake ..
+cd ../build/ && cmake ..
 make
