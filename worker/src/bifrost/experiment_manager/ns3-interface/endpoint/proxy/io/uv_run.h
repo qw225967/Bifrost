@@ -199,9 +199,6 @@ class UvRun {
         break;
     }
 
-    err = uv_loop_init(loop);
-    if (err != 0) std::cout << "[proxy] initialization failed" << std::endl;
-
     uvHandle = reinterpret_cast<uv_handle_t*>(new uv_udp_t());
     uv_udp_init_ex(loop, reinterpret_cast<uv_udp_t*>(uvHandle),
                    UV_UDP_RECVMMSG);

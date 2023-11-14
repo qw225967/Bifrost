@@ -64,6 +64,8 @@ void BifrostPacer::OnTimer(UvTimer* timer) {
         // 发送时更新tcc拓展序号，nack的rtp和普通rtp序号是连续的
         if (packet->UpdateTransportWideCc01(this->tcc_seq_)) {
           this->tcc_seq_++;
+
+          std::cout << "send seq:" << packet->GetSequenceNumber() << std::endl;
           observer_->OnPublisherSendPacket(packet);
         }
 

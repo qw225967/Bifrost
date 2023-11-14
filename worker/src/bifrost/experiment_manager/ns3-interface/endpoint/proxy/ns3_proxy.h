@@ -93,8 +93,7 @@ class ProxyManager : public ProxyIn::ProxyInObserver,
   ~ProxyManager();
 
  public:
-  void RunProxyIn() { uv_run(this->loop_in_, UV_RUN_DEFAULT); }
-  void RunProxyOut() { uv_run(this->loop_out_, UV_RUN_DEFAULT); }
+  void RunProxy() { uv_run(this->loop_, UV_RUN_DEFAULT); }
 
  private:
   void ProxyInReceivePacket(uint32_t ssrc, const uint8_t* data, size_t len,
@@ -109,8 +108,7 @@ class ProxyManager : public ProxyIn::ProxyInObserver,
   std::mutex locker;
   std::shared_ptr<ProxyIn> proxy_in_;
   std::shared_ptr<ProxyOut> proxy_out_;
-  uv_loop_t * loop_in_;
-  uv_loop_t * loop_out_;
+  uv_loop_t * loop_;
 };
 }  // namespace ns3proxy
 

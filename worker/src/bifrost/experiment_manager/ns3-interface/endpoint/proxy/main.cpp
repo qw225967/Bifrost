@@ -11,19 +11,12 @@
 #include <memory>
 #include "ns3_proxy.h"
 
-void ProxyInRun(std::shared_ptr<ns3proxy::ProxyManager> manager) { manager->RunProxyIn(); }
-void ProxyOutRun(std::shared_ptr<ns3proxy::ProxyManager> manager) { manager->RunProxyOut(); }
 
 int main() {
 
   std::shared_ptr<ns3proxy::ProxyManager> manager = std::make_shared<ns3proxy::ProxyManager>();
 
-  std::thread in(ProxyInRun, std::ref(manager));
-  std::thread out(ProxyOutRun, std::ref(manager));
-
-  in.join();
-  out.join();
-
+  manager->RunProxy()
 
   return 0;
 }

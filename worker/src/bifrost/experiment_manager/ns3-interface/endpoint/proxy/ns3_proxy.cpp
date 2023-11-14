@@ -97,19 +97,21 @@ void ProxyOut::UserOnUdpDatagramReceived(const uint8_t* data, size_t len,
 }
 
 ProxyManager::ProxyManager() {
-  this->loop_in_ = new uv_loop_t;
-  this->loop_out_ = new uv_loop_t;
+  this->loop_ = new uv_loop_t;
+
+  int err = uv_loop_init(loop);
+  if (err != 0) std::cout << "[proxy] initialization failed" << std::endl;
 
   std::string ip("101.42.42.53");
-  this->proxy_in_ = std::make_shared<ProxyIn>(ip, 9999, this, this->loop_in_);
-  this->proxy_out_ = std::make_shared<ProxyOut>(ip, 7777, this, this->loop_out_);
+  this->proxy_in_ = std::make_shared<ProxyIn>(ip, 9999, this, this->loop_);
+  this->proxy_out_ = std::make_shared<ProxyOut>(ip, 7777, this, this->loop_);
 
   // 设置代理ip、端口
   struct sockaddr_storage remote_addr;
   int family = UvRun::get_family("10.0.0.100");
   switch (family) {
     case AF_INET: {
-      int err = uv_ip4_addr("10.0.0.100", 0,
+      err = uv_ip4_addr("10.0.0.100", 0,
                         reinterpret_cast<struct sockaddr_in*>(&remote_addr));
       std::cout << "[proxy] remote uv_ip4_addr" << std::endl;
       if (err != 0)
@@ -134,7 +136,6 @@ void ProxyManager::ProxyInReceivePacket(uint32_t ssrc, const uint8_t* data,
                                         const struct sockaddr* addr) {
   if (ssrc == 0) return;
 
-  this->locker.lock();
   auto ite = ssrc_remote_map_.find(ssrc);
   if (ite == ssrc_remote_map_.end()) {
     std::string ip;
@@ -145,7 +146,6 @@ void ProxyManager::ProxyInReceivePacket(uint32_t ssrc, const uint8_t* data,
     // 存储对应目标端口
     this->ssrc_remote_map_[ssrc] = addr;
   }
-  this->locker.unlock();
 
   this->proxy_out_->Send(data, len, this->proxy_addr_, nullptr);
 }
