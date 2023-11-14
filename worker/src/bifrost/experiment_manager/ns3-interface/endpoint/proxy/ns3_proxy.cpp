@@ -134,11 +134,14 @@ void ProxyManager::ProxyInReceivePacket(uint32_t ssrc, const uint8_t* data,
                                         const struct sockaddr* addr) {
   if (ssrc == 0) return;
 
-  std::cout << "ProxyInReceivePacket len:" << len << std::endl;
-
   this->locker.lock();
   auto ite = ssrc_remote_map_.find(ssrc);
   if (ite == ssrc_remote_map_.end()) {
+    std::string ip;
+    uint16_t port;
+    int family;
+    UvRun::get_address_info(addr, family, ip, port);
+    std::cout << "recv out ip:" << ip << ", port:" << port << std::endl;
     // 存储对应目标端口
     this->ssrc_remote_map_[ssrc] = addr;
   }
@@ -152,12 +155,17 @@ void ProxyManager::ProxyOutReceivePacket(uint32_t ssrc, const uint8_t* data,
                                         const struct sockaddr* addr) {
   if (ssrc == 0) return;
 
-  std::cout << "ProxyOutReceivePacket len:" << len << std::endl;
-
   this->locker.lock();
   auto ite = ssrc_remote_map_.find(ssrc);
   if (ite != ssrc_remote_map_.end()) {
-    this->proxy_out_->Send(data, len, ite->second, nullptr);
+    std::string ip;
+    uint16_t port;
+    int family;
+    UvRun::get_address_info(ite->second, family, ip, port);
+    std::cout << "send out ip:" << ip << ", port:" << port << std::endl;
+    this->proxy_in_->Send(data, len, ite->second, nullptr);
+  } else {
+    std::cout << "ssrc:" << ssrc << std::endl;
   }
   this->locker.unlock();
 
