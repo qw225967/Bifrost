@@ -25,6 +25,12 @@ docker run -d --cap-add=NET_ADMIN --network leftnet --ip 10.0.0.100 -e GATEWAY="
 docker run -d --cap-add=NET_ADMIN --network rightnet --ip 10.100.0.100 -e GATEWAY="10.100.0.2"  -p 8887:8887/udp -e PARAMS="server" --name server endpoint
 
 # 创建面对客户端的udp代理
+
+for pid in $(ps -ef | grep "./build/proxy" | awk '{print $2}')
+do
+    kill -9 $pid
+done
+
 cd proxy
 sh build_proxy.sh
 
