@@ -4,30 +4,31 @@
 
 
 # Configuration directories and files
-SourceDirectory: /Users/admin/go/src/github.com/Bifrost/worker/third_party/libuv
-BuildDirectory: /Users/admin/go/src/github.com/Bifrost/worker/third_party/libuv/build
+SourceDirectory: /home/ubuntu/Bifrost/worker/src/bifrost/experiment_manager/ns3-interface/endpoint/proxy/libuv
+BuildDirectory: /home/ubuntu/Bifrost/worker/src/bifrost/experiment_manager/ns3-interface/endpoint/proxy/libuv/build
 
 # Where to place the cost data store
 CostDataFile: 
 
 # Site is something like machine.domain, i.e. pragmatic.crd
-Site: bogon
+Site: VM-24-4-ubuntu
 
 # Build name is osname-revision-compiler, i.e. Linux-2.4.2-2smp-c++
-BuildName: Darwin-cc
+BuildName: Linux-cc
 
 # Subprojects
 LabelsForSubprojects: 
 
 # Submission information
 SubmitURL: http://
+SubmitInactivityTimeout: 
 
 # Dashboard start time
 NightlyStartTime: 00:00:00 EDT
 
 # Commands for the build/test/submit cycle
-ConfigureCommand: "/opt/homebrew/Cellar/cmake/3.22.1/bin/cmake" "/Users/admin/go/src/github.com/Bifrost/worker/third_party/libuv"
-MakeCommand: /opt/homebrew/Cellar/cmake/3.22.1/bin/cmake --build . --config "${CTEST_CONFIGURATION_TYPE}"
+ConfigureCommand: "/home/ubuntu/cmake-3.23.0-linux-x86_64/bin/cmake" "/home/ubuntu/Bifrost/worker/src/bifrost/experiment_manager/ns3-interface/endpoint/proxy/libuv"
+MakeCommand: /home/ubuntu/cmake-3.23.0-linux-x86_64/bin/cmake --build . --config "${CTEST_CONFIGURATION_TYPE}"
 DefaultCTestConfigurationType: Release
 
 # version control

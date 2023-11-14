@@ -22,10 +22,6 @@ void ThreadRunExperimentDataDump(
   ptr->RunDumpData();
 }
 
-void PublishTransport0(std::shared_ptr<bifrost::Transport> &ptr) { ptr->Run(); }
-
-void PublishTransport1(std::shared_ptr<bifrost::Transport> &ptr) { ptr->Run(); }
-
 int main() {
   // 读取配置文件
   std::string config_path(PUBLISHER_CONFIG_FILE_PATH_STRING);
@@ -39,15 +35,7 @@ int main() {
       bifrost::Transport::SinglePublish, 0, ptr,
       quic::CongestionControlType::kGoogCC);  // number 为传输标号，从 0 开始
 
-//  auto temp1 = std::make_shared<bifrost::Transport>(
-//      bifrost::Transport::SinglePublish, 1, ptr,
-//      quic::CongestionControlType::kBBR);  // number 为传输标号，从 0 开始
-
-  std::thread publish0(PublishTransport0, ref(temp0));
-//  std::thread publish1(PublishTransport1, ref(temp1));
-
-  publish0.join();
-//  publish1.join();
+  temp0->Run();
 
   return 0;
 }

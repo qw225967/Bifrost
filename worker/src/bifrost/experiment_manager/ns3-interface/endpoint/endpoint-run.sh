@@ -16,7 +16,7 @@ if [ $1 = "client" ];then
   udp_in_server="10.100.0.100:8889"
   udp_in_listen="0.0.0.0:8889"
   # 配置输出的流向
-  udp_out_server="10.0.0.1:9999"
+  udp_out_server="10.0.0.1:9098"
   udp_out_listen="0.0.0.0:8887"
 elif [ $1 = "server" ]; then
   # 配置输入的流向

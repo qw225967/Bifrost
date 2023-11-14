@@ -24,4 +24,4 @@ add_executable(proxy
         ns3_proxy.h
         rtc_header.h)
 
-target_link_libraries(proxy libuv.a pthread)
+target_link_libraries(proxy libuv.a pthread dl)

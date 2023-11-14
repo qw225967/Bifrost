@@ -1,7 +1,7 @@
 {
   "LocalReceiveConfigs": {
     "userName": "local_client_1",
-    "rtcPort": 9001,
+    "rtcPort": 9012,
     "rtcIp": "0.0.0.0"
   },
   "RemoteSendConfigs": {

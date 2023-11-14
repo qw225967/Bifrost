@@ -1,13 +1,13 @@
 prefix=/usr/local
 exec_prefix=${prefix}
-libdir=/usr/local/lib
+libdir=/usr/local/lib/x86_64-linux-gnu
 includedir=/usr/local/include
-LIBUV_STATIC=-L${libdir} -l:libuv.a -lpthread
+LIBUV_STATIC=-L${libdir} -l:libuv.a -lpthread -ldl -lrt
 
 Name: libuv
 Version: 1.45.1
 Description: multi-platform support library with a focus on asynchronous I/O.
 URL: http://libuv.org/
 
-Libs: -L${libdir} -luv -lpthread
+Libs: -L${libdir} -luv -lpthread -ldl -lrt
 Cflags: -I${includedir}
