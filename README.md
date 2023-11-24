@@ -1,6 +1,7 @@
 # Bifrost
 
 Bifrost is an experimental system that integrates multiple Qos methods, and use to conduct point-to-point/multi-point weak network confrontation experiments.
+<<<<<<< HEAD
 For the convenience of operation, we have simplified the difficulty of parameter
 adjustment and provided detailed information for each link. This project will include common bandwidth estimation
 algorithms, compensation methods such as FEC, Nack, and Red in WebRTC, and provide more room for expansion for basic
