@@ -38,7 +38,7 @@ echo "stream {
           server {
               listen $udp_in_listen udp;
               proxy_responses 1;
-              proxy_timeout 20s;
+              proxy_timeout 2s;
               proxy_pass udp_in;
               error_log /var/log/nginx/dns.log;
           }
@@ -48,11 +48,13 @@ echo "stream {
           server {
               listen $udp_out_listen udp;
               proxy_responses 1;
-              proxy_timeout 20s;
+              proxy_timeout 2s;
               proxy_pass udp_out;
               error_log /var/log/nginx/dns.log;
           }
       }" >> /etc/nginx/nginx.conf
+
+sed -i "s/768/10240/g" /etc/nginx/nginx.conf
 
 nginx
 

@@ -11,6 +11,7 @@
 #define _TOPOLOGYINTERFACE_H
 
 #include "ns3/point-to-point-module.h"
+#include "ns3/traffic-control-helper.h"
 
 namespace ns3 {
 
@@ -43,6 +44,10 @@ class DefaultPointToPoint : public TopologyInterface,
                    false, true);
     p2p.EnablePcap("trace_node_right.pcap", devices.Get(1),
                    false, true);
+
+    TrafficControlHelper tch;
+    tch.SetRootQueueDisc("ns3::PfifoFastQueueDisc", "MaxSize", StringValue("1000p"));
+    tch.Install(devices);
 
     Ipv4AddressHelper ipv4;
     ipv4.SetBase("10.1.50.0", "255.255.255.0");
