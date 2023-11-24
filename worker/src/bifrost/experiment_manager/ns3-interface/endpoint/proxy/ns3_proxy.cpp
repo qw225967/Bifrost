@@ -10,6 +10,7 @@
 #include "ns3_proxy.h"
 
 #include "rtc_header.h"
+#include <cstring>
 
 namespace ns3proxy {
 Ns3Proxy::Ns3Proxy() {}
@@ -129,25 +130,26 @@ ProxyManager::ProxyManager() {
 ProxyManager::~ProxyManager() {
   this->proxy_in_.reset();
   this->proxy_out_.reset();
+  auto ite = ssrc_remote_map_.begin();
+  for (;ite != ssrc_remote_map_.end(); ite++) {
+    delete ite->second;
+  }
 }
 
 void ProxyManager::ProxyInReceivePacket(uint32_t ssrc, const uint8_t* data,
                                         size_t len,
                                         const struct sockaddr* addr) {
   if (ssrc == 0) return;
-
+  this->locker.lock();
   auto ite = ssrc_remote_map_.find(ssrc);
   if (ite == ssrc_remote_map_.end()) {
-    std::string ip;
-    uint16_t port;
-    int family;
-    UvRun::get_address_info(addr, family, ip, port);
-    std::cout << "recv out ip:" << ip << ", port:" << port << std::endl;
     // 存储对应目标端口
-    this->ssrc_remote_map_[ssrc] = addr;
+    struct sockaddr* ssrc_addr = new sockaddr;
+    memcpy(ssrc_addr, addr, sizeof(sockaddr));
+    this->ssrc_remote_map_[ssrc] = ssrc_addr;
   }
-
   this->proxy_out_->Send(data, len, this->proxy_addr_, nullptr);
+  this->locker.unlock();
 }
 
 void ProxyManager::ProxyOutReceivePacket(uint32_t ssrc, const uint8_t* data,
@@ -155,17 +157,14 @@ void ProxyManager::ProxyOutReceivePacket(uint32_t ssrc, const uint8_t* data,
                                         const struct sockaddr* addr) {
   if (ssrc == 0) return;
 
+  this->locker.lock();
   auto ite = ssrc_remote_map_.find(ssrc);
   if (ite != ssrc_remote_map_.end()) {
-    std::string ip;
-    uint16_t port;
-    int family;
-    UvRun::get_address_info(ite->second, family, ip, port);
-    std::cout << "send out ip:" << ip << ", port:" << port << std::endl;
     this->proxy_in_->Send(data, len, ite->second, nullptr);
   } else {
     std::cout << "ssrc:" << ssrc << std::endl;
   }
+  this->locker.unlock();
 
 }
 

@@ -4,6 +4,10 @@ Instructions for use:
 
 Bifrost requires the use of two terminals for end-to-end testing, and if only one machine is used, weak network restrictions cannot be achieved through the network.
 
+推流的机器请将配置按下方的方式设置。
+
+```
+
     # 推流配置：
     #push configuration
     
@@ -13,7 +17,9 @@ Bifrost requires the use of two terminals for end-to-end testing, and if only on
 
         "LocalReceiveConfigs": {
             "userName": "local_client_1",
+            # 推流本机的端口
             "rtcPort": 9001,
+             # 推流本机监听所有ip的数据
             "rtcIp": "0.0.0.0",
         },
 
@@ -24,7 +30,9 @@ Bifrost requires the use of two terminals for end-to-end testing, and if only on
 
         "RemoteSendConfigs": {
             "userName": "remote_client_1",
+            # 你想要推的目标端口
             "rtcPort": 9012,
+            # 你想要推的目标ip
             "rtcIp": "101.42.42.53",
             "ssrc": 12341234
         },
@@ -43,7 +51,10 @@ Bifrost requires the use of two terminals for end-to-end testing, and if only on
     }
 
 
+```
 
+
+```
     # 拉流配置：
     #play configuration
     
@@ -53,7 +64,9 @@ Bifrost requires the use of two terminals for end-to-end testing, and if only on
 
         "LocalReceiveConfigs": {
             "userName": "local_client_1",
+            # 本机的端口，这里要和对端的远端 端口 对上
             "rtcPort": 9012,
+            # 本机的ip
             "rtcIp": "0.0.0.0",
         },
 
@@ -72,5 +85,9 @@ Bifrost requires the use of two terminals for end-to-end testing, and if only on
         }
     }
 
+```
+
 play端可以切 Bifrost-player 分支，该分支只初始化了一个play能力。
 The play end can switch to the Bifrost player branch, which only initializes one play capability.
+
+如果你需要使用NS3模拟的能力，请参考：worker/src/bifrost/experiment_manager/ns3-interface/README.md

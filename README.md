@@ -1,10 +1,12 @@
 # Bifrost
 
 Bifrost is an experimental system that integrates multiple Qos methods, and use to conduct point-to-point/multi-point weak network confrontation experiments.
-For the convenience of operation, we have simplified the difficulty of parameter 
-adjustment and provided detailed information for each link. This project will include common bandwidth estimation 
-algorithms, compensation methods such as FEC, Nack, and Red in WebRTC, and provide more room for expansion for basic 
-multi-stream competition experiments.
+For the convenience of operation, we have simplified the difficulty of parameter
+adjustment and provided detailed information for each link. This project will include common bandwidth estimation
+algorithms, compensation methods such as FEC, Nack, and Red in WebRTC, and provide more room for expansion for basic
+multi-stream competition experiments.It also supports the use of NS3 as a proxy for network simulation, and supports interaction with NS3 simulation networks in physical networks to achieve algorithm validation.
+If you want to learn more about NS3 related content, please check it out:
+***worker/src/bifrost/experiment_manager/ns3-interface/README.md***
 
 ## Install
 
@@ -36,11 +38,15 @@ cmake --build build
 
 ### 3.Build
 #### 3.1 MacOS
-Clion must use lldb. 
+Clion must use lldb.
 
 #### 3.2 Linux
 You can use the ***Bifrost/worker/build.sh*** or build anything by yourself.
 
+```
+sh build.sh
+```
+or
 ```
 cd Bifrost/worker
 
@@ -95,7 +101,7 @@ Please refer to **worker/conf/README.md** for usage
 
 
 ### 2.Show
-The figure below shows the trend of the slope in the trend line module of the GCC algorithm during the transmission 
+The figure below shows the trend of the slope in the trend line module of the GCC algorithm during the transmission
 process.
 ![img_1.png](draw/img_1.png)
 

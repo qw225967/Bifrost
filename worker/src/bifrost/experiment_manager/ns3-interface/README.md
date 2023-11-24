@@ -15,7 +15,7 @@ We proxy physical network transmission based on docker and nginx. Input the data
  * bifrost-ns3: ns3 simulation
  *
  */
-                                            +---------------------+
+                                          +---------------------+
                                             |                     |
             +---------------------+         |                     |         +---------------------+
             |        docker       |         |                     |         |         docker      |
@@ -25,18 +25,31 @@ We proxy physical network transmission based on docker and nginx. Input the data
 +               +           +   nginx   +---+         NS-3        +---+  nginx    +           +               +
 |   10.0.0.2    |           |           |   |                     |   |           |           |   10.100.0.2  |
 +---------------+           |           |   |      Simulation     |   |           |           +---------------+    
-            |               +-----+-----+   |                     |   +-----+-----+               |
-            |      10.0.0.100     |         |                     |         |     10.100.0.100    |
-            +---------------------+         |                     |         +---------------------+    
-                                            |                     |
-                                            +---------------------+
-
-
+        |   |               +-----+-----+   |                     |   +-----+-----+               |
+        |   |      10.0.0.100     |         |                     |         |     10.100.0.100    |
+        |   +---------------------+         |                     |         +---------------------+    
+        |                                   |                     |
+        |                                   +---------------------+
+        |
+        |
++-------+-------+
+|               |
++    bifrost    +
++     proxy     +
+|               |
++---------------+
+     |   |
+    in  out
 ```
 
 ## Usage
 
 Run the **ns3-interface/setup.sh** script, which will create three docker containers.
+
+```
+sh setup.sh
+```
+This process takes a long time for the first time.
 
 You can run the following command to enter the container:
 
@@ -45,6 +58,9 @@ docker exec -it bifrost-ns3 /bin/bash
 docker exec -it client /bin/bash
 docker exec -it server /bin/bash
 ```
+
+
+
 
 ### Example
 You can use the **ping** command to test end-to-end connectivity in two port containers:
