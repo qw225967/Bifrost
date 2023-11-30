@@ -30,14 +30,21 @@ ExperimentManager::ExperimentManager()
                             std::ios::out | std::ios::trunc);
   this->gcc_trend_data_file_.open("../data/gcc_trend_data_file.csv",
                                   std::ios::out | std::ios::trunc);
+  this->rr_data_file_.open("../data/rr_data_file.csv",
+                           std::ios::out | std::ios::trunc);
   this->gcc_data_file_ << "TimeStamp";
   this->gcc_trend_data_file_ << "TimeStamp";
+  this->rr_data_file_ << "TimeStamp";
+
   for (int i = 0; i < DefaultCreateColumn; i++) {
     this->gcc_data_file_ << ",AvailableBitrate" << i << ",SentBitrate" << i;
     this->gcc_trend_data_file_ << ",Trend" << i;
+    this->rr_data_file_ << ",Jitter" << i << ",FractionLost" << i
+                        << ",PacketsLost" << i << ",Rtt" << i;
   }
   this->gcc_data_file_ << std::endl;
   this->gcc_trend_data_file_ << std::endl;
+  this->rr_data_file_ << std::endl;
 
   // 2.创建uv loop
   this->uv_loop_ = new UvLoop;
@@ -54,17 +61,41 @@ ExperimentManager::~ExperimentManager() {
 
   if (this->gcc_data_file_.is_open()) this->gcc_data_file_.close();
   if (this->gcc_trend_data_file_.is_open()) this->gcc_trend_data_file_.close();
+  if (this->rr_data_file_.is_open()) this->rr_data_file_.close();
 }
 
-void ExperimentManager::PostDataToShow(uint8_t number,
-                                       ExperimentDumpData& data) {
+void ExperimentManager::PostGccDataToShow(uint8_t number,
+                                          ExperimentDumpData &data) {
   locker.lock();
   auto ite = dump_data_map_.find(number);
   if (ite != dump_data_map_.end()) {
+    auto temp = ite->second;
     dump_data_map_.erase(ite);
+    temp.Trends = data.Trends;
+    temp.SentBitrate = data.SentBitrate;
+    temp.AvailableBitrate = data.AvailableBitrate;
+    dump_data_map_.insert(std::make_pair(number, temp));
+  } else {
+    dump_data_map_.insert(std::make_pair(number, data));
   }
+  locker.unlock();
+}
 
-  dump_data_map_.insert(std::make_pair(number, data));
+void ExperimentManager::PostRRDataToShow(uint8_t number,
+                                         ExperimentDumpData &data) {
+  locker.lock();
+  auto ite = dump_data_map_.find(number);
+  if (ite != dump_data_map_.end()) {
+    auto temp = ite->second;
+    dump_data_map_.erase(ite);
+    temp.FractionLost = data.FractionLost;
+    temp.Jitter = data.Jitter;
+    temp.PacketsLost = data.PacketsLost;
+    temp.Rtt = data.Rtt;
+    dump_data_map_.insert(std::make_pair(number, temp));
+  } else {
+    dump_data_map_.insert(std::make_pair(number, data));
+  }
   locker.unlock();
 }
 
@@ -114,7 +145,111 @@ std::vector<double> ExperimentManager::ComplementTrendVecWithSize(
   return result;
 }
 
-void ExperimentManager::OnTimer(UvTimer* timer) {
+void ExperimentManager::BitrateCalculationDump(
+    size_t &max_trend_size, std::string &now_str,
+    std::unordered_map<uint8_t, ExperimentDumpData> tmp_map) {
+  // 4.落地码率相关
+  char temp_str[4096];
+  auto tmp_time_interval =
+      int(1000 / DefaultDumpDataInterval - cycle_trend_ms_fraction_) *
+      DefaultDumpDataInterval;
+
+  tmp_time_interval =
+      tmp_time_interval >= 1000 ? 999 : tmp_time_interval;  // 避免超过 1s 统计
+
+  sprintf(temp_str, "%03d", tmp_time_interval);
+  this->gcc_data_file_ << now_str << "." << temp_str;
+  for (int i = 0; i < DefaultCreateColumn; i++) {
+    uint32_t available_rate = 0;
+    uint32_t send_rate = 0;
+    auto ite = tmp_map.find(i);
+    if (ite != tmp_map.end()) {
+      available_rate = ite->second.AvailableBitrate;
+      send_rate = ite->second.SentBitrate;
+
+      // 统计最大trend的size，用于对其落地数据行
+      max_trend_size = max_trend_size > ite->second.Trends.size()
+                           ? max_trend_size
+                           : ite->second.Trends.size();
+    }
+    this->gcc_data_file_ << "," << available_rate << "," << send_rate;
+  }
+  this->gcc_data_file_ << std::endl;
+}
+
+void ExperimentManager::TrendLineCalculationDump(
+    size_t max_trend_size, std::string &now_str,
+    std::unordered_map<uint8_t, ExperimentDumpData> tmp_map) {
+  // 5.落地趋势线行数同步
+  for (int i = 0; i < DefaultCreateColumn; i++) {
+    auto ite = tmp_map.find(i);
+    if (ite != tmp_map.end()) {
+      // 同步所有行
+      auto temp_trends =
+          this->ComplementTrendVecWithSize(max_trend_size, ite->second.Trends);
+      ite->second.Trends = temp_trends;
+    }
+  }
+
+  // 6.落地趋势线
+  for (int i = 0; i < max_trend_size; i++) {
+    double trend = 0;
+    // 换算毫秒
+    auto now_str_ms = now_str;
+    char temp_str[4096];
+    auto ms = int((1000 / DefaultDumpDataInterval - cycle_trend_ms_fraction_) *
+                      DefaultDumpDataInterval +
+                  i * (DefaultDumpDataInterval / (max_trend_size - 1)));
+    if (ms == 1000) continue;
+    sprintf(temp_str, "%03d", ms);
+    now_str_ms = now_str_ms + "." + temp_str;
+    this->gcc_trend_data_file_ << now_str_ms;
+
+    // 每列都添加
+    for (int j = 0; j < DefaultCreateColumn; j++) {
+      auto ite = tmp_map.find(j);
+      if (ite != tmp_map.end()) {
+        // 同步所有行
+        if (!ite->second.Trends.empty()) trend = ite->second.Trends[i];
+      }
+      this->gcc_trend_data_file_ << "," << trend;
+      trend = 0;
+    }
+    this->gcc_trend_data_file_ << std::endl;
+  }
+  cycle_trend_ms_fraction_--;
+}
+
+void ExperimentManager::ReceiverReportDump(std::string &now_str) {
+  // 当前行全是0则不落地
+  bool flag = false;
+  for (int i = 0; i < DefaultCreateColumn; i++) {
+    auto ite = dump_data_map_.find(i);
+    if (ite != dump_data_map_.end() &&
+        (ite->second.Rtt != 0.0 || ite->second.Jitter != 0 ||
+         ite->second.FractionLost != 0 || ite->second.PacketsLost != 0)) {
+      flag = true;
+    }
+  }
+
+  if (!flag) return;
+
+  this->rr_data_file_ << now_str << ".000";
+  for (int i = 0; i < DefaultCreateColumn; i++) {
+    ExperimentDumpData temp_data(0, 0, 0, 0.0);
+    auto ite = dump_data_map_.find(i);
+    if (ite != dump_data_map_.end()) {
+      temp_data = ite->second;
+      dump_data_map_.erase(ite);
+    }
+    this->rr_data_file_ << "," << temp_data.Jitter << ","
+                        << (uint32_t)temp_data.FractionLost << ","
+                        << temp_data.PacketsLost << "," << temp_data.Rtt;
+  }
+  this->rr_data_file_ << std::endl;
+}
+
+void ExperimentManager::OnTimer(UvTimer *timer) {
   if (timer == this->dump_data_timer_) {
     // 1.加锁拷贝一份，不多做循环加锁
     locker.lock();
@@ -132,73 +267,14 @@ void ExperimentManager::OnTimer(UvTimer* timer) {
     }
 
     size_t max_trend_size = 0;
-    // 4.落地码率相关
-    char temp_str[4096];
-    auto tmp_time_interval =
-        int(1000 / DefaultDumpDataInterval - cycle_trend_ms_fraction_) *
-        DefaultDumpDataInterval;
 
-    tmp_time_interval =
-        tmp_time_interval >= 1000 ? 999 : tmp_time_interval;  // 避免超过 1s 统计
-
-    sprintf(temp_str, "%03d", tmp_time_interval);
-    this->gcc_data_file_ << now_str << "." << temp_str;
-    for (int i = 0; i < DefaultCreateColumn; i++) {
-      uint32_t available_rate = 0;
-      uint32_t send_rate = 0;
-      auto ite = tmp_map.find(i);
-      if (ite != tmp_map.end()) {
-        available_rate = ite->second.AvailableBitrate;
-        send_rate = ite->second.SentBitrate;
-
-        // 统计最大trend的size，用于对其落地数据行
-        max_trend_size = max_trend_size > ite->second.Trends.size()
-                             ? max_trend_size
-                             : ite->second.Trends.size();
-      }
-      this->gcc_data_file_ << "," << available_rate << "," << send_rate;
-    }
-    this->gcc_data_file_ << std::endl;
-
-    // 5.落地趋势线行数同步
-    for (int i = 0; i < DefaultCreateColumn; i++) {
-      auto ite = tmp_map.find(i);
-      if (ite != tmp_map.end()) {
-        // 同步所有行
-        auto temp_trends = this->ComplementTrendVecWithSize(max_trend_size,
-                                                            ite->second.Trends);
-        ite->second.Trends = temp_trends;
-      }
-    }
-
-    // 6.落地趋势线
-    for (int i = 0; i < max_trend_size; i++) {
-      double trend = 0;
-      // 换算毫秒
-      auto now_str_ms = now_str;
-      char temp_str[4096];
-      auto ms = int((1000 / DefaultDumpDataInterval - cycle_trend_ms_fraction_) *
-          DefaultDumpDataInterval +
-          i * (DefaultDumpDataInterval / (max_trend_size - 1)));
-      if (ms == 1000) continue;
-      sprintf(temp_str, "%03d",ms);
-      now_str_ms = now_str_ms + "." + temp_str;
-      this->gcc_trend_data_file_ << now_str_ms;
-
-      // 每列都添加
-      for (int j = 0; j < DefaultCreateColumn; j++) {
-        auto ite = tmp_map.find(j);
-        if (ite != tmp_map.end()) {
-          // 同步所有行
-          if (!ite->second.Trends.empty())
-            trend = ite->second.Trends[i];
-        }
-        this->gcc_trend_data_file_ << "," << trend;
-        trend = 0;
-      }
-      this->gcc_trend_data_file_ << std::endl;
-    }
-    cycle_trend_ms_fraction_--;
+    // 4.开始统计
+    // 4.1 码率统计
+    this->BitrateCalculationDump(max_trend_size, now_str, tmp_map);
+    // 4.2 趋势线统计
+    this->TrendLineCalculationDump(max_trend_size, now_str, tmp_map);
+    // 4.3 接收者报告统计
+    this->ReceiverReportDump(now_str);
   }
 }
 

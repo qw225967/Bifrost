@@ -18,10 +18,27 @@
 namespace bifrost {
 struct ExperimentDumpData {
   ExperimentDumpData(uint32_t available_bitrate, uint32_t sent_bitrate,
-                    std::vector<double> trends)
+                     std::vector<double> trends)
       : AvailableBitrate(available_bitrate),
         SentBitrate(sent_bitrate),
-        Trends(trends) {}
+        Trends(trends),
+        Jitter(0),
+        FractionLost(0),
+        PacketsLost(0),
+        Rtt(0) {}
+
+  ExperimentDumpData(uint32_t jitter, uint8_t fraction_lost,
+                     int32_t packets_lost, float rtt)
+      : Jitter(jitter),
+        FractionLost(fraction_lost),
+        PacketsLost(packets_lost),
+        Rtt(rtt) {}
+
+  uint32_t Jitter;
+  uint8_t FractionLost;
+  int32_t PacketsLost;
+  float Rtt;
+
   uint32_t AvailableBitrate;
   uint32_t SentBitrate;
   std::vector<double> Trends;

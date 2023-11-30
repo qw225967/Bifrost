@@ -42,18 +42,26 @@ class ExperimentManager : public UvTimer::Listener {
   void RunDumpData() { this->uv_loop_->RunLoop(); }
 
   // UvTimer
-  void OnTimer(UvTimer* timer);
+  void OnTimer(UvTimer *timer);
 
-  void PostDataToShow(uint8_t number, ExperimentDumpData &data);
+  void PostGccDataToShow(uint8_t number, ExperimentDumpData &data);
+  void PostRRDataToShow(uint8_t number, ExperimentDumpData &data);
 
  private:
+  void BitrateCalculationDump(
+      size_t &max_trend_size, std::string &now_str,
+      std::unordered_map<uint8_t, ExperimentDumpData> tmp_map);
+  void TrendLineCalculationDump(
+      size_t max_trend_size, std::string &now_str,
+      std::unordered_map<uint8_t, ExperimentDumpData> tmp_map);
+  void ReceiverReportDump(std::string &now_str);
   std::vector<double> ComplementTrendVecWithSize(size_t max_size,
                                                  std::vector<double> trends);
 
  private:
   // uv 自己一个定时落地能力
-  UvLoop* uv_loop_;
-  UvTimer* dump_data_timer_;
+  UvLoop *uv_loop_;
+  UvTimer *dump_data_timer_;
 
   // 每个周期落地的数据记录
   std::unordered_map<uint8_t, ExperimentDumpData> dump_data_map_;
@@ -64,6 +72,8 @@ class ExperimentManager : public UvTimer::Listener {
   std::ofstream gcc_data_file_;
   // gcc趋势展示
   std::ofstream gcc_trend_data_file_;
+  // RR信息展示
+  std::ofstream rr_data_file_;
 
   // mutex
   std::mutex locker;

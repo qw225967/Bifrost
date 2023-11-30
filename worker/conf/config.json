@@ -6,7 +6,7 @@
   },
   "RemoteSendConfigs": {
     "userName": "remote_client_1",
-    "rtcPort": 9099,
+    "rtcPort": 7777,
     "rtcIp": "101.42.42.53",
     "ssrc": 12341234
   },

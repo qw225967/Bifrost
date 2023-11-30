@@ -37,8 +37,10 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
       new UvTimer(this, this->uv_loop_->get_loop().get());
   this->send_report_timer_->Start(IntervalSendReport, IntervalSendReport);
 
-  this->update_pacing_info_timer_ = new UvTimer(this, this->uv_loop_->get_loop().get());
-  this->update_pacing_info_timer_->Start(IntervalUpdatePacingInfo, IntervalUpdatePacingInfo);
+  this->update_pacing_info_timer_ =
+      new UvTimer(this, this->uv_loop_->get_loop().get());
+  this->update_pacing_info_timer_->Start(IntervalUpdatePacingInfo,
+                                         IntervalUpdatePacingInfo);
 
   // 4.nack
   nack_ = std::make_shared<Nack>(remote_addr_config_.ssrc, uv_loop);
@@ -56,7 +58,6 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
 
 void Publisher::OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) {
   if (bifrost_send_algorithm_manager_->OnReceiveRtcpFeedback(fb)) {
-
     auto pacing_rate = bifrost_send_algorithm_manager_->get_pacing_rate();
     if (pacing_rate > 0) this->pacer_->set_pacing_rate(pacing_rate);
 
@@ -74,7 +75,7 @@ void Publisher::OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) {
     ExperimentDumpData data(bifrost_send_algorithm_manager_->get_pacing_rate(),
                             pacer_->get_pacing_bitrate_bps(),
                             bifrost_send_algorithm_manager_->get_trends());
-    experiment_manager_->PostDataToShow(this->number_, data);
+    experiment_manager_->PostGccDataToShow(this->number_, data);
   }
 }
 
@@ -128,6 +129,10 @@ void Publisher::OnReceiveReceiverReport(ReceiverReport* report) {
   //            << ", fraction_lost:" << uint32_t(report->GetFractionLost())
   //            << ", packets_lost:" << report->GetTotalLost()
   //            << ", rtt:" << this->rtt_ << std::endl;
+  ExperimentDumpData data(webrtc_report.jitter, webrtc_report.fraction_lost,
+                          webrtc_report.packets_lost, this->rtt_);
+
+  experiment_manager_->PostRRDataToShow(this->number_, data);
 
   this->nack_->UpdateRtt(uint32_t(this->rtt_));
 
