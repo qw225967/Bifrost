@@ -9,33 +9,13 @@
 
 #include "experiment_manager/h264_file_data_producer.h"
 
-//#include <modules/rtp_rtcp/source/rtp_format.h>
+#include <modules/rtp_rtcp/source/rtp_format.h>
 
 namespace bifrost {
 
-typedef enum {
-  NALU_TYPE_SLICE = 1,
-  NALU_TYPE_DPA = 2,
-  NALU_TYPE_DPB = 3,
-  NALU_TYPE_DPC = 4,
-  NALU_TYPE_IDR = 5,
-  NALU_TYPE_SEI = 6,
-  NALU_TYPE_SPS = 7,
-  NALU_TYPE_PPS = 8,
-  NALU_TYPE_AUD = 9,
-  NALU_TYPE_EOSEQ = 10,
-  NALU_TYPE_EOSTREAM = 11,
-  NALU_TYPE_FILL = 12,
-} NaluType;
+const uint32_t IntervalReadFrameMs = 66u;
 
-typedef enum {
-  NALU_PRIORITY_DISPOSABLE = 0,
-  NALU_PRIRITY_LOW = 1,
-  NALU_PRIORITY_HIGH = 2,
-  NALU_PRIORITY_HIGHEST = 3
-} NaluPriority;
-
-H264FileDataProducer::H264FileDataProducer(uint32_t ssrc) {
+H264FileDataProducer::H264FileDataProducer(uint32_t ssrc, uv_loop_t *loop) {
   this->h264_data_file_.open("../source_file/test.h264",
                              std::ios::in | std::ios::binary);
 
@@ -50,11 +30,18 @@ H264FileDataProducer::H264FileDataProducer(uint32_t ssrc) {
   this->h264_data_file_.read((char *)this->buffer_, this->size_);
 
   this->h264_data_file_.close();
+
+  this->read_frame_timer_ = new UvTimer(this, loop);
+  this->read_frame_timer_->Start(IntervalReadFrameMs, IntervalReadFrameMs);
 }
 
-H264FileDataProducer::~H264FileDataProducer() { delete[] this->buffer_; }
+H264FileDataProducer::~H264FileDataProducer() {
+  delete[] this->buffer_;
+  delete this->read_frame_timer_;
+}
 
-void H264FileDataProducer::PrintfH264Frame(int j, int nLen, int nFrameType) {
+NaluType H264FileDataProducer::PrintfH264Frame(int j, int nLen,
+                                               int nFrameType) {
   int nForbiddenBit = (nFrameType >> 7) & 0x1;  //第1位禁止位，值为1表示语法出错
   int nReference_idc = (nFrameType >> 5) & 0x03;  //第2~3位为参考级别
   int nType = nFrameType & 0x1f;                  //第4~8为是nal单元类型
@@ -133,35 +120,63 @@ int H264FileDataProducer::GetH264FrameLen(int n_pos, size_t n_total_size,
   return n_total_size - n_pos;  //最后一帧。
 }
 
-RtpPacketPtr H264FileDataProducer::CreateData() {
-  this->ReadOneH264Frame();
-  return nullptr;
-}
+RtpPacketPtr H264FileDataProducer::CreateData() { return nullptr; }
 
 void H264FileDataProducer::ReadOneH264Frame() {
   if (this->read_offset < this->size_ - 4) {
     if (this->buffer_[this->read_offset] == 0x00 &&
         this->buffer_[this->read_offset + 1] == 0x00 &&
         this->buffer_[this->read_offset + 2] == 0x01) {
-      int nLen = this->GetH264FrameLen(this->read_offset + 3, this->size_,
-                                       this->buffer_);
-      this->PrintfH264Frame(this->frame_count_, nLen,
-                            this->buffer_[this->read_offset + 3]);
+      this->frame_len_ = this->GetH264FrameLen(this->read_offset + 3,
+                                               this->size_, this->buffer_);
+      this->payload_ = this->buffer_ + this->read_offset + 4;
+
       this->frame_count_++;
       this->read_offset += 3;
     } else if (this->buffer_[this->read_offset] == 0x00 &&
                this->buffer_[this->read_offset + 1] == 0x00 &&
                this->buffer_[this->read_offset + 2] == 0x00 &&
                this->buffer_[this->read_offset + 3] == 0x01) {
-      int nLen = this->GetH264FrameLen(this->read_offset + 4, this->size_,
-                                       this->buffer_);
-      this->PrintfH264Frame(this->frame_count_, nLen,
-                            this->buffer_[this->read_offset + 4]);
+      this->frame_len_ = this->GetH264FrameLen(this->read_offset + 4,
+                                               this->size_, this->buffer_);
+      this->payload_ = this->buffer_ + this->read_offset + 4;
+
       this->frame_count_++;
       this->read_offset += 4;
     } else {
       this->read_offset++;
     }
+  }
+}
+
+void H264FileDataProducer::OnTimer(UvTimer *timer) {
+  if (timer == this->read_frame_timer_) {
+    this->ReadOneH264Frame();
+
+    webrtc::RtpPacketizer::PayloadSizeLimits limits;
+    limits.max_payload_len = 1400 - RtpPacket::HeaderSize;
+    limits.first_packet_reduction_len = 1400 - RtpPacket::HeaderSize;
+    limits.single_packet_reduction_len = 1400 - RtpPacket::HeaderSize;
+    limits.last_packet_reduction_len = 1400 - RtpPacket::HeaderSize;
+
+    absl::optional<webrtc::VideoCodecType> type = webrtc::kVideoCodecH264;
+
+    webrtc::RTPVideoHeader packetize_video_header;
+
+    auto nalu_type = this->PrintfH264Frame(this->frame_count_, this->frame_len_,
+                                           this->payload_[0]);
+    webrtc::VideoFrameType frame_type =
+        webrtc::VideoFrameType::kVideoFrameDelta;
+    if (nalu_type == NALU_TYPE_IDR) {
+      frame_type = webrtc::VideoFrameType::kVideoFrameKey;
+    }
+
+    webrtc::RTPFragmentationHeader fragmentation;
+
+    std::unique_ptr<webrtc::RtpPacketizer> packetizer =
+        webrtc::RtpPacketizer::Create(
+            type, rtc::MakeArrayView(this->payload_, this->frame_len_), limits,
+            packetize_video_header, frame_type, &fragmentation);
   }
 }
 

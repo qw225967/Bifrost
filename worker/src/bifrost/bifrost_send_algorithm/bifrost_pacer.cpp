@@ -26,8 +26,9 @@ BifrostPacer::BifrostPacer(uint32_t ssrc, UvLoop* uv_loop, Observer* observer)
       pacer_timer_interval_(DefaultPacingTimeInterval),
       pacing_rate_(InitialPacingGccBitrate) {
   // 1.数据生产者
-  data_producer_ = std::make_shared<FakeDataProducer>(ssrc);
-//  data_producer_ = std::make_shared<H264FileDataProducer>(ssrc);
+  //  data_producer_ = std::make_shared<FakeDataProducer>(ssrc);
+  data_producer_ =
+      std::make_shared<H264FileDataProducer>(ssrc, uv_loop->get_loop().get());
 
   // 2.发送定时器
   pacer_timer_ = new UvTimer(this, uv_loop->get_loop().get());
@@ -67,7 +68,8 @@ void BifrostPacer::OnTimer(UvTimer* timer) {
         if (packet->UpdateTransportWideCc01(this->tcc_seq_)) {
           this->tcc_seq_++;
 
-//          std::cout << "send seq:" << packet->GetSequenceNumber() << std::endl;
+          //          std::cout << "send seq:" << packet->GetSequenceNumber() <<
+          //          std::endl;
           observer_->OnPublisherSendPacket(packet);
         }
 
@@ -89,8 +91,8 @@ void BifrostPacer::OnTimer(UvTimer* timer) {
     // 每10ms产生3次
     for (int i = 0; i < 3; i++) {
       auto packet = this->data_producer_->CreateData();
-      if (packet == nullptr)continue;
-      auto size = packet -> GetSize();
+      if (packet == nullptr) continue;
+      auto size = packet->GetSize();
       this->ready_send_vec_.push_back(packet);
     }
   }
