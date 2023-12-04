@@ -53,6 +53,7 @@ class H264FileDataProducer : public ExperimentDataProducerInterface,
   NaluType PrintfH264Frame(int j, int nLen, int nFrameType);
   int GetH264FrameLen(int nPos, size_t nTotalSize, uint8_t *data);
   void ReadOneH264Frame();
+  void ReadWebRTCRtpPacketizer();
 
  private:
   std::ifstream h264_data_file_;

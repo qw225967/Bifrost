@@ -149,34 +149,38 @@ void H264FileDataProducer::ReadOneH264Frame() {
   }
 }
 
+void H264FileDataProducer::ReadWebRTCRtpPacketizer() {
+  webrtc::RtpPacketizer::PayloadSizeLimits limits;
+  limits.max_payload_len = 1400 - RtpPacket::HeaderSize;
+  limits.first_packet_reduction_len = 1400 - RtpPacket::HeaderSize;
+  limits.single_packet_reduction_len = 1400 - RtpPacket::HeaderSize;
+  limits.last_packet_reduction_len = 1400 - RtpPacket::HeaderSize;
+
+  absl::optional<webrtc::VideoCodecType> type = webrtc::kVideoCodecH264;
+
+  webrtc::RTPVideoHeader packetize_video_header;
+  packetize_video_header.video_type_header = webrtc::RTPVideoHeaderH264();
+
+  auto nalu_type = this->PrintfH264Frame(this->frame_count_, this->frame_len_,
+                                         this->payload_[0]);
+  webrtc::VideoFrameType frame_type =
+      webrtc::VideoFrameType::kVideoFrameDelta;
+  if (nalu_type == NALU_TYPE_IDR) {
+    frame_type = webrtc::VideoFrameType::kVideoFrameKey;
+  }
+
+  webrtc::RTPFragmentationHeader fragmentation;
+
+  std::unique_ptr<webrtc::RtpPacketizer> packetizer =
+      webrtc::RtpPacketizer::Create(
+          type, rtc::MakeArrayView(this->payload_, this->frame_len_), limits,
+          packetize_video_header, frame_type, &fragmentation);
+}
+
 void H264FileDataProducer::OnTimer(UvTimer *timer) {
   if (timer == this->read_frame_timer_) {
     this->ReadOneH264Frame();
-
-    webrtc::RtpPacketizer::PayloadSizeLimits limits;
-    limits.max_payload_len = 1400 - RtpPacket::HeaderSize;
-    limits.first_packet_reduction_len = 1400 - RtpPacket::HeaderSize;
-    limits.single_packet_reduction_len = 1400 - RtpPacket::HeaderSize;
-    limits.last_packet_reduction_len = 1400 - RtpPacket::HeaderSize;
-
-    absl::optional<webrtc::VideoCodecType> type = webrtc::kVideoCodecH264;
-
-    webrtc::RTPVideoHeader packetize_video_header;
-
-    auto nalu_type = this->PrintfH264Frame(this->frame_count_, this->frame_len_,
-                                           this->payload_[0]);
-    webrtc::VideoFrameType frame_type =
-        webrtc::VideoFrameType::kVideoFrameDelta;
-    if (nalu_type == NALU_TYPE_IDR) {
-      frame_type = webrtc::VideoFrameType::kVideoFrameKey;
-    }
-
-    webrtc::RTPFragmentationHeader fragmentation;
-
-    std::unique_ptr<webrtc::RtpPacketizer> packetizer =
-        webrtc::RtpPacketizer::Create(
-            type, rtc::MakeArrayView(this->payload_, this->frame_len_), limits,
-            packetize_video_header, frame_type, &fragmentation);
+    this->ReadWebRTCRtpPacketizer();
   }
 }
 
