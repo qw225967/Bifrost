@@ -10,7 +10,6 @@
 #ifndef WORKER_DATA_PRODUCER_H
 #define WORKER_DATA_PRODUCER_H
 
-#include <fstream>
 #include "experiment_data.h"
 namespace bifrost {
 typedef std::shared_ptr<RtpPacket> RtpPacketPtr;
@@ -26,8 +25,6 @@ class FakeDataProducer : public ExperimentDataProducerInterface {
   void GetRtpExtensions(RtpPacketPtr &packet);
 
  private:
-  std::ifstream data_file_;
-
   uint32_t ssrc_;
   uint16_t sequence_{ 0u };
 };

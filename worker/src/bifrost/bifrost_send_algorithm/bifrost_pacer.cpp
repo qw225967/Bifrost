@@ -10,22 +10,25 @@
 #include "bifrost_send_algorithm/bifrost_pacer.h"
 
 #include "experiment_manager/fake_data_producer.h"
+#include "experiment_manager/h264_file_data_producer.h"
 
 namespace bifrost {
 
 constexpr uint16_t DefaultCreatePacketTimeInterval = 10u;  // 每10ms创建3个包
 constexpr uint16_t DefaultStatisticsTimerInterval = 1000u;  // 每1s统计一次
 constexpr uint16_t DefaultPacingTimeInterval = 5u;
-const uint32_t InitialPacingGccBitrate = 600000u;
+const uint32_t InitialPacingGccBitrate = 400000u; // 配合当前测试的码率一半左右开始探测 780
 
-uint32_t BifrostPacer::MaxPacingDataLimit = 1200000;
+uint32_t BifrostPacer::MaxPacingDataLimit = 700000; // 当前测试的h264码率平均780kbps，因此限制最大为780
 
 BifrostPacer::BifrostPacer(uint32_t ssrc, UvLoop* uv_loop, Observer* observer)
     : observer_(observer),
       pacer_timer_interval_(DefaultPacingTimeInterval),
       pacing_rate_(InitialPacingGccBitrate) {
   // 1.数据生产者
-  data_producer_ = std::make_shared<FakeDataProducer>(ssrc);
+//    data_producer_ = std::make_shared<FakeDataProducer>(ssrc);
+  data_producer_ =
+      std::make_shared<H264FileDataProducer>(ssrc, uv_loop->get_loop().get());
 
   // 2.发送定时器
   pacer_timer_ = new UvTimer(this, uv_loop->get_loop().get());
@@ -65,7 +68,8 @@ void BifrostPacer::OnTimer(UvTimer* timer) {
         if (packet->UpdateTransportWideCc01(this->tcc_seq_)) {
           this->tcc_seq_++;
 
-//          std::cout << "send seq:" << packet->GetSequenceNumber() << std::endl;
+          //          std::cout << "send seq:" << packet->GetSequenceNumber() <<
+          //          std::endl;
           observer_->OnPublisherSendPacket(packet);
         }
 
@@ -84,9 +88,11 @@ void BifrostPacer::OnTimer(UvTimer* timer) {
   }
 
   if (timer == create_timer_) {
-    // 每10ms产生3个包
-    for (int i = 0; i < 3; i++) {
+    // 每10ms产生3次
+    for (int i = 0; i < 5; i++) {
       auto packet = this->data_producer_->CreateData();
+      if (packet == nullptr) continue;
+      auto size = packet->GetSize();
       this->ready_send_vec_.push_back(packet);
     }
   }

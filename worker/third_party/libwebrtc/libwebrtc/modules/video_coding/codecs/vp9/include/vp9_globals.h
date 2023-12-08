@@ -23,7 +23,6 @@ namespace webrtc {
 
 const int16_t kMaxOneBytePictureId = 0x7F;    // 7 bits
 const int16_t kMaxTwoBytePictureId = 0x7FFF;  // 15 bits
-const uint8_t kNoSpatialIdx = 0xFF;
 const uint8_t kNoGofIdx = 0xFF;
 const uint8_t kNumVp9Buffers = 8;
 const size_t kMaxVp9RefPics = 3;

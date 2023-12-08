@@ -106,9 +106,6 @@ constexpr uint8_t kPacketWithH264[]{
     0xce, 0xbd, 0xfb, 0xa1, 0xeb};
 
 FakeDataProducer::FakeDataProducer(uint32_t ssrc) : ssrc_(ssrc), sequence_(1) {
-#ifdef USING_LOCAL_FILE_DATA
-  data_file_.open(LOCAL_DATA_FILE_PATH_STRING, std::ios::binary);
-#endif
 }
 
 FakeDataProducer::~FakeDataProducer() {
@@ -119,26 +116,26 @@ FakeDataProducer::~FakeDataProducer() {
 
 RtpPacketPtr FakeDataProducer::CreateData() {
   // 使用webrtc中rtp包初始化方式
-  auto* send_paket =
-      new webrtc::RtpPacketToSend(nullptr, sizeof(kPacketWithH264));
+  auto* send_packet =
+      new webrtc::RtpPacketToSend(nullptr, sizeof(kPacketWithH264) + RtpPacket::HeaderSize);
 #ifdef USING_LOCAL_FILE_DATA
   data_file_.read((char*)data, sizeof(kPacketWithH264));
 #endif
-  send_paket->SetSequenceNumber(this->sequence_++);
-  send_paket->SetPayloadType(101);
-  send_paket->SetSsrc(this->ssrc_);
-  memcpy(send_paket->Buffer().data(), kPacketWithH264, sizeof(kPacketWithH264));
-  send_paket->SetPayloadSize(sizeof(kPacketWithH264));
+  send_packet->SetSequenceNumber(this->sequence_++);
+  send_packet->SetPayloadType(101);
+  send_packet->SetSsrc(this->ssrc_);
+  memcpy(send_packet->Buffer().data(), kPacketWithH264, sizeof(kPacketWithH264));
+  send_packet->SetPayloadSize(sizeof(kPacketWithH264));
 
   // 转回 rtp packet
-  auto len = send_paket->capacity() + send_paket->size();
+  auto len = send_packet->capacity();
   auto* payload_data = new uint8_t[len];
-  memcpy(payload_data, send_paket->data(), len);
+  memcpy(payload_data, send_packet->data(), len);
   RtpPacketPtr rtp_packet = RtpPacket::Parse(payload_data, len);
   // mediasoup parse 内部只new了包结构，没有new payload空间，payload空间使用了一个共享的静态区域
   rtp_packet->SetPayloadDataPtr(&payload_data);
 
- this->GetRtpExtensions(rtp_packet);
+  this->GetRtpExtensions(rtp_packet);
 
   return rtp_packet;
 }

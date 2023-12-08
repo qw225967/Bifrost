@@ -347,6 +347,11 @@ add_executable(worker
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extension_map.cc
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor.cc
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extensions.cc
+        third_party/libwebrtc/libwebrtc/modules/include/module_common_types.cc
+        third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_format.cc
+        third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_format_h264.cc
+        third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_format_video_generic.cc
+        third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_video_header.cc
         third_party/libwebrtc/libwebrtc/rtc_base/time_utils.cc
         third_party/libwebrtc/libwebrtc/rtc_base/string_utils.cc
         third_party/libwebrtc/libwebrtc/rtc_base/string_encode.cc
@@ -375,6 +380,12 @@ add_executable(worker
         third_party/libwebrtc/libwebrtc/common_audio/signal_processing/spl_init.cc
         third_party/libwebrtc/libwebrtc/common_audio/signal_processing/cross_correlation.cc
         third_party/libwebrtc/libwebrtc/common_audio/signal_processing/downsample_fast.cc
+        third_party/libwebrtc/libwebrtc/common_video/h264/sps_vui_rewriter.cc
+        third_party/libwebrtc/libwebrtc/common_video/h264/sps_parser.cc
+        third_party/libwebrtc/libwebrtc/common_video/h264/pps_parser.cc
+        third_party/libwebrtc/libwebrtc/common_video/h264/h264_common.cc
+        third_party/libwebrtc/libwebrtc/rtc_base/bit_buffer.cc
+        third_party/libwebrtc/libwebrtc/system_wrappers/source/metrics.cc
 
         # json
         third_party/json/include/nlohmann/detail/conversions/from_json.hpp
@@ -503,6 +514,7 @@ add_executable(worker
         include/bifrost/experiment_manager/fake_data_producer.h
         include/bifrost/experiment_manager/experiment_manager.h
         include/bifrost/experiment_manager/experiment_data.h
+        include/bifrost/experiment_manager/h264_file_data_producer.h
         include/bifrost/bifrost_send_algorithm/tcc_client.h
         include/bifrost/bifrost_send_algorithm/tcc_server.h
         include/bifrost/bifrost_send_algorithm/bifrost_pacer.h
@@ -539,6 +551,7 @@ add_executable(worker
         # bifrost src
         src/bifrost/experiment_manager/fake_data_producer.cpp
         src/bifrost/experiment_manager/experiment_manager.cpp
+        src/bifrost/experiment_manager/h264_file_data_producer.cpp
         src/bifrost/bifrost_send_algorithm/bifrost_pacer.cpp
         src/bifrost/bifrost_send_algorithm/bifrost_send_algorithm_manager.cpp
         src/bifrost/bifrost_send_algorithm/quic_send_algorithm_adapter.cpp
