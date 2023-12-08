@@ -7,7 +7,7 @@
  * @description : TODO
  *******************************************************/
 
-#define USENS3TEST 1
+#define USE_NS3_TEST 1
 
 #include "player.h"
 
@@ -27,7 +27,7 @@ Player::Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
       number_(number) {
   std::cout << "player experiment manager:" << experiment_manager << std::endl;
 
-#ifdef USENS3TEST
+#ifdef USE_NS3_TEST
   // 设置代理ip、端口
   struct sockaddr_storage temp_addr;
   int family = IP::get_family("10.100.0.100");
