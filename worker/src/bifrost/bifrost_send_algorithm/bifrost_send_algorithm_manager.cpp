@@ -11,7 +11,7 @@
 #include "rtcp_feedback.h"
 
 namespace bifrost {
-const uint32_t InitialAvailableGccBitrate = 600000u;
+const uint32_t InitialAvailableGccBitrate = 400000u;
 
 BifrostSendAlgorithmManager::BifrostSendAlgorithmManager(
     quic::CongestionControlType congestion_algorithm_type, UvLoop** uv_loop) {

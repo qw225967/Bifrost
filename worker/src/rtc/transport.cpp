@@ -84,7 +84,7 @@ void Transport::OnUdpRouterRtcpPacketReceived(
     bifrost::UdpRouter* socket, RtcpPacketPtr rtcp_packet,
     const struct sockaddr* remote_addr) {
 
-  std::cout << "rtcp:" << Byte::bytes_to_hex(rtcp_packet->GetData(), rtcp_packet->GetSize()) << " rtcp"<< std::endl;
+//  std::cout << "rtcp:" << Byte::bytes_to_hex(rtcp_packet->GetData(), rtcp_packet->GetSize()) << " rtcp"<< std::endl;
   auto type = rtcp_packet->GetType();
   switch (type) {
     case Type::RR: {
