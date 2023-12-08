@@ -14,7 +14,8 @@
 
 namespace bifrost {
 
-const uint32_t IntervalReadFrameMs = 10u; // 速度快一些多准备些数据（没能完全模拟采集的分布）
+const uint32_t IntervalReadFrameMs =
+    10u;  // 速度快一些多准备些数据（没能完全模拟采集的分布）
 const uint32_t MaxPacketSize = 1100u;
 
 H264FileDataProducer::H264FileDataProducer(uint32_t ssrc, uv_loop_t *loop)
@@ -26,6 +27,11 @@ H264FileDataProducer::H264FileDataProducer(uint32_t ssrc, uv_loop_t *loop)
   if (this->h264_data_file_.is_open()) {
     this->h264_data_file_.seekg(0, std::ios::end);
     this->size_ = this->h264_data_file_.tellg();
+  } else {
+    std::cout << "empty test.h264 file, please copy a h264 file to "
+                 "folder:\"worker/source_file/\""
+              << std::endl;
+    exit(0);
   }
   this->buffer_ = new uint8_t[this->size_];
   memset(this->buffer_, 0, this->size_);
@@ -51,16 +57,16 @@ NaluType H264FileDataProducer::PrintfH264Frame(int j, int nLen,
 
   switch (nReference_idc) {
     case NALU_PRIORITY_DISPOSABLE:
-//      std::cout << "DISPOS ";
+      //      std::cout << "DISPOS ";
       break;
     case NALU_PRIRITY_LOW:
-//      std::cout << "LOW ";
+      //      std::cout << "LOW ";
       break;
     case NALU_PRIORITY_HIGH:
-//      std::cout << "HIGH ";
+      //      std::cout << "HIGH ";
       break;
     case NALU_PRIORITY_HIGHEST:
-//      std::cout << "HIGHEST ";
+      //      std::cout << "HIGHEST ";
       break;
   }
 
@@ -103,7 +109,7 @@ NaluType H264FileDataProducer::PrintfH264Frame(int j, int nLen,
       break;
   }
 
-//    std::cout << "frame rate:" << j << ", frame size:" << nLen << std::endl;
+  //    std::cout << "frame rate:" << j << ", frame size:" << nLen << std::endl;
 }
 
 int H264FileDataProducer::GetH264FrameLen(int n_pos, size_t n_total_size,
@@ -282,8 +288,8 @@ void H264FileDataProducer::ReadWebRTCRtpPacketizer() {
       expected_payload_capacity = limits.max_payload_len;
     }
 
-    auto *packet =
-        new webrtc::RtpPacketToSend(nullptr, expected_payload_capacity + RtpPacket::HeaderSize);
+    auto *packet = new webrtc::RtpPacketToSend(
+        nullptr, expected_payload_capacity + RtpPacket::HeaderSize);
     if (!packetizer->NextPacket(packet)) return;
 
     packet->SetSequenceNumber(this->sequence_++);
