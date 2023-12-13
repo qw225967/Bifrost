@@ -16,6 +16,10 @@
 #include "rtcp_rr.h"
 #include "rtcp_sr.h"
 #include "setting.h"
+#include "bifrost/bifrost_send_algorithm/webrtc_clock_adapter.h"
+
+#include <modules/video_coding/receiver.h>
+#include <modules/rtp_rtcp/include/remote_ntp_time_estimator.h>
 
 namespace bifrost {
 typedef std::shared_ptr<sockaddr> SockAddressPtr;
@@ -35,7 +39,12 @@ class Player : public UvTimer::Listener,
   Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
          Observer* observer, uint32_t ssrc, uint8_t number,
          ExperimentManagerPtr& experiment_manager);
-  ~Player() { this->nack_.reset(); }
+  ~Player() {
+    this->nack_.reset();
+    delete this->receiver_;
+    delete this->timing_;
+    delete this->clock_;
+  }
 
   // UvTimer
   void OnTimer(UvTimer* timer) {}
@@ -99,6 +108,14 @@ class Player : public UvTimer::Listener,
   NackPtr nack_;
   // tcc
   TransportCongestionControlServerPtr tcc_server_{nullptr};
+  // clock
+  WebRTCClockAdapter *clock_;
+  // timing
+  webrtc::VCMTiming *timing_;
+  // VCMReceiver
+  webrtc::VCMReceiver* receiver_;
+  // ntp_estimator
+  webrtc::RemoteNtpTimeEstimator ntp_estimator_;
 };
 }  // namespace bifrost
 
