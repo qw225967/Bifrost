@@ -7,9 +7,11 @@
  * @description : TODO
  *******************************************************/
 
-#define USENS3TEST 1
+#define USE_NS3_TEST 1
 
 #include "player.h"
+
+#include <modules/rtp_rtcp/source/rtp_packet_received.h>
 
 namespace bifrost {
 static constexpr uint16_t MaxDropout{3000};
@@ -27,7 +29,7 @@ Player::Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
       number_(number) {
   std::cout << "player experiment manager:" << experiment_manager << std::endl;
 
-#ifdef USENS3TEST
+#ifdef USE_NS3_TEST
   // 设置代理ip、端口
   struct sockaddr_storage temp_addr;
   int family = IP::get_family("10.100.0.100");
@@ -38,14 +40,14 @@ Player::Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
       std::cout << "[proxy] remote uv_ip4_addr" << std::endl;
       if (err != 0)
         std::cout << "[proxy] remote uv_ip4_addr() failed: " << uv_strerror(err)
-        << std::endl;
+                  << std::endl;
 
       (reinterpret_cast<struct sockaddr_in*>(&temp_addr))->sin_port =
           htons(8887);
       break;
     }
   }
-  auto temp_sockaddr =  reinterpret_cast<struct sockaddr*>(&temp_addr);
+  auto temp_sockaddr = reinterpret_cast<struct sockaddr*>(&temp_addr);
   this->udp_remote_address_ = std::make_shared<sockaddr>(*temp_sockaddr);
 #else
   // 1.remote address set
@@ -58,6 +60,15 @@ Player::Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
   // 3.tcc server
   this->tcc_server_ = std::make_shared<TransportCongestionControlServer>(
       this, MtuSize, &this->uv_loop_);
+
+  // 4.clock
+  clock_ = new WebRTCClockAdapter(this->uv_loop_);
+
+  // 5.timing
+  timing_ = new webrtc::VCMTiming(clock_);
+
+  // 6.vcm receiver
+  receiver_ = new webrtc::VCMReceiver(timing_, clock_);
 }
 
 bool Player::UpdateSeq(uint16_t seq) {
@@ -101,13 +112,41 @@ bool Player::UpdateSeq(uint16_t seq) {
 }
 
 void Player::OnReceiveRtpPacket(RtpPacketPtr packet) {
+  receive_packet_count_++;
+
   this->UpdateSeq(packet->GetSequenceNumber());
   this->nack_->OnReceiveRtpPacket(packet);
   this->tcc_server_->IncomingPacket(this->uv_loop_->get_time_ms_int64(),
                                     packet.get());
-  this->tcc_server_->QuicCountIncomingPacket(this->uv_loop_->get_time_ms_int64(),
-                                             packet.get());
-  receive_packet_count_++;
+  this->tcc_server_->QuicCountIncomingPacket(
+      this->uv_loop_->get_time_ms_int64(), packet.get());
+
+  // 转换信息
+  // 转换webrtc包
+  webrtc::RtpPacketReceived parsed_packet;
+  if (parsed_packet.Parse(packet->GetData(), packet->GetSize())) {
+    return;
+  }
+
+  // 解rtp头
+  webrtc::RTPHeader header;
+  parsed_packet.GetHeader(&header);
+
+  // 解video包
+  webrtc::RTPVideoHeader video_header;
+  video_header.rotation = webrtc::kVideoRotation_0;
+  video_header.content_type = webrtc::VideoContentType::UNSPECIFIED;
+  video_header.video_timing.flags = webrtc::VideoSendTiming::kInvalid;
+  video_header.is_last_packet_in_frame = header.markerBit;
+  video_header.frame_marking.temporal_id = webrtc::kNoTemporalIdx;
+
+  // 转vcm包
+  const webrtc::VCMPacket vcm_packet(
+      const_cast<uint8_t*>(parsed_packet.payload().data()),
+      parsed_packet.payload_size(), header, video_header, /*ntp_time_ms=*/0,
+      clock_->TimeInMilliseconds());
+
+  this->receiver_->InsertPacket(vcm_packet);
 }
 
 void Player::OnReceiveSenderReport(SenderReport* report) {
