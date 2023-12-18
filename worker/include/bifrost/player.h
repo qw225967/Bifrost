@@ -10,16 +10,18 @@
 #ifndef WORKER_PLAYER_H
 #define WORKER_PLAYER_H
 
+#include <modules/rtp_rtcp/include/remote_ntp_time_estimator.h>
+#include <modules/rtp_rtcp/source/rtp_format.h>
+#include <modules/rtp_rtcp/source/rtp_format_h264.h>
+#include <modules/video_coding/receiver.h>
+
 #include "bifrost/bifrost_send_algorithm/tcc_server.h"
+#include "bifrost/bifrost_send_algorithm/webrtc_clock_adapter.h"
 #include "bifrost/experiment_manager/experiment_manager.h"
 #include "nack.h"
 #include "rtcp_rr.h"
 #include "rtcp_sr.h"
 #include "setting.h"
-#include "bifrost/bifrost_send_algorithm/webrtc_clock_adapter.h"
-
-#include <modules/video_coding/receiver.h>
-#include <modules/rtp_rtcp/include/remote_ntp_time_estimator.h>
 
 namespace bifrost {
 typedef std::shared_ptr<sockaddr> SockAddressPtr;
@@ -44,10 +46,12 @@ class Player : public UvTimer::Listener,
     delete this->receiver_;
     delete this->timing_;
     delete this->clock_;
+    delete this->depacketizer_;
+    delete this->decoder_timer_;
   }
 
   // UvTimer
-  void OnTimer(UvTimer* timer) {}
+  void OnTimer(UvTimer* timer);
 
   // TransportCongestionControlServer::Observer
   void OnTransportCongestionControlServerSendRtcpPacket(
@@ -109,13 +113,23 @@ class Player : public UvTimer::Listener,
   // tcc
   TransportCongestionControlServerPtr tcc_server_{nullptr};
   // clock
-  WebRTCClockAdapter *clock_;
+  WebRTCClockAdapter* clock_;
   // timing
-  webrtc::VCMTiming *timing_;
+  webrtc::VCMTiming* timing_;
   // VCMReceiver
   webrtc::VCMReceiver* receiver_;
+  // RtpDepacketizer
+  webrtc::RtpDepacketizer* depacketizer_;
+  // decoder timer
+  UvTimer* decoder_timer_;
   // ntp_estimator
   webrtc::RemoteNtpTimeEstimator ntp_estimator_;
+
+  bool drop_frames_until_keyframe_{false};
+  bool prefer_late_decoding_{false};
+
+  // pre decode time
+  uint64_t pre_decode_time_ = 0;
 };
 }  // namespace bifrost
 

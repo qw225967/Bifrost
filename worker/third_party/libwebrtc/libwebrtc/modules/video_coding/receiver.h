@@ -56,6 +56,8 @@ class VCMReceiver {
 
   void TriggerDecoderShutdown();
 
+  absl::optional<TimingFrameInfo> GetTimingInfo();
+
  private:
   rtc::CriticalSection crit_sect_;
   Clock* const clock_;

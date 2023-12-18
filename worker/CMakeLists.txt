@@ -330,6 +330,10 @@ add_executable(worker
         third_party/libwebrtc/libwebrtc/api/neteq/tick_timer.cc
         third_party/libwebrtc/libwebrtc/api/video/hdr_metadata.cc
         third_party/libwebrtc/libwebrtc/api/video/video_content_type.cc
+        third_party/libwebrtc/libwebrtc/modules/video_coding/packet.cc
+        third_party/libwebrtc/libwebrtc/modules/video_coding/receiver.cc
+        third_party/libwebrtc/libwebrtc/api/video_codecs/video_decoder.cc
+        third_party/libwebrtc/libwebrtc/system_wrappers/source/metrics.cc
         third_party/libwebrtc/libwebrtc/api/audio_codecs/audio_format.cc
         third_party/libwebrtc/libwebrtc/api/audio_codecs/audio_decoder.cc
         third_party/libwebrtc/libwebrtc/api/audio_codecs/audio_codec_pair_id.cc
@@ -338,6 +342,7 @@ add_executable(worker
         third_party/libwebrtc/libwebrtc/rtc_base/logging.cc
         third_party/libwebrtc/libwebrtc/rtc_base/zero_memory.cc
         third_party/libwebrtc/libwebrtc/system_wrappers/source/clock.cc
+        third_party/libwebrtc/libwebrtc/system_wrappers/source/event.cc
         third_party/libwebrtc/libwebrtc/rtc_base/synchronization/sequence_checker.cc
         third_party/libwebrtc/libwebrtc/rtc_base/synchronization/rw_lock_wrapper.cc
         third_party/libwebrtc/libwebrtc/rtc_base/synchronization/rw_lock_posix.cc
@@ -347,6 +352,7 @@ add_executable(worker
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extension_map.cc
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor.cc
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extensions.cc
+        third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_video_header.cc
         third_party/libwebrtc/libwebrtc/rtc_base/time_utils.cc
         third_party/libwebrtc/libwebrtc/rtc_base/string_utils.cc
         third_party/libwebrtc/libwebrtc/rtc_base/string_encode.cc
@@ -359,6 +365,33 @@ add_executable(worker
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_dependency_descriptor_extension.cc
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor_extension.cc
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet_received.cc
+        third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_format_h264.cc
+        third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_format_video_generic.cc
+        third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_format_vp8.cc
+        third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_format_vp9.cc
+        third_party/libwebrtc/libwebrtc/rtc_base/event_tracer.cc
+        third_party/libwebrtc/libwebrtc/rtc_base/bit_buffer.cc
+        third_party/libwebrtc/libwebrtc/modules/video_coding/jitter_buffer.cc
+        third_party/libwebrtc/libwebrtc/modules/video_coding/frame_buffer.cc
+        third_party/libwebrtc/libwebrtc/modules/video_coding/session_info.cc
+        third_party/libwebrtc/libwebrtc/modules/video_coding/decoding_state.cc
+        third_party/libwebrtc/libwebrtc/modules/video_coding/jitter_estimator.cc
+        third_party/libwebrtc/libwebrtc/modules/video_coding/rtt_filter.cc
+        third_party/libwebrtc/libwebrtc/modules/video_coding/encoded_frame.cc
+        third_party/libwebrtc/libwebrtc/modules/video_coding/timing.cc
+        third_party/libwebrtc/libwebrtc/modules/video_coding/codec_timer.cc
+        third_party/libwebrtc/libwebrtc/modules/video_coding/inter_frame_delay.cc
+        third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_format.cc
+        third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/remote_ntp_time_estimator.cc
+        third_party/libwebrtc/libwebrtc/api/video/video_timing.cc
+        third_party/libwebrtc/libwebrtc/rtc_base/event.cc
+        third_party/libwebrtc/libwebrtc/rtc_base/synchronization/yield_policy.cc
+        third_party/libwebrtc/libwebrtc/common_video/generic_frame_descriptor/generic_frame_info.cc
+        third_party/libwebrtc/libwebrtc/rtc_base/time/timestamp_extrapolator.cc
+        third_party/libwebrtc/libwebrtc/api/video/encoded_image.cc
+        third_party/libwebrtc/libwebrtc/modules/video_coding/include/video_codec_interface.cc
+        third_party/libwebrtc/libwebrtc/rtc_base/experiments/jitter_upper_bound_experiment.cc
+        third_party/libwebrtc/libwebrtc/system_wrappers/source/rtp_to_ntp_estimator.cc
         third_party/libwebrtc/libwebrtc/common_audio/signal_processing/spl_sqrt.cc
         third_party/libwebrtc/libwebrtc/common_audio/signal_processing/randomization_functions.cc
         third_party/libwebrtc/libwebrtc/common_audio/signal_processing/vector_scaling_operations.cc
@@ -375,6 +408,10 @@ add_executable(worker
         third_party/libwebrtc/libwebrtc/common_audio/signal_processing/spl_init.cc
         third_party/libwebrtc/libwebrtc/common_audio/signal_processing/cross_correlation.cc
         third_party/libwebrtc/libwebrtc/common_audio/signal_processing/downsample_fast.cc
+        third_party/libwebrtc/libwebrtc/common_video/h264/sps_vui_rewriter.cc
+        third_party/libwebrtc/libwebrtc/common_video/h264/h264_common.cc
+        third_party/libwebrtc/libwebrtc/common_video/h264/sps_parser.cc
+        third_party/libwebrtc/libwebrtc/common_video/h264/pps_parser.cc
 
         # json
         third_party/json/include/nlohmann/detail/conversions/from_json.hpp
