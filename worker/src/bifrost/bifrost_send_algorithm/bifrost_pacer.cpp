@@ -74,8 +74,6 @@ void BifrostPacer::OnTimer(UvTimer* timer) {
         if (packet->UpdateTransportWideCc01(this->tcc_seq_)) {
           this->tcc_seq_++;
 
-          //          std::cout << "send seq:" << packet->GetSequenceNumber() <<
-          //          std::endl;
           observer_->OnPublisherSendPacket(packet);
         }
 

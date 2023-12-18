@@ -32,13 +32,11 @@ namespace webrtc {
 enum { kMaxReceiverDelayMs = 10000 };
 
 VCMReceiver::VCMReceiver(VCMTiming* timing, Clock* clock)
-    : VCMReceiver::VCMReceiver(timing,
-                               clock,
+    : VCMReceiver::VCMReceiver(timing, clock,
                                absl::WrapUnique(EventWrapper::Create()),
                                absl::WrapUnique(EventWrapper::Create())) {}
 
-VCMReceiver::VCMReceiver(VCMTiming* timing,
-                         Clock* clock,
+VCMReceiver::VCMReceiver(VCMTiming* timing, Clock* clock,
                          std::unique_ptr<EventWrapper> receiver_event,
                          std::unique_ptr<EventWrapper> jitter_buffer_event)
     : clock_(clock),
@@ -49,9 +47,7 @@ VCMReceiver::VCMReceiver(VCMTiming* timing,
   Reset();
 }
 
-VCMReceiver::~VCMReceiver() {
-  render_wait_event_->Set();
-}
+VCMReceiver::~VCMReceiver() { render_wait_event_->Set(); }
 
 void VCMReceiver::Reset() {
   rtc::CritScope cs(&crit_sect_);
@@ -87,6 +83,10 @@ int32_t VCMReceiver::InsertPacket(const VCMPacket& packet) {
 void VCMReceiver::TriggerDecoderShutdown() {
   jitter_buffer_.Stop();
   render_wait_event_->Set();
+}
+
+absl::optional<TimingFrameInfo> VCMReceiver::GetTimingInfo() {
+  return timing_->GetTimingFrameInfo();
 }
 
 VCMEncodedFrame* VCMReceiver::FrameForDecoding(uint16_t max_wait_time_ms,

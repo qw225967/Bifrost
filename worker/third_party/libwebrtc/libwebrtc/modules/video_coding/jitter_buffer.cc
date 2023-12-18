@@ -49,20 +49,15 @@ void FrameList::InsertFrame(VCMFrameBuffer* frame) {
 
 VCMFrameBuffer* FrameList::PopFrame(uint32_t timestamp) {
   FrameList::iterator it = find(timestamp);
-  if (it == end())
-    return NULL;
+  if (it == end()) return NULL;
   VCMFrameBuffer* frame = it->second;
   erase(it);
   return frame;
 }
 
-VCMFrameBuffer* FrameList::Front() const {
-  return begin()->second;
-}
+VCMFrameBuffer* FrameList::Front() const { return begin()->second; }
 
-VCMFrameBuffer* FrameList::Back() const {
-  return rbegin()->second;
-}
+VCMFrameBuffer* FrameList::Back() const { return rbegin()->second; }
 
 int FrameList::RecycleFramesUntilKeyFrame(FrameList::iterator* key_frame_it,
                                           UnorderedFrameList* free_frames) {
@@ -224,6 +219,10 @@ VCMEncodedFrame* VCMJitterBuffer::NextCompleteFrame(uint32_t max_wait_time_ms) {
   }
   CleanUpOldOrEmptyFrames();
 
+  //  std::cout << "decodable frame size:" << decodable_frames_.size()
+  //            << ", incomplete frame size:" << incomplete_frames_.size() <<
+  //            std::endl;
+
   if (decodable_frames_.empty() ||
       decodable_frames_.Front()->GetState() != kStateComplete) {
     const int64_t end_wait_time_ms =
@@ -234,6 +233,7 @@ VCMEncodedFrame* VCMJitterBuffer::NextCompleteFrame(uint32_t max_wait_time_ms) {
       const EventTypeWrapper ret =
           frame_event_->Wait(static_cast<uint32_t>(wait_time_ms));
       crit_sect_.Enter();
+
       if (ret == kEventSignaled) {
         // Are we shutting down the jitter buffer?
         if (!running_) {
@@ -399,8 +399,7 @@ VCMFrameBufferEnum VCMJitterBuffer::InsertPacket(const VCMPacket& packet,
   VCMFrameBuffer* frame;
   FrameList* frame_list;
   const VCMFrameBufferEnum error = GetFrame(packet, &frame, &frame_list);
-  if (error != kNoError)
-    return error;
+  if (error != kNoError) return error;
 
   int64_t now_ms = clock_->TimeInMilliseconds();
   // We are keeping track of the first and latest seq numbers, and
@@ -513,8 +512,7 @@ VCMFrameBufferEnum VCMJitterBuffer::InsertPacket(const VCMPacket& packet,
 }
 
 bool VCMJitterBuffer::IsContinuousInState(
-    const VCMFrameBuffer& frame,
-    const VCMDecodingState& decoding_state) const {
+    const VCMFrameBuffer& frame, const VCMDecodingState& decoding_state) const {
   // Is this frame complete and continuous?
   return (frame.GetState() == kStateComplete) &&
          decoding_state.ContinuousFrame(&frame);
@@ -610,8 +608,7 @@ int VCMJitterBuffer::NonContinuousOrIncompleteDuration() {
 uint16_t VCMJitterBuffer::EstimatedLowSequenceNumber(
     const VCMFrameBuffer& frame) const {
   assert(frame.GetLowSeqNum() >= 0);
-  if (frame.HaveFirstPacket())
-    return frame.GetLowSeqNum();
+  if (frame.HaveFirstPacket()) return frame.GetLowSeqNum();
 
   // This estimate is not accurate if more than one packet with lower sequence
   // number is lost.
@@ -677,10 +674,8 @@ std::vector<uint16_t> VCMJitterBuffer::GetNackList(bool* request_key_frame) {
 }
 
 VCMFrameBuffer* VCMJitterBuffer::NextFrame() const {
-  if (!decodable_frames_.empty())
-    return decodable_frames_.Front();
-  if (!incomplete_frames_.empty())
-    return incomplete_frames_.Front();
+  if (!decodable_frames_.empty()) return decodable_frames_.Front();
+  if (!incomplete_frames_.empty()) return incomplete_frames_.Front();
   return NULL;
 }
 
@@ -776,8 +771,7 @@ VCMFrameBuffer* VCMJitterBuffer::GetEmptyFrame() {
 }
 
 bool VCMJitterBuffer::TryToIncreaseJitterBufferSize() {
-  if (max_number_of_frames_ >= kMaxNumberOfFrames)
-    return false;
+  if (max_number_of_frames_ >= kMaxNumberOfFrames) return false;
   free_frames_.push_back(new VCMFrameBuffer());
   ++max_number_of_frames_;
   return true;

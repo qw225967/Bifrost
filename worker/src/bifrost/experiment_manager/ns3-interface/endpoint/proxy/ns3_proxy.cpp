@@ -117,7 +117,7 @@ ProxyManager::ProxyManager() {
       std::cout << "[proxy] remote uv_ip4_addr" << std::endl;
       if (err != 0)
         std::cout << "[proxy] remote uv_ip4_addr() failed: " << uv_strerror(err)
-                  << std::endl;
+        << std::endl;
 
       (reinterpret_cast<struct sockaddr_in*>(&remote_addr))->sin_port =
           htons(8889);
@@ -153,8 +153,8 @@ void ProxyManager::ProxyInReceivePacket(uint32_t ssrc, const uint8_t* data,
 }
 
 void ProxyManager::ProxyOutReceivePacket(uint32_t ssrc, const uint8_t* data,
-                                        size_t len,
-                                        const struct sockaddr* addr) {
+                                         size_t len,
+                                         const struct sockaddr* addr) {
   if (ssrc == 0) return;
 
   this->locker.lock();

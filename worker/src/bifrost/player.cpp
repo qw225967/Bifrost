@@ -7,15 +7,20 @@
  * @description : TODO
  *******************************************************/
 
-#define USE_NS3_TEST 1
+//#define USE_NS3_TEST 1
 
 #include "player.h"
+
+#include <modules/rtp_rtcp/source/rtp_packet_received.h>
+#include <modules/video_coding/encoded_frame.h>
 
 namespace bifrost {
 static constexpr uint16_t MaxDropout{3000};
 static constexpr uint16_t MaxMisorder{1500};
 static constexpr uint32_t RtpSeqMod{1 << 16};
 static constexpr size_t ScoreHistogramLength{24};
+const uint16_t DecoderIntervalMs{10u};
+const int64_t kMaxWaitTime = 10000;
 
 Player::Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
                Observer* observer, uint32_t ssrc, uint8_t number,
@@ -24,7 +29,9 @@ Player::Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
       observer_(observer),
       ssrc_(ssrc),
       experiment_manager_(experiment_manager),
-      number_(number) {
+      number_(number),
+      clock_(new WebRTCClockAdapter(this->uv_loop_)),
+      ntp_estimator_(clock_) {
   std::cout << "player experiment manager:" << experiment_manager << std::endl;
 
 #ifdef USE_NS3_TEST
@@ -38,14 +45,14 @@ Player::Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
       std::cout << "[proxy] remote uv_ip4_addr" << std::endl;
       if (err != 0)
         std::cout << "[proxy] remote uv_ip4_addr() failed: " << uv_strerror(err)
-        << std::endl;
+                  << std::endl;
 
       (reinterpret_cast<struct sockaddr_in*>(&temp_addr))->sin_port =
           htons(8887);
       break;
     }
   }
-  auto temp_sockaddr =  reinterpret_cast<struct sockaddr*>(&temp_addr);
+  auto temp_sockaddr = reinterpret_cast<struct sockaddr*>(&temp_addr);
   this->udp_remote_address_ = std::make_shared<sockaddr>(*temp_sockaddr);
 #else
   // 1.remote address set
@@ -58,6 +65,19 @@ Player::Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
   // 3.tcc server
   this->tcc_server_ = std::make_shared<TransportCongestionControlServer>(
       this, MtuSize, &this->uv_loop_);
+
+  // 4.timing
+  timing_ = new webrtc::VCMTiming(clock_);
+
+  // 5.vcm receiver
+  receiver_ = new webrtc::VCMReceiver(timing_, clock_);
+
+  // 6.depacketizer
+  depacketizer_ = new webrtc::RtpDepacketizerH264();
+
+  // 7.decoder timer
+  decoder_timer_ = new UvTimer(this, uv_loop_->get_loop().get());
+  decoder_timer_->Start(DecoderIntervalMs, DecoderIntervalMs);
 }
 
 bool Player::UpdateSeq(uint16_t seq) {
@@ -101,16 +121,60 @@ bool Player::UpdateSeq(uint16_t seq) {
 }
 
 void Player::OnReceiveRtpPacket(RtpPacketPtr packet) {
+  receive_packet_count_++;
+
   this->UpdateSeq(packet->GetSequenceNumber());
   this->nack_->OnReceiveRtpPacket(packet);
   this->tcc_server_->IncomingPacket(this->uv_loop_->get_time_ms_int64(),
                                     packet.get());
-  this->tcc_server_->QuicCountIncomingPacket(this->uv_loop_->get_time_ms_int64(),
-                                             packet.get());
-  receive_packet_count_++;
+  this->tcc_server_->QuicCountIncomingPacket(
+      this->uv_loop_->get_time_ms_int64(), packet.get());
+
+  // 转换信息
+  // 转换webrtc包
+  webrtc::RtpPacketReceived parsed_packet;
+  if (!parsed_packet.Parse(packet->GetData(), packet->GetSize())) {
+    return;
+  }
+
+  webrtc::RtpDepacketizer::ParsedPayload parsed_payload;
+  if (!depacketizer_->Parse(&parsed_payload, parsed_packet.payload().data(),
+                            parsed_packet.payload().size())) {
+    return;
+  }
+
+  if (packet->GetSequenceNumber() == 27 || packet->GetSequenceNumber() == 23) {
+    std::cout << "ok";
+  }
+
+  // 解rtp头
+  webrtc::RTPHeader header;
+  parsed_packet.GetHeader(&header);
+
+  // 转vcm包
+  const webrtc::VCMPacket vcm_packet(
+      const_cast<uint8_t*>(parsed_packet.payload().data()),
+      parsed_packet.payload_size(), header, parsed_payload.video_header(),
+      /*ntp_estimator_.Estimate(header.timestamp)*/ 0,
+      clock_->TimeInMilliseconds());
+
+  parsed_payload.video_header().is_last_packet_in_frame |= header.markerBit;
+
+  //  std::cout << Byte::bytes_to_hex(parsed_packet.payload().data(),
+  //                                  parsed_packet.payload().size())
+  //            << std::endl;
+
+  auto ret = this->receiver_->InsertPacket(vcm_packet);
+  if (ret == /*VCM_FLUSH_INDICATOR*/ 4) {
+    drop_frames_until_keyframe_ = true;
+  }
 }
 
 void Player::OnReceiveSenderReport(SenderReport* report) {
+  // test
+  auto info = receiver_->GetTimingInfo();
+  if (info.has_value()) std::cout << info->ToString() << std::endl;
+
   this->last_sr_received_ = this->uv_loop_->get_time_ms();
   this->last_sr_timestamp_ = report->GetNtpSec() << 16;
   this->last_sr_timestamp_ += report->GetNtpFrac() >> 16;
@@ -123,6 +187,9 @@ void Player::OnReceiveSenderReport(SenderReport* report) {
 
   this->last_sender_report_ntp_ms_ = Time::Ntp2TimeMs(ntp);
   this->last_sender_repor_ts_ = report->GetRtpTs();
+
+  ntp_estimator_.UpdateRtcpTimestamp(100, ntp.seconds, ntp.fractions,
+                                     report->GetRtpTs());
 }
 
 ReceiverReport* Player::GetRtcpReceiverReport() {
@@ -182,7 +249,47 @@ ReceiverReport* Player::GetRtcpReceiverReport() {
     report->SetDelaySinceLastSenderReport(0);
     report->SetLastSenderReport(0);
   }
-
   return report;
 }
+
+void Player::OnTimer(UvTimer* timer) {
+  if (timer == decoder_timer_) {
+    bool prefer_late_decoding = true;
+    webrtc::VCMEncodedFrame* frame =
+        this->receiver_->FrameForDecoding(kMaxWaitTime, prefer_late_decoding_);
+
+    if (!frame) return;
+
+    std::cout << "frame interval to decode:"
+              << this->uv_loop_->get_time_ms_int64() - pre_decode_time_
+              << std::endl;
+
+    pre_decode_time_ = this->uv_loop_->get_time_ms_int64();
+
+    bool drop_frame = false;
+    {
+      if (drop_frames_until_keyframe_) {
+        // Still getting delta frames, schedule another keyframe request as if
+        // decode failed.
+        if (frame->FrameType() != webrtc::VideoFrameType::kVideoFrameKey) {
+          drop_frame = true;
+        } else {
+          drop_frames_until_keyframe_ = false;
+        }
+      }
+    }
+
+    if (drop_frame) {
+      receiver_->ReleaseFrame(frame);
+      prefer_late_decoding_ = true;
+      return;
+    }
+
+    this->timing_->UpdateCurrentDelay(frame->RenderTimeMs(),
+                                      clock_->TimeInMilliseconds());
+
+    this->receiver_->ReleaseFrame(frame);
+  }
+}
+
 }  // namespace bifrost
