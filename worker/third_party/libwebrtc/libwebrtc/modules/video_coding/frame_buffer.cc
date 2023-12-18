@@ -41,28 +41,20 @@ int32_t VCMFrameBuffer::GetHighSeqNum() const {
   return _sessionInfo.HighSequenceNumber();
 }
 
-int VCMFrameBuffer::PictureId() const {
-  return _sessionInfo.PictureId();
-}
+int VCMFrameBuffer::PictureId() const { return _sessionInfo.PictureId(); }
 
-int VCMFrameBuffer::TemporalId() const {
-  return _sessionInfo.TemporalId();
-}
+int VCMFrameBuffer::TemporalId() const { return _sessionInfo.TemporalId(); }
 
-bool VCMFrameBuffer::LayerSync() const {
-  return _sessionInfo.LayerSync();
-}
+bool VCMFrameBuffer::LayerSync() const { return _sessionInfo.LayerSync(); }
 
-int VCMFrameBuffer::Tl0PicId() const {
-  return _sessionInfo.Tl0PicId();
-}
+int VCMFrameBuffer::Tl0PicId() const { return _sessionInfo.Tl0PicId(); }
 
 std::vector<NaluInfo> VCMFrameBuffer::GetNaluInfos() const {
   return _sessionInfo.GetNaluInfos();
 }
 
 void VCMFrameBuffer::SetGofInfo(const GofInfoVP9& gof_info, size_t idx) {
-  TRACE_EVENT0("webrtc", "VCMFrameBuffer::SetGofInfo");
+  //  TRACE_EVENT0("webrtc", "VCMFrameBuffer::SetGofInfo");
   _sessionInfo.SetGofInfo(gof_info, idx);
   // TODO(asapersson): Consider adding hdr->VP9.ref_picture_id for testing.
   _codecSpecificInfo.codecSpecific.VP9.temporal_idx =
@@ -72,7 +64,7 @@ void VCMFrameBuffer::SetGofInfo(const GofInfoVP9& gof_info, size_t idx) {
 }
 
 bool VCMFrameBuffer::IsSessionComplete() const {
-  TRACE_EVENT0("webrtc", "VCMFrameBuffer::IsSessionComplete");
+  //  TRACE_EVENT0("webrtc", "VCMFrameBuffer::IsSessionComplete");
   return _sessionInfo.complete();
 }
 
@@ -80,7 +72,7 @@ bool VCMFrameBuffer::IsSessionComplete() const {
 VCMFrameBufferEnum VCMFrameBuffer::InsertPacket(const VCMPacket& packet,
                                                 int64_t timeInMs,
                                                 const FrameData& frame_data) {
-  TRACE_EVENT0("webrtc", "VCMFrameBuffer::InsertPacket");
+  //  TRACE_EVENT0("webrtc", "VCMFrameBuffer::InsertPacket");
   assert(!(NULL == packet.dataPtr && packet.sizeBytes > 0));
   if (packet.dataPtr != NULL) {
     _payloadType = packet.payloadType;
@@ -123,8 +115,7 @@ VCMFrameBufferEnum VCMFrameBuffer::InsertPacket(const VCMPacket& packet,
   }
 
   // Don't copy payload specific data for empty packets (e.g padding packets).
-  if (packet.sizeBytes > 0)
-    CopyCodecSpecific(&packet.video_header);
+  if (packet.sizeBytes > 0) CopyCodecSpecific(&packet.video_header);
 
   int retVal = _sessionInfo.InsertPacket(packet, data(), frame_data);
   if (retVal == -1) {
@@ -146,7 +137,7 @@ VCMFrameBufferEnum VCMFrameBuffer::InsertPacket(const VCMPacket& packet,
   // frame (I-frame or IDR frame in H.264 (AVC), or an IRAP picture in H.265
   // (HEVC)).
   if (packet.markerBit) {
-    RTC_DCHECK(!_rotation_set);
+    //    RTC_DCHECK(!_rotation_set);
     rotation_ = packet.video_header.rotation;
     _rotation_set = true;
     content_type_ = packet.video_header.content_type;
@@ -246,9 +237,7 @@ void VCMFrameBuffer::SetState(VCMFrameBufferStateEnum state) {
 }
 
 // Get current state of frame
-VCMFrameBufferStateEnum VCMFrameBuffer::GetState() const {
-  return _state;
-}
+VCMFrameBufferStateEnum VCMFrameBuffer::GetState() const { return _state; }
 
 void VCMFrameBuffer::PrepareForDecode(bool continuous) {
   TRACE_EVENT0("webrtc", "VCMFrameBuffer::PrepareForDecode");
