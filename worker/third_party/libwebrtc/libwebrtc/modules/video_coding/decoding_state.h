@@ -14,6 +14,7 @@
 #include <map>
 #include <set>
 #include <vector>
+#include <stdint.h>
 
 namespace webrtc {
 
