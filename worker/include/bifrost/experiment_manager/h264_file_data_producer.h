@@ -17,6 +17,7 @@
 
 namespace bifrost {
 typedef enum {
+  Error = 0,
   NALU_TYPE_SLICE = 1,
   NALU_TYPE_DPA = 2,
   NALU_TYPE_DPB = 3,
@@ -41,7 +42,7 @@ typedef enum {
 class H264FileDataProducer : public ExperimentDataProducerInterface,
                              public UvTimer::Listener {
  public:
-  explicit H264FileDataProducer(uint32_t ssrc, uv_loop_t *loop);
+  explicit H264FileDataProducer(uint32_t ssrc, UvLoop *loop);
   ~H264FileDataProducer();
 
  public:
@@ -55,11 +56,15 @@ class H264FileDataProducer : public ExperimentDataProducerInterface,
   bool ReadOneH264Frame();
   void H264FrameAnnexbSplitNalu(
       uint8_t *data, uint32_t len,
-      std::function<bool(uint8_t *data, uint32_t len, uint32_t start_code_len)> on_nalu);
+      std::function<bool(uint8_t *data, uint32_t len, uint32_t start_code_len)>
+          on_nalu);
   void ReadWebRTCRtpPacketizer();
-  void GetRtpExtensions(RtpPacketPtr& packet);
+  void GetRtpExtensions(RtpPacketPtr &packet);
 
  private:
+  // UvLoop
+  UvLoop* uv_loop_ = nullptr;
+
   std::ifstream h264_data_file_;
   uint8_t *buffer_ = nullptr;
   size_t size_ = 0;
@@ -67,13 +72,16 @@ class H264FileDataProducer : public ExperimentDataProducerInterface,
   int read_offset = 0;   //偏移量
   uint8_t *payload_;
   size_t frame_len_;
+  size_t start_code_offset_ = 0;
 
   std::vector<RtpPacketPtr> rtp_packet_vec_;
 
   UvTimer *read_frame_timer_;
 
   uint32_t ssrc_;
-  uint16_t sequence_{ 0u };
+  uint16_t sequence_{0u};
+
+  uint64_t fake_capture_timestamp_ = 0;
 };
 }  // namespace bifrost
 
