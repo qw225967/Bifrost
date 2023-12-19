@@ -18,6 +18,21 @@ Transport::Transport(TransportModel model, uint8_t number,
                      ExperimentManagerPtr& experiment_manager,
                      quic::CongestionControlType quic_congestion_type)
     : model_(model), number_(number), experiment_manager_(experiment_manager) {
+  std::cout << "now use model:" <<
+      [&]() {
+        switch (model) {
+          case SinglePublish:
+            return "SinglePublish";
+          case SinglePlay:
+            return "SinglePlay";
+          case SinglePublishAndPlays:
+            return "SinglePublishAndPlays";
+          default:
+            return "Error";
+        }
+      }() << " you can change this model in main.cpp!"
+            << std::endl;
+
   this->uv_loop_ = new UvLoop;
 
   // 1.init loop
@@ -34,7 +49,8 @@ Transport::Transport(TransportModel model, uint8_t number,
     case SinglePublish: {
       // 2.publisher
       this->publisher_ = std::make_shared<Publisher>(
-          remote_config, &this->uv_loop_, this, number, experiment_manager_, quic_congestion_type);
+          remote_config, &this->uv_loop_, this, number, experiment_manager_,
+          quic_congestion_type);
       break;
     }
   }
@@ -83,8 +99,8 @@ void Transport::OnUdpRouterRtpPacketReceived(
 void Transport::OnUdpRouterRtcpPacketReceived(
     bifrost::UdpRouter* socket, RtcpPacketPtr rtcp_packet,
     const struct sockaddr* remote_addr) {
-
-//  std::cout << "rtcp:" << Byte::bytes_to_hex(rtcp_packet->GetData(), rtcp_packet->GetSize()) << " rtcp"<< std::endl;
+  //  std::cout << "rtcp:" << Byte::bytes_to_hex(rtcp_packet->GetData(),
+  //  rtcp_packet->GetSize()) << " rtcp"<< std::endl;
   auto type = rtcp_packet->GetType();
   switch (type) {
     case Type::RR: {

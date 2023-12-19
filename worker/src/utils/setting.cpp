@@ -180,7 +180,7 @@ void Settings::AnalysisConfigurationFile(std::string& config_path) {
     // ssrc
     auto local_ssrc_iter = local_receive_iter->find("ssrc");
     if (local_ssrc_iter == local_receive_iter->end()) {
-      std::cout << "[setting] server publish_config can not find ssrc";
+      std::cout << "[setting] server publish_config can not find ssrc" << std::endl;
     } else {
       ssrc = local_ssrc_iter->get<uint32_t>();
     }
@@ -224,7 +224,7 @@ void Settings::AnalysisConfigurationFile(std::string& config_path) {
     // ssrc
     auto remote_ssrc_iter = remote_send_iter->find("ssrc");
     if (remote_ssrc_iter == remote_send_iter->end()) {
-      std::cout << "[setting] server publish_config can not find ssrc";
+      std::cout << "[setting] server publish_config can not find ssrc" << std::endl;
     } else {
       ssrc = remote_ssrc_iter->get<uint32_t>();
     }
