@@ -124,7 +124,8 @@ RtpPacketPtr FakeDataProducer::CreateData() {
   send_packet->SetSequenceNumber(this->sequence_++);
   send_packet->SetPayloadType(101);
   send_packet->SetSsrc(this->ssrc_);
-  memcpy(send_packet->Buffer().data(), kPacketWithH264, sizeof(kPacketWithH264));
+  memcpy(send_packet->Buffer().data() + RtpPacket::HeaderSize, kPacketWithH264, sizeof(kPacketWithH264));
+
   send_packet->SetPayloadSize(sizeof(kPacketWithH264));
 
   // 转回 rtp packet

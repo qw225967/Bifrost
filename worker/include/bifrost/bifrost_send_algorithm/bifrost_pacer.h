@@ -10,7 +10,7 @@
 #ifndef _BIFROST_PACER_H
 #define _BIFROST_PACER_H
 
-//#define USE_FAKE_DATA_PRODUCER 1
+#define USE_FAKE_DATA_PRODUCER 1
 
 #include "bifrost/experiment_manager/experiment_data.h"
 #include "common.h"
