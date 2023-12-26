@@ -118,7 +118,7 @@ class TransportCongestionControlClient
   void SendPacket(RtpPacket* packet,
                   const webrtc::PacedPacketInfo& cluster_info) override;
 
-  RtpPacket* GeneratePadding(size_t target_size_bytes) override;
+  std::shared_ptr<RtpPacket> GeneratePadding(size_t target_size_bytes) override;
 
   /* Pure virtual methods inherited from RTC::Timer. */
  public:
