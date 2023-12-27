@@ -75,13 +75,13 @@ void TransportCongestionControlClient::OnRtpPacketSend(RtpPacketPtr &rtp_packet,
   this->PacketSent(packetInfo, now);
 }
 
-RtpPacket* TransportCongestionControlClient::GeneratePadding(
+std::shared_ptr<RtpPacket> TransportCongestionControlClient::GeneratePadding(
     size_t target_size_bytes) {
   uint8_t data[1400u];
   std::memcpy(data, ProbationPacketHeader, sizeof(ProbationPacketHeader));
   auto probationPacket = RtpPacket::Parse(data, 1400u);
   probationPacket->SetPayloadLength(sizeof(ProbationPacketHeader));
-  return probationPacket.get();
+  return probationPacket;
 }
 
 void TransportCongestionControlClient::InitializeController() {

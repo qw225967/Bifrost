@@ -173,7 +173,7 @@ void PacedSender::Process() {
 
   size_t bytes_sent = 0;
   // MS_NOTE: Let's not use a useless vector.
-  bifrost::RtpPacket* padding_packet{nullptr};
+  std::shared_ptr<bifrost::RtpPacket> padding_packet{nullptr};
 
   // Check if we should send padding.
   while (true) {
@@ -193,7 +193,7 @@ void PacedSender::Process() {
     // MS_DEBUG_DEV("sending padding packet [size:%zu]",
     // padding_packet->GetSize());
 
-    packet_router_->SendPacket(padding_packet, pacing_info);
+    packet_router_->SendPacket(padding_packet.get(), pacing_info);
     bytes_sent += padding_packet->GetSize();
 
     if (recommended_probe_size && bytes_sent > *recommended_probe_size) break;
