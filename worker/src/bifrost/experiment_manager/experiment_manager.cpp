@@ -167,7 +167,7 @@ void ExperimentManager::BitrateCalculationDump(
       available_rate = ite->second.AvailableBitrate;
       send_rate = ite->second.SentBitrate;
 
-      // 统计最大trend的size，用于对其落地数据行
+      // 统计最大trend的size，用于对齐落地数据行
       max_trend_size = max_trend_size > ite->second.Trends.size()
                            ? max_trend_size
                            : ite->second.Trends.size();
@@ -197,9 +197,13 @@ void ExperimentManager::TrendLineCalculationDump(
     // 换算毫秒
     auto now_str_ms = now_str;
     char temp_str[4096];
+
+    uint16_t minuend = 0;
+    if (max_trend_size > 1)
+      minuend = i * (DefaultDumpDataInterval / (max_trend_size - 1));
+
     auto ms = int((1000 / DefaultDumpDataInterval - cycle_trend_ms_fraction_) *
-                      DefaultDumpDataInterval +
-                  i * (DefaultDumpDataInterval / (max_trend_size - 1)));
+                      DefaultDumpDataInterval + minuend);
     if (ms == 1000) continue;
     sprintf(temp_str, "%03d", ms);
     now_str_ms = now_str_ms + "." + temp_str;
