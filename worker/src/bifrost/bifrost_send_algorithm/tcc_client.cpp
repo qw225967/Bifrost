@@ -312,8 +312,8 @@ void TransportCongestionControlClient::OnTargetTransferRate(
     this->bitrates_.availableBitrate =
         static_cast<uint32_t>(targetTransferRate.target_rate.bps());
 
-  std::cout << "[tcc client] new available bitrate:"
-            << this->bitrates_.availableBitrate << std::endl;
+//  std::cout << "[tcc client] new available bitrate:"
+//            << this->bitrates_.availableBitrate << std::endl;
 
   MayEmitAvailableBitrateEvent(previousAvailableBitrate);
 }

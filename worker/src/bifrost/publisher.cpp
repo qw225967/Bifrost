@@ -53,7 +53,8 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
       std::make_shared<BifrostSendAlgorithmManager>(congestion_type, uv_loop);
 
   // 7.pacer
-  pacer_ = std::make_shared<BifrostPacer>(ssrc_, *uv_loop, this);
+  pacer_ = std::make_shared<BifrostPacer>(
+      ssrc_, remote_addr_config_.flexfec_ssrc, *uv_loop, this);
 }
 
 void Publisher::OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) {
@@ -139,6 +140,8 @@ void Publisher::OnReceiveReceiverReport(ReceiverReport* report) {
   this->bifrost_send_algorithm_manager_->UpdateRtt(this->rtt_);
   this->bifrost_send_algorithm_manager_->OnReceiveReceiverReport(
       webrtc_report, this->rtt_, nowMs);
+
+  this->pacer_->UpdateFecRates(webrtc_report.fraction_lost, this->rtt_);
 }
 
 SenderReport* Publisher::GetRtcpSenderReport(uint64_t nowMs) const {

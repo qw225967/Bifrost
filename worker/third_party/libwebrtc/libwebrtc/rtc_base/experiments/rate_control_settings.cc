@@ -97,4 +97,12 @@ bool RateControlSettings::BitrateAdjusterCanUseNetworkHeadroom() const {
   return adjuster_use_headroom_.Get();
 }
 
+double RateControlSettings::GetSimulcastHysteresisFactor(
+    VideoCodecMode mode) const {
+  if (mode == VideoCodecMode::kScreensharing) {
+    return video_config_.screenshare_hysteresis;
+  }
+  return video_config_.video_hysteresis;
+}
+
 }  // namespace webrtc

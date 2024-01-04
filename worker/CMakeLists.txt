@@ -315,6 +315,8 @@ add_executable(worker
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_header_reader_writer.cc
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_header_reader_writer.cc
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_receiver.cc
+        third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_header_extension_size.cc
+        third_party/libwebrtc/libwebrtc/rtc_base/random.cc
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction.cc
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet_to_send.cc
         third_party/libwebrtc/libwebrtc/modules/audio_coding/codecs/cng/webrtc_cng.cc
@@ -387,6 +389,13 @@ add_executable(worker
         third_party/libwebrtc/libwebrtc/modules/video_coding/inter_frame_delay.cc
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_format.cc
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/remote_ntp_time_estimator.cc
+        third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_sender.cc
+        third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_generator.cc
+        third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_utility.cc
+        third_party/libwebrtc/libwebrtc/modules/video_coding/media_opt_util.cc
+        third_party/libwebrtc/libwebrtc/modules/video_coding/utility/simulcast_rate_allocator.cc
+        third_party/libwebrtc/libwebrtc/api/video/video_bitrate_allocation.cc
+        third_party/libwebrtc/libwebrtc/rtc_base/numerics/exp_filter.cc
         third_party/libwebrtc/libwebrtc/api/video/video_timing.cc
         third_party/libwebrtc/libwebrtc/rtc_base/event.cc
         third_party/libwebrtc/libwebrtc/rtc_base/synchronization/yield_policy.cc

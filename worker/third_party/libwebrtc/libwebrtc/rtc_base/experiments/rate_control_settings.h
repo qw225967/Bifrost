@@ -14,10 +14,30 @@
 #include "api/transport/webrtc_key_value_config.h"
 #include "rtc_base/experiments/field_trial_parser.h"
 // #include "rtc_base/experiments/field_trial_units.h"
+#include "api/video_codecs/video_codec.h"
 
 #include <absl/types/optional.h>
 
 namespace webrtc {
+
+struct VideoRateControlConfig {
+  static constexpr char kKey[] = "WebRTC-VideoRateControl";
+  absl::optional<double> pacing_factor;
+  bool alr_probing = false;
+  absl::optional<int> vp8_qp_max;
+  absl::optional<int> vp8_min_pixels;
+  bool trust_vp8 = false;
+  bool trust_vp9 = false;
+  double video_hysteresis = 1.0;
+  // Default to 35% hysteresis for simulcast screenshare.
+  double screenshare_hysteresis = 1.35;
+  bool probe_max_allocation = true;
+  bool bitrate_adjuster = false;
+  bool adjuster_use_headroom = false;
+  bool vp8_s0_boost = true;
+  bool vp8_dynamic_rate = false;
+  bool vp9_dynamic_rate = false;
+};
 
 class RateControlSettings final {
  public:
@@ -43,6 +63,8 @@ class RateControlSettings final {
   bool UseEncoderBitrateAdjuster() const;
   bool BitrateAdjusterCanUseNetworkHeadroom() const;
 
+  double GetSimulcastHysteresisFactor(VideoCodecMode mode) const;
+
  private:
   explicit RateControlSettings(
       const WebRtcKeyValueConfig* const key_value_config);
@@ -56,6 +78,8 @@ class RateControlSettings final {
   FieldTrialParameter<bool> probe_max_allocation_;
   FieldTrialParameter<bool> bitrate_adjuster_;
   FieldTrialParameter<bool> adjuster_use_headroom_;
+
+  VideoRateControlConfig video_config_;
 };
 
 }  // namespace webrtc

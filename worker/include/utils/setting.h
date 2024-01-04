@@ -30,11 +30,13 @@ class Settings {
         : userName(std::move(name)),
           rtcIp(std::move(ip)),
           rtcPort(port),
-          ssrc(ssrc) {}
+          ssrc(ssrc),
+          flexfec_ssrc(ssrc+1) {}
     std::string userName;
     uint16_t rtcPort;
     std::string rtcIp;
     uint32_t ssrc;
+    uint32_t flexfec_ssrc;
   };
   struct AddressConfiguration {
     Configuration local_receive_configuration_;
