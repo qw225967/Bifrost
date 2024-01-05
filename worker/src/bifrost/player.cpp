@@ -78,6 +78,10 @@ Player::Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
   // 7.decoder timer
   decoder_timer_ = new UvTimer(this, uv_loop_->get_loop().get());
   decoder_timer_->Start(DecoderIntervalMs, DecoderIntervalMs);
+
+  // 8.fec receiver
+  flexfec_receiver_ =
+      std::make_unique<webrtc::FlexfecReceiver>(ssrc, ssrc + 1, this);
 }
 
 bool Player::UpdateSeq(uint16_t seq) {
@@ -120,15 +124,22 @@ bool Player::UpdateSeq(uint16_t seq) {
   return true;
 }
 
-void Player::OnReceiveRtpPacket(RtpPacketPtr packet) {
+void Player::OnRecoveredPacket(const uint8_t* packet, size_t length) {
+  auto recover_packet = RtpPacket::Parse(packet, length);
+  if (!recover_packet) {
+    std::cout << "recive rtp packet fec recover packet data is not a valid RTP "
+                 "packet length:"
+              << length << std::endl;
+    return;
+  }
+
+  this->OnReceiveRtpPacket(recover_packet, true);
+}
+
+void Player::OnReceiveRtpPacket(RtpPacketPtr packet, bool is_recover) {
   receive_packet_count_++;
 
-  this->UpdateSeq(packet->GetSequenceNumber());
-  this->nack_->OnReceiveRtpPacket(packet);
-  this->tcc_server_->IncomingPacket(this->uv_loop_->get_time_ms_int64(),
-                                    packet.get());
-  this->tcc_server_->QuicCountIncomingPacket(
-      this->uv_loop_->get_time_ms_int64(), packet.get());
+  bool is_fec_packet = packet->GetPayloadType() == 110;
 
   // 转换信息
   // 转换webrtc包
@@ -136,6 +147,22 @@ void Player::OnReceiveRtpPacket(RtpPacketPtr packet) {
   if (!parsed_packet.Parse(packet->GetData(), packet->GetSize())) {
     return;
   }
+
+  parsed_packet.set_recovered(is_recover);
+
+  if (flexfec_receiver_) {
+    flexfec_receiver_->OnRtpPacket(parsed_packet);
+    std::cout << "receive fec packet seq:" << packet->GetSequenceNumber()
+              << std::endl;
+    if (is_fec_packet) return;
+  }
+
+  this->UpdateSeq(packet->GetSequenceNumber());
+  this->nack_->OnReceiveRtpPacket(packet);
+  this->tcc_server_->IncomingPacket(this->uv_loop_->get_time_ms_int64(),
+                                    packet.get());
+  this->tcc_server_->QuicCountIncomingPacket(
+      this->uv_loop_->get_time_ms_int64(), packet.get());
 
   webrtc::RtpDepacketizer::ParsedPayload parsed_payload;
   if (!depacketizer_->Parse(&parsed_payload, parsed_packet.payload().data(),

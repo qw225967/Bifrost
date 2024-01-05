@@ -464,6 +464,10 @@ class RtpPacket {
     payload_data = *temp_data;
   }
 
+  void SetWebRTCDataPtr(uint8_t** temp_data) {
+    webrtc_data = *temp_data;
+  }
+
   bool IsReTrans() {return isReTrans;}
 
   void SetIsReTrans() {
@@ -546,6 +550,7 @@ class RtpPacket {
   // Codecs
   std::unique_ptr<codecs::PayloadDescriptorHandler> payloadDescriptorHandler;
   uint8_t* payload_data{nullptr};
+  uint8_t* webrtc_data{nullptr};
   bool isReTrans{false};
 };
 }  // namespace bifrost

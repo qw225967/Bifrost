@@ -86,13 +86,13 @@ void Transport::OnUdpRouterRtpPacketReceived(
   if (model_ == SinglePublish) return;
   auto player_iter = this->players_.find(rtp_packet->GetSsrc());
   if (player_iter != this->players_.end()) {
-    player_iter->second->OnReceiveRtpPacket(rtp_packet);
+    player_iter->second->OnReceiveRtpPacket(rtp_packet, false);
   } else {
     auto player = std::make_shared<Player>(remote_addr, &this->uv_loop_, this,
                                            rtp_packet->GetSsrc(), this->number_,
                                            this->experiment_manager_);
     this->players_[rtp_packet->GetSsrc()] = player;
-    player->OnReceiveRtpPacket(rtp_packet);
+    player->OnReceiveRtpPacket(rtp_packet, false);
   }
 }
 

@@ -143,6 +143,7 @@ RtpPacket::RtpPacket(Header* header, HeaderExtension* headerExtension,
 
 RtpPacket::~RtpPacket() {
   delete[] payload_data;
+  delete[] webrtc_data;
 }
 
 void RtpPacket::Dump() const {}

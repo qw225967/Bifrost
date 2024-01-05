@@ -180,6 +180,10 @@ void BifrostPacer::OnTimer(UvTimer* timer) {
           observer_->OnPublisherSendPacket(packet);
         }
 
+        // fec
+        if (packet->GetPayloadType() == 110)
+          observer_->OnPublisherSendPacket(packet);
+
         interval_pacing_bytes -= int32_t(packet->GetSize());
 
         // 统计相关
@@ -195,20 +199,32 @@ void BifrostPacer::OnTimer(UvTimer* timer) {
   }
 
   if (timer == create_timer_) {
+    delta_fec_params_.fec_rate = 255;
+    delta_fec_params_.max_fec_frames = 1;
+    flexfec_sender_->SetFecParameters(delta_fec_params_);
     // 每10ms产生3次
     for (int i = 0; i < 5; i++) {
       auto packet = this->data_producer_->CreateData();
       if (packet == nullptr) continue;
 
       if (flexfec_sender_ && loss_prot_logic_ && clock_) {
+        // TODO:重构packet部分，现在打包逻辑非常混乱，内存管理不当
+        auto *buffer = new uint8_t[packet->GetSize()];
+        memcpy(buffer, packet->GetData(), packet->GetSize());
         webrtc::RtpPacketToSend webrtc_packet(nullptr);
-        webrtc_packet.Parse(packet->GetData(), packet->GetSize());
+        webrtc_packet.Parse(buffer, packet->GetSize());
         flexfec_sender_->AddRtpPacketAndGenerateFec(webrtc_packet);
         auto vec_s = flexfec_sender_->GetFecPackets();
         if (!vec_s.empty()) {
           for (auto iter = vec_s.begin(); iter != vec_s.end(); iter++) {
+            auto len = (*iter)->size();
+            auto *packet_data = new uint8_t[len];
+            memcpy(packet_data, (*iter)->data(), len);
             RtpPacketPtr rtp_packet =
-                RtpPacket::Parse((*iter)->data(), (*iter)->size());
+                RtpPacket::Parse(packet_data, (*iter)->size());
+
+            rtp_packet->SetPayloadDataPtr(&packet_data);
+
             this->ready_send_vec_.push_back(rtp_packet);
           }
         }

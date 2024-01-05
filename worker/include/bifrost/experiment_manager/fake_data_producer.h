@@ -20,9 +20,7 @@ class FakeDataProducer : public ExperimentDataProducerInterface {
 
  public:
   RtpPacketPtr CreateData() override ;
-
- private:
-  void GetRtpExtensions(RtpPacketPtr &packet);
+  void GetRtpExtensions(RtpPacket* packet) override;
 
  private:
   uint32_t ssrc_;
