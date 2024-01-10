@@ -81,7 +81,7 @@ Player::Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
 
   // 8.fec receiver
   flexfec_receiver_ =
-      std::make_unique<webrtc::FlexfecReceiver>(ssrc, ssrc + 1, this);
+      std::make_unique<webrtc::FlexfecReceiver>(ssrc + 1, ssrc, this);
 }
 
 bool Player::UpdateSeq(uint16_t seq) {
@@ -133,6 +133,7 @@ void Player::OnRecoveredPacket(const uint8_t* packet, size_t length) {
     return;
   }
 
+  std::cout << "recover packet seq:" << recover_packet->GetSequenceNumber() << std::endl;
   this->OnReceiveRtpPacket(recover_packet, true);
 }
 
@@ -152,9 +153,10 @@ void Player::OnReceiveRtpPacket(RtpPacketPtr packet, bool is_recover) {
 
   if (flexfec_receiver_) {
     flexfec_receiver_->OnRtpPacket(parsed_packet);
-    std::cout << "receive fec packet seq:" << packet->GetSequenceNumber()
-              << std::endl;
-    if (is_fec_packet) return;
+
+    if (is_fec_packet) {
+      return;
+    }
   }
 
   this->UpdateSeq(packet->GetSequenceNumber());
@@ -168,10 +170,6 @@ void Player::OnReceiveRtpPacket(RtpPacketPtr packet, bool is_recover) {
   if (!depacketizer_->Parse(&parsed_payload, parsed_packet.payload().data(),
                             parsed_packet.payload().size())) {
     return;
-  }
-
-  if (packet->GetSequenceNumber() == 27 || packet->GetSequenceNumber() == 23) {
-    std::cout << "ok";
   }
 
   // 解rtp头
