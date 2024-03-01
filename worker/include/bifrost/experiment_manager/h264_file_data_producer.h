@@ -49,6 +49,7 @@ class H264FileDataProducer : public ExperimentDataProducerInterface,
   void OnTimer(UvTimer *timer);
 
   RtpPacketPtr CreateData() override;
+  void GetRtpExtensions(RtpPacket* packet) override;
 
  private:
   NaluType PrintfH264Frame(int j, int nLen, int nFrameType);
@@ -59,7 +60,6 @@ class H264FileDataProducer : public ExperimentDataProducerInterface,
       std::function<bool(uint8_t *data, uint32_t len, uint32_t start_code_len)>
           on_nalu);
   void ReadWebRTCRtpPacketizer();
-  void GetRtpExtensions(RtpPacketPtr &packet);
 
  private:
   // UvLoop

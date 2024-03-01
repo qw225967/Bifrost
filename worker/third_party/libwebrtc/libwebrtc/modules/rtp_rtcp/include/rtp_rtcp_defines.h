@@ -40,6 +40,9 @@ const int kBogusRtpRateForAudioRtcp = 8000;
 // Minimum RTP header size in bytes.
 const uint8_t kRtpHeaderSize = 12;
 
+bool IsLegalMidName(absl::string_view name);
+bool IsLegalRsidName(absl::string_view name);
+
 enum StorageType { kDontRetransmit, kAllowRetransmission };
 
 // This enum must not have any gaps, i.e., all integers between
@@ -221,6 +224,24 @@ struct PacketFeedback {
   // The SSRC and RTP sequence number of the packet this feedback refers to.
   absl::optional<uint32_t> ssrc;
   uint16_t rtp_sequence_number;
+};
+
+struct RtpState {
+  RtpState()
+  : sequence_number(0),
+  start_timestamp(0),
+  timestamp(0),
+  capture_time_ms(-1),
+  last_timestamp_time_ms(-1),
+  media_has_been_sent(false),
+  ssrc_has_acked(false) {}
+  uint16_t sequence_number;
+  uint32_t start_timestamp;
+  uint32_t timestamp;
+  int64_t capture_time_ms;
+  int64_t last_timestamp_time_ms;
+  bool media_has_been_sent;
+  bool ssrc_has_acked;
 };
 
 struct RtpPacketSendInfo {

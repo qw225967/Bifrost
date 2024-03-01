@@ -332,14 +332,14 @@ void H264FileDataProducer::ReadWebRTCRtpPacketizer() {
       // payload空间，payload空间使用了一个共享的静态区域
       rtp_packet->SetPayloadDataPtr(&payload_data);
       rtp_packet->SetTimestamp(fake_capture_timestamp_ * 90000 / 1000);
-      this->GetRtpExtensions(rtp_packet);
+      this->GetRtpExtensions(rtp_packet.get());
 
       rtp_packet_vec_.push_back(rtp_packet);
     }
   }
 }
 
-void H264FileDataProducer::GetRtpExtensions(RtpPacketPtr &packet) {
+void H264FileDataProducer::GetRtpExtensions(RtpPacket* packet) {
   static uint8_t buffer[4096];
   uint8_t extenLen = 2u;
   static std::vector<RtpPacket::GenericExtension> extensions;

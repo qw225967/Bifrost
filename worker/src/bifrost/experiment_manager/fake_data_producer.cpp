@@ -136,12 +136,12 @@ RtpPacketPtr FakeDataProducer::CreateData() {
   // mediasoup parse 内部只new了包结构，没有new payload空间，payload空间使用了一个共享的静态区域
   rtp_packet->SetPayloadDataPtr(&payload_data);
 
-  this->GetRtpExtensions(rtp_packet);
+  this->GetRtpExtensions(rtp_packet.get());
 
   return rtp_packet;
 }
 
-void FakeDataProducer::GetRtpExtensions(RtpPacketPtr& packet) {
+void FakeDataProducer::GetRtpExtensions(RtpPacket* packet) {
   static uint8_t buffer[4096];
   uint8_t extenLen = 2u;
   static std::vector<RtpPacket::GenericExtension> extensions;

@@ -14,6 +14,7 @@
 #include <modules/rtp_rtcp/source/rtp_format.h>
 #include <modules/rtp_rtcp/source/rtp_format_h264.h>
 #include <modules/video_coding/receiver.h>
+#include <modules/rtp_rtcp/include/flexfec_receiver.h>
 
 #include "bifrost/bifrost_send_algorithm/tcc_server.h"
 #include "bifrost/bifrost_send_algorithm/webrtc_clock_adapter.h"
@@ -29,7 +30,8 @@ typedef std::shared_ptr<Nack> NackPtr;
 typedef std::shared_ptr<TransportCongestionControlServer>
     TransportCongestionControlServerPtr;
 class Player : public UvTimer::Listener,
-               public TransportCongestionControlServer::Observer {
+               public TransportCongestionControlServer::Observer,
+               public webrtc::RecoveredPacketReceiver {
  public:
   class Observer {
    public:
@@ -61,7 +63,10 @@ class Player : public UvTimer::Listener,
     observer_->OnPlayerSendPacket(packet, udp_remote_address_.get());
   }
 
-  void OnReceiveRtpPacket(RtpPacketPtr packet);
+  // RecoveredPacketReceiver
+  void OnRecoveredPacket(const uint8_t* packet, size_t length);
+
+  void OnReceiveRtpPacket(RtpPacketPtr packet, bool is_recover);
 
   void OnSendRtcpNack(RtcpPacketPtr packet) {
     observer_->OnPlayerSendPacket(packet, udp_remote_address_.get());
@@ -130,6 +135,9 @@ class Player : public UvTimer::Listener,
 
   // pre decode time
   uint64_t pre_decode_time_ = 0;
+
+  // fec receiver
+  std::unique_ptr<webrtc::FlexfecReceiver> flexfec_receiver_;
 };
 }  // namespace bifrost
 

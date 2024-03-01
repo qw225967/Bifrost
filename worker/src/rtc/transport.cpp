@@ -85,14 +85,29 @@ void Transport::OnUdpRouterRtpPacketReceived(
     const struct sockaddr* remote_addr) {
   if (model_ == SinglePublish) return;
   auto player_iter = this->players_.find(rtp_packet->GetSsrc());
+
   if (player_iter != this->players_.end()) {
-    player_iter->second->OnReceiveRtpPacket(rtp_packet);
+    player_iter->second->OnReceiveRtpPacket(rtp_packet, false);
   } else {
-    auto player = std::make_shared<Player>(remote_addr, &this->uv_loop_, this,
-                                           rtp_packet->GetSsrc(), this->number_,
-                                           this->experiment_manager_);
-    this->players_[rtp_packet->GetSsrc()] = player;
-    player->OnReceiveRtpPacket(rtp_packet);
+    if (rtp_packet->GetPayloadType() != 110) {
+      auto player = std::make_shared<Player>(remote_addr, &this->uv_loop_, this,
+                                             rtp_packet->GetSsrc(), this->number_,
+                                             this->experiment_manager_);
+      this->players_[rtp_packet->GetSsrc()] = player;
+      player->OnReceiveRtpPacket(rtp_packet, false);
+    } else {
+      auto fec_player_iter = this->players_.find(rtp_packet->GetSsrc() - 1);
+      if (fec_player_iter != this->players_.end()) {
+        this->players_[rtp_packet->GetSsrc()] = fec_player_iter->second;
+        fec_player_iter->second->OnReceiveRtpPacket(rtp_packet, false);
+      } else {
+        auto player = std::make_shared<Player>(
+            remote_addr, &this->uv_loop_, this, rtp_packet->GetSsrc() - 1,
+            this->number_, this->experiment_manager_);
+        this->players_[rtp_packet->GetSsrc() - 1] = player;
+        player->OnReceiveRtpPacket(rtp_packet, false);
+      }
+    }
   }
 }
 
