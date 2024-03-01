@@ -38,7 +38,7 @@ class BifrostTapNetDeviceHelper {
  public:
   BifrostTapNetDeviceHelper(BifrostDevice dev_left, BifrostDevice dev_right);
 
-  void Run(Time);
+  void Run(Time, bool);
 
   Ptr<Node> get_left() { return left_node_; }
   Ptr<Node> get_right() { return right_node_; }

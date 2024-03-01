@@ -26,7 +26,7 @@ void onSignal(int signum) {
   // see https://gitlab.com/nsnam/ns-3-dev/issues/102
   Simulator::Stop();
   Simulator::Destroy();
-  NS_FATAL_ERROR(signum);
+	NS_FATAL_ERROR(signum);
 }
 
 BifrostTapNetDeviceHelper::BifrostTapNetDeviceHelper(BifrostDevice dev_left,
@@ -103,14 +103,15 @@ void BifrostTapNetDeviceHelper::InstallTapFdNetDevice(
 //  ipv6->SetUp(interface);
 }
 
-void BifrostTapNetDeviceHelper::Run(Time duration) {
+void BifrostTapNetDeviceHelper::Run(Time duration, bool useGlobalRouting) {
   // 1.设置信号截获
   signal(SIGTERM, onSignal);
   signal(SIGINT, onSignal);
   signal(SIGKILL, onSignal);
 
-  // 2.开启全局路由
-  Ipv4GlobalRoutingHelper::PopulateRoutingTables();
+  // 2.开启全局路由，部分拓扑无法开启全局路由，则需要关闭
+  if (useGlobalRouting)
+		Ipv4GlobalRoutingHelper::PopulateRoutingTables();
 
   // 3.开启Ipv6路由
   this->MassageIpv6Routing(left_node_, right_node_);

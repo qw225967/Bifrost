@@ -1,16 +1,32 @@
 ## -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
 
 def build(bld):
-    module = bld.create_ns3_module('bifrost', ['fd-net-device','core', 'internet'])
+    module = bld.create_ns3_module('bifrost', ['fd-net-device','core', 'internet', 'mobility', 'lte', 'netanim'])
     module.source = [
         'helper/BifrostTapNetDeviceHelper.cpp',
+        'TopologyInterface/TopologyBlackHole.cpp',
+        'TopologyInterface/TopologySimpleLTE.cpp',
+        'TopologyInterface/TopologyWifiModule.cpp',
+        'TopologyInterface/TopologyBurstUserLTE.cpp',
+        'TopologyInterface/FileRecordRedeploy.cpp',
+        'TopologyInterface/ErrorModel/blackhole/blackhole-error-model.cc',
+        'TopologyInterface/ErrorModel/user-uplink/user-uplink-congestion.cpp',
+        'TopologyInterface/ErrorModel/mix-error/mix-error.cpp',
         ]
 
     headers = bld(features='ns3header')
     headers.module = 'bifrost'
     headers.source = [
         'helper/BifrostTapNetDeviceHelper.h',
-	'TopologyInterface/TopologyInterface.h',
+        'TopologyInterface/TopologyInterface.h',
+        'TopologyInterface/TopologyBlackHole.h',
+        'TopologyInterface/TopologyWifiModule.h',
+        'TopologyInterface/TopologySimpleLTE.h',
+        'TopologyInterface/TopologyBurstUserLTE.h',
+        'TopologyInterface/FileRecordRedeploy.h',
+        'TopologyInterface/ErrorModel/blackhole/blackhole-error-model.h',
+        'TopologyInterface/ErrorModel/user-uplink/user-uplink-congestion.h',
+        'TopologyInterface/ErrorModel/mix-error/mix-error.h',
         ]
 
     if (bld.env['ENABLE_EXAMPLES']):
