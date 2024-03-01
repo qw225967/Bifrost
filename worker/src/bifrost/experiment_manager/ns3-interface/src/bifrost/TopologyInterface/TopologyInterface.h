@@ -10,12 +10,10 @@
 #ifndef _TOPOLOGYINTERFACE_H
 #define _TOPOLOGYINTERFACE_H
 
-#include "ns3/net-device.h"
-#include "ns3/core-module.h"
-#include "ns3/network-module.h"
-
 #include "ns3/point-to-point-module.h"
 #include "ns3/traffic-control-helper.h"
+#include "ns3/core-module.h"
+#include "ns3/internet-module.h"
 
 namespace ns3 {
 
