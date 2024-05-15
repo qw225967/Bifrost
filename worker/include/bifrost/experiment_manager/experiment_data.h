@@ -47,6 +47,7 @@ struct ExperimentDumpData {
 class ExperimentDataProducerInterface {
  public:
   virtual RtpPacketPtr CreateData() = 0;
+
   virtual void ChangeOutBitrate(uint32_t out_bitrate, uint16_t interval) = 0;
 };
 }  // namespace bifrost

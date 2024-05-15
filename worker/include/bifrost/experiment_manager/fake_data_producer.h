@@ -20,6 +20,7 @@ class FakeDataProducer : public ExperimentDataProducerInterface {
 
  public:
   RtpPacketPtr CreateData() override;
+
   void ChangeOutBitrate(uint32_t out_bitrate, uint16_t interval) override {}
 
  private:
