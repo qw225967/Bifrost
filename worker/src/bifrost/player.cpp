@@ -136,7 +136,7 @@ void Player::OnRecoveredPacket(const uint8_t* packet, size_t length) {
               << length << std::endl;
     return;
   }
-  
+
   this->OnReceiveRtpPacket(recover_packet, true);
 }
 
@@ -151,7 +151,6 @@ void Player::OnReceiveRtpPacket(RtpPacketPtr packet, bool is_recover) {
   if (!parsed_packet.Parse(packet->GetData(), packet->GetSize())) {
     return;
   }
-
   parsed_packet.set_recovered(is_recover);
 
   if (flexfec_receiver_) {
