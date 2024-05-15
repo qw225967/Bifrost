@@ -51,10 +51,6 @@ class Publisher : public UvTimer::Listener, public BifrostPacer::Observer {
     else
       this->nack_->OnSendRtpPacket(packet);
 
-    if (packet->GetPayloadType() == 110 &&
-        packet->GetSequenceNumber() % 10 != 1)
-      return;
-
     this->observer_->OnPublisherSendPacket(packet,
                                            this->udp_remote_address_.get());
   }

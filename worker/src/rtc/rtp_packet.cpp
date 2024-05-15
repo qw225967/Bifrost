@@ -16,14 +16,15 @@
 
 namespace bifrost {
 /* Class methods. */
-std::shared_ptr<RtpPacket> RtpPacket::Parse(const uint8_t* data, size_t len) {
+void RtpPacket::Parse(const uint8_t* data, size_t len) {
+  if (!RtpPacket::IsRtp(data, len)) return;
 
-  if (!RtpPacket::IsRtp(data, len)) return nullptr;
+  this->size = len;
 
   auto* ptr = const_cast<uint8_t*>(data);
 
   // Get the header.
-  auto* header = reinterpret_cast<Header*>(ptr);
+  this->header = reinterpret_cast<Header*>(ptr);
 
   // Inspect data after the minimum header size.
   ptr += HeaderSize;
@@ -31,8 +32,8 @@ std::shared_ptr<RtpPacket> RtpPacket::Parse(const uint8_t* data, size_t len) {
   // Check CSRC list.
   size_t csrcListSize{0u};
 
-  if (header->csrcCount != 0u) {
-    csrcListSize = header->csrcCount * sizeof(header->ssrc);
+  if (this->header->csrcCount != 0u) {
+    csrcListSize = this->header->csrcCount * sizeof(this->header->ssrc);
 
     // Packet size must be >= header size + CSRC list.
     if (len < (ptr - data) + csrcListSize) {
@@ -40,16 +41,13 @@ std::shared_ptr<RtpPacket> RtpPacket::Parse(const uint8_t* data, size_t len) {
                    "packet discarded"
                 << std::endl;
 
-      return nullptr;
+      return;
     }
     ptr += csrcListSize;
   }
 
   // Check header extension.
-  HeaderExtension* headerExtension{nullptr};
-  size_t extensionValueSize{0u};
-
-  if (header->extension == 1u) {
+  if (this->header->extension == 1u) {
     // The header extension is at least 4 bytes.
     if (len < static_cast<size_t>(ptr - data) + 4) {
       std::cout << "[rtp packet] not enough space for the announced header "
@@ -57,16 +55,16 @@ std::shared_ptr<RtpPacket> RtpPacket::Parse(const uint8_t* data, size_t len) {
                    "discarded"
                 << std::endl;
 
-      return nullptr;
+      return;
     }
 
-    headerExtension = reinterpret_cast<HeaderExtension*>(ptr);
+    this->headerExtension = reinterpret_cast<HeaderExtension*>(ptr);
 
     // The header extension contains a 16-bit length field that counts the
     // number of 32-bit words in the extension, excluding the four-octet header
     // extension.
-    extensionValueSize =
-        static_cast<size_t>(ntohs(headerExtension->length) * 4);
+    size_t extensionValueSize =
+        static_cast<size_t>(ntohs(this->headerExtension->length) * 4);
 
     // Packet size must be >= header size + CSRC list + header extension size.
     if (len < (ptr - data) + 4 + extensionValueSize) {
@@ -75,76 +73,63 @@ std::shared_ptr<RtpPacket> RtpPacket::Parse(const uint8_t* data, size_t len) {
                    "packet discarded"
                 << std::endl;
 
-      return nullptr;
+      return;
     }
     ptr += 4 + extensionValueSize;
   }
 
   // Get payload.
-  uint8_t* payload = ptr;
-  size_t payloadLength = len - (ptr - data);
-  uint8_t payloadPadding{0};
+  this->payload = ptr;
+  this->payloadLength = len - (ptr - data);
 
   // Check padding field.
-  if (header->padding != 0u) {
+  if (this->header->padding != 0u) {
     // Must be at least a single payload byte.
-    if (payloadLength == 0) {
+    if (this->payloadLength == 0) {
       std::cout << "[rtp packet] padding bit is set but no space for a padding "
                    "byte, packet "
                    "discarded"
                 << std::endl;
 
-      return nullptr;
+      return;
     }
 
-    payloadPadding = data[len - 1];
-    if (payloadPadding == 0) {
+    this->payloadPadding = data[len - 1];
+    if (this->payloadPadding == 0) {
       std::cout << "[rtp packet] padding byte cannot be 0, packet discarded"
                 << std::endl;
 
-      return nullptr;
+      return;
     }
 
-    if (payloadLength < size_t{payloadPadding}) {
+    if (this->payloadLength < size_t{this->payloadPadding}) {
       std::cout << "[rtp packet] number of padding octets is greater than "
                    "available space "
                    "for payload, packet "
                    "discarded"
                 << std::endl;
 
-      return nullptr;
+      return;
     }
-    payloadLength -= size_t{payloadPadding};
+    this->payloadLength -= size_t{this->payloadPadding};
   }
-
-  std::shared_ptr<RtpPacket> packet = std::make_shared<RtpPacket>(
-      header, headerExtension, payload, payloadLength, payloadPadding, len);
-
-  return packet;
 }
 
 /* Instance methods. */
+RtpPacket::RtpPacket(const uint8_t* data, size_t len) {
+  if (!RtpPacket::IsRtp(data, len)) return;
 
-RtpPacket::RtpPacket(Header* header, HeaderExtension* headerExtension,
-                     const uint8_t* payload, size_t payloadLength,
-                     uint8_t payloadPadding, size_t size)
-    : header(header),
-      headerExtension(headerExtension),
-      payload(const_cast<uint8_t*>(payload)),
-      payloadLength(payloadLength),
-      payloadPadding(payloadPadding),
-      size(size) {
-  if (this->header->csrcCount != 0u)
-    this->csrcList = reinterpret_cast<uint8_t*>(header) + HeaderSize;
+  storedData = new uint8_t[len];
 
-  // Parse RFC 5285 header extension.
+  memcpy(storedData, data, len);
+
+  this->Parse(storedData, len);
+
+  // 解析拓展
   ParseExtensions();
 }
 
-RtpPacket::~RtpPacket() {
-  delete[] payload_data;
-  delete[] webrtc_data;
-}
+RtpPacket::~RtpPacket() { delete storedData; }
 
 void RtpPacket::Dump() const {}
 
@@ -436,61 +421,9 @@ void RtpPacket::SetPayloadLength(size_t length) {
   SetPayloadPaddingFlag(false);
 }
 
-RtpPacket* RtpPacket::Clone(const uint8_t* buffer) const {
-  auto* ptr = const_cast<uint8_t*>(buffer);
-  size_t numBytes{0};
-
-  // Copy the minimum header.
-  numBytes = HeaderSize;
-  std::memcpy(ptr, GetData(), numBytes);
-
-  // Set header pointer.
-  auto* newHeader = reinterpret_cast<Header*>(ptr);
-
-  ptr += numBytes;
-
-  // Copy CSRC list.
-  if (this->csrcList != nullptr) {
-    numBytes = this->header->csrcCount * sizeof(this->header->ssrc);
-    std::memcpy(ptr, this->csrcList, numBytes);
-
-    ptr += numBytes;
-  }
-
-  // Copy header extension.
-  HeaderExtension* newHeaderExtension{nullptr};
-
-  if (this->headerExtension != nullptr) {
-    numBytes = 4 + GetHeaderExtensionLength();
-    std::memcpy(ptr, this->headerExtension, numBytes);
-
-    // Set the header extension pointer.
-    newHeaderExtension = reinterpret_cast<HeaderExtension*>(ptr);
-
-    ptr += numBytes;
-  }
-
-  // Copy payload.
-  uint8_t* newPayload{ptr};
-
-  if (this->payloadLength != 0u) {
-    numBytes = this->payloadLength;
-    std::memcpy(ptr, this->payload, numBytes);
-
-    ptr += numBytes;
-  }
-
-  // Copy payload padding.
-  if (this->payloadPadding != 0u) {
-    *(ptr + static_cast<size_t>(this->payloadPadding) - 1) =
-        this->payloadPadding;
-    ptr += size_t{this->payloadPadding};
-  }
-
+RtpPacketPtr RtpPacket::Clone() const {
   // Create the new RtpPacket instance and return it.
-  auto* packet =
-      new RtpPacket(newHeader, newHeaderExtension, newPayload,
-                    this->payloadLength, this->payloadPadding, this->size);
+  auto packet = std::make_shared<RtpPacket>(this->storedData, this->size);
 
   // Keep already set extension ids.
   packet->midExtensionId = this->midExtensionId;

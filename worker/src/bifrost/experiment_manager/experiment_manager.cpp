@@ -203,7 +203,8 @@ void ExperimentManager::TrendLineCalculationDump(
       minuend = i * (DefaultDumpDataInterval / (max_trend_size - 1));
 
     auto ms = int((1000 / DefaultDumpDataInterval - cycle_trend_ms_fraction_) *
-                      DefaultDumpDataInterval + minuend);
+                      DefaultDumpDataInterval +
+                  minuend);
     if (ms == 1000) continue;
     sprintf(temp_str, "%03d", ms);
     now_str_ms = now_str_ms + "." + temp_str;

@@ -125,7 +125,7 @@ bool Player::UpdateSeq(uint16_t seq) {
 }
 
 void Player::OnRecoveredPacket(const uint8_t* packet, size_t length) {
-  auto recover_packet = RtpPacket::Parse(packet, length);
+  auto recover_packet = std::make_shared<RtpPacket>(packet, length);
   if (!recover_packet) {
     std::cout << "recive rtp packet fec recover packet data is not a valid RTP "
                  "packet length:"

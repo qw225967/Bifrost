@@ -19,12 +19,11 @@ class FakeDataProducer : public ExperimentDataProducerInterface {
   ~FakeDataProducer();
 
  public:
-  RtpPacketPtr CreateData() override ;
-  void GetRtpExtensions(RtpPacket* packet) override;
+  RtpPacketPtr CreateData() override;
 
  private:
   uint32_t ssrc_;
-  uint16_t sequence_{ 0u };
+  uint16_t sequence_{0u};
 };
 }  // namespace bifrost
 

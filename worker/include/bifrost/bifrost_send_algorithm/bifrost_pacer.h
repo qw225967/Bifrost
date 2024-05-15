@@ -68,10 +68,8 @@ class BifrostPacer : public UvTimer::Listener {
     pacing_transfer_time_ = pacing_transfer_time;
   }
   void NackReadyToSendPacket(RtpPacketPtr packet) {
-    // NACK 测试直接发送，不走pacer控制
-    this->observer_->OnPublisherSendReTransPacket(packet);
-    //    this->ready_send_vec_.emplace_back(
-    //        std::pair<RtpPacketPtr, SendPacketType>(packet, NACK));
+    this->ready_send_vec_.emplace_back(
+        std::pair<RtpPacketPtr, SendPacketType>(packet, NACK));
   }
   uint32_t get_pacing_packet_count() {
     auto tmp = pacing_packet_count_;
@@ -83,6 +81,7 @@ class BifrostPacer : public UvTimer::Listener {
 
  private:
   void SetProtectionMethod(bool enable_fec, bool enable_nack);
+  void TryFlexFecPacketSend(RtpPacketPtr& packet);
 
  private:
   // UvLoop
@@ -123,6 +122,7 @@ class BifrostPacer : public UvTimer::Listener {
 
   // webrtc fec
   // 这里的逻辑在webrtc里集成到了FecController中
+  uint32_t flexfec_ssrc_;
   std::unique_ptr<webrtc::media_optimization::VCMLossProtectionLogic>
       loss_prot_logic_{nullptr};
 

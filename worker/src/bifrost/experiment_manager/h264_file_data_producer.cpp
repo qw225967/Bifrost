@@ -10,6 +10,7 @@
 #include "experiment_manager/h264_file_data_producer.h"
 
 #include <modules/rtp_rtcp/source/rtp_format.h>
+#include <modules/rtp_rtcp/source/rtp_header_extensions.h>
 #include <modules/rtp_rtcp/source/rtp_packet_to_send.h>
 
 namespace bifrost {
@@ -310,49 +311,32 @@ void H264FileDataProducer::ReadWebRTCRtpPacketizer() {
       expected_payload_capacity = limits.max_payload_len;
     }
 
-    webrtc::RtpPacketToSend *packet = new webrtc::RtpPacketToSend(
-        nullptr, expected_payload_capacity + RtpPacket::HeaderSize);
-    if (!packetizer->NextPacket(packet)) return;
+    webrtc::RtpHeaderExtensionMap webrtcExtension;
+    webrtcExtension.RegisterByType(
+        7, webrtc::RTPExtensionType::kRtpExtensionTransportSequenceNumber);
 
-    packet->SetSequenceNumber(this->sequence_++);
-    packet->SetPayloadType(101);
-    packet->SetSsrc(this->ssrc_);
+    // 帧大小 + 普通头大小 + 拓展头
+    webrtc::RtpPacketToSend packet(
+        &webrtcExtension,
+        expected_payload_capacity + RtpPacket::HeaderSize + 8);
+    packet.SetExtension<webrtc::TransportSequenceNumber>(0);
+
+    if (!packetizer->NextPacket(&packet)) return;
+
+    packet.SetSequenceNumber(this->sequence_++);
+    packet.SetPayloadType(101);
+    packet.SetSsrc(this->ssrc_);
 
     // 转回bifrost的rtp格式
-    auto len = packet->payload_size();
-    auto *payload_data = new uint8_t[len];
-    memcpy(payload_data, packet->payload().data(), len);
+    RtpPacketPtr rtp_packet =
+        std::make_shared<RtpPacket>(packet.data(), packet.size());
 
-    RtpPacketPtr rtp_packet = RtpPacket::Parse(packet->data(), packet->size());
     if (rtp_packet.get()) {
-      // mediasoup parse 内部只new了包结构，没有new
-      // payload空间，payload空间使用了一个共享的静态区域
-      rtp_packet->SetPayloadDataPtr(&payload_data);
       rtp_packet->SetTimestamp(fake_capture_timestamp_ * 90000 / 1000);
-      this->GetRtpExtensions(rtp_packet.get());
 
       rtp_packet_vec_.push_back(rtp_packet);
     }
   }
-}
-
-void H264FileDataProducer::GetRtpExtensions(RtpPacket *packet) {
-  uint8_t buffer[4096];
-  uint8_t extenLen = 2u;
-  std::vector<RtpPacket::GenericExtension> extensions;
-  // This happens just once.
-  if (extensions.capacity() != 24) extensions.reserve(24);
-
-  extensions.clear();
-
-  uint8_t *bufferPtr{buffer};
-  // NOTE: Add value 0. The sending Transport will update it.
-  uint16_t wideSeqNumber{0u};
-
-  Byte::set_2_bytes(bufferPtr, 0, wideSeqNumber);
-  extensions.emplace_back(static_cast<uint8_t>(7), extenLen, bufferPtr);
-  packet->SetExtensions(2, extensions);
-  packet->SetTransportWideCc01ExtensionId(7);
 }
 
 void H264FileDataProducer::OnTimer(UvTimer *timer) {

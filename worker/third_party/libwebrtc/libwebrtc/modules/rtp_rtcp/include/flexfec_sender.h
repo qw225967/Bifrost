@@ -33,17 +33,15 @@ class RtpPacketToSend;
 
 class FlexfecSender {
  public:
-  FlexfecSender(int payload_type,
-                uint32_t ssrc,
-                uint32_t protected_media_ssrc,
+  FlexfecSender(int payload_type, uint32_t ssrc, uint32_t protected_media_ssrc,
                 const std::string& mid,
                 const std::vector<RtpExtension>& rtp_header_extensions,
                 rtc::ArrayView<const RtpExtensionSize> extension_sizes,
-                const RtpState* rtp_state,
-                Clock* clock);
+                const RtpState* rtp_state, Clock* clock);
   ~FlexfecSender();
 
   uint32_t ssrc() const { return ssrc_; }
+  uint32_t protected_media_ssrc() const { return protected_media_ssrc_; }
 
   // Sets the FEC rate, max frames sent before FEC packets are sent,
   // and what type of generator matrices are used.

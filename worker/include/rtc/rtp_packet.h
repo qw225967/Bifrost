@@ -136,11 +136,10 @@ class RtpPacket {
     // clang-format on
   }
 
-  static std::shared_ptr<RtpPacket> Parse(const uint8_t* data, size_t len);
+  RtpPacket(const uint8_t* data, size_t len);
 
-  RtpPacket(Header* header, HeaderExtension* headerExtension,
-            const uint8_t* payload, size_t payloadLength,
-            uint8_t payloadPadding, size_t size);
+ private:
+  void Parse(const uint8_t* data, size_t len);
 
  public:
   ~RtpPacket();
@@ -460,19 +459,9 @@ class RtpPacket {
     }
   }
 
-  void SetPayloadDataPtr(uint8_t** temp_data) {
-    payload_data = *temp_data;
-  }
+  bool IsReTrans() { return isReTrans; }
 
-  void SetWebRTCDataPtr(uint8_t** temp_data) {
-    webrtc_data = *temp_data;
-  }
-
-  bool IsReTrans() {return isReTrans;}
-
-  void SetIsReTrans() {
-    isReTrans = true;
-  }
+  void SetIsReTrans() { isReTrans = true; }
 
   bool SetExtensionLength(uint8_t id, uint8_t len);
 
@@ -504,7 +493,7 @@ class RtpPacket {
     return this->payloadDescriptorHandler->IsKeyFrame();
   }
 
-  RtpPacket* Clone(const uint8_t* buffer) const;
+  RtpPacketPtr Clone() const;
 
   void RtxEncode(uint8_t payloadType, uint32_t ssrc, uint16_t seq);
 
@@ -549,9 +538,10 @@ class RtpPacket {
   size_t size{0u};  // Full size of the packet in bytes.
   // Codecs
   std::unique_ptr<codecs::PayloadDescriptorHandler> payloadDescriptorHandler;
-  uint8_t* payload_data{nullptr};
-  uint8_t* webrtc_data{nullptr};
   bool isReTrans{false};
+  uint8_t* storedData{nullptr};
+  uint8_t* extensionBuffer{nullptr};
+  std::vector<RtpPacket::GenericExtension> extensions;
 };
 }  // namespace bifrost
 

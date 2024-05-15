@@ -49,7 +49,6 @@ class H264FileDataProducer : public ExperimentDataProducerInterface,
   void OnTimer(UvTimer *timer);
 
   RtpPacketPtr CreateData() override;
-  void GetRtpExtensions(RtpPacket* packet) override;
 
  private:
   NaluType PrintfH264Frame(int j, int nLen, int nFrameType);
@@ -63,7 +62,7 @@ class H264FileDataProducer : public ExperimentDataProducerInterface,
 
  private:
   // UvLoop
-  UvLoop* uv_loop_ = nullptr;
+  UvLoop *uv_loop_ = nullptr;
 
   std::ifstream h264_data_file_;
   uint8_t *buffer_ = nullptr;
