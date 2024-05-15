@@ -88,6 +88,8 @@ void Publisher::OnReceiveNack(FeedbackRtpNackPacket* packet) {
     this->nack_->ReceiveNack(packet, packets);
   else if (fec_ssrc_ == packet->GetMediaSsrc())
     this->fec_nack_->ReceiveNack(packet, packets);
+  else
+    std::cout << std::endl;
 
   auto ite = packets.begin();
   while (ite != packets.end()) {

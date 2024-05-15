@@ -55,7 +55,7 @@ enum RTPExtensionType : int {
   kRtpExtensionAbsoluteSendTime,
   kRtpExtensionAbsoluteCaptureTime,
   kRtpExtensionVideoRotation,
-  kRtpExtensionTransportSequenceNumber,
+  kRtpExtensionTransportSequenceNumber = 7,
   kRtpExtensionTransportSequenceNumber02,
   kRtpExtensionPlayoutDelay,
   kRtpExtensionVideoContentType,
@@ -228,13 +228,13 @@ struct PacketFeedback {
 
 struct RtpState {
   RtpState()
-  : sequence_number(0),
-  start_timestamp(0),
-  timestamp(0),
-  capture_time_ms(-1),
-  last_timestamp_time_ms(-1),
-  media_has_been_sent(false),
-  ssrc_has_acked(false) {}
+      : sequence_number(0),
+        start_timestamp(0),
+        timestamp(0),
+        capture_time_ms(-1),
+        last_timestamp_time_ms(-1),
+        media_has_been_sent(false),
+        ssrc_has_acked(false) {}
   uint16_t sequence_number;
   uint32_t start_timestamp;
   uint32_t timestamp;

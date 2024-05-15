@@ -14,6 +14,8 @@
 #include <modules/rtp_rtcp/source/rtp_packet_received.h>
 #include <modules/video_coding/encoded_frame.h>
 
+#include <ctime>
+
 namespace bifrost {
 static constexpr uint16_t MaxDropout{3000};
 static constexpr uint16_t MaxMisorder{1500};
@@ -71,6 +73,8 @@ Player::Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
 
   // 5.vcm receiver
   receiver_ = new webrtc::VCMReceiver(timing_, clock_);
+  receiver_->SetNackSettings(webrtc::kMaxNumberOfFrames,
+                             webrtc::kMaxNumberOfFrames, 0);
 
   // 6.depacketizer
   depacketizer_ = new webrtc::RtpDepacketizerH264();
@@ -125,16 +129,14 @@ bool Player::UpdateSeq(uint16_t seq) {
 }
 
 void Player::OnRecoveredPacket(const uint8_t* packet, size_t length) {
-  auto recover_packet = RtpPacket::Parse(packet, length);
+  auto recover_packet = std::make_shared<RtpPacket>(packet, length);
   if (!recover_packet) {
     std::cout << "recive rtp packet fec recover packet data is not a valid RTP "
                  "packet length:"
               << length << std::endl;
     return;
   }
-
-  std::cout << "recover packet seq:" << recover_packet->GetSequenceNumber()
-            << std::endl;
+  
   this->OnReceiveRtpPacket(recover_packet, true);
 }
 
@@ -291,7 +293,12 @@ void Player::OnTimer(UvTimer* timer) {
 
     if (!frame) return;
 
-    std::cout << "frame interval to decode:"
+    time_t currentTime = time(nullptr);
+    struct tm* localTime = localtime(&currentTime);
+
+    std::cout << "[" << localTime->tm_hour << ":" << localTime->tm_min << ":"
+              << localTime->tm_sec << "]"
+              << "frame interval to decode:"
               << this->uv_loop_->get_time_ms_int64() - pre_decode_time_
               << std::endl;
 

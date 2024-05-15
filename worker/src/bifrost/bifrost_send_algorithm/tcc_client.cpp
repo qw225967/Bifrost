@@ -57,7 +57,8 @@ TransportCongestionControlClient::~TransportCongestionControlClient() {
   DestroyController();
 }
 
-void TransportCongestionControlClient::OnRtpPacketSend(RtpPacketPtr &rtp_packet, int64_t now) {
+void TransportCongestionControlClient::OnRtpPacketSend(RtpPacketPtr& rtp_packet,
+                                                       int64_t now) {
   uint16_t wideSeqNumber;
   rtp_packet->ReadTransportWideCc01(wideSeqNumber);
 
@@ -79,7 +80,7 @@ std::shared_ptr<RtpPacket> TransportCongestionControlClient::GeneratePadding(
     size_t target_size_bytes) {
   uint8_t data[1400u];
   std::memcpy(data, ProbationPacketHeader, sizeof(ProbationPacketHeader));
-  auto probationPacket = RtpPacket::Parse(data, 1400u);
+  auto probationPacket = std::make_shared<RtpPacket>(data, 1400u);
   probationPacket->SetPayloadLength(sizeof(ProbationPacketHeader));
   return probationPacket;
 }
@@ -257,14 +258,17 @@ void TransportCongestionControlClient::MayEmitAvailableBitrateEvent(
     notify = true;
   }
   // Also emit the event fast if we detect a high BWE value decrease.
-  else if (this->bitrates_.availableBitrate < previousAvailableBitrate * 0.75) {
-    std::cout << "[tcc client] high BWE value decrease detected, notifying the "
-                 "listener [now:"
-              << this->bitrates_.availableBitrate
-              << ", before:" << previousAvailableBitrate << "]" << std::endl;
-
-    notify = true;
-  }
+  //  else if (this->bitrates_.availableBitrate < previousAvailableBitrate *
+  //  0.75) {
+  //    std::cout << "[tcc client] high BWE value decrease detected, notifying
+  //    the "
+  //                 "listener [now:"
+  //              << this->bitrates_.availableBitrate
+  //              << ", before:" << previousAvailableBitrate << "]" <<
+  //              std::endl;
+  //
+  //    notify = true;
+  //  }
   // Also emit the event fast if we detect a high BWE value increase.
   else if (this->bitrates_.availableBitrate > previousAvailableBitrate * 1.50) {
     std::cout << "[tcc client] high BWE value increase detected, notifying the "
@@ -312,8 +316,8 @@ void TransportCongestionControlClient::OnTargetTransferRate(
     this->bitrates_.availableBitrate =
         static_cast<uint32_t>(targetTransferRate.target_rate.bps());
 
-//  std::cout << "[tcc client] new available bitrate:"
-//            << this->bitrates_.availableBitrate << std::endl;
+  //  std::cout << "[tcc client] new available bitrate:"
+  //            << this->bitrates_.availableBitrate << std::endl;
 
   MayEmitAvailableBitrateEvent(previousAvailableBitrate);
 }

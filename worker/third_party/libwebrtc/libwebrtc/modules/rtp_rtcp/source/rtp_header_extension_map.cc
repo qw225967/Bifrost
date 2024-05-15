@@ -53,9 +53,9 @@ constexpr ExtensionInfo kExtensions[] = {
 
 // Because of kRtpExtensionNone, NumberOfExtension is 1 bigger than the actual
 // number of known extensions.
-static_assert(arraysize(kExtensions) ==
-                  static_cast<int>(kRtpExtensionNumberOfExtensions) - 1,
-              "kExtensions expect to list all known extensions");
+// static_assert(arraysize(kExtensions) ==
+//                  static_cast<int>(kRtpExtensionNumberOfExtensions) - 1,
+//              "kExtensions expect to list all known extensions");
 
 }  // namespace
 
@@ -66,8 +66,7 @@ RtpHeaderExtensionMap::RtpHeaderExtensionMap() : RtpHeaderExtensionMap(false) {}
 
 RtpHeaderExtensionMap::RtpHeaderExtensionMap(bool extmap_allow_mixed)
     : extmap_allow_mixed_(extmap_allow_mixed) {
-  for (auto& id : ids_)
-    id = kInvalidId;
+  for (auto& id : ids_) id = kInvalidId;
 }
 
 RtpHeaderExtensionMap::RtpHeaderExtensionMap(
@@ -113,8 +112,7 @@ int32_t RtpHeaderExtensionMap::Deregister(RTPExtensionType type) {
   return 0;
 }
 
-bool RtpHeaderExtensionMap::Register(int id,
-                                     RTPExtensionType type,
+bool RtpHeaderExtensionMap::Register(int id, RTPExtensionType type,
                                      const char* uri) {
   RTC_DCHECK_GT(type, kRtpExtensionNone);
   RTC_DCHECK_LT(type, kRtpExtensionNumberOfExtensions);

@@ -31,7 +31,7 @@ void UdpRouter::UserOnUdpDatagramReceived(const uint8_t* data, size_t len,
     this->observer_->OnUdpRouterRtcpPacketReceived(this, rtcp_packet,
                                                    remote_addr);
   } else if (RtpPacket::IsRtp(data, len)) {
-    auto rtp_packet = RtpPacket::Parse(data, len);
+    auto rtp_packet = std::make_shared<RtpPacket>(data, len);
     if (rtp_packet == nullptr) return;
     this->observer_->OnUdpRouterRtpPacketReceived(this, rtp_packet,
                                                   remote_addr);

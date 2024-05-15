@@ -116,49 +116,30 @@ FakeDataProducer::~FakeDataProducer() {
 
 RtpPacketPtr FakeDataProducer::CreateData() {
   // 使用webrtc中rtp包初始化方式
-  auto* send_packet = new webrtc::RtpPacketToSend(
-      nullptr, sizeof(kPacketWithH264) + RtpPacket::HeaderSize);
+
+  webrtc::RtpHeaderExtensionMap webrtcExtension;
+  webrtcExtension.RegisterByType(
+      7, webrtc::RTPExtensionType::kRtpExtensionTransportSequenceNumber);
+
+  webrtc::RtpPacketToSend send_packet(
+      &webrtcExtension, sizeof(kPacketWithH264) + RtpPacket::HeaderSize + 8);
+  send_packet.SetExtension<webrtc::TransportSequenceNumber>(0);
 #ifdef USING_LOCAL_FILE_DATA
   data_file_.read((char*)data, sizeof(kPacketWithH264));
 #endif
-  send_packet->SetSequenceNumber(this->sequence_++);
-  send_packet->SetPayloadType(101);
-  send_packet->SetSsrc(this->ssrc_);
-  memcpy(send_packet->Buffer().data() + RtpPacket::HeaderSize, kPacketWithH264,
+  send_packet.SetSequenceNumber(this->sequence_++);
+  send_packet.SetPayloadType(101);
+  send_packet.SetSsrc(this->ssrc_);
+  memcpy(send_packet.Buffer().data() + RtpPacket::HeaderSize, kPacketWithH264,
          sizeof(kPacketWithH264));
 
-  send_packet->SetPayloadSize(sizeof(kPacketWithH264));
+  send_packet.SetPayloadSize(sizeof(kPacketWithH264));
 
   // 转回 rtp packet
-  auto len = send_packet->capacity();
-  auto* payload_data = new uint8_t[len];
-  memcpy(payload_data, send_packet->data(), len);
-  RtpPacketPtr rtp_packet = RtpPacket::Parse(payload_data, len);
-  // mediasoup parse 内部只new了包结构，没有new
-  // payload空间，payload空间使用了一个共享的静态区域
-  rtp_packet->SetPayloadDataPtr(&payload_data);
-
-  this->GetRtpExtensions(rtp_packet.get());
+  auto rtp_packet =
+      std::make_shared<RtpPacket>(send_packet.data(), send_packet.capacity());
 
   return rtp_packet;
 }
 
-void FakeDataProducer::GetRtpExtensions(RtpPacket* packet) {
-  uint8_t buffer[4096];
-  uint8_t extenLen = 2u;
-  std::vector<RtpPacket::GenericExtension> extensions;
-  // This happens just once.
-  if (extensions.capacity() != 24) extensions.reserve(24);
-
-  extensions.clear();
-
-  uint8_t* bufferPtr{buffer};
-  // NOTE: Add value 0. The sending Transport will update it.
-  uint16_t wideSeqNumber{0u};
-
-  Byte::set_2_bytes(bufferPtr, 0, wideSeqNumber);
-  extensions.emplace_back(static_cast<uint8_t>(7), extenLen, bufferPtr);
-  packet->SetExtensions(2, extensions);
-  packet->SetTransportWideCc01ExtensionId(7);
-}
 }  // namespace bifrost

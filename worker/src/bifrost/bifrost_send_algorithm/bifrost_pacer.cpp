@@ -22,17 +22,18 @@ constexpr uint16_t DefaultCreatePacketTimeInterval = 10u;  // 每10ms创建3个�
 constexpr uint16_t DefaultStatisticsTimerInterval = 1000u;  // 每1s统计一次
 constexpr uint16_t DefaultPacingTimeInterval = 5u;
 const uint32_t InitialPacingGccBitrate =
-    400000u;  // 配合当前测试的码率一半左右开始探测 780
+    200000u;  // 配合当前测试的码率一半左右开始探测 780
 
 uint32_t BifrostPacer::MaxPacingDataLimit =
-    2000000;  // 当前测试的h264码率平均780kbps，因此限制最大为780
+    400000;  // 当前测试的h264码率平均780kbps，因此限制最大为780
 
 BifrostPacer::BifrostPacer(uint32_t ssrc, uint32_t flexfec_ssrc,
                            UvLoop* uv_loop, Observer* observer)
     : uv_loop_(uv_loop),
       observer_(observer),
       pacer_timer_interval_(DefaultPacingTimeInterval),
-      pacing_rate_(InitialPacingGccBitrate) {
+      pacing_rate_(InitialPacingGccBitrate),
+      flexfec_ssrc_(flexfec_ssrc) {
   // 1.数据生产者
 #ifdef USE_FAKE_DATA_PRODUCER
   data_producer_ = std::make_shared<FakeDataProducer>(ssrc);
@@ -55,6 +56,9 @@ BifrostPacer::BifrostPacer(uint32_t ssrc, uint32_t flexfec_ssrc,
 #ifdef USE_FLEX_FEC_PROTECT
   // flexfec sender new
   std::vector<webrtc::RtpExtension> vec_ext;
+  vec_ext.emplace_back(webrtc::RtpExtension(
+      webrtc::TransportSequenceNumber::kUri,
+      webrtc::RTPExtensionType::kRtpExtensionTransportSequenceNumber));
   rtc::ArrayView<const webrtc::RtpExtensionSize> size;
   clock_ = new WebRTCClockAdapter(uv_loop);
   flexfec_sender_ = std::make_unique<webrtc::FlexfecSender>(
@@ -155,6 +159,29 @@ void BifrostPacer::UpdateFecRates(uint8_t fraction_lost,
   }
 }
 
+void BifrostPacer::TryFlexFecPacketSend(RtpPacketPtr& packet) {
+  if (flexfec_sender_ && loss_prot_logic_ && clock_ &&
+      packet->GetSsrc() == this->flexfec_sender_->protected_media_ssrc()) {
+    webrtc::RtpPacketToSend webrtc_packet(nullptr);
+
+    if (!webrtc_packet.Parse(packet->GetData(), packet->GetSize())) return;
+
+    flexfec_sender_->AddRtpPacketAndGenerateFec(webrtc_packet);
+    auto vec_s = flexfec_sender_->GetFecPackets();
+
+    if (!vec_s.empty()) {
+      for (auto iter = vec_s.begin(); iter != vec_s.end(); iter++) {
+        (*iter)->SetExtension<webrtc::TransportSequenceNumber>(0);
+        RtpPacketPtr rtp_packet =
+            std::make_shared<RtpPacket>((*iter)->data(), (*iter)->size());
+
+        this->ready_send_vec_.emplace_back(
+            std::pair<RtpPacketPtr, SendPacketType>(rtp_packet, FEC));
+      }
+    }
+  }
+}
+
 void BifrostPacer::OnTimer(UvTimer* timer) {
   if (timer == pacer_timer_) {
     if (this->pacing_congestion_windows_ > 0 && this->bytes_in_flight_ > 0 &&
@@ -195,8 +222,6 @@ void BifrostPacer::OnTimer(UvTimer* timer) {
               break;
           }
         }
-        // TODO: 临时使用，目前打包分配内存逻辑异常崩溃，正在重构，重构后调整
-        if (pair.second == FEC) observer_->OnPublisherSendPacket(packet);
 
         interval_pacing_bytes -= int32_t(packet->GetSize());
 
@@ -221,31 +246,7 @@ void BifrostPacer::OnTimer(UvTimer* timer) {
       auto packet = this->data_producer_->CreateData();
       if (packet == nullptr) continue;
 
-      if (flexfec_sender_ && loss_prot_logic_ && clock_) {
-        // TODO:重构packet部分，现在打包逻辑非常混乱，内存管理不当
-        auto* buffer = new uint8_t[packet->GetSize()];
-        memcpy(buffer, packet->GetData(), packet->GetSize());
-        webrtc::RtpPacketToSend webrtc_packet(nullptr);
-
-        webrtc_packet.Parse(buffer, packet->GetSize());
-        flexfec_sender_->AddRtpPacketAndGenerateFec(webrtc_packet);
-        auto vec_s = flexfec_sender_->GetFecPackets();
-
-        if (!vec_s.empty()) {
-          for (auto iter = vec_s.begin(); iter != vec_s.end(); iter++) {
-            auto len = (*iter)->size();
-            auto* packet_data = new uint8_t[len];
-            memcpy(packet_data, (*iter)->data(), len);
-            RtpPacketPtr rtp_packet =
-                RtpPacket::Parse(packet_data, (*iter)->size());
-
-            rtp_packet->SetPayloadDataPtr(&packet_data);
-
-            this->ready_send_vec_.emplace_back(
-                std::pair<RtpPacketPtr, SendPacketType>(rtp_packet, FEC));
-          }
-        }
-      }
+      this->TryFlexFecPacketSend(packet);
 
       this->ready_send_vec_.emplace_back(
           std::pair<RtpPacketPtr, SendPacketType>(packet, RTP));

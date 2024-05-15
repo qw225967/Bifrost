@@ -5,6 +5,12 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(WEBRTC_DIR third_party/libwebrtc/libwebrtc)
 set(WEBRTC_MODULES ${WEBRTC_DIR}/modules)
+set(CMAKE_BUILD_TYPE Debug) # 设置默认构建类型为Debug
+
+# 对于所有构建类型，增加-g 标志
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 ADD_DEFINITIONS(-DWEBRTC_POSIX)
 

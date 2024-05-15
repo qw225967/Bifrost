@@ -54,7 +54,6 @@ TransportCongestionControlServer::~TransportCongestionControlServer() {
 
 void TransportCongestionControlServer::QuicCountIncomingPacket(
     uint64_t nowMs, const RtpPacket* packet) {
-
   uint16_t wideSeqNumber;
   if (!packet->ReadTransportWideCc01(wideSeqNumber)) return;
 
@@ -191,13 +190,15 @@ inline void TransportCongestionControlServer::SendTransportCcFeedback() {
       this->transportCcFeedbackPacket->GetLatestSequenceNumber();
   auto latestTimestamp = this->transportCcFeedbackPacket->GetLatestTimestamp();
 
-//  std::cout << "SendTransportCcFeedback latestWideSeqNumber:"
-//            << latestWideSeqNumber << ", latestTimestamp:" << latestTimestamp
-//            << ", base seq:"
-//            << this->transportCcFeedbackPacket->GetBaseSequenceNumber()
-//            << ", feedback count:"
-//            << (uint32_t)this->transportCcFeedbackPacket->GetFeedbackPacketCount()
-//            << std::endl;
+  //  std::cout << "SendTransportCcFeedback latestWideSeqNumber:"
+  //            << latestWideSeqNumber << ", latestTimestamp:" <<
+  //            latestTimestamp
+  //            << ", base seq:"
+  //            << this->transportCcFeedbackPacket->GetBaseSequenceNumber()
+  //            << ", feedback count:"
+  //            <<
+  //            (uint32_t)this->transportCcFeedbackPacket->GetFeedbackPacketCount()
+  //            << std::endl;
 
   // Notify the listener.
   this->observer_->OnTransportCongestionControlServerSendRtcpPacket(
