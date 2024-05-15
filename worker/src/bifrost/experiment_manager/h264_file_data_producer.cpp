@@ -227,12 +227,11 @@ void H264FileDataProducer::H264FrameAnnexbSplitNalu(
 }
 
 void H264FileDataProducer::ReadWebRTCRtpPacketizer() {
-
   // 模拟采集画面时间戳间隔
   if (fake_capture_timestamp_ == 0) {
     fake_capture_timestamp_ = this->uv_loop_->get_time_ms_int64();
   } else {
-    fake_capture_timestamp_ += 66; // 15帧 66ms一帧
+    fake_capture_timestamp_ += 66;  // 15帧 66ms一帧
   }
 
   webrtc::RtpPacketizer::PayloadSizeLimits limits;
@@ -263,8 +262,8 @@ void H264FileDataProducer::ReadWebRTCRtpPacketizer() {
         return true;
       });
 
-//    std::cout << Byte::bytes_to_hex(this->payload_,  this->frame_len_ +
-//    this->start_code_offset_) << std::endl;
+  //    std::cout << Byte::bytes_to_hex(this->payload_,  this->frame_len_ +
+  //    this->start_code_offset_) << std::endl;
 
   webrtc::RTPVideoHeader packetize_video_header;
   webrtc::RTPVideoHeaderH264 h264 = webrtc::RTPVideoHeaderH264();
@@ -289,10 +288,8 @@ void H264FileDataProducer::ReadWebRTCRtpPacketizer() {
 
   std::unique_ptr<webrtc::RtpPacketizer> packetizer =
       webrtc::RtpPacketizer::Create(
-          type,
-          rtc::MakeArrayView(this->payload_,
-                             this->frame_len_),
-          limits, packetize_video_header, frame_type, &fragmentation);
+          type, rtc::MakeArrayView(this->payload_, this->frame_len_), limits,
+          packetize_video_header, frame_type, &fragmentation);
 
   const size_t num_packets = packetizer->NumPackets();
   if (num_packets == 0) return;
@@ -339,10 +336,10 @@ void H264FileDataProducer::ReadWebRTCRtpPacketizer() {
   }
 }
 
-void H264FileDataProducer::GetRtpExtensions(RtpPacket* packet) {
-  static uint8_t buffer[4096];
+void H264FileDataProducer::GetRtpExtensions(RtpPacket *packet) {
+  uint8_t buffer[4096];
   uint8_t extenLen = 2u;
-  static std::vector<RtpPacket::GenericExtension> extensions;
+  std::vector<RtpPacket::GenericExtension> extensions;
   // This happens just once.
   if (extensions.capacity() != 24) extensions.reserve(24);
 
@@ -360,7 +357,8 @@ void H264FileDataProducer::GetRtpExtensions(RtpPacket* packet) {
 
 void H264FileDataProducer::OnTimer(UvTimer *timer) {
   if (timer == this->read_frame_timer_) {
-    while (this->ReadOneH264Frame());
+    while (this->ReadOneH264Frame())
+      ;
     this->ReadWebRTCRtpPacketizer();
   }
 }

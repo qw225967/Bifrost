@@ -44,9 +44,11 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
 
   // 4.nack
   nack_ = std::make_shared<Nack>(remote_addr_config_.ssrc, uv_loop);
+  fec_nack_ = std::make_shared<Nack>(remote_addr_config_.flexfec_ssrc, uv_loop);
 
   // 5.ssrc
   ssrc_ = remote_addr_config_.ssrc;
+  fec_ssrc_ = remote_addr_config_.flexfec_ssrc;
 
   // 6.send algorithm
   bifrost_send_algorithm_manager_ =
@@ -82,7 +84,10 @@ void Publisher::OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) {
 
 void Publisher::OnReceiveNack(FeedbackRtpNackPacket* packet) {
   std::vector<RtpPacketPtr> packets;
-  this->nack_->ReceiveNack(packet, packets);
+  if (ssrc_ == packet->GetMediaSsrc())
+    this->nack_->ReceiveNack(packet, packets);
+  else if (fec_ssrc_ == packet->GetMediaSsrc())
+    this->fec_nack_->ReceiveNack(packet, packets);
 
   auto ite = packets.begin();
   while (ite != packets.end()) {
@@ -136,6 +141,7 @@ void Publisher::OnReceiveReceiverReport(ReceiverReport* report) {
   experiment_manager_->PostRRDataToShow(this->number_, data);
 
   this->nack_->UpdateRtt(uint32_t(this->rtt_));
+  this->fec_nack_->UpdateRtt(uint32_t(this->rtt_));
 
   this->bifrost_send_algorithm_manager_->UpdateRtt(this->rtt_);
   this->bifrost_send_algorithm_manager_->OnReceiveReceiverReport(

@@ -30,6 +30,7 @@ class BifrostPacer : public UvTimer::Listener {
   class Observer {
    public:
     virtual void OnPublisherSendPacket(RtpPacketPtr packet) = 0;
+    virtual void OnPublisherSendReTransPacket(RtpPacketPtr packet) = 0;
     virtual void OnPublisherSendRtcpPacket(CompoundPacketPtr packet) = 0;
   };
 
@@ -37,6 +38,13 @@ class BifrostPacer : public UvTimer::Listener {
   BifrostPacer(uint32_t ssrc, uint32_t flexfec_ssrc, UvLoop* uv_loop,
                Observer* observer);
   ~BifrostPacer() override;
+
+ private:
+  enum SendPacketType {
+    RTP,
+    NACK,
+    FEC,
+  };
 
  public:
   // UvTimer
@@ -60,7 +68,10 @@ class BifrostPacer : public UvTimer::Listener {
     pacing_transfer_time_ = pacing_transfer_time;
   }
   void NackReadyToSendPacket(RtpPacketPtr packet) {
-    this->ready_send_vec_.push_back(packet);
+    // NACK 测试直接发送，不走pacer控制
+    this->observer_->OnPublisherSendReTransPacket(packet);
+    //    this->ready_send_vec_.emplace_back(
+    //        std::pair<RtpPacketPtr, SendPacketType>(packet, NACK));
   }
   uint32_t get_pacing_packet_count() {
     auto tmp = pacing_packet_count_;
@@ -85,7 +96,7 @@ class BifrostPacer : public UvTimer::Listener {
   uint16_t tcc_seq_{1u};
 
   // ready send
-  std::vector<RtpPacketPtr> ready_send_vec_;
+  std::vector<std::pair<RtpPacketPtr, SendPacketType>> ready_send_vec_;
 
   // statistics
   uint32_t pacing_bytes_;

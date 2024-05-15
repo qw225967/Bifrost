@@ -25,7 +25,7 @@ const uint32_t InitialPacingGccBitrate =
     400000u;  // 配合当前测试的码率一半左右开始探测 780
 
 uint32_t BifrostPacer::MaxPacingDataLimit =
-    700000;  // 当前测试的h264码率平均780kbps，因此限制最大为780
+    2000000;  // 当前测试的h264码率平均780kbps，因此限制最大为780
 
 BifrostPacer::BifrostPacer(uint32_t ssrc, uint32_t flexfec_ssrc,
                            UvLoop* uv_loop, Observer* observer)
@@ -151,8 +151,7 @@ void BifrostPacer::UpdateFecRates(uint8_t fraction_lost,
     flexfec_sender_->SetFecParameters(delta_fec_params_);
     std::cout << "fec rate:" << delta_fec_params_.fec_rate
               << ", max frame rate:" << delta_fec_params_.max_fec_frames
-              << ", fraction lost:" << uint32_t(fraction_lost)
-              << std::endl;
+              << ", fraction lost:" << uint32_t(fraction_lost) << std::endl;
   }
 }
 
@@ -170,19 +169,34 @@ void BifrostPacer::OnTimer(UvTimer* timer) {
 
       auto ite = ready_send_vec_.begin();
       while (ite != ready_send_vec_.end() && interval_pacing_bytes > 0) {
-        auto packet = (*ite);
+        auto pair = (*ite);
+        auto packet = pair.first;
+        if (packet == nullptr) {
+          std::cout << "[pacer send] packet is nullptr" << std::endl;
+        }
         // 发送时更新tcc拓展序号，nack的rtp和普通rtp序号是连续的
         if (packet->UpdateTransportWideCc01(this->tcc_seq_)) {
           this->tcc_seq_++;
 
           if (packet->HasMarker()) count_pacing_frame_rate_++;
 
-          observer_->OnPublisherSendPacket(packet);
+          // 区分类型发送
+          switch (pair.second) {
+            case RTP:
+            case FEC: {
+              observer_->OnPublisherSendPacket(packet);
+              break;
+            }
+            case NACK: {
+              observer_->OnPublisherSendReTransPacket(packet);
+              break;
+            }
+            default:
+              break;
+          }
         }
-
-        // fec
-        if (packet->GetPayloadType() == 110)
-          observer_->OnPublisherSendPacket(packet);
+        // TODO: 临时使用，目前打包分配内存逻辑异常崩溃，正在重构，重构后调整
+        if (pair.second == FEC) observer_->OnPublisherSendPacket(packet);
 
         interval_pacing_bytes -= int32_t(packet->GetSize());
 
@@ -209,28 +223,32 @@ void BifrostPacer::OnTimer(UvTimer* timer) {
 
       if (flexfec_sender_ && loss_prot_logic_ && clock_) {
         // TODO:重构packet部分，现在打包逻辑非常混乱，内存管理不当
-        auto *buffer = new uint8_t[packet->GetSize()];
+        auto* buffer = new uint8_t[packet->GetSize()];
         memcpy(buffer, packet->GetData(), packet->GetSize());
         webrtc::RtpPacketToSend webrtc_packet(nullptr);
+
         webrtc_packet.Parse(buffer, packet->GetSize());
         flexfec_sender_->AddRtpPacketAndGenerateFec(webrtc_packet);
         auto vec_s = flexfec_sender_->GetFecPackets();
+
         if (!vec_s.empty()) {
           for (auto iter = vec_s.begin(); iter != vec_s.end(); iter++) {
             auto len = (*iter)->size();
-            auto *packet_data = new uint8_t[len];
+            auto* packet_data = new uint8_t[len];
             memcpy(packet_data, (*iter)->data(), len);
             RtpPacketPtr rtp_packet =
                 RtpPacket::Parse(packet_data, (*iter)->size());
 
             rtp_packet->SetPayloadDataPtr(&packet_data);
 
-            this->ready_send_vec_.push_back(rtp_packet);
+            this->ready_send_vec_.emplace_back(
+                std::pair<RtpPacketPtr, SendPacketType>(rtp_packet, FEC));
           }
         }
       }
 
-      this->ready_send_vec_.push_back(packet);
+      this->ready_send_vec_.emplace_back(
+          std::pair<RtpPacketPtr, SendPacketType>(packet, RTP));
     }
   }
 

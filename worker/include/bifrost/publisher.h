@@ -45,11 +45,28 @@ class Publisher : public UvTimer::Listener, public BifrostPacer::Observer {
     // 发送算法需要记录发送内容
     this->bifrost_send_algorithm_manager_->OnRtpPacketSend(
         packet, this->uv_loop_->get_time_ms_int64());
-    this->nack_->OnSendRtpPacket(packet);
+
+    if (packet->GetPayloadType() == 110)
+      this->fec_nack_->OnSendRtpPacket(packet);
+    else
+      this->nack_->OnSendRtpPacket(packet);
+
+    if (packet->GetPayloadType() == 110 &&
+        packet->GetSequenceNumber() % 10 != 1)
+      return;
 
     this->observer_->OnPublisherSendPacket(packet,
                                            this->udp_remote_address_.get());
   }
+  void OnPublisherSendReTransPacket(RtpPacketPtr packet) override {
+    // 发送算法需要记录发送内容
+    this->bifrost_send_algorithm_manager_->OnRtpPacketSend(
+        packet, this->uv_loop_->get_time_ms_int64());
+
+    this->observer_->OnPublisherSendPacket(packet,
+                                           this->udp_remote_address_.get());
+  }
+
   void OnPublisherSendRtcpPacket(CompoundPacketPtr packet) override {
     this->observer_->OnPublisherSendRtcpPacket(packet,
                                                this->udp_remote_address_.get());
@@ -89,6 +106,8 @@ class Publisher : public UvTimer::Listener, public BifrostPacer::Observer {
   UvTimer* update_pacing_info_timer_;
   // ssrc
   uint32_t ssrc_;
+
+  uint32_t fec_ssrc_;
   // number
   uint8_t number_;
   /* ------------ bifrost send algorithm manager ------------ */
@@ -109,6 +128,9 @@ class Publisher : public UvTimer::Listener, public BifrostPacer::Observer {
   float rtt_ = 0;
   // nack
   NackPtr nack_;
+
+  // nack + fec
+  NackPtr fec_nack_;
 };
 }  // namespace bifrost
 

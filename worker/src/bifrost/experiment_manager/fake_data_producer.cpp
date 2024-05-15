@@ -8,6 +8,7 @@
  *******************************************************/
 
 #include "bifrost/experiment_manager/fake_data_producer.h"
+
 #include "modules/rtp_rtcp/source/rtp_packet.h"
 #include "modules/rtp_rtcp/source/rtp_packet_to_send.h"
 #include "utils.h"
@@ -105,8 +106,7 @@ constexpr uint8_t kPacketWithH264[]{
     0x0d, 0x23, 0xd2, 0x5d, 0x9d, 0x74, 0x44, 0xbe, 0x11, 0x31, 0xcd, 0x20,
     0xce, 0xbd, 0xfb, 0xa1, 0xeb};
 
-FakeDataProducer::FakeDataProducer(uint32_t ssrc) : ssrc_(ssrc), sequence_(1) {
-}
+FakeDataProducer::FakeDataProducer(uint32_t ssrc) : ssrc_(ssrc), sequence_(1) {}
 
 FakeDataProducer::~FakeDataProducer() {
 #ifdef USING_LOCAL_FILE_DATA
@@ -116,15 +116,16 @@ FakeDataProducer::~FakeDataProducer() {
 
 RtpPacketPtr FakeDataProducer::CreateData() {
   // 使用webrtc中rtp包初始化方式
-  auto* send_packet =
-      new webrtc::RtpPacketToSend(nullptr, sizeof(kPacketWithH264) + RtpPacket::HeaderSize);
+  auto* send_packet = new webrtc::RtpPacketToSend(
+      nullptr, sizeof(kPacketWithH264) + RtpPacket::HeaderSize);
 #ifdef USING_LOCAL_FILE_DATA
   data_file_.read((char*)data, sizeof(kPacketWithH264));
 #endif
   send_packet->SetSequenceNumber(this->sequence_++);
   send_packet->SetPayloadType(101);
   send_packet->SetSsrc(this->ssrc_);
-  memcpy(send_packet->Buffer().data() + RtpPacket::HeaderSize, kPacketWithH264, sizeof(kPacketWithH264));
+  memcpy(send_packet->Buffer().data() + RtpPacket::HeaderSize, kPacketWithH264,
+         sizeof(kPacketWithH264));
 
   send_packet->SetPayloadSize(sizeof(kPacketWithH264));
 
@@ -133,7 +134,8 @@ RtpPacketPtr FakeDataProducer::CreateData() {
   auto* payload_data = new uint8_t[len];
   memcpy(payload_data, send_packet->data(), len);
   RtpPacketPtr rtp_packet = RtpPacket::Parse(payload_data, len);
-  // mediasoup parse 内部只new了包结构，没有new payload空间，payload空间使用了一个共享的静态区域
+  // mediasoup parse 内部只new了包结构，没有new
+  // payload空间，payload空间使用了一个共享的静态区域
   rtp_packet->SetPayloadDataPtr(&payload_data);
 
   this->GetRtpExtensions(rtp_packet.get());
@@ -142,9 +144,9 @@ RtpPacketPtr FakeDataProducer::CreateData() {
 }
 
 void FakeDataProducer::GetRtpExtensions(RtpPacket* packet) {
-  static uint8_t buffer[4096];
+  uint8_t buffer[4096];
   uint8_t extenLen = 2u;
-  static std::vector<RtpPacket::GenericExtension> extensions;
+  std::vector<RtpPacket::GenericExtension> extensions;
   // This happens just once.
   if (extensions.capacity() != 24) extensions.reserve(24);
 
