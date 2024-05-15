@@ -246,7 +246,7 @@ std::vector<uint16_t> Nack::GetNackBatch() {
       }
 
       nack_info.sent_time_ms = now_ms;
-      std::cout << "retry seq:" << seq
+      std::cout << "ssrc:" << this->ssrc_ << ", retry seq:" << seq
                 << ", times:" << unsigned(nack_info.retries)
                 << ", interval:" << now_ms - old_ms << std::endl;
       if (nack_info.retries >= MaxNackRetries) {

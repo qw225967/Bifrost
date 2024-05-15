@@ -10,11 +10,11 @@
 #ifndef WORKER_PLAYER_H
 #define WORKER_PLAYER_H
 
+#include <modules/rtp_rtcp/include/flexfec_receiver.h>
 #include <modules/rtp_rtcp/include/remote_ntp_time_estimator.h>
 #include <modules/rtp_rtcp/source/rtp_format.h>
 #include <modules/rtp_rtcp/source/rtp_format_h264.h>
 #include <modules/video_coding/receiver.h>
-#include <modules/rtp_rtcp/include/flexfec_receiver.h>
 
 #include "bifrost/bifrost_send_algorithm/tcc_server.h"
 #include "bifrost/bifrost_send_algorithm/webrtc_clock_adapter.h"
@@ -115,6 +115,8 @@ class Player : public UvTimer::Listener,
   uint32_t jitter_{0u};
   // nack
   NackPtr nack_;
+  // nack + fec
+  NackPtr fec_nack_;
   // tcc
   TransportCongestionControlServerPtr tcc_server_{nullptr};
   // clock

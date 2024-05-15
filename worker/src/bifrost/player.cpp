@@ -133,7 +133,8 @@ void Player::OnRecoveredPacket(const uint8_t* packet, size_t length) {
     return;
   }
 
-  std::cout << "recover packet seq:" << recover_packet->GetSequenceNumber() << std::endl;
+  std::cout << "recover packet seq:" << recover_packet->GetSequenceNumber()
+            << std::endl;
   this->OnReceiveRtpPacket(recover_packet, true);
 }
 
@@ -155,6 +156,11 @@ void Player::OnReceiveRtpPacket(RtpPacketPtr packet, bool is_recover) {
     flexfec_receiver_->OnRtpPacket(parsed_packet);
 
     if (is_fec_packet) {
+      if (fec_nack_ == nullptr) {
+        fec_nack_ =
+            std::make_shared<Nack>(packet->GetSsrc(), &this->uv_loop_, this);
+      }
+      fec_nack_->OnReceiveRtpPacket(packet);
       return;
     }
   }
