@@ -156,8 +156,8 @@ void PacketBuffer::ClearTo(uint16_t seq_num) {
     size_t index = first_seq_num_ % size_;
     RTC_DCHECK_EQ(data_buffer_[index].seqNum, sequence_buffer_[index].seq_num);
     if (AheadOf<uint16_t>(seq_num, sequence_buffer_[index].seq_num)) {
-      delete[] data_buffer_[index].dataPtr;
-      data_buffer_[index].dataPtr = nullptr;
+      //      delete[] data_buffer_[index].dataPtr;
+      //      data_buffer_[index].dataPtr = nullptr;
       sequence_buffer_[index].used = false;
     }
     ++first_seq_num_;
@@ -178,8 +178,8 @@ void PacketBuffer::ClearTo(uint16_t seq_num) {
 void PacketBuffer::Clear() {
   rtc::CritScope lock(&crit_);
   for (size_t i = 0; i < size_; ++i) {
-    delete[] data_buffer_[i].dataPtr;
-    data_buffer_[i].dataPtr = nullptr;
+    //    delete[] data_buffer_[i].dataPtr;
+    //    data_buffer_[i].dataPtr = nullptr;
     sequence_buffer_[i].used = false;
   }
 
@@ -414,8 +414,8 @@ void PacketBuffer::ReturnFrame(RtpFrameObject* frame) {
     // around too quickly for high packet rates.
     if (sequence_buffer_[index].seq_num == seq_num &&
         data_buffer_[index].timestamp == timestamp) {
-      delete[] data_buffer_[index].dataPtr;
-      data_buffer_[index].dataPtr = nullptr;
+      //      delete[] data_buffer_[index].dataPtr;
+      //      data_buffer_[index].dataPtr = nullptr;
       sequence_buffer_[index].used = false;
     }
 

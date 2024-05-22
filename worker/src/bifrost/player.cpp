@@ -79,6 +79,10 @@ Player::Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
   receiver_ = new webrtc::VCMReceiver(timing_, clock_);
   receiver_->SetNackSettings(webrtc::kMaxNumberOfFrames,
                              webrtc::kMaxNumberOfFrames, 0);
+
+  // 6.decoder timer
+  decoder_timer_ = new UvTimer(this, uv_loop_->get_loop().get());
+  decoder_timer_->Start(DecoderIntervalMs, DecoderIntervalMs);
 #endif
 
 #ifdef USE_VCM_PACKET_BUFFER
@@ -87,12 +91,8 @@ Player::Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
   reference_finder_ =
       std::make_unique<webrtc::video_coding::RtpFrameReferenceFinder>(this);
 #endif
-  // 6.depacketizer
+  // 7.depacketizer
   depacketizer_ = new webrtc::RtpDepacketizerH264();
-
-  // 7.decoder timer
-  decoder_timer_ = new UvTimer(this, uv_loop_->get_loop().get());
-  decoder_timer_->Start(DecoderIntervalMs, DecoderIntervalMs);
 
   // 8.fec receiver
   flexfec_receiver_ =
@@ -102,15 +102,21 @@ Player::Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
 void Player::OnAssembledFrame(
     std::unique_ptr<webrtc::video_coding::RtpFrameObject> frame) {
 #ifdef USE_VCM_PACKET_BUFFER
-  std::cout << "OnAssembledFrame frame:" << frame->RenderTime() << std::endl;
-//  reference_finder_->ManageFrame(std::move(frame));
+  reference_finder_->ManageFrame(std::move(frame));
 #endif
 }
 
 void Player::OnCompleteFrame(
     std::unique_ptr<webrtc::video_coding::EncodedFrame> frame) {
-  std::cout << "complete frame call render:" << frame->RenderTime()
+  time_t currentTime = time(nullptr);
+  struct tm* localTime = localtime(&currentTime);
+  std::cout << "[" << localTime->tm_hour << ":" << localTime->tm_min << ":"
+            << localTime->tm_sec << "]"
+            << "reference finder OnCompleteFrame frame interval to decode:"
+            << this->uv_loop_->get_time_ms_int64() - pre_decode_time_
             << std::endl;
+
+  pre_decode_time_ = this->uv_loop_->get_time_ms_int64();
 }
 
 bool Player::UpdateSeq(uint16_t seq) {
