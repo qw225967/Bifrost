@@ -151,6 +151,8 @@ class Player : public UvTimer::Listener,
   rtc::scoped_refptr<webrtc::video_coding::PacketBuffer> packet_buffer_;
   std::unique_ptr<webrtc::video_coding::RtpFrameReferenceFinder>
       reference_finder_;
+
+  std::map<int64_t, uint16_t> last_seq_num_for_pic_id_;
 #endif
 
   // RtpDepacketizer

@@ -102,7 +102,11 @@ Player::Player(const struct sockaddr* remote_addr, UvLoop** uv_loop,
 void Player::OnAssembledFrame(
     std::unique_ptr<webrtc::video_coding::RtpFrameObject> frame) {
 #ifdef USE_VCM_PACKET_BUFFER
+  auto lase_seq = frame->last_seq_num();
+
   reference_finder_->ManageFrame(std::move(frame));
+//  this->packet_buffer_->ClearTo(lase_seq);
+//  this->reference_finder_->ClearTo(lase_seq);
 #endif
 }
 
@@ -113,6 +117,7 @@ void Player::OnCompleteFrame(
   std::cout << "[" << localTime->tm_hour << ":" << localTime->tm_min << ":"
             << localTime->tm_sec << "]"
             << "reference finder OnCompleteFrame frame interval to decode:"
+            << frame->id.picture_id << ", interval:"
             << this->uv_loop_->get_time_ms_int64() - pre_decode_time_
             << std::endl;
 
