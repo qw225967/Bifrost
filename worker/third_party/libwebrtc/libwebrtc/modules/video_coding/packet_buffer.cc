@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <iostream>
 #include <utility>
 
 #include "absl/types/variant.h"
@@ -78,8 +79,8 @@ bool PacketBuffer::InsertPacket(VCMPacket* packet) {
       // If we have explicitly cleared past this packet then it's old,
       // don't insert it, just silently ignore it.
       if (is_cleared_to_first_seq_num_) {
-        delete[] packet->dataPtr;
-        packet->dataPtr = nullptr;
+        //        delete[] packet->dataPtr;
+        //        packet->dataPtr = nullptr;
         return true;
       }
 
@@ -89,8 +90,8 @@ bool PacketBuffer::InsertPacket(VCMPacket* packet) {
     if (sequence_buffer_[index].used) {
       // Duplicate packet, just delete the payload.
       if (data_buffer_[index].seqNum == packet->seqNum) {
-        delete[] packet->dataPtr;
-        packet->dataPtr = nullptr;
+        //        delete[] packet->dataPtr;
+        //        packet->dataPtr = nullptr;
         return true;
       }
 
@@ -104,8 +105,8 @@ bool PacketBuffer::InsertPacket(VCMPacket* packet) {
         // Clear the buffer, delete payload, and return false to signal that a
         // new keyframe is needed.
         Clear();
-        delete[] packet->dataPtr;
-        packet->dataPtr = nullptr;
+        //        delete[] packet->dataPtr;
+        //        packet->dataPtr = nullptr;
         return false;
       }
     }

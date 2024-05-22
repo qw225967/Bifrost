@@ -383,8 +383,11 @@ add_executable(worker
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_format_vp9.cc
         third_party/libwebrtc/libwebrtc/rtc_base/event_tracer.cc
         third_party/libwebrtc/libwebrtc/rtc_base/bit_buffer.cc
+        third_party/libwebrtc/libwebrtc/modules/video_coding/packet_buffer.cc
+        third_party/libwebrtc/libwebrtc/modules/video_coding/rtp_frame_reference_finder.cc
         third_party/libwebrtc/libwebrtc/modules/video_coding/jitter_buffer.cc
         third_party/libwebrtc/libwebrtc/modules/video_coding/frame_buffer.cc
+        third_party/libwebrtc/libwebrtc/modules/video_coding/frame_object.cc
         third_party/libwebrtc/libwebrtc/modules/video_coding/session_info.cc
         third_party/libwebrtc/libwebrtc/modules/video_coding/decoding_state.cc
         third_party/libwebrtc/libwebrtc/modules/video_coding/jitter_estimator.cc
@@ -408,6 +411,7 @@ add_executable(worker
         third_party/libwebrtc/libwebrtc/common_video/generic_frame_descriptor/generic_frame_info.cc
         third_party/libwebrtc/libwebrtc/rtc_base/time/timestamp_extrapolator.cc
         third_party/libwebrtc/libwebrtc/api/video/encoded_image.cc
+        third_party/libwebrtc/libwebrtc/api/video/encoded_frame.cc
         third_party/libwebrtc/libwebrtc/modules/video_coding/include/video_codec_interface.cc
         third_party/libwebrtc/libwebrtc/rtc_base/experiments/jitter_upper_bound_experiment.cc
         third_party/libwebrtc/libwebrtc/system_wrappers/source/rtp_to_ntp_estimator.cc

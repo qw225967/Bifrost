@@ -10,11 +10,16 @@
 #ifndef WORKER_PLAYER_H
 #define WORKER_PLAYER_H
 
+//#define USE_VCM_RECEIVER 1
+#define USE_VCM_PACKET_BUFFER 1
+
 #include <modules/rtp_rtcp/include/flexfec_receiver.h>
 #include <modules/rtp_rtcp/include/remote_ntp_time_estimator.h>
 #include <modules/rtp_rtcp/source/rtp_format.h>
 #include <modules/rtp_rtcp/source/rtp_format_h264.h>
+#include <modules/video_coding/packet_buffer.h>
 #include <modules/video_coding/receiver.h>
+#include <modules/video_coding/rtp_frame_reference_finder.h>
 
 #include "bifrost/bifrost_send_algorithm/tcc_server.h"
 #include "bifrost/bifrost_send_algorithm/webrtc_clock_adapter.h"
@@ -31,7 +36,9 @@ typedef std::shared_ptr<TransportCongestionControlServer>
     TransportCongestionControlServerPtr;
 class Player : public UvTimer::Listener,
                public TransportCongestionControlServer::Observer,
-               public webrtc::RecoveredPacketReceiver {
+               public webrtc::RecoveredPacketReceiver,
+               public webrtc::video_coding::OnCompleteFrameCallback,
+               public webrtc::video_coding::OnAssembledFrameCallback {
  public:
   class Observer {
    public:
@@ -45,7 +52,9 @@ class Player : public UvTimer::Listener,
          ExperimentManagerPtr& experiment_manager);
   ~Player() {
     this->nack_.reset();
+#ifdef USE_VCM_RECEIVER
     delete this->receiver_;
+#endif
     delete this->timing_;
     delete this->clock_;
     delete this->depacketizer_;
@@ -72,11 +81,20 @@ class Player : public UvTimer::Listener,
     observer_->OnPlayerSendPacket(packet, udp_remote_address_.get());
   }
 
+  // OnCompleteFrameCallback
+  void OnCompleteFrame(
+      std::unique_ptr<webrtc::video_coding::EncodedFrame> frame);
+
+  // OnAssembledFrameCallback
+  void OnAssembledFrame(
+      std::unique_ptr<webrtc::video_coding::RtpFrameObject> frame);
+
   void OnReceiveSenderReport(SenderReport* report);
 
   ReceiverReport* GetRtcpReceiverReport();
 
  private:
+  void OnInsertPacket();
   bool UpdateSeq(uint16_t seq);
   uint32_t GetExpectedPackets() const {
     return (this->cycles_ + this->max_seq_) - this->base_seq_ + 1;
@@ -123,8 +141,18 @@ class Player : public UvTimer::Listener,
   WebRTCClockAdapter* clock_;
   // timing
   webrtc::VCMTiming* timing_;
+
+#ifdef USE_VCM_RECEIVER
   // VCMReceiver
   webrtc::VCMReceiver* receiver_;
+#endif
+
+#ifdef USE_VCM_PACKET_BUFFER
+  rtc::scoped_refptr<webrtc::video_coding::PacketBuffer> packet_buffer_;
+  std::unique_ptr<webrtc::video_coding::RtpFrameReferenceFinder>
+      reference_finder_;
+#endif
+
   // RtpDepacketizer
   webrtc::RtpDepacketizer* depacketizer_;
   // decoder timer
