@@ -16,6 +16,9 @@
 #include "uv_timer.h"
 
 namespace bifrost {
+
+const uint32_t MaxOutSendBitrate = 400000;
+
 typedef enum {
   Error = 0,
   NALU_TYPE_SLICE = 1,
@@ -49,6 +52,12 @@ class H264FileDataProducer : public ExperimentDataProducerInterface,
   void OnTimer(UvTimer *timer);
 
   RtpPacketPtr CreateData() override;
+  void ChangeOutBitrate(uint32_t out_bitrate, uint16_t interval) override {
+    out_bitrate_limit_ =
+        out_bitrate > MaxOutSendBitrate ? MaxOutSendBitrate : out_bitrate;
+    cycle_bitrate_record_ =
+        int32_t(out_bitrate_limit_ * interval * 0.65) / 1000 / 8;
+  }
 
  private:
   NaluType PrintfH264Frame(int j, int nLen, int nFrameType);
@@ -81,6 +90,9 @@ class H264FileDataProducer : public ExperimentDataProducerInterface,
   uint16_t sequence_{0u};
 
   uint64_t fake_capture_timestamp_ = 0;
+
+  uint32_t out_bitrate_limit_ = 400000;  // bit/s
+  int32_t cycle_bitrate_record_ = 0;
 };
 }  // namespace bifrost
 

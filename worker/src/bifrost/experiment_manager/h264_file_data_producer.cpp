@@ -133,8 +133,9 @@ int H264FileDataProducer::GetH264FrameLen(int n_pos, size_t n_total_size,
 
 RtpPacketPtr H264FileDataProducer::CreateData() {
   auto packet_ite = this->rtp_packet_vec_.begin();
-  if (packet_ite != this->rtp_packet_vec_.end()) {
+  if (packet_ite != this->rtp_packet_vec_.end() && cycle_bitrate_record_ > 0) {
     auto packet = *packet_ite;
+    cycle_bitrate_record_ -= packet->GetSize();
     rtp_packet_vec_.erase(packet_ite);
     return packet;
   }

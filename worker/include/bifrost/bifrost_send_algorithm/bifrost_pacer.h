@@ -54,9 +54,18 @@ class BifrostPacer : public UvTimer::Listener {
   void UpdateFecRates(uint8_t fraction_lost, int64_t round_trip_time_ms);
 
   void set_pacing_rate(uint32_t pacing_rate) {
+    auto interval = 50;
+    if (pre_pacing_update_time_ != 0) {
+      interval = this->uv_loop_->get_time_ms() - pre_pacing_update_time_;
+    }
+
+    // 更新过于频繁直接返回
+    if (interval < 50) return;
+
     target_bitrate_ = pacing_rate;
-    pacing_rate_ =
-        pacing_rate > MaxPacingDataLimit ? MaxPacingDataLimit : pacing_rate;
+    pacing_rate_ = pacing_rate;
+    this->data_producer_->ChangeOutBitrate(pacing_rate_, interval);
+    pre_pacing_update_time_ = this->uv_loop_->get_time_ms();
   }  // bps
   void set_pacing_congestion_windows(uint32_t congestion_windows) {
     pacing_congestion_windows_ = congestion_windows;
@@ -133,6 +142,8 @@ class BifrostPacer : public UvTimer::Listener {
 
   webrtc::FecProtectionParams delta_fec_params_;
   webrtc::FecProtectionParams key_fec_params_;
+
+  uint64_t pre_pacing_update_time_{0u};
 };
 }  // namespace bifrost
 

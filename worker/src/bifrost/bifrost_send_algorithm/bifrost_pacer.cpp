@@ -18,14 +18,13 @@
 
 namespace bifrost {
 
-constexpr uint16_t DefaultCreatePacketTimeInterval = 10u;  // 每10ms创建3个包
+constexpr uint16_t DefaultCreatePacketTimeInterval = 10u;  // 每10ms创建10个包
 constexpr uint16_t DefaultStatisticsTimerInterval = 1000u;  // 每1s统计一次
 constexpr uint16_t DefaultPacingTimeInterval = 5u;
 const uint32_t InitialPacingGccBitrate =
     200000u;  // 配合当前测试的码率一半左右开始探测 780
 
-uint32_t BifrostPacer::MaxPacingDataLimit =
-    400000;  // 当前测试的h264码率平均780kbps，因此限制最大为780
+uint32_t BifrostPacer::MaxPacingDataLimit = 4096000;
 
 BifrostPacer::BifrostPacer(uint32_t ssrc, uint32_t flexfec_ssrc,
                            UvLoop* uv_loop, Observer* observer)
@@ -188,8 +187,7 @@ void BifrostPacer::OnTimer(UvTimer* timer) {
         this->pacing_congestion_windows_ < this->bytes_in_flight_) {
     } else {
       int32_t interval_pacing_bytes =
-          int32_t((pacing_rate_ * 1.25 /* 乘上每次间隔码率加减的损失 */ /
-                   1000) /* 转换ms */
+          int32_t((pacing_rate_ * 2.5 /* 最大浮动值2.5 */ / 1000) /* 转换ms */
                   * pacer_timer_interval_ /* 该间隔发送速率 */ /
                   8 /* 转换bytes */) +
           pre_remainder_bytes_ /* 上个周期剩余bytes */;
