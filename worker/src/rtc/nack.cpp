@@ -182,7 +182,6 @@ void Nack::OnReceiveRtpPacket(RtpPacketPtr rtp_packet) {
     // It was a nacked packet.
     if (it != this->recv_nack_list_.end()) {
       this->recv_nack_list_.erase(it);
-
       return;
     }
 

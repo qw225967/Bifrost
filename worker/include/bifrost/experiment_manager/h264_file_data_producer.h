@@ -52,6 +52,7 @@ class H264FileDataProducer : public ExperimentDataProducerInterface,
   void OnTimer(UvTimer *timer);
 
   RtpPacketPtr CreateData() override;
+
   void ChangeOutBitrate(uint32_t out_bitrate, uint16_t interval) override {
     out_bitrate_limit_ =
         out_bitrate > MaxOutSendBitrate ? MaxOutSendBitrate : out_bitrate;
