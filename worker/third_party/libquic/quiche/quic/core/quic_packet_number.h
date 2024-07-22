@@ -8,6 +8,7 @@
 #include <limits>
 #include <ostream>
 #include <string>
+#include <cstdint>
 
 #include "quiche/quic/platform/api/quic_export.h"
 

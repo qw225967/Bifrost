@@ -36,6 +36,7 @@
 #include "absl/synchronization/internal/graphcycles.h"
 
 #include <algorithm>
+#include <limits>
 #include <array>
 #include "absl/base/internal/hide_ptr.h"
 #include "absl/base/internal/raw_logging.h"

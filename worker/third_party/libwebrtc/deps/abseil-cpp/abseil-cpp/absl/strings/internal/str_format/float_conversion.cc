@@ -5,7 +5,7 @@
 #include <cassert>
 #include <cmath>
 #include <string>
-
+#include <cstdint>
 namespace absl {
 namespace str_format_internal {
 
