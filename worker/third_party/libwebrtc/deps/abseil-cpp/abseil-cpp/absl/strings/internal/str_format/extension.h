@@ -21,7 +21,7 @@
 #include <cstddef>
 #include <cstring>
 #include <ostream>
-
+#include <stdint.h>
 #include "absl/base/port.h"
 #include "absl/strings/internal/str_format/output.h"
 #include "absl/strings/string_view.h"

@@ -274,6 +274,7 @@ add_executable(worker
         # C++ source files.
         third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc
         third_party/libwebrtc/libwebrtc/rtc_base/rate_statistics.cc
+        third_party/libwebrtc/libwebrtc/rtc_base/synchronization/rw_lock_win.cc
         third_party/libwebrtc/libwebrtc/rtc_base/experiments/field_trial_parser.cc
         third_party/libwebrtc/libwebrtc/rtc_base/experiments/alr_experiment.cc
         third_party/libwebrtc/libwebrtc/rtc_base/experiments/field_trial_units.cc
@@ -633,4 +634,4 @@ add_executable(worker
         src/main.cpp
         )
 
-target_link_libraries(worker libuv.a pthread dl)
+target_link_libraries(worker libuv.a pthread pthread ws2_32 iphlpapi userenv dbghelp shlwapi)

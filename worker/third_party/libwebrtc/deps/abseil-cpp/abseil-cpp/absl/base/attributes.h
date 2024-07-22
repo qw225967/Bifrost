@@ -169,6 +169,13 @@
 #define ABSL_HAVE_ATTRIBUTE_WEAK 0
 #endif
 
+
+#undef ABSL_ATTRIBUTE_WEAK
+#define ABSL_ATTRIBUTE_WEAK
+#undef ABSL_HAVE_ATTRIBUTE_WEAK
+#define ABSL_HAVE_ATTRIBUTE_WEAK 0
+
+
 // ABSL_ATTRIBUTE_NONNULL
 //
 // Tells the compiler either (a) that a particular function parameter

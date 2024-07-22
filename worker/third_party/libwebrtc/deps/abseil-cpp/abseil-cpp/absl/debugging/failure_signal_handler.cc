@@ -327,9 +327,9 @@ static void AbslFailureSignalHandler(int signo, siginfo_t*, void* ucontext) {
 #ifdef ABSL_HAVE_ALARM
   // Set an alarm to abort the program in case this code hangs or deadlocks.
   if (fsh_options.alarm_on_failure_secs > 0) {
-    alarm(0);  // Cancel any existing alarms.
-    signal(SIGALRM, ImmediateAbortSignalHandler);
-    alarm(fsh_options.alarm_on_failure_secs);
+    // alarm(0);  // Cancel any existing alarms.
+    // signal(SIGALRM, ImmediateAbortSignalHandler);
+    // alarm(fsh_options.alarm_on_failure_secs);
   }
 #endif
 
