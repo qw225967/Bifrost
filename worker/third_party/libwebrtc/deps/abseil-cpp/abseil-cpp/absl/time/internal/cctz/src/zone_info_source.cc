@@ -66,14 +66,14 @@ ZoneInfoSourceFactory default_factory = DefaultFactory;
 #define __has_attribute(x) 0
 #endif
 #if __has_attribute(weak) || defined(__GNUC__)
-ZoneInfoSourceFactory zone_info_source_factory
-    __attribute__((weak)) = DefaultFactory;
+// ZoneInfoSourceFactory zone_info_source_factory
+//     __attribute__((weak)) = DefaultFactory;
 #else
 // Make it a "strong" definition if we have no other choice.
 ZoneInfoSourceFactory zone_info_source_factory = DefaultFactory;
 #endif
 #endif  // _MSC_VER
-
+ZoneInfoSourceFactory zone_info_source_factory = DefaultFactory;
 }  // namespace cctz_extension
 }  // namespace time_internal
 }  // namespace absl

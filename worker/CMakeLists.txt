@@ -283,6 +283,7 @@ add_executable(worker
         # C++ source files.
         third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc
         third_party/libwebrtc/libwebrtc/rtc_base/rate_statistics.cc
+        third_party/libwebrtc/libwebrtc/rtc_base/synchronization/rw_lock_win.cc
         third_party/libwebrtc/libwebrtc/rtc_base/experiments/field_trial_parser.cc
         third_party/libwebrtc/libwebrtc/rtc_base/experiments/alr_experiment.cc
         third_party/libwebrtc/libwebrtc/rtc_base/experiments/field_trial_units.cc
@@ -648,11 +649,11 @@ set(WIN32_LIBRARIES "ws2_32 iphlpapi userenv dbghelp shlwapi")
 set(ELSE_LIBRARIES "dl")
 
 # 根据平台设置要链接的库
-set(WIN_PLATFORM_LIBRARIES "")
+set(PLATFORM_LIBRARIES "")
 if (WIN32)
-    list(APPEND WIN_PLATFORM_LIBRARIES ${WIN32_LIBRARIES})
+    list(APPEND PLATFORM_LIBRARIES ${WIN32_LIBRARIES})
 else ()
-    list(APPEND WIN_PLATFORM_LIBRARIES ${ELSE_LIBRARIES})
+    list(APPEND PLATFORM_LIBRARIES ${ELSE_LIBRARIES})
 endif ()
 
-target_link_libraries(worker libuv.a pthread ${WIN_PLATFORM_LIBRARIES})
+target_link_libraries(worker libuv.a pthread ${PLATFORM_LIBRARIES})
