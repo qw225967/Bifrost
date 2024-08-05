@@ -12,7 +12,16 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-ADD_DEFINITIONS(-DWEBRTC_POSIX)
+
+# 定义Windows特定的源文件
+set(WIN32_SPECIFIC_WEBRTC_SOURCES "")
+
+# 检查操作系统并添加相应的源文件
+if (WIN32)
+    list(APPEND WIN32_SPECIFIC_WEBRTC_SOURCES "third_party/libwebrtc/libwebrtc/rtc_base/synchronization/rw_lock_win.cc")
+else ()
+    ADD_DEFINITIONS(-DWEBRTC_POSIX)
+endif ()
 
 include_directories(
         include
@@ -317,6 +326,7 @@ add_executable(worker
         third_party/libwebrtc/libwebrtc/modules/congestion_controller/rtp/send_time_history.cc
         third_party/libwebrtc/libwebrtc/modules/congestion_controller/rtp/transport_feedback_adapter.cc
         third_party/libwebrtc/libwebrtc/modules/congestion_controller/rtp/control_handler.cc
+        ${WIN32_SPECIFIC_WEBRTC_SOURCES}
         # C++ source files fec.
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_header_reader_writer.cc
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_header_reader_writer.cc
@@ -633,4 +643,16 @@ add_executable(worker
         src/main.cpp
         )
 
-target_link_libraries(worker libuv.a pthread dl)
+# 定义不同平台的库变量
+set(WIN32_LIBRARIES "ws2_32 iphlpapi userenv dbghelp shlwapi")
+set(ELSE_LIBRARIES "dl")
+
+# 根据平台设置要链接的库
+set(WIN_PLATFORM_LIBRARIES "")
+if (WIN32)
+    list(APPEND WIN_PLATFORM_LIBRARIES ${WIN32_LIBRARIES})
+else ()
+    list(APPEND WIN_PLATFORM_LIBRARIES ${ELSE_LIBRARIES})
+endif ()
+
+target_link_libraries(worker libuv.a pthread ${WIN_PLATFORM_LIBRARIES})

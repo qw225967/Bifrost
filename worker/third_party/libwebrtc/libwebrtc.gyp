@@ -275,6 +275,9 @@
       # Platform-specifics.
 
       [ 'OS != "win"', {
+        "sources": [
+          "libwebrtc/rtc_base/system_wrappers/rw_lock_win.cc"
+        ],
         'cflags': [ '-std=c++11' ]
       }],
 
