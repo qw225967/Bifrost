@@ -10,8 +10,8 @@
 #ifndef _BIFROST_PACER_H
 #define _BIFROST_PACER_H
 
-//#define USE_FAKE_DATA_PRODUCER 1
-#define USE_FLEX_FEC_PROTECT 1
+#define USE_FAKE_DATA_PRODUCER 1
+//#define USE_FLEX_FEC_PROTECT 1
 
 #include <modules/rtp_rtcp/include/flexfec_sender.h>
 #include <modules/video_coding/media_opt_util.h>

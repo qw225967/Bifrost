@@ -24,7 +24,7 @@ class QuicSendAlgorithmAdapter : public BifrostSendAlgorithmInterface {
 
  public:
   // BifrostSendAlgorithmInterface
-  void OnRtpPacketSend(RtpPacketPtr &rtp_packet, int64_t now) override;
+  void OnRtpPacketSend(RtpPacketPtr& rtp_packet, int64_t now) override;
   bool OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) override {
     if (fb->GetMessageType() == FeedbackRtp::MessageType::QUICFB) {
       auto* feedback = dynamic_cast<QuicAckFeedbackPacket*>(fb);
@@ -37,8 +37,9 @@ class QuicSendAlgorithmAdapter : public BifrostSendAlgorithmInterface {
   void OnReceiveReceiverReport(webrtc::RTCPReportBlock report, float rtt,
                                int64_t nowMs) override {}
   void UpdateRtt(float rtt) override;
-  uint32_t get_pacing_rate() override {
-    return send_algorithm_interface_->PacingRate(0).ToBitsPerSecond();
+  uint32_t get_pacing_rate(uint32_t bytes_inflight) override {
+    return send_algorithm_interface_->PacingRate(bytes_inflight)
+        .ToBitsPerSecond();
   }
   uint32_t get_congestion_windows() {
     return send_algorithm_interface_->GetCongestionWindow();
@@ -79,6 +80,7 @@ class QuicSendAlgorithmAdapter : public BifrostSendAlgorithmInterface {
   int64_t transport_rtt_{0u};
   uint16_t largest_acked_seq_{0u};
   int32_t cwnd_{6000u};
+  uint64_t last_remove_old_time_{0u};
 };
 }  // namespace bifrost
 

@@ -33,7 +33,7 @@ int main() {
 
   auto temp0 = std::make_shared<bifrost::Transport>(
       bifrost::Transport::SinglePublish, 0, ptr,
-      quic::CongestionControlType::kGoogCC);  // number 为传输标号，从 0 开始
+      quic::CongestionControlType::kBBR);  // number 为传输标号，从 0 开始
 
   temp0->Run();
 

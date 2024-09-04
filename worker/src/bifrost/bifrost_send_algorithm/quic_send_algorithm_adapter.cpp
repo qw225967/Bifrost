@@ -55,7 +55,7 @@ void QuicSendAlgorithmAdapter::UpdateRtt(float rtt) {
   }
 }
 
-void QuicSendAlgorithmAdapter::OnRtpPacketSend(RtpPacketPtr &rtp_packet,
+void QuicSendAlgorithmAdapter::OnRtpPacketSend(RtpPacketPtr& rtp_packet,
                                                int64_t now) {
   quic::QuicTime ts =
       quic::QuicTime::Zero() + quic::QuicTimeDelta::FromMilliseconds(now);
@@ -81,8 +81,11 @@ void QuicSendAlgorithmAdapter::OnRtpPacketSend(RtpPacketPtr &rtp_packet,
   // 3 算法记录发送
   this->send_algorithm_interface_->OnPacketSent(
       ts, this->unacked_packet_map_->bytes_in_flight(),
-      quic::QuicPacketNumber(wide_seq_number),
-      rtp_packet->GetSize(), quic::HAS_RETRANSMITTABLE_DATA);
+      quic::QuicPacketNumber(wide_seq_number), rtp_packet->GetSize(),
+      quic::HAS_RETRANSMITTABLE_DATA);
+
+  if (now - this->last_remove_old_time_ > MaxIntervalSendPacketRemove)
+    this->RemoveOldSendPacket();
 }
 
 void QuicSendAlgorithmAdapter::OnReceiveQuicAckFeedback(
@@ -90,7 +93,6 @@ void QuicSendAlgorithmAdapter::OnReceiveQuicAckFeedback(
   auto now_ms = this->uv_loop_->get_time_ms_int64();
   int64_t transport_rtt_sum = 0;
   int64_t transport_rtt_count = 0;
-
   uint32_t ack_bytes = 0;
 
   for (auto it = feedback->Begin(); it != feedback->End(); ++it) {
@@ -155,6 +157,7 @@ void QuicSendAlgorithmAdapter::OnReceiveQuicAckFeedback(
 
 void QuicSendAlgorithmAdapter::RemoveOldSendPacket() {
   auto now = this->uv_loop_->get_time_ms_int64();
+  this->last_remove_old_time_ = now;
   int64_t remove_interval = MaxIntervalSendPacketRemove +
                             transport_rtt_ / 2;  // 1个feedback时间+传输的rtt/2
 

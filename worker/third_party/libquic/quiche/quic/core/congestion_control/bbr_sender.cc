@@ -31,7 +31,9 @@ const float kDerivedHighGain = 2.773f;
 // The newly derived CWND gain for STARTUP, 2.
 const float kDerivedHighCWNDGain = 2.0f;
 // The cycle of gains used during the PROBE_BW stage.
-const float kPacingGain[] = {1.25, 0.75, 1, 1, 1, 1, 1, 1};
+const float kPacingGain[] = {/*1.25,*/ 1.14, 0.75, 1, 1, 1, 1, 1, 1};
+// 先升到 125% 再降 75% 得到 93.75%，实际多降6.25%排空。
+// 这里参考tcc在可能发生拥塞时降至原码率的85%，避免发过多，将码率多发的系数调为1.14
 
 // The length of the gain cycle.
 const size_t kGainCycleLength = sizeof(kPacingGain) / sizeof(kPacingGain[0]);
@@ -41,7 +43,10 @@ const QuicRoundTripCount kBandwidthWindowSize = kGainCycleLength + 2;
 // The time after which the current min_rtt value expires.
 const QuicTime::Delta kMinRttExpiry = QuicTime::Delta::FromSeconds(10);
 // The minimum time the connection can spend in PROBE_RTT mode.
-const QuicTime::Delta kProbeRttTime = QuicTime::Delta::FromMilliseconds(200);
+const QuicTime::Delta kProbeRttTime =
+    QuicTime::Delta::FromMilliseconds(/*200*/ 100);
+// 最小rtt的探测时间影响吞吐量，降低到半个feedback的时间
+
 // If the bandwidth does not increase by the factor of |kStartupGrowthTarget|
 // within |kRoundTripsWithoutGrowthBeforeExitingStartup| rounds, the connection
 // will exit the STARTUP mode.
@@ -288,7 +293,8 @@ void BbrSender::OnCongestionEvent(bool /*rtt_updated*/,
                                  max_bandwidth_.GetBest(),
                                  QuicBandwidth::Infinite(), round_trip_count_);
 
-//  std::cout << "OnCongestionEvent:" << pacing_rate_.ToBitsPerSecond() << ", max bandwidth:" << sample.sample_max_bandwidth << std::endl;
+  //  std::cout << "OnCongestionEvent:" << pacing_rate_.ToBitsPerSecond() << ",
+  //  max bandwidth:" << sample.sample_max_bandwidth << std::endl;
   if (sample.last_packet_send_state.is_valid) {
     last_sample_is_app_limited_ = sample.last_packet_send_state.is_app_limited;
     has_non_app_limited_sample_ |= !last_sample_is_app_limited_;
@@ -301,14 +307,15 @@ void BbrSender::OnCongestionEvent(bool /*rtt_updated*/,
   // ack-only packets). In both cases, sampler_.total_bytes_acked() will not
   // change.
   if (total_bytes_acked_before != sampler_.total_bytes_acked()) {
-//    QUIC_LOG_IF(WARNING, sample.sample_max_bandwidth.IsZero())
-//        << sampler_.total_bytes_acked() - total_bytes_acked_before
-//        << " bytes from " << acked_packets.size()
-//        << " packets have been acked, but sample_max_bandwidth is zero.";
+    //    QUIC_LOG_IF(WARNING, sample.sample_max_bandwidth.IsZero())
+    //        << sampler_.total_bytes_acked() - total_bytes_acked_before
+    //        << " bytes from " << acked_packets.size()
+    //        << " packets have been acked, but sample_max_bandwidth is zero.";
     if (!sample.sample_is_app_limited ||
         sample.sample_max_bandwidth > max_bandwidth_.GetBest()) {
-//      sample.DebugShow();
-//      std::cout << "round_trip_count_:" << round_trip_count_ << ", max bw:" << sample.sample_max_bandwidth << std::endl;
+      //      sample.DebugShow();
+      //      std::cout << "round_trip_count_:" << round_trip_count_ << ", max
+      //      bw:" << sample.sample_max_bandwidth << std::endl;
       max_bandwidth_.Update(sample.sample_max_bandwidth, round_trip_count_);
     }
   }
@@ -440,14 +447,14 @@ bool BbrSender::MaybeUpdateMinRtt(QuicTime now,
       !min_rtt_.IsZero() && (now > (min_rtt_timestamp_ + kMinRttExpiry));
 
   if (min_rtt_expired || sample_min_rtt < min_rtt_ || min_rtt_.IsZero()) {
-//    QUIC_DVLOG(2) << "Min RTT updated, old value: " << min_rtt_
-//                  << ", new value: " << sample_min_rtt
-//                  << ", current time: " << now.ToDebuggingValue();
+    //    QUIC_DVLOG(2) << "Min RTT updated, old value: " << min_rtt_
+    //                  << ", new value: " << sample_min_rtt
+    //                  << ", current time: " << now.ToDebuggingValue();
 
     min_rtt_ = sample_min_rtt;
     min_rtt_timestamp_ = now;
   }
-//  QUICHE_DCHECK(!min_rtt_.IsZero());
+  //  QUICHE_DCHECK(!min_rtt_.IsZero());
 
   return min_rtt_expired;
 }
@@ -514,7 +521,7 @@ void BbrSender::CheckIfFullBandwidthReached(
   rounds_without_bandwidth_gain_++;
   if ((rounds_without_bandwidth_gain_ >= num_startup_rtts_) ||
       ShouldExitStartupDueToLoss(last_packet_send_state)) {
-//    QUICHE_DCHECK(has_non_app_limited_sample_);
+    //    QUICHE_DCHECK(has_non_app_limited_sample_);
     is_at_full_bandwidth_ = true;
   }
 }
@@ -533,7 +540,7 @@ void BbrSender::MaybeExitStartupOrDrain(QuicTime now) {
 }
 
 void BbrSender::OnExitStartup(QuicTime now) {
-//  QUICHE_DCHECK_EQ(mode_, STARTUP);
+  //  QUICHE_DCHECK_EQ(mode_, STARTUP);
   if (stats_) {
     stats_->slowstart_duration.Stop(now);
   }
@@ -773,8 +780,8 @@ void BbrSender::OnApplicationLimited(QuicByteCount bytes_in_flight) {
   }
 
   sampler_.OnAppLimited();
-//  QUIC_DVLOG(2) << "Becoming application limited. Last sent packet: "
-//                << last_sent_packet_ << ", CWND: " << GetCongestionWindow();
+  //  QUIC_DVLOG(2) << "Becoming application limited. Last sent packet: "
+  //                << last_sent_packet_ << ", CWND: " << GetCongestionWindow();
 }
 
 void BbrSender::PopulateConnectionStats(QuicConnectionStats* stats) const {

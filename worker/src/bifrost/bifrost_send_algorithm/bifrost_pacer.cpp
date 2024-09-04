@@ -95,6 +95,7 @@ void BifrostPacer::SetProtectionMethod(bool enable_fec, bool enable_nack) {
 
 void BifrostPacer::UpdateFecRates(uint8_t fraction_lost,
                                   int64_t round_trip_time_ms) {
+#ifdef USE_FLEX_FEC_PROTECT
   float target_bitrate_kbps =
       static_cast<float>(this->target_bitrate_) / 1000.f;
 
@@ -156,6 +157,7 @@ void BifrostPacer::UpdateFecRates(uint8_t fraction_lost,
               << ", max frame rate:" << delta_fec_params_.max_fec_frames
               << ", fraction lost:" << uint32_t(fraction_lost) << std::endl;
   }
+#endif
 }
 
 void BifrostPacer::TryFlexFecPacketSend(RtpPacketPtr& packet) {
@@ -186,8 +188,19 @@ void BifrostPacer::OnTimer(UvTimer* timer) {
     if (this->pacing_congestion_windows_ > 0 && this->bytes_in_flight_ > 0 &&
         this->pacing_congestion_windows_ < this->bytes_in_flight_) {
     } else {
+      // bbr的需要完全贴合pacing。
+      // 1.5的原因是在聚合ack的实现中，pacing_rate会因为确认之后偏小，这里拍脑袋给加大点
+      
+      // gcc 的pacing
+      // 2.5则是根据码率浮动的，这里如果没有使用真实的h264文件发数据，可以改小
+      double pacing_gain =
+          (this->pacing_congestion_windows_ > 0 && this->bytes_in_flight_ > 0
+               ? 1.5
+               : 2.5);
+
       int32_t interval_pacing_bytes =
-          int32_t((pacing_rate_ * 2.5 /* 最大浮动值2.5 */ / 1000) /* 转换ms */
+          int32_t((pacing_rate_ * pacing_gain /* 最大浮动值2.5 */ /
+                   1000) /* 转换ms */
                   * pacer_timer_interval_ /* 该间隔发送速率 */ /
                   8 /* 转换bytes */) +
           pre_remainder_bytes_ /* 上个周期剩余bytes */;
@@ -238,14 +251,16 @@ void BifrostPacer::OnTimer(UvTimer* timer) {
   if (timer == create_timer_) {
     delta_fec_params_.fec_rate = 255;
     delta_fec_params_.max_fec_frames = 1;
+#ifdef USE_FLEX_FEC_PROTECT
     flexfec_sender_->SetFecParameters(delta_fec_params_);
+#endif
     // 每10ms产生3次
     for (int i = 0; i < 5; i++) {
       auto packet = this->data_producer_->CreateData();
       if (packet == nullptr) continue;
-
+#ifdef USE_FLEX_FEC_PROTECT
       this->TryFlexFecPacketSend(packet);
-
+#endif
       this->ready_send_vec_.emplace_back(
           std::pair<RtpPacketPtr, SendPacketType>(packet, RTP));
     }

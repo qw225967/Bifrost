@@ -61,7 +61,8 @@ Publisher::Publisher(Settings::Configuration& remote_config, UvLoop** uv_loop,
 
 void Publisher::OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) {
   if (bifrost_send_algorithm_manager_->OnReceiveRtcpFeedback(fb)) {
-    auto pacing_rate = bifrost_send_algorithm_manager_->get_pacing_rate();
+    auto pacing_rate = bifrost_send_algorithm_manager_->get_pacing_rate(
+        this->bifrost_send_algorithm_manager_->get_bytes_in_flight());
     if (pacing_rate > 0) this->pacer_->set_pacing_rate(pacing_rate);
 
     this->pacer_->set_pacing_congestion_windows(
@@ -75,9 +76,11 @@ void Publisher::OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) {
     send_packet_bytes_ = pacer_->get_pacing_bytes();
 
     // 投递数据落地
-    ExperimentDumpData data(bifrost_send_algorithm_manager_->get_pacing_rate(),
-                            pacer_->get_pacing_bitrate_bps(),
-                            bifrost_send_algorithm_manager_->get_trends());
+    ExperimentDumpData data(
+        bifrost_send_algorithm_manager_->get_pacing_rate(
+            this->bifrost_send_algorithm_manager_->get_bytes_in_flight()),
+        pacer_->get_pacing_bitrate_bps(),
+        bifrost_send_algorithm_manager_->get_trends());
     experiment_manager_->PostGccDataToShow(this->number_, data);
   }
 }
@@ -184,7 +187,8 @@ void Publisher::OnTimer(UvTimer* timer) {
   }
 
   if (timer == this->update_pacing_info_timer_) {
-    auto pacing_rate = bifrost_send_algorithm_manager_->get_pacing_rate();
+    auto pacing_rate = bifrost_send_algorithm_manager_->get_pacing_rate(
+        this->bifrost_send_algorithm_manager_->get_bytes_in_flight());
     if (pacing_rate > 0) this->pacer_->set_pacing_rate(pacing_rate);
 
     this->pacer_->set_pacing_congestion_windows(

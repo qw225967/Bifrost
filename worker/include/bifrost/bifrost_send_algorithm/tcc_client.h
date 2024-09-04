@@ -44,9 +44,10 @@ class TransportCongestionControlClient
         TransportCongestionControlClient* tcc_client, RtpPacket* packet,
         const webrtc::PacedPacketInfo& pacing_info) = 0;
   };
+
  public:
   // BifrostSendAlgorithmInterface
-  void OnRtpPacketSend(RtpPacketPtr &rtp_packet, int64_t now) override;
+  void OnRtpPacketSend(RtpPacketPtr& rtp_packet, int64_t now) override;
   void UpdateRtt(float rtt) override {}
 
   bool OnReceiveRtcpFeedback(FeedbackRtpPacket* fb) override {
@@ -59,17 +60,17 @@ class TransportCongestionControlClient
     }
     return false;
   }
-  void OnReceiveReceiverReport(webrtc::RTCPReportBlock report,
-                               float rtt, int64_t nowMs) override {
+  void OnReceiveReceiverReport(webrtc::RTCPReportBlock report, float rtt,
+                               int64_t nowMs) override {
     this->ReceiveRtcpReceiverReport(report, rtt, nowMs);
   }
-  uint32_t get_pacing_rate() override { return this->get_available_bitrate(); }
+  uint32_t get_pacing_rate(uint32_t bytes_inflight) override {
+    return this->get_available_bitrate();
+  }
   uint32_t get_congestion_windows() { return 0; }
   uint32_t get_bytes_in_flight() { return 0; }
   uint32_t get_pacing_transfer_time(uint32_t bytes) { return 0; }
-  std::vector<double> get_trends() override {
-    return this->get_trend();
-  }
+  std::vector<double> get_trends() override { return this->get_trend(); }
 
  public:
   TransportCongestionControlClient(
