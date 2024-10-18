@@ -81,42 +81,48 @@ EXE = r'''
 <a href="http://dist.libuv.org/dist/{tag}/">exe</a>
 '''
 
+
 def version(tag):
-  return list(map(int, re.match('^v(\d+)\.(\d+)\.(\d+)', tag).groups()))
+    return list(map(int, re.match('^v(\d+)\.(\d+)\.(\d+)', tag).groups()))
+
 
 def major_minor(tag):
-  return version(tag)[:2]
+    return version(tag)[:2]
+
 
 def row_for(tag):
-  maybe_gpg = ''
-  maybe_exe = ''
-  # We didn't start signing releases and producing Windows installers
-  # until v1.7.0.
-  if version(tag) >= version('v1.7.0'):
-    maybe_gpg = GPG.format(**locals())
-    maybe_exe = EXE.format(**locals())
-  return ROW.format(**locals())
+    maybe_gpg = ''
+    maybe_exe = ''
+    # We didn't start signing releases and producing Windows installers
+    # until v1.7.0.
+    if version(tag) >= version('v1.7.0'):
+        maybe_gpg = GPG.format(**locals())
+        maybe_exe = EXE.format(**locals())
+    return ROW.format(**locals())
+
 
 def group_for(tags):
-  rows = ''.join(row_for(tag) for tag in tags)
-  return GROUP.format(rows=rows)
+    rows = ''.join(row_for(tag) for tag in tags)
+    return GROUP.format(rows=rows)
+
 
 # Partition in groups of |n|.
 def groups_for(groups, n=4):
-  html = ''
-  groups = groups[:] + [''] * (n - 1)
-  while len(groups) >= n:
-    html += GROUPS.format(groups=groups)
-    groups = groups[n:]
-  return html
+    html = ''
+    groups = groups[:] + [''] * (n - 1)
+    while len(groups) >= n:
+        html += GROUPS.format(groups=groups)
+        groups = groups[n:]
+    return html
+
 
 if __name__ == '__main__':
-  os.chdir(os.path.dirname(__file__))
-  tags = subprocess.check_output(['git', 'tag'], text=True)
-  tags = [tag for tag in tags.split('\n') if tag.startswith('v')]
-  tags.sort(key=version, reverse=True)
-  groups = [group_for(list(g)) for _, g in itertools.groupby(tags, major_minor)]
-  groups = groups_for(groups)
-  html = HTML.format(groups=groups).strip()
-  html = re.sub('>\\s+<', '><', html)
-  print(html)
+    os.chdir(os.path.dirname(__file__))
+    tags = subprocess.check_output(['git', 'tag'], text=True)
+    tags = [tag for tag in tags.split('\n') if tag.startswith('v')]
+    tags.sort(key=version, reverse=True)
+    groups = [group_for(list(g)) for _, g in itertools.groupby(tags, major_minor)]
+    groups = groups_for(groups)
+    html = HTML.format(groups=groups).strip()
+    html = re.sub('>\\s+<', '><', html)
+    print(html)

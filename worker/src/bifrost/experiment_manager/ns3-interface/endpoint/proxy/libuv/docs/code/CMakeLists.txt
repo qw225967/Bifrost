@@ -26,7 +26,7 @@ set(SIMPLE_SAMPLES
         uvcat
         uvstop
         uvtee
-        )
+)
 IF (NOT WIN32)
     list(APPEND SIMPLE_SAMPLES
             signal
@@ -35,8 +35,8 @@ IF (NOT WIN32)
             queue-work
             tty
             tty-gravity
-            )
-ENDIF()
+    )
+ENDIF ()
 
 foreach (X IN LISTS SIMPLE_SAMPLES)
     add_executable(${X} ${X}/main.c)
@@ -45,7 +45,7 @@ endforeach ()
 
 
 FIND_PACKAGE(CURL)
-IF(CURL_FOUND)
+IF (CURL_FOUND)
     add_executable(uvwget uvwget/main.c)
     target_link_libraries(uvwget uv_a ${CURL_LIBRARIES})
-ENDIF(CURL_FOUND)
+ENDIF (CURL_FOUND)

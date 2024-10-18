@@ -3,7 +3,6 @@
 The libuv project welcomes new contributors. This document will guide you
 through the process.
 
-
 ### FORK
 
 Fork the project [on GitHub](https://github.com/libuv/libuv) and check out
@@ -16,7 +15,7 @@ $ git remote add upstream https://github.com/libuv/libuv.git
 ```
 
 Now decide if you want your feature or bug fix to go into the master branch
-or the stable branch.  As a rule of thumb, bug fixes go into the stable branch
+or the stable branch. As a rule of thumb, bug fixes go into the stable branch
 while new features go into the master branch.
 
 The stable branch is effectively frozen; patches that change the libuv
@@ -29,10 +28,9 @@ Especially do so if you plan to work on something big. Nothing is more
 frustrating than seeing your hard work go to waste because your vision does not
 align with that of the [project maintainers].
 
-
 ### BRANCH
 
-Okay, so you have decided on the proper branch.  Create a feature branch
+Okay, so you have decided on the proper branch. Create a feature branch
 and start hacking:
 
 ```
@@ -83,7 +81,6 @@ additional guidelines, are enumerated below.
   logic are either obvious to a reasonably skilled professional, or add a
   comment that explains it.
 
-
 ### COMMIT
 
 Make sure git knows your name and email address:
@@ -93,8 +90,8 @@ $ git config --global user.name "J. Random User"
 $ git config --global user.email "j.random.user@example.com"
 ```
 
-Writing good commit logs is important.  A commit log should describe what
-changed and why.  Follow these guidelines when writing one:
+Writing good commit logs is important. A commit log should describe what
+changed and why. Follow these guidelines when writing one:
 
 1. The first line should be 50 characters or less and contain a short
    description of the change prefixed with the name of the changed
@@ -123,7 +120,6 @@ run `git shortlog` or `git log --oneline`.
 Check the output of `git log --oneline files_that_you_changed` to find out
 what subsystem (or subsystems) your changes touch.
 
-
 ### REBASE
 
 Use `git rebase` (not `git merge`) to sync your work from time to time.
@@ -133,13 +129,13 @@ $ git fetch upstream
 $ git rebase upstream/v1.x  # or upstream/master
 ```
 
-
 ### TEST
 
-Bug fixes and features should come with tests.  Add your tests in the
+Bug fixes and features should come with tests. Add your tests in the
 `test/` directory. Each new test needs to be registered in `test/test-list.h`.
 
 If you add a new test file, it needs to be registered in three places:
+
 - `CMakeLists.txt`: add the file's name to the `uv_test_sources` list.
 - `Makefile.am`: add the file's name to the `test_run_tests_SOURCES` list.
 
@@ -155,17 +151,21 @@ there are no test regressions.
 $ git push origin my-feature-branch
 ```
 
-Go to https://github.com/username/libuv and select your feature branch.  Click
+Go to https://github.com/username/libuv and select your feature branch. Click
 the 'Pull Request' button and fill out the form.
 
-Pull requests are usually reviewed within a few days.  If there are comments
+Pull requests are usually reviewed within a few days. If there are comments
 to address, apply your changes in a separate commit and push that to your
-feature branch.  Post a comment in the pull request afterwards; GitHub does
+feature branch. Post a comment in the pull request afterwards; GitHub does
 not send out notifications when you add commits.
 
 
 [issue tracker]: https://github.com/libuv/libuv/issues
+
 [libuv mailing list]: http://groups.google.com/group/libuv
+
 [libuv discussions forum]: https://github.com/libuv/libuv/discussions
+
 [Google C/C++ style guide]: https://google.github.io/styleguide/cppguide.html
+
 [project maintainers]: https://github.com/libuv/libuv/blob/master/MAINTAINERS.md

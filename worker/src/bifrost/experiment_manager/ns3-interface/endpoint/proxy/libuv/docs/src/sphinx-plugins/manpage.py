@@ -18,7 +18,7 @@ from string import Template
 def make_link_node(rawtext, app, name, manpage_num, options):
     ref = app.config.man_url_regex
     if not ref:
-        ref = "https://man7.org/linux/man-pages/man%s/%s.%s.html" %(manpage_num, name, manpage_num)
+        ref = "https://man7.org/linux/man-pages/man%s/%s.%s.html" % (manpage_num, name, manpage_num)
     else:
         s = Template(ref)
         ref = s.substitute(num=manpage_num, topic=name)
@@ -42,4 +42,3 @@ def setup(app):
     app.add_role('man', man_role)
     app.add_config_value('man_url_regex', None, 'env')
     return
-

@@ -9,29 +9,29 @@ used by [Luvit](http://luvit.io/), [Julia](http://julialang.org/),
 
 ## Feature highlights
 
- * Full-featured event loop backed by epoll, kqueue, IOCP, event ports.
+* Full-featured event loop backed by epoll, kqueue, IOCP, event ports.
 
- * Asynchronous TCP and UDP sockets
+* Asynchronous TCP and UDP sockets
 
- * Asynchronous DNS resolution
+* Asynchronous DNS resolution
 
- * Asynchronous file and file system operations
+* Asynchronous file and file system operations
 
- * File system events
+* File system events
 
- * ANSI escape code controlled TTY
+* ANSI escape code controlled TTY
 
- * IPC with socket sharing, using Unix domain sockets or named pipes (Windows)
+* IPC with socket sharing, using Unix domain sockets or named pipes (Windows)
 
- * Child processes
+* Child processes
 
- * Thread pool
+* Thread pool
 
- * Signal handling
+* Signal handling
 
- * High resolution clock
+* High resolution clock
 
- * Threading and synchronization primitives
+* Threading and synchronization primitives
 
 ## Versioning
 
@@ -51,8 +51,8 @@ The documentation is licensed under the CC BY 4.0 license. Check the
 
 ## Community
 
- * [Support](https://github.com/libuv/libuv/discussions)
- * [Mailing list](http://groups.google.com/group/libuv)
+* [Support](https://github.com/libuv/libuv/discussions)
+* [Mailing list](http://groups.google.com/group/libuv)
 
 ## Documentation
 
@@ -102,12 +102,12 @@ also serve as API specification and usage examples.
 
 ### Other resources
 
- * [LXJS 2012 talk](http://www.youtube.com/watch?v=nGn60vDSxQ4)
-   &mdash; High-level introductory talk about libuv.
- * [libuv-dox](https://github.com/thlorenz/libuv-dox)
-   &mdash; Documenting types and methods of libuv, mostly by reading uv.h.
- * [learnuv](https://github.com/thlorenz/learnuv)
-   &mdash; Learn uv for fun and profit, a self guided workshop to libuv.
+* [LXJS 2012 talk](http://www.youtube.com/watch?v=nGn60vDSxQ4)
+  &mdash; High-level introductory talk about libuv.
+* [libuv-dox](https://github.com/thlorenz/libuv-dox)
+  &mdash; Documenting types and methods of libuv, mostly by reading uv.h.
+* [learnuv](https://github.com/thlorenz/learnuv)
+  &mdash; Learn uv for fun and profit, a self guided workshop to libuv.
 
 These resources are not handled by libuv maintainers and might be out of
 date. Please verify it before opening new issues.
@@ -163,13 +163,13 @@ following prerequisites:
 <details>
 
 * One of:
-  * [Visual C++ Build Tools][]
-  * [Visual Studio 2015 Update 3][], all editions
-    including the Community edition (remember to select
-    "Common Tools for Visual C++ 2015" feature during installation).
-  * [Visual Studio 2017][], any edition (including the Build Tools SKU).
-    **Required Components:** "MSbuild", "VC++ 2017 v141 toolset" and one of the
-    Windows SDKs (10 or 8.1).
+    * [Visual C++ Build Tools][]
+    * [Visual Studio 2015 Update 3][], all editions
+      including the Community edition (remember to select
+      "Common Tools for Visual C++ 2015" feature during installation).
+    * [Visual Studio 2017][], any edition (including the Build Tools SKU).
+      **Required Components:** "MSbuild", "VC++ 2017 v141 toolset" and one of the
+      Windows SDKs (10 or 8.1).
 * Basic Unix tools required for some tests,
   [Git for Windows][] includes Git Bash
   and tools which can be included in the global `PATH`.
@@ -312,14 +312,15 @@ at the time of writing (December 2019.)
 AIX compilation using IBM XL C/C++ requires version 12.1 or greater.
 
 AIX support for filesystem events requires the non-default IBM `bos.ahafs`
-package to be installed.  This package provides the AIX Event Infrastructure
+package to be installed. This package provides the AIX Event Infrastructure
 that is detected by `autoconf`.
 [IBM documentation](http://www.ibm.com/developerworks/aix/library/au-aix_event_infrastructure/)
 describes the package in more detail.
 
 ### z/OS Notes
 
-z/OS compilation requires [ZOSLIB](https://github.com/ibmruntimes/zoslib) to be installed. When building with [CMake][], use the flag `-DZOSLIB_DIR` to specify the path to [ZOSLIB](https://github.com/ibmruntimes/zoslib):
+z/OS compilation requires [ZOSLIB](https://github.com/ibmruntimes/zoslib) to be installed. When building with [CMake][],
+use the flag `-DZOSLIB_DIR` to specify the path to [ZOSLIB](https://github.com/ibmruntimes/zoslib):
 
 ```bash
 $ (cd build && cmake .. -DBUILD_TESTING=ON -DZOSLIB_DIR=/path/to/zoslib)
@@ -336,10 +337,17 @@ Use the `ipcrm` command to manually clear up System V resources.
 See the [guidelines for contributing][].
 
 [CMake]: https://cmake.org/
+
 [node.js]: http://nodejs.org/
+
 [guidelines for contributing]: https://github.com/libuv/libuv/blob/master/CONTRIBUTING.md
+
 [libuv_banner]: https://raw.githubusercontent.com/libuv/libuv/master/img/banner.png
+
 [Visual C++ Build Tools]: https://visualstudio.microsoft.com/visual-cpp-build-tools/
+
 [Visual Studio 2015 Update 3]: https://www.visualstudio.com/vs/older-downloads/
+
 [Visual Studio 2017]: https://www.visualstudio.com/downloads/
+
 [Git for Windows]: http://git-scm.com/download/win

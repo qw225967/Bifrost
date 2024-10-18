@@ -1,10 +1,10 @@
-if(NOT HOST_ARCH)
-  message(SEND_ERROR "-DHOST_ARCH required to be specified")
-endif()
+if (NOT HOST_ARCH)
+    message(SEND_ERROR "-DHOST_ARCH required to be specified")
+endif ()
 
 list(APPEND CMAKE_TRY_COMPILE_PLATFORM_VARIABLES
-  HOST_ARCH
-  )
+        HOST_ARCH
+)
 
 SET(CMAKE_SYSTEM_NAME Windows)
 set(COMPILER_PREFIX "${HOST_ARCH}-w64-mingw32")

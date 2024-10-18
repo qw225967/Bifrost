@@ -1,8 +1,9 @@
 使用指南：
-    Bifrost需要使用到两台终端进行端对端测试，如果只用一台机器是无法走网络进行弱网限制的。
+Bifrost需要使用到两台终端进行端对端测试，如果只用一台机器是无法走网络进行弱网限制的。
 Instructions for use:
 
-Bifrost requires the use of two terminals for end-to-end testing, and if only one machine is used, weak network restrictions cannot be achieved through the network.
+Bifrost requires the use of two terminals for end-to-end testing, and if only one machine is used, weak network
+restrictions cannot be achieved through the network.
 
 推流的机器请将配置按下方的方式设置。
 
@@ -52,7 +53,6 @@ Bifrost requires the use of two terminals for end-to-end testing, and if only on
 
 
 ```
-
 
 ```
     # 拉流配置：
