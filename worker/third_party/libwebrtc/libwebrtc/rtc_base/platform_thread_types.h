@@ -10,9 +10,6 @@
 
 #ifndef RTC_BASE_PLATFORM_THREAD_TYPES_H_
 #define RTC_BASE_PLATFORM_THREAD_TYPES_H_
-#ifndef WEBRTC_POSIX
-#define WEBRTC_POSIX
-#endif
 
 // clang-format off
 // clang formating would change include order.

@@ -16,10 +16,6 @@
 #include "rtc_base/platform_thread_types.h"
 #include "rtc_base/thread_annotations.h"
 
-#ifndef WEBRTC_POSIX
-#define WEBRTC_POSIX
-#endif // WEBRTC_POSIX
-
 #if defined(WEBRTC_WIN)
 // clang-format off
 // clang formating would change include order.

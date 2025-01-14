@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.20)
-project(.)
+cmake_minimum_required(VERSION 3.2)
+project(Bifrost)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -7,21 +7,29 @@ set(WEBRTC_DIR third_party/libwebrtc/libwebrtc)
 set(WEBRTC_MODULES ${WEBRTC_DIR}/modules)
 set(CMAKE_BUILD_TYPE Debug) # 设置默认构建类型为Debug
 
-# 对于所有构建类型，增加-g 标志
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+if(MSVC)
+  # /wd4005  macro-redefinition
+  # /wd4068  unknown pragma
+  # /wd4244  conversion from 'type1' to 'type2'
+  # /wd4267  conversion from 'size_t' to 'type2'
+  # /wd4800  force value to bool 'true' or 'false' (performance warning)
+  add_compile_options(/wd4005 /wd4068 /wd4244 /wd4267 /wd4800)
+  add_definitions(/DNOMINMAX /DWIN32_LEAN_AND_MEAN=1 /D_CRT_SECURE_NO_WARNINGS)
+endif()
 
-# 定义Windows特定的源文件
-set(WIN32_SPECIFIC_WEBRTC_SOURCES "")
+# 定义WEBRTC平台特定的源文件
+set(WEBRTC_PLATFORM_SOURCES "")
 
 # 检查操作系统并添加相应的源文件
 if (WIN32)
-    list(APPEND WIN32_SPECIFIC_WEBRTC_SOURCES "third_party/libwebrtc/libwebrtc/rtc_base/synchronization/rw_lock_win.cc")
+    list(APPEND WEBRTC_PLATFORM_SOURCES "third_party/libwebrtc/libwebrtc/rtc_base/synchronization/rw_lock_win.cc")
+    add_definitions(-DWEBRTC_WIN)
+else ()
+    list(APPEND WEBRTC_PLATFORM_SOURCES "third_party/libwebrtc/libwebrtc/rtc_base/synchronization/rw_lock_posix.cc")
+    add_definitions(-DWEBRTC_POSIX)
 endif ()
-
-ADD_DEFINITIONS(-DWEBRTC_POSIX)
 
 include_directories(
         include
@@ -54,9 +62,9 @@ include_directories(
         third_party/libns3
 )
 
+set(BUILD_TESTING OFF CACHE INTERNAL "")
 add_subdirectory(third_party/libwebrtc/deps/abseil-cpp/abseil-cpp)
-
-link_directories(third_party/libuv/build)
+add_subdirectory(third_party/libuv)
 
 add_executable(worker
         # absl
@@ -326,7 +334,7 @@ add_executable(worker
         third_party/libwebrtc/libwebrtc/modules/congestion_controller/rtp/send_time_history.cc
         third_party/libwebrtc/libwebrtc/modules/congestion_controller/rtp/transport_feedback_adapter.cc
         third_party/libwebrtc/libwebrtc/modules/congestion_controller/rtp/control_handler.cc
-        ${WIN32_SPECIFIC_WEBRTC_SOURCES}
+        ${WEBRTC_PLATFORM_SOURCES}
         # C++ source files fec.
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/flexfec_header_reader_writer.cc
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/ulpfec_header_reader_writer.cc
@@ -363,7 +371,6 @@ add_executable(worker
         third_party/libwebrtc/libwebrtc/system_wrappers/source/event.cc
         third_party/libwebrtc/libwebrtc/rtc_base/synchronization/sequence_checker.cc
         third_party/libwebrtc/libwebrtc/rtc_base/synchronization/rw_lock_wrapper.cc
-        third_party/libwebrtc/libwebrtc/rtc_base/synchronization/rw_lock_posix.cc
         third_party/libwebrtc/libwebrtc/rtc_base/checks.cc
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/rtp_packet.cc
         third_party/libwebrtc/libwebrtc/modules/rtp_rtcp/source/forward_error_correction_internal.cc
@@ -425,6 +432,7 @@ add_executable(worker
         third_party/libwebrtc/libwebrtc/modules/video_coding/include/video_codec_interface.cc
         third_party/libwebrtc/libwebrtc/rtc_base/experiments/jitter_upper_bound_experiment.cc
         third_party/libwebrtc/libwebrtc/system_wrappers/source/rtp_to_ntp_estimator.cc
+        third_party/libwebrtc/libwebrtc/common_audio/signal_processing/spl_inl.c
         third_party/libwebrtc/libwebrtc/common_audio/signal_processing/spl_sqrt.cc
         third_party/libwebrtc/libwebrtc/common_audio/signal_processing/randomization_functions.cc
         third_party/libwebrtc/libwebrtc/common_audio/signal_processing/vector_scaling_operations.cc
@@ -643,16 +651,12 @@ add_executable(worker
         src/main.cpp
         )
 
-# 定义不同平台的库变量
-set(WIN32_LIBRARIES "ws2_32 iphlpapi userenv dbghelp shlwapi")
-set(ELSE_LIBRARIES "dl")
-
 # 根据平台设置要链接的库
-set(WIN_PLATFORM_LIBRARIES "")
+set(PLATFORM_LIBRARIES "")
 if (WIN32)
-    list(APPEND WIN_PLATFORM_LIBRARIES ${WIN32_LIBRARIES})
+    list(APPEND PLATFORM_LIBRARIES winmm)
 else ()
-    list(APPEND WIN_PLATFORM_LIBRARIES ${ELSE_LIBRARIES})
+    list(APPEND PLATFORM_LIBRARIES dl)
 endif ()
 
-target_link_libraries(worker libuv.a pthread ${WIN_PLATFORM_LIBRARIES})
+target_link_libraries(worker uv_a ${PLATFORM_LIBRARIES})

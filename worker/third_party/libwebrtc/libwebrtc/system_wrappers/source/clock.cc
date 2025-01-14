@@ -13,8 +13,8 @@
 #if defined(WEBRTC_WIN)
 
 // Windows needs to be included before mmsystem.h
-#include "rtc_base/win32.h"
-
+// #include "rtc_base/win32.h"
+#include <Windows.h>
 #include <mmsystem.h>
 
 #include "rtc_base/critical_section.h"
