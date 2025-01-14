@@ -23,7 +23,9 @@
               DEFINE_QUIC_PROTOCOL_FLAG_SINGLE_VALUE)
 #define QUIC_PROTOCOL_FLAG(...) \
   QUIC_PROTOCOL_FLAG_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
-
+#ifdef _MSC_VER
+#define QUIC_PROTOCOL_FLAG(type, flag, value, doc) type FLAGS_##flag = value;
+#endif
 #include "quiche/quic/core/quic_protocol_flags_list.h"
 
 #undef QUIC_PROTOCOL_FLAG

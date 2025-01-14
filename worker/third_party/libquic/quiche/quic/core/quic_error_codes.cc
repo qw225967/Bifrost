@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 #include "quiche/quic/core/quic_error_codes.h"
-
+#include <ostream>
 #include <cstdint>
 #include <cstring>
 

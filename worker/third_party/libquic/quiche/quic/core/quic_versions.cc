@@ -401,6 +401,7 @@ ParsedQuicVersionVector AllSupportedVersions() {
 }
 
 ParsedQuicVersionVector CurrentSupportedVersions() {
+  return AllSupportedVersions();
 //  return FilterSupportedVersions(AllSupportedVersions());
 }
 
