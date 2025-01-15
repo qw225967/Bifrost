@@ -127,7 +127,6 @@ LogMessage::LogMessage(const char* file, int line, LoggingSeverity sev,
   }
 
   if (err_ctx != ERRCTX_NONE) {
-    char tmp_buf[1024];
     switch (err_ctx) {
       case ERRCTX_ERRNO:
         break;
@@ -143,7 +142,7 @@ LogMessage::LogMessage(const char* file, int line, LoggingSeverity sev,
                  isspace(static_cast<unsigned char>(msgbuf[len - 1]))) {
             msgbuf[--len] = 0;
           }
-          tmp << " " << msgbuf;
+          print_stream_ << " " << msgbuf;
         }
         break;
       }

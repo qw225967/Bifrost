@@ -12,7 +12,6 @@
 
 #include <cmath>
 #include <cstring>  // std::memcmp(), std::memcpy()
-#include <json.hpp>
 #include <string>
 
 #include "common.h"
@@ -25,8 +24,6 @@
 #endif
 
 #define KEEPALIVE_INTERVAL 1000
-
-using json = nlohmann::json;
 
 namespace bifrost {
 class IP {
@@ -318,16 +315,5 @@ class Time {
   }
 };
 
-class Json {
- public:
-  static bool IsPositiveInteger(const json& value) {
-    if (value.is_number_unsigned())
-      return true;
-    else if (value.is_number_integer())
-      return value.get<int64_t>() >= 0;
-    else
-      return false;
-  }
-};
 }  // namespace bifrost
 #endif  // WORKER_UTILS_H

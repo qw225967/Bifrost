@@ -92,7 +92,6 @@
       'libwebrtc/system_wrappers/source/clock.cc',
       'libwebrtc/rtc_base/synchronization/sequence_checker.cc',
       'libwebrtc/rtc_base/synchronization/rw_lock_wrapper.cc',
-      'libwebrtc/rtc_base/synchronization/rw_lock_posix.cc',
       'libwebrtc/rtc_base/checks.cc',
       'libwebrtc/modules/rtp_rtcp/source/rtp_packet.cc',
       'libwebrtc/modules/rtp_rtcp/source/forward_error_correction_internal.cc',
@@ -111,6 +110,7 @@
       'libwebrtc/modules/rtp_rtcp/source/rtp_dependency_descriptor_extension.cc',
       'libwebrtc/modules/rtp_rtcp/source/rtp_generic_frame_descriptor_extension.cc',
       'libwebrtc/modules/rtp_rtcp/source/rtp_packet_received.cc',
+      'libwebrtc/common_audio/signal_processing/spl_inl.c',
       'libwebrtc/common_audio/signal_processing/spl_sqrt.cc',
       'libwebrtc/common_audio/signal_processing/randomization_functions.cc',
       'libwebrtc/common_audio/signal_processing/vector_scaling_operations.cc',
@@ -234,7 +234,6 @@
       'libwebrtc/rtc_base/zero_memory.h',
       'libwebrtc/rtc_base/synchronization/sequence_checker.h',
       'libwebrtc/rtc_base/synchronization/rw_lock_wrapper.h',
-      'libwebrtc/rtc_base/synchronization/rw_lock_posix.h',
       'libwebrtc/rtc_base/strings/audio_format_to_string.h',
       'libwebrtc/modules/rtp_rtcp/source/rtp_packet.h',
       'libwebrtc/modules/rtp_rtcp/source/forward_error_correction_internal.h',
@@ -276,11 +275,15 @@
 
       [ 'OS != "win"', {
         "sources": [
+          'libwebrtc/rtc_base/synchronization/rw_lock_posix.cc',
+        ],
+        'cflags': [ '-std=c++11' ]
+      }, {
+        "sources": [
           "libwebrtc/rtc_base/system_wrappers/rw_lock_win.cc"
         ],
         'cflags': [ '-std=c++11' ]
       }],
-
       [ 'OS == "mac"', {
         'xcode_settings':
         {

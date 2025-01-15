@@ -10,7 +10,7 @@
 #ifndef WORKER_SETTING_H
 #define WORKER_SETTING_H
 
-#include <json.hpp>
+#include <nlohmann/json.hpp>
 #include <map>
 #include <string>
 #include <vector>
