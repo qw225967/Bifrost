@@ -5,7 +5,9 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(WEBRTC_DIR third_party/libwebrtc/libwebrtc)
 set(WEBRTC_MODULES ${WEBRTC_DIR}/modules)
-set(CMAKE_BUILD_TYPE Debug) # 设置默认构建类型为Debug
+if("${CMAKE_BUILD_TYPE}" STREQUAL "")
+  set(CMAKE_BUILD_TYPE "Debug")
+endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -37,24 +39,6 @@ include_directories(
         include/io
         include/rtc
         include/utils
-        third_party/json
-        third_party/json/include
-        third_party/json/include/nlohmann
-        third_party/json/include/nlohmann/detail
-        third_party/json/include/nlohmann/detail/conversions
-        third_party/json/include/nlohmann/detail/input
-        third_party/json/include/nlohmann/detail/iterators
-        third_party/json/include/nlohmann/detail/meta
-        third_party/json/include/nlohmann/detail/output
-        third_party/json/include/nlohmann/thirdparty
-        third_party/json/include/nlohmann/thirdparty/hedley
-        third_party/json/single_include
-        third_party/json/single_include/nlohmann
-        third_party/libuv/docs/code/plugin
-        third_party/libuv/include
-        third_party/libuv/include/uv
-        third_party/libuv/src
-        third_party/libuv/src/unix
         third_party/libwebrtc/deps/abseil-cpp/abseil-cpp
         third_party/libwebrtc/libwebrtc
         third_party/libquic
@@ -65,228 +49,9 @@ include_directories(
 set(BUILD_TESTING OFF CACHE INTERNAL "")
 add_subdirectory(third_party/libwebrtc/deps/abseil-cpp/abseil-cpp)
 add_subdirectory(third_party/libuv)
+add_subdirectory(third_party/json)
 
 add_executable(worker
-        # absl
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/charconv.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/numbers.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/match.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/str_format.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/str_split.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/stl_type_traits.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/charconv_bigint.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/char_map.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/pow10_helper.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/charconv_parse.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/memutil.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/str_format/float_conversion.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/str_format/arg.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/str_format/float_conversion.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/str_format/output.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/str_format/parser.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/str_format/arg.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/str_format/bind.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/str_format/parser.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/str_format/extension.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/str_format/output.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/str_format/checker.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/str_format/extension.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/str_format/bind.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/str_join_internal.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/charconv_bigint.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/memutil.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/ostringstream.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/pow10_helper.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/utf8.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/resize_uninitialized.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/ostringstream.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/charconv_parse.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/utf8.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/internal/str_split_internal.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/str_replace.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/string_view.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/str_join.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/str_cat.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/ascii.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/escaping.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/match.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/ascii.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/numbers.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/charconv.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/strip.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/str_split.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/substitute.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/substitute.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/escaping.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/string_view.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/str_replace.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/strings/str_cat.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/types/bad_variant_access.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/types/bad_any_cast.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/types/bad_any_cast.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/types/internal/variant.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/types/optional.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/types/bad_optional_access.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/types/bad_optional_access.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/types/span.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/types/bad_variant_access.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/types/any.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/types/optional.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/types/variant.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/memory/memory.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/synchronization/blocking_counter.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/synchronization/blocking_counter.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/synchronization/notification.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/synchronization/mutex.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/synchronization/barrier.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/synchronization/internal/per_thread_sem.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/synchronization/internal/per_thread_sem.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/synchronization/internal/graphcycles.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/synchronization/internal/waiter.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/synchronization/internal/thread_pool.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/synchronization/internal/create_thread_identity.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/synchronization/internal/waiter.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/synchronization/internal/create_thread_identity.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/synchronization/internal/kernel_timeout.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/synchronization/internal/graphcycles.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/synchronization/barrier.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/synchronization/notification.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/synchronization/mutex.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/hash/internal/hash.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/hash/internal/spy_hash_state.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/hash/internal/city.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/hash/internal/city.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/hash/internal/hash.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/hash/hash.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/symbolize.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/failure_signal_handler.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/failure_signal_handler.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/stacktrace.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/symbolize.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/leak_check_disable.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/leak_check.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/internal/stacktrace_config.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/internal/examine_stack.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/internal/examine_stack.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/internal/vdso_support.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/internal/stack_consumption.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/internal/demangle.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/internal/symbolize.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/internal/address_is_readable.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/internal/stack_consumption.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/internal/address_is_readable.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/internal/elf_mem_image.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/internal/elf_mem_image.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/internal/demangle.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/internal/vdso_support.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/leak_check.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/debugging/stacktrace.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/meta/type_traits.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/algorithm/algorithm.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/algorithm/container.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/time.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/include/cctz/civil_time.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/include/cctz/time_zone.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/include/cctz/zone_info_source.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/include/cctz/civil_time_detail.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/src/time_zone_format.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/src/time_zone_fixed.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/src/time_zone_if.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/src/time_zone_impl.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/src/time_zone_lookup.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/src/time_zone_info.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/src/time_zone_if.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/src/time_zone_fixed.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/src/zone_info_source.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/src/time_zone_libc.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/src/time_zone_posix.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/src/tzfile.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/src/time_zone_libc.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/src/civil_time_detail.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/src/time_zone_info.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/src/time_zone_impl.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/internal/cctz/src/time_zone_posix.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/civil_time.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/clock.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/duration.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/civil_time.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/format.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/time.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/time/clock.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/node_hash_map.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/flat_hash_map.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/fixed_array.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/internal/compressed_tuple.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/internal/container_memory.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/internal/node_hash_policy.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/internal/raw_hash_set.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/internal/hash_function_defaults.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/internal/hashtablez_sampler.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/internal/hashtablez_force_sampling.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/internal/raw_hash_set.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/internal/hashtable_debug.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/internal/raw_hash_map.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/internal/have_sse.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/internal/layout.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/internal/hashtable_debug_hooks.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/internal/hashtablez_sampler_force_weak_definition.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/internal/hash_policy_traits.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/internal/common.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/internal/tracked.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/internal/hashtablez_sampler.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/internal/counting_allocator.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/inlined_vector.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/flat_hash_set.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/container/node_hash_set.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/numeric/int128.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/numeric/int128.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/policy_checks.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/port.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/config.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/casts.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/spinlock.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/spinlock_wait.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/cycleclock.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/scheduling_mode.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/per_thread_tls.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/spinlock.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/unscaledcycleclock.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/endian.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/sysinfo.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/tsan_mutex_interface.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/thread_identity.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/unaligned_access.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/sysinfo.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/raw_logging.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/direct_mmap.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/unscaledcycleclock.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/throw_delegate.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/invoke.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/pretty_function.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/inline_variable.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/cycleclock.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/low_level_alloc.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/atomic_hook.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/identity.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/low_level_scheduling.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/raw_logging.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/thread_identity.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/throw_delegate.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/low_level_alloc.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/hide_ptr.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/spinlock_wait.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/internal/bits.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/attributes.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/const_init.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/macros.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/thread_annotations.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/dynamic_annotations.cc
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/optimization.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/log_severity.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/call_once.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/base/dynamic_annotations.h
-        third_party/libwebrtc/deps/abseil-cpp/abseil-cpp/absl/utility/utility.h
-
         # webrtc
         # C++ source files.
         third_party/libwebrtc/libwebrtc/system_wrappers/source/field_trial.cc
@@ -456,46 +221,6 @@ add_executable(worker
         third_party/libwebrtc/libwebrtc/rtc_base/bit_buffer.cc
         third_party/libwebrtc/libwebrtc/system_wrappers/source/metrics.cc
 
-        # json
-        third_party/json/include/nlohmann/detail/conversions/from_json.hpp
-        third_party/json/include/nlohmann/detail/conversions/to_chars.hpp
-        third_party/json/include/nlohmann/detail/conversions/to_json.hpp
-        third_party/json/include/nlohmann/detail/input/binary_reader.hpp
-        third_party/json/include/nlohmann/detail/input/input_adapters.hpp
-        third_party/json/include/nlohmann/detail/input/json_sax.hpp
-        third_party/json/include/nlohmann/detail/input/lexer.hpp
-        third_party/json/include/nlohmann/detail/input/parser.hpp
-        third_party/json/include/nlohmann/detail/input/position_t.hpp
-        third_party/json/include/nlohmann/detail/iterators/internal_iterator.hpp
-        third_party/json/include/nlohmann/detail/iterators/iter_impl.hpp
-        third_party/json/include/nlohmann/detail/iterators/iteration_proxy.hpp
-        third_party/json/include/nlohmann/detail/iterators/iterator_traits.hpp
-        third_party/json/include/nlohmann/detail/iterators/json_reverse_iterator.hpp
-        third_party/json/include/nlohmann/detail/iterators/primitive_iterator.hpp
-        third_party/json/include/nlohmann/detail/meta/cpp_future.hpp
-        third_party/json/include/nlohmann/detail/meta/detected.hpp
-        third_party/json/include/nlohmann/detail/meta/is_sax.hpp
-        third_party/json/include/nlohmann/detail/meta/type_traits.hpp
-        third_party/json/include/nlohmann/detail/meta/void_t.hpp
-        third_party/json/include/nlohmann/detail/output/binary_writer.hpp
-        third_party/json/include/nlohmann/detail/output/output_adapters.hpp
-        third_party/json/include/nlohmann/detail/output/serializer.hpp
-        third_party/json/include/nlohmann/detail/exceptions.hpp
-        third_party/json/include/nlohmann/detail/hash.hpp
-        third_party/json/include/nlohmann/detail/json_pointer.hpp
-        third_party/json/include/nlohmann/detail/json_ref.hpp
-        third_party/json/include/nlohmann/detail/macro_scope.hpp
-        third_party/json/include/nlohmann/detail/macro_unscope.hpp
-        third_party/json/include/nlohmann/detail/value_t.hpp
-        third_party/json/include/nlohmann/thirdparty/hedley/hedley.hpp
-        third_party/json/include/nlohmann/thirdparty/hedley/hedley_undef.hpp
-        third_party/json/include/nlohmann/adl_serializer.hpp
-        third_party/json/include/nlohmann/byte_container_with_subtype.hpp
-        third_party/json/include/nlohmann/json.hpp
-        third_party/json/include/nlohmann/json_fwd.hpp
-        third_party/json/include/nlohmann/ordered_map.hpp
-        third_party/json/single_include/nlohmann/json.hpp
-
         # libquic
         third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_flags_impl.h
         third_party/libquic/quiche/common/platform/default/quiche_platform_impl/quiche_export_impl.h
@@ -652,7 +377,7 @@ add_executable(worker
         )
 
 # 根据平台设置要链接的库
-set(PLATFORM_LIBRARIES "")
+set(PLATFORM_LIBRARIES nlohmann_json absl::base absl::utility absl::str_format absl::flat_hash_map absl::hashtablez_sampler)
 if (WIN32)
     list(APPEND PLATFORM_LIBRARIES winmm)
 else ()
