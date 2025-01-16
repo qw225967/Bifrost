@@ -15,9 +15,11 @@
 #include <iterator>  // std::ostream_iterator
 
 #include "utils.h"
+#ifndef WEBRTC_WIN
 extern "C" {
 #include <getopt.h>
 }
+#endif
 
 namespace bifrost {
 
@@ -28,7 +30,7 @@ struct ExperimentManager::GccExperimentConfig Settings::gcc_experiment_config_;
 /* Class methods. */
 void Settings::SetConfiguration(int argc, char* argv[]) {
   /* Variables for getopt. */
-
+#ifndef WEBRTC_WIN
   int c;
   int optionIdx{0};
   // clang-format off
@@ -80,6 +82,7 @@ void Settings::SetConfiguration(int argc, char* argv[]) {
       }
     }
   }
+#endif
 }
 
 sockaddr Settings::get_sockaddr_by_config(Configuration& publish_config) {
